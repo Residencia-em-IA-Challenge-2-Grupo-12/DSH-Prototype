@@ -81,6 +81,7 @@ test('MCP server initializes and exposes no approval or calendar-write tool',asy
     await client.connect(transport);
     const tools=await client.listTools();const names=tools.tools.map(t=>t.name);
     assert(names.includes('draft_study_plan'));assert(!names.some(n=>/approve|apply|delete|write_calendar/.test(n)));
+    assert.match(tools.tools.find(t=>t.name==='list_calendar').description,/2026-11-02/);
     const out=await client.callTool({name:'list_synthetic_files',arguments:{student:'ana',path:'courses'}});assert(!out.isError,JSON.stringify(out));
   } finally { await client.close(); }
 });

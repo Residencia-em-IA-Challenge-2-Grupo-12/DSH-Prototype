@@ -1,3 +1,7 @@
+- id: agent-default-model
+  config:
+    provider: codex
+    model: gpt-6-luna
 - insert:
     - id: mcp-synthetic-study
       name: '@deepseek-ai/dsh-mcp-client'
