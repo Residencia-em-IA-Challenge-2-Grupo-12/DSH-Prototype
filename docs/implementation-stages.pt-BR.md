@@ -1,0 +1,12 @@
+# Etapas do demonstrador colaborativo
+
+Este plano é para uma demonstração **sintética e de uma pessoa**, não uma promessa de produção. No harness, use apenas GPT-6 Luna até nova decisão. Cada etapa deve resultar em algo revisável, separando testes determinísticos de comportamento do modelo.
+
+1. **Visualizar o calendário:** semana navegável, eventos existentes e adições/remoções propostas com estilos distintos; manter revisões e verificações de validade. A visualização atual agrupa por data inicial e ainda não é uma grade proporcional de horas.
+2. **Validar o SDK do DSH:** conectar a rota Codex autorizada, GPT-6 Luna e ferramentas MCP; exercitar eventos, pergunta e resposta, cancelamento e retomada sem automatizar navegador. O cliente SDK e a compatibilidade do plugin no perfil SDK ainda precisam ser testados.
+3. **Entregar um fluxo colaborativo completo:** conversa e calendário juntos; ler ementa, perguntar, propor, receber ajuste, mostrar alterações e aplicar somente a seção aprovada, com estados de proposta desatualizada e falha parcial.
+4. **Empacotar e isolar:** iniciar a aplicação e dependências em Docker Compose; usar espaço de execução descartável por sessão, limites de recursos, acesso restrito a arquivos e rede e autorização de escrita fora do ambiente do agente. Comparar isolamento com alternativas como gVisor ou microVM e verificar os limites na prática.
+5. **Ampliar cenários e avaliação:** horas reduzidas, conflito e prazo alterado; preservar edições, mostrar feedback opcional e métricas, registrar execução do modelo e verificar os dois idiomas.
+6. **Explorar integrações reais:** comparar arquivos locais, nuvem da pessoa e espaço provisionado; só testar OAuth e calendário real com conta de teste autorizada após revisar as fronteiras de segurança. Avaliar os plugins de calendário e GenUI com testes concretos.
+
+Decisões em aberto: interface nativa do DSH ou interface própria pelo SDK; nível necessário de isolamento; localização dos arquivos; e divisão entre planejamento do agente e ferramentas determinísticas. Veja [a versão em inglês](implementation-stages.md) para critérios detalhados.
