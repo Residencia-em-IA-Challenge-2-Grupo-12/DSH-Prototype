@@ -38,4 +38,6 @@ O Calendarpit simula apenas parte da API do Google; o protótipo usa sua API adm
 
 O planejador usa regras simplificadas, datas reconhecíveis nas ementas e categorias heurísticas. Ele não é avaliação de saúde nem comprovação de aprendizagem. O relatório JSON e Markdown fica em `.runtime/`; a interpretação do agente aparece somente após um modelo fornecê-la.
 
-Interrompa as interfaces com Ctrl-C e execute `docker compose down` para parar o simulador. Consulte [integrações](docs/integrations.pt-BR.md), [modelos](docs/models.pt-BR.md), [pesquisa](docs/research.pt-BR.md) e [arquitetura](docs/architecture.pt-BR.md).
+A aba Calendário mostra uma semana navegável com eventos existentes e adições ou remoções pendentes. Ela agrupa eventos pela data de início; ainda não é uma grade proporcional de horas e não expande eventos recorrentes ou de vários dias. Propostas só são aplicadas após aprovação separada no Plano de estudos.
+
+Interrompa as interfaces com Ctrl-C e execute `docker compose down` para parar o simulador. Consulte [etapas de implementação](docs/implementation-stages.pt-BR.md), [integrações](docs/integrations.pt-BR.md), [modelos](docs/models.pt-BR.md), [pesquisa](docs/research.pt-BR.md) e [arquitetura](docs/architecture.pt-BR.md).

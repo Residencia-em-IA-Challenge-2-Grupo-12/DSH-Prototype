@@ -40,6 +40,8 @@ See [model setup](docs/models.md) before configuring a subscription, API provide
 4. Add optional feedback, generate a report, or edit the synthetic calendar in Calendarpit's admin UI. Run a checkpoint to inspect changes, and create a revised proposal.
 5. On the Calendar tab, preview and approve an event category annotation. Existing event description text is preserved.
 
+The Calendar tab also shows a navigable seven-day overview of existing events and pending additions/removals. It groups events by their start date; it is not a proportional time grid and does not yet expand recurring or multi-day events. Proposals are previews until separately approved in Study plan.
+
 Fixtures use a fixed simulated date, 2026-11-02, and the São Paulo time zone. Ana has a four-week deadline; Bruno has a six-week deadline. Scheduled time is not evidence of completed work.
 
 ## Checks
@@ -61,5 +63,7 @@ The offline tests cover three independent checkpoint scenarios, approval and sta
 - Markdown/JSON reports are written to ignored `.runtime/`; a model can supply an interpretation via MCP. A report created without one explicitly says so.
 
 See [integration findings](docs/integrations.md), [study and memory research](docs/research.md), [architecture and fixtures](docs/architecture.md), and [Portuguese setup](README.pt-BR.md).
+
+The [implementation stages](docs/implementation-stages.md) describe the remaining collaborative interface, SDK, containerization, isolation, and provider work.
 
 Stop the companion and DSH with Ctrl-C in their terminals; stop the simulator with `docker compose down`. These processes do not automatically restart after reboot.
