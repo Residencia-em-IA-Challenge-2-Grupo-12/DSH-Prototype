@@ -155,7 +155,7 @@ export async function resetScenario(calendar, student) {
   await fs.mkdir(path.dirname(staged),{recursive:true});
   await fs.cp(path.join(ROOT,'fixtures/students',student),staged,{recursive:true});
   const events=await calendar.events(student);
-  const feedback=await readJSON(path.join(ROOT, 'fixtures/feedback', student+'.json'));
+  const feedback=(await readJSON(path.join(ROOT, 'fixtures/feedback', student+'.json'))).map(validateFeedback);
   const state={student,feedback,history:[],plan:null,lastSnapshot:snapshot(events),annotations:{},protectedIds:[]};
   await saveState(student,state); return state;
 }
@@ -220,8 +220,11 @@ export function validateFeedback(input) {
   if (typeof input.eventId!=='string' || !input.eventId.trim()) throw new Error('eventId required');
   if (input.completion && !['completed','partial','not_done','unknown'].includes(input.completion)) throw new Error('Invalid completion');
   for (const key of ['actualMinutes','effort']) if (input[key]!==undefined && input[key]!==null && (!Number.isFinite(Number(input[key])) || Number(input[key])<0)) throw new Error('Invalid '+key);
+  if (input.actualMinutes!==undefined && input.actualMinutes!==null && Number(input.actualMinutes)>1440) throw new Error('Actual minutes must be at most 1440');
   if (input.effort!==undefined && input.effort!==null && Number(input.effort)>5) throw new Error('Effort must be between 0 and 5');
-  return {eventId:input.eventId.trim(),completion:input.completion||'unknown',actualMinutes:input.actualMinutes==null?null:Number(input.actualMinutes),effort:input.effort==null?null:Number(input.effort),note:String(input.note||'').slice(0,2000),recordedAt:new Date().toISOString()};
+  const recordedAt=input.recordedAt||new Date().toISOString();
+  if (!Number.isFinite(Date.parse(recordedAt))) throw new Error('Invalid recordedAt');
+  return {eventId:input.eventId.trim(),completion:input.completion||'unknown',actualMinutes:input.actualMinutes==null?null:Number(input.actualMinutes),effort:input.effort==null?null:Number(input.effort),note:String(input.note||'').slice(0,2000),recordedAt};
 }
 export async function addFeedback(student, input) {
   const state=await loadState(student), record=validateFeedback(input);
