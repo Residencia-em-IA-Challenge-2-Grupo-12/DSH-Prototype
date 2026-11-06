@@ -22,6 +22,8 @@ npm start
 
 Open http://127.0.0.1:4174. The companion server binds all interfaces for a LAN preview and contains no authentication; expose it only on a trusted network. Calendarpit's administration and test API is loopback-only at http://127.0.0.1:4173. Both contain synthetic data only.
 
+For the **Collaborate** tab's live agent, first follow [model setup](docs/models.md), including the user's Codex sign-in, and install the same pinned plugin in the SDK profile with `npm run install:codex-plugin:sdk`. Open the companion at `http://localhost:4174` or `http://127.0.0.1:4174` on the development machine: model-control endpoints reject LAN and Tailscale clients because this preview has no authentication. Only GPT-6 Luna is configured. Agent conversations are in memory and do not resume after restarting the companion.
+
 In a second terminal, start the project-isolated DSH web profile:
 
 ```bash
@@ -35,7 +37,7 @@ See [model setup](docs/models.md) before configuring a subscription, API provide
 ## Walkthrough
 
 1. Pick Ana or Bruno and **Reset scenario**. Browse the synthetic workspace and read a syllabus.
-2. Create a proposal. Nothing is written to the calendar at this stage.
+2. In **Collaborate**, ask the agent to plan, answer its questions and request revisions; the calendar and proposal update alongside the conversation. Alternatively, create a deterministic proposal in **Study plan**. Nothing is written to the calendar at this stage.
 3. Review and approve the coming week. Future tentative blocks require a separate approval.
 4. Add optional feedback, generate a report, or edit the synthetic calendar in Calendarpit's admin UI. Run a checkpoint to inspect changes, and create a revised proposal.
 5. On the Calendar tab, preview and approve an event category annotation. Existing event description text is preserved.
@@ -59,6 +61,7 @@ The offline tests cover three independent checkpoint scenarios, approval and sta
 - The calendar and shared runtime are single-user demonstration resources; switching student resets the simulator. Do not connect real accounts or put private files in the fixtures.
 - The model-facing MCP interface has no calendar-write or approval tool. The companion approval API performs writes, but Calendarpit's own administration API and generic DSH capabilities are reachable to local processes. **This is not a security boundary against an untrusted agent**; independently enforce tool/network isolation before using real data.
 - The parser recognizes simple dates in the bundled syllabi, and the planner uses simplified one-hour slots, fixed São Paulo offset and heuristic categories. This is not an optimizer, a health assessment or proof of effective learning.
+- Conversational revisions can prefer morning or afternoon and avoid named dates; they cannot yet express every constraint or precisely drag an individual block. The preferred period can fall back to the other period when needed. A model may ask ordinary follow-up messages or native form questions.
 - User-edited study events are protected from automatic replacement when a checkpoint or draft observes the edit. Partial writes are reported, not rolled back automatically.
 - Markdown/JSON reports are written to ignored `.runtime/`; a model can supply an interpretation via MCP. A report created without one explicitly says so.
 

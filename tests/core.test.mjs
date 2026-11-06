@@ -27,6 +27,13 @@ test('planner avoids commitments, honors horizon and exposes shortfalls',async()
   const p2=makePlan(student,fixture.events,{weeks:4,hours:20}); assert(p2.outlook[0].shortfall>0);
   const bruno=await getStudent('bruno'), p3=makePlan(bruno,[],{weeks:6,hours:5});assert.equal(p3.outlook.length,6);
 });
+test('planner can revise around a selected date and a time preference',async()=>{
+  const student=await getStudent('ana'), fixture=await readJSON(ROOT+'/fixtures/calendars/ana.json');
+  const plan=makePlan(student,fixture.events,{weeks:1,hours:3,avoidDates:['2026-11-03'],preferredPeriod:'afternoon'});
+  assert.equal(plan.near.length,3);
+  assert(plan.near.every(e=>!e.start.dateTime.startsWith('2026-11-03')));
+  assert(plan.near.every(e=>Number(e.start.dateTime.slice(11,13))>=14));
+});
 test('approval is section-specific and stale proposals cannot write',async()=>{
   const c=new FakeCalendar();await resetScenario(c,'ana');let p=await draft(c,'ana',{weeks:2,hours:2});let initial=(await c.events()).length;
   assert.equal((await c.events()).length,initial); await applyApproved(c,'ana',p.id,'near');

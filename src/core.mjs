@@ -107,11 +107,13 @@ const millis = (item, key) => Date.parse(item[key]?.dateTime || item[key]?.date)
 const overlaps = (a,b) => millis(a,'start') < millis(b,'end') && millis(b,'start') < millis(a,'end');
 function localTime(date) { return date.toISOString().replace('Z','').slice(0,19) + '-03:00'; }
 
-export function makePlan(student, events, { weeks = 4, hours, protectedIds = [] } = {}) {
+export function makePlan(student, events, { weeks = 4, hours, protectedIds = [], avoidDates = [], preferredPeriod } = {}) {
   const target = Number(hours ?? student.targetHours);
-  if (!Number.isFinite(target) || target < 0 || target > 20) throw new Error('Hours must be between 0 and 20');
+  if (!Number.isInteger(target) || target < 0 || target > 20) throw new Error('Hours must be a whole number between 0 and 20');
   const requested = Number(weeks);
   if (!Number.isInteger(requested) || requested < 1 || requested > 16) throw new Error('Weeks must be between 1 and 16');
+  if (!Array.isArray(avoidDates) || avoidDates.length>112 || avoidDates.some(d=>typeof d!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d))) throw new Error('Avoid dates must be ISO dates');
+  if (preferredPeriod && !['morning','afternoon'].includes(preferredPeriod)) throw new Error('Unknown preferred period');
   const start = new Date(FIXED_TODAY + 'T00:00:00Z');
   const deadline = Math.min(...student.courses.map(c => Date.parse(c.deadline)));
   const maxWeeks = Math.max(1, Math.ceil((deadline - Date.parse(FIXED_TODAY + 'T00:00:00-03:00')) / (7 * 86400000)));
@@ -125,9 +127,10 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [] 
     let placed = 0;
     const sorted = [...student.courses].sort((a,b) => Date.parse(a.deadline)-Date.parse(b.deadline));
     for (let slot=0; slot<10 && placed < Math.ceil(target); slot++) {
-      const d=slot%5, secondPass=slot>=5;
-      for (let hour=secondPass?14:9; hour<(secondPass?18:13) && placed < Math.ceil(target); hour++) {
+      const d=slot%5, secondPass=slot>=5, afternoon=preferredPeriod==='afternoon'?!secondPass:secondPass;
+      for (let hour=afternoon?14:9; hour<(afternoon?18:13) && placed < Math.ceil(target); hour++) {
         const dt = new Date(start.getTime() + (w*7+d)*86400000 + hour*3600000);
+        if (avoidDates.includes(dt.toISOString().slice(0,10))) continue;
         const end = new Date(dt.getTime()+3600000);
         const daysToDeadline=(Date.parse(sorted[0].deadline)-Date.parse(localTime(dt)))/86400000;
         const course = daysToDeadline<=14 && slot%3!==2 ? sorted[0] : sorted[(w+d)%sorted.length];

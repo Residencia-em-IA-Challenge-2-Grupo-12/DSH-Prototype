@@ -14,9 +14,11 @@ Run the pinned DSH SDK profile with the study MCP tools and the user's already-a
 
 **Done when:** a small reproducible synthetic run can be driven from a local client with a captured, sanitized trace and no unrelated model calls. Record blockers and actual tool failures.
 
-## 3. Deliver one collaborative vertical slice
+## 3. Deliver one collaborative vertical slice — prototype implemented
 
 Connect a conversation and week view to the same session and proposal state. Have the agent read a selected syllabus and calendar, ask a meaningful question, show a proposed week, incorporate a user's change, and request separate review. Re-read the calendar and apply only the section explicitly approved. Show pending, stale, partial and applied states; record sources, decisions, and changes. Do not treat the deterministic planner as an agent response or silently turn a question into approval.
+
+**Current result:** the companion hosts one SDK session per student with a conversation, native questions, calendar overlay and separate review controls. A live Luna run asked for hours, read the syllabus and calendar, drafted afternoon blocks and revised them to avoid a date; the proposal remained unapproved. Offline checks cover question forwarding and existing stale/absent approval behavior. The user-facing end-to-end review and acceptance flow, durable session recovery, and broader scenarios still require validation. Chat is localhost-only while the companion has no authentication.
 
 **Done when:** a person can complete the whole workflow in one interface and tests show rejected, absent and stale approval produce no writes. A live Luna run verifies the conversation; deterministic tests independently verify boundaries.
 

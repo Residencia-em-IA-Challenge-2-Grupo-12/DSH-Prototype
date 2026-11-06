@@ -20,6 +20,8 @@ Abra http://127.0.0.1:4174. A interface complementar escuta em todas as interfac
 
 Em outro terminal, execute `npm run dsh:study`, abra a URL local apresentada, configure um modelo e selecione um espaço sintético em `.runtime/workspaces/`. Reinicie o cenário na interface complementar antes de usar as ferramentas MCP.
 
+Para conversar na aba **Colaborar**, conclua primeiro a autenticação Codex indicada em [modelos](docs/models.pt-BR.md) e instale o plugin também no perfil SDK com `npm run install:codex-plugin:sdk`. Abra `http://localhost:4174` ou `http://127.0.0.1:4174` no computador de desenvolvimento: o controle do modelo não aceita conexões da LAN ou do Tailscale enquanto a prévia não tiver autenticação. Apenas GPT-6 Luna está configurado. As conversas ficam em memória e não são retomadas após reiniciar o servidor.
+
 ## Roteiro
 
 1. Escolha Ana ou Bruno e reinicie o cenário. Explore os arquivos e leia uma ementa.
@@ -39,5 +41,7 @@ O Calendarpit simula apenas parte da API do Google; o protótipo usa sua API adm
 O planejador usa regras simplificadas, datas reconhecíveis nas ementas e categorias heurísticas. Ele não é avaliação de saúde nem comprovação de aprendizagem. O relatório JSON e Markdown fica em `.runtime/`; a interpretação do agente aparece somente após um modelo fornecê-la.
 
 A aba Calendário mostra uma semana navegável com eventos existentes e adições ou remoções pendentes. Ela agrupa eventos pela data de início; ainda não é uma grade proporcional de horas e não expande eventos recorrentes ou de vários dias. Propostas só são aplicadas após aprovação separada no Plano de estudos.
+
+Na aba Colaborar, a conversa e o calendário dividem a tela. O agente pode fazer perguntas e atualizar a proposta, que continua exigindo aprovação separada. As revisões podem preferir manhã ou tarde e evitar datas indicadas; a preferência pode usar outro período quando necessário e ainda não representa todas as restrições possíveis.
 
 Interrompa as interfaces com Ctrl-C e execute `docker compose down` para parar o simulador. Consulte [etapas de implementação](docs/implementation-stages.pt-BR.md), [integrações](docs/integrations.pt-BR.md), [modelos](docs/models.pt-BR.md), [pesquisa](docs/research.pt-BR.md) e [arquitetura](docs/architecture.pt-BR.md).

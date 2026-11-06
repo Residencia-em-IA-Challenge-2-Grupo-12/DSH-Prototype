@@ -18,8 +18,16 @@
     <section class="intro"><div><div class="eyebrow" data-i18n="fixedTime"></div><h2 data-i18n="introTitle"></h2><p data-i18n="introBody"></p></div>
       <div class="date-card"><span data-i18n="today"></span><strong>02 NOV</strong><small>2026 · São Paulo</small></div>
     </section>
-    <nav class="tabs" aria-label="Sections"><button class="tab active" data-tab="plan" data-i18n="planning"></button><button class="tab" data-tab="calendar" data-i18n="calendar"></button><button class="tab" data-tab="workspace" data-i18n="workspace"></button><button class="tab" data-tab="report" data-i18n="report"></button></nav>
-    <section id="plan" class="panel active"><div class="grid"><article class="card"><div class="section-label">01</div><h3 data-i18n="draftTitle"></h3><p data-i18n="draftDescription"></p>
+    <nav class="tabs" aria-label="Sections"><button class="tab active" data-tab="collaborate" data-i18n="collaborate"></button><button class="tab" data-tab="plan" data-i18n="planning"></button><button class="tab" data-tab="calendar" data-i18n="calendar"></button><button class="tab" data-tab="workspace" data-i18n="workspace"></button><button class="tab" data-tab="report" data-i18n="report"></button></nav>
+    <section id="collaborate" class="panel active"><div class="collab-grid">
+      <article class="card chat-card"><div class="section-label">GPT-6 Luna · DSH</div><h3 data-i18n="chatTitle"></h3><p data-i18n="chatDescription"></p>
+        <div id="chat-status" class="chat-status" aria-live="polite"></div><div id="chat-messages" class="chat-messages" aria-live="polite"></div><div id="chat-question"></div>
+        <form id="chat-form"><label><span data-i18n="chatMessage"></span><textarea name="text" rows="3" maxlength="8000" required data-i18n-placeholder="chatPlaceholder"></textarea></label><div class="chat-actions"><button id="chat-send" type="submit" data-i18n="chatSend"></button><button id="chat-new" type="button" class="secondary" data-i18n="chatNew"></button></div></form>
+      </article>
+      <div><article class="card"><h3 data-i18n="calendarTitle"></h3><div class="week-controls"><button id="collab-previous-week" class="secondary" data-i18n="previousWeek"></button><strong id="collab-week-label" aria-live="polite"></strong><button id="collab-next-week" class="secondary" data-i18n="nextWeek"></button></div><p class="calendar-legend"><span class="legend-existing" data-i18n="legendExisting"></span><span class="legend-proposed" data-i18n="legendProposed"></span><span class="legend-removal" data-i18n="legendRemoval"></span></p><div class="week-scroll"><div id="collab-week-view" class="week-view"></div></div><p data-i18n="overlayNote"></p></article>
+      <article class="card proposal-card"><h3 data-i18n="reviewTitle"></h3><p data-i18n="reviewDescription"></p><div id="collab-proposal"></div></article></div>
+    </div></section>
+    <section id="plan" class="panel"><div class="grid"><article class="card"><div class="section-label">01</div><h3 data-i18n="draftTitle"></h3><p data-i18n="draftDescription"></p>
       <form id="draft-form"><label><span data-i18n="hours"></span><input name="hours" type="number" min="0" max="20" step="1" value="6" required></label>
       <label><span data-i18n="weeks"></span><input name="weeks" type="number" min="1" max="16" value="4" required></label>
       <button type="submit" data-i18n="makePlan"></button></form><small data-i18n="draftNote"></small></article>
