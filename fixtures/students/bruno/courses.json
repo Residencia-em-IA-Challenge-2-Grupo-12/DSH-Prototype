@@ -1,1 +1,41 @@
-{"student":"bruno","timezone":"America/Sao_Paulo","targetHours":5,"courses":[{"name":"Banco de Dados","deadline":"2026-12-14T18:00:00-03:00","source":"courses/banco-dados.md"},{"name":"Algoritmos","deadline":"2026-12-14T09:00:00-03:00","source":"courses/algoritmos.md"}]}
+{
+  "student": "bruno",
+  "timezone": "America/Sao_Paulo",
+  "targetHours": 5,
+  "courses": [
+    {
+      "name": "Banco de Dados",
+      "deadline": "2026-12-14T18:00:00-03:00",
+      "source": "courses/banco-dados.md"
+    },
+    {
+      "name": "Algoritmos",
+      "deadline": "2026-12-14T09:00:00-03:00",
+      "source": "courses/algoritmos.md"
+    }
+  ],
+  "studyWindows": [
+    {
+      "weekday": 1,
+      "start": "19:00",
+      "end": "21:15"
+    },
+    {
+      "weekday": 3,
+      "start": "19:00",
+      "end": "21:15"
+    },
+    {
+      "weekday": 6,
+      "start": "14:00",
+      "end": "16:15"
+    },
+    {
+      "weekday": 0,
+      "start": "10:00",
+      "end": "12:15"
+    }
+  ],
+  "maxDailyStudyHours": 2,
+  "studyBreakMinutes": 15
+}

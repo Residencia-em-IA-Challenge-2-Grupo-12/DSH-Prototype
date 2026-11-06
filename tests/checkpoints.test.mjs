@@ -15,10 +15,10 @@ async function baseline() {
   const plan=await draft(c,'ana',{weeks:4,hours:6});await applyApproved(c,'ana',plan.id,'near');return {c,plan};
 }
 test('checkpoint: reduced hours produces a smaller reviewed proposal',async()=>{
-  const {c,plan}=await baseline();await checkpoint(c,'ana','I need fewer hours to feel better.');
+  const {c,plan}=await baseline();await checkpoint(c,'ana','I need fewer hours to feel better.');const before=await c.events();
   const next=await draft(c,'ana',{weeks:4,hours:3});
   assert.equal(next.near.length,3);assert.equal(next.remove.near.length,plan.near.length);
-  assert.equal((await c.events()).length,11,'draft must not write');
+  assert.deepEqual(await c.events(),before,'draft must not write');
 });
 test('checkpoint: a new commitment is detected and avoided in a revised proposal',async()=>{
   const {c,plan}=await baseline();const b=plan.near[0];

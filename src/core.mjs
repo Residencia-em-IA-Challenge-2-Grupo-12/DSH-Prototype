@@ -107,13 +107,19 @@ const millis = (item, key) => Date.parse(item[key]?.dateTime || item[key]?.date)
 const overlaps = (a,b) => millis(a,'start') < millis(b,'end') && millis(b,'start') < millis(a,'end');
 function localTime(date) { return date.toISOString().replace('Z','').slice(0,19) + '-03:00'; }
 
-export function makePlan(student, events, { weeks = 4, hours, protectedIds = [], avoidDates = [], preferredPeriod } = {}) {
+export function makePlan(student, events, { weeks = 4, hours, protectedIds = [], avoidDates = [], preferredPeriod, focusCourse } = {}) {
   const target = Number(hours ?? student.targetHours);
   if (!Number.isInteger(target) || target < 0 || target > 20) throw new Error('Hours must be a whole number between 0 and 20');
   const requested = Number(weeks);
   if (!Number.isInteger(requested) || requested < 1 || requested > 16) throw new Error('Weeks must be between 1 and 16');
   if (!Array.isArray(avoidDates) || avoidDates.length>112 || avoidDates.some(d=>typeof d!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d))) throw new Error('Avoid dates must be ISO dates');
-  if (preferredPeriod && !['morning','afternoon'].includes(preferredPeriod)) throw new Error('Unknown preferred period');
+  if (preferredPeriod && !['morning','afternoon','evening'].includes(preferredPeriod)) throw new Error('Unknown preferred period');
+  const focus=focusCourse ? student.courses.find(c=>c.name.toLocaleLowerCase()===String(focusCourse).toLocaleLowerCase()) : null;
+  if(focusCourse&&!focus)throw new Error('Focus course is not in the student course index');
+  const windows=student.studyWindows||[], maxDaily=student.maxDailyStudyHours??2, breakMinutes=student.studyBreakMinutes??15;
+  const parseTime=value=>{if(typeof value!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(value))throw new Error('Invalid study window time');return Number(value.slice(0,2))*60+Number(value.slice(3));};
+  if(!Array.isArray(windows)||windows.length>30||!Number.isInteger(maxDaily)||maxDaily<1||maxDaily>12||!Number.isInteger(breakMinutes)||breakMinutes<0||breakMinutes>120)throw new Error('Invalid study availability');
+  for(const window of windows)if(!Number.isInteger(window.weekday)||window.weekday<0||window.weekday>6||parseTime(window.end)<=parseTime(window.start))throw new Error('Invalid study window');
   const start = new Date(FIXED_TODAY + 'T00:00:00Z');
   const deadline = Math.min(...student.courses.map(c => Date.parse(c.deadline)));
   const maxWeeks = Math.max(1, Math.ceil((deadline - Date.parse(FIXED_TODAY + 'T00:00:00-03:00')) / (7 * 86400000)));
@@ -124,29 +130,34 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
   const busy = events.filter(e => e.status !== 'cancelled' && e.transparency !== 'transparent' && !replaceIds.has(e.id)).map(clone);
   const blocks = [], outlook = [];
   for (let w=0; w<count; w++) {
-    let placed = 0;
+    let placed = 0;const daily=new Map(), weekBlocks=[], candidates=[];
     const sorted = [...student.courses].sort((a,b) => Date.parse(a.deadline)-Date.parse(b.deadline));
-    for (let slot=0; slot<10 && placed < Math.ceil(target); slot++) {
-      const d=slot%5, secondPass=slot>=5, afternoon=preferredPeriod==='afternoon'?!secondPass:secondPass;
-      for (let hour=afternoon?14:9; hour<(afternoon?18:13) && placed < Math.ceil(target); hour++) {
-        const dt = new Date(start.getTime() + (w*7+d)*86400000 + hour*3600000);
-        if (avoidDates.includes(dt.toISOString().slice(0,10))) continue;
-        const end = new Date(dt.getTime()+3600000);
-        const daysToDeadline=(Date.parse(sorted[0].deadline)-Date.parse(localTime(dt)))/86400000;
-        const course = daysToDeadline<=14 && slot%3!==2 ? sorted[0] : sorted[(w+d)%sorted.length];
-        const candidate = { start:{dateTime:localTime(dt),timeZone:student.timezone}, end:{dateTime:localTime(end),timeZone:student.timezone} };
-        if (Date.parse(candidate.end.dateTime) > Date.parse(course.deadline) || busy.some(e=>overlaps(e,candidate))) continue;
-        const block = { id: randomUUID().replaceAll('-',''), summary:'Study: '+course.name, ...candidate,
-          status:w === 0 ? 'confirmed' : 'tentative',
-          description:'Study planning demo. ' + (w === 0 ? 'Near-term study block.' : 'Tentative; review at the next checkpoint.') + ' Source: ' + course.source,
-          extendedProperties:{private:{studyDemo:'true',student:student.student,course:course.name}} };
-        blocks.push(block); busy.push(block); placed++; break;
+    for(let d=0;d<7;d++){
+      const day=new Date(start.getTime()+(w*7+d)*86400000),dayKey=day.toISOString().slice(0,10);
+      if(avoidDates.includes(dayKey))continue;
+      for(const window of windows.filter(x=>x.weekday===day.getUTCDay()))for(let minute=parseTime(window.start);minute+60<=parseTime(window.end);minute+=15){
+        const dt=new Date(day.getTime()+minute*60000),end=new Date(dt.getTime()+3600000),period=minute<720?'morning':minute<1080?'afternoon':'evening';
+        candidates.push({d,dayKey,dt,period,start:{dateTime:localTime(dt),timeZone:student.timezone},end:{dateTime:localTime(end),timeZone:student.timezone}});
       }
+    }
+    while(placed<target && candidates.length){
+      candidates.sort((a,b)=>(daily.get(a.dayKey)||0)-(daily.get(b.dayKey)||0) || (preferredPeriod?Number(a.period!==preferredPeriod)-Number(b.period!==preferredPeriod):0) || a.dt-b.dt);
+      const candidate=candidates.shift();if((daily.get(candidate.dayKey)||0)>=maxDaily||busy.some(e=>overlaps(e,candidate)))continue;
+      const cStart=millis(candidate,'start'),cEnd=millis(candidate,'end'),gap=breakMinutes*60000;
+      if(weekBlocks.some(e=>cStart<millis(e,'end')+gap&&millis(e,'start')<cEnd+gap))continue;
+      const daysToDeadline=(Date.parse(sorted[0].deadline)-cStart)/86400000;
+      const other=focus?sorted.find(c=>c!==focus):null;
+      const course=focus?(placed%3===2&&other?other:focus):daysToDeadline<=14 && placed%3!==2?sorted[0]:sorted[(w+candidate.d)%sorted.length];
+      if(cEnd>Date.parse(course.deadline))continue;
+      const block={id:randomUUID().replaceAll('-',''),summary:'Study: '+course.name,start:candidate.start,end:candidate.end,
+        status:w===0?'confirmed':'tentative',description:'Study planning demo. '+(w===0?'Near-term study block.':'Tentative; review at the next checkpoint.')+' Source: '+course.source,
+        extendedProperties:{private:{studyDemo:'true',student:student.student,course:course.name}}};
+      blocks.push(block);weekBlocks.push(block);busy.push(block);daily.set(candidate.dayKey,(daily.get(candidate.dayKey)||0)+1);placed++;
     }
     outlook.push({ week:w+1, targetHours:target, scheduledHours:placed, shortfall:Math.max(0,target-placed) });
   }
   return { id:randomUUID(), student:student.student, createdAt:new Date().toISOString(), fixedToday:FIXED_TODAY,
-    sources:student.courses, assumptions:['Study blocks are suggestions; ask before writing.','Hours are goals, not evidence of actual study.'],
+    sources:student.courses, assumptions:['Study blocks are suggestions; ask before writing.','Hours are goals, not evidence of actual study.',windows.length?'Study windows are stated possibilities; confirm they still suit the student.':'No study availability supplied; empty calendar time is not assumed available.',...(focus?['Course focus: '+focus.name+'; other courses may still receive blocks.']:[])],
     outlook, near:blocks.filter(b=>b.status==='confirmed'), future:blocks.filter(b=>b.status==='tentative'),
     remove:{near:replaceable.filter(e=>millis(e,'start')<Date.parse('2026-11-09T00:00:00-03:00')).map(significant),future:replaceable.filter(e=>millis(e,'start')>=Date.parse('2026-11-09T00:00:00-03:00')).map(significant)},
     baseHash:digest(events), status:{near:'pending',future:'pending'} };

@@ -14,6 +14,6 @@ Cada proposta guarda um resumo verificável do calendário. As duas seções sã
 
 Categorias são heurísticas até confirmação. As descrições preservam o texto original fora de uma seção delimitada. O relatório separa semana anterior e próxima; eventos sobrepostos são somados e podem superestimar tempo ocupado.
 
-O planejador usa blocos de uma hora, dias úteis das 09h às 18h e horizonte limitado pelo pedido, pelo prazo mais próximo e por 16 semanas. É uma regra demonstrativa, não uma otimização personalizada. As datas sintéticas usam o deslocamento fixo de São Paulo.
+O planejador usa blocos de uma hora dentro das janelas semanais informadas pela pessoa fictícia, inclusive noites e fins de semana, com limite diário e intervalos definidos no cenário. Sem janelas informadas, horários vazios não são considerados disponíveis. O horizonte é limitado pelo pedido, pelo prazo mais próximo e por 16 semanas. Os eventos de seis semanas são materializados no cenário; não testam expansão de recorrências. É uma regra demonstrativa, não uma otimização personalizada. As datas sintéticas usam o deslocamento fixo de São Paulo.
 
 Para criar cenários, siga a estrutura JSON e de diretórios existente, usando apenas dados fictícios e campos aceitos pelo Calendarpit. Os testes são sequenciais por compartilharem `.runtime`; o teste de integração reinicia o simulador.

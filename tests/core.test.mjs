@@ -55,10 +55,10 @@ test('partial writes are recorded and cannot be retried blindly',async()=>{
   await assert.rejects(()=>applyApproved(c,'ana',p.id,'near'),/not pending/);
 });
 test('concurrent approvals cannot duplicate a proposal',async()=>{
-  const c=new FakeCalendar();await resetScenario(c,'ana');const p=await draft(c,'ana',{weeks:1,hours:2});
+  const c=new FakeCalendar();await resetScenario(c,'ana');const initial=(await c.events()).length,p=await draft(c,'ana',{weeks:1,hours:2});
   const results=await Promise.allSettled([applyApproved(c,'ana',p.id,'near'),applyApproved(c,'ana',p.id,'near')]);
   assert.equal(results.filter(x=>x.status==='fulfilled').length,1);
-  assert.equal((await c.events()).length,7);
+  assert.equal((await c.events()).length,initial+p.near.length);
 });
 test('feedback remains optional and report separates reported minutes',async()=>{
   const c=new FakeCalendar();await resetScenario(c,'ana');await addFeedback('ana',{eventId:'ana-class',completion:'unknown',actualMinutes:20,effort:2,note:'optional'});

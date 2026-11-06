@@ -46,6 +46,8 @@ The Calendar tab also shows a navigable seven-day overview of existing events an
 
 Fixtures use a fixed simulated date, 2026-11-02, and the São Paulo time zone. Ana has a four-week deadline; Bruno has a six-week deadline. Scheduled time is not evidence of completed work.
 
+Ana's first week includes 20 hours of part-time work and 9 hours of classes. Bruno's includes 40 hours of work and 9 hours of classes; their study windows are different. Both fixtures contain six weeks of explicit fictional events and a second-week exception. These are illustrative routines, not claims about an average or a healthy workload. The planner uses the stated study windows and pauses between blocks; without stated windows it reports a shortfall rather than treating a blank calendar as free time. Study-window changes and real calendar recurrence remain future work.
+
 ## Checks
 
 ```bash
@@ -60,8 +62,8 @@ The offline tests cover three independent checkpoint scenarios, approval and sta
 - Calendarpit is a **preview** that simulates a subset of Google Calendar. This prototype uses its local management endpoints rather than the authenticated Google-compatible API. Real OAuth, email invitations and Google-specific edge cases remain untested.
 - The calendar and shared runtime are single-user demonstration resources; switching student resets the simulator. Do not connect real accounts or put private files in the fixtures.
 - The model-facing MCP interface has no calendar-write or approval tool. The companion approval API performs writes, but Calendarpit's own administration API and generic DSH capabilities are reachable to local processes. **This is not a security boundary against an untrusted agent**; independently enforce tool/network isolation before using real data.
-- The parser recognizes simple dates in the bundled syllabi, and the planner uses simplified one-hour slots, fixed São Paulo offset and heuristic categories. This is not an optimizer, a health assessment or proof of effective learning.
-- Conversational revisions can prefer morning or afternoon and avoid named dates; they cannot yet express every constraint or precisely drag an individual block. The preferred period can fall back to the other period when needed. A model may ask ordinary follow-up messages or native form questions.
+- The parser recognizes simple dates in the bundled syllabi, and the planner uses one-hour slots in stated study windows, fictional daily limits and breaks, a fixed São Paulo offset and heuristic categories. Missing windows are not treated as free time. This is not an optimizer, a health assessment or proof of effective learning.
+- Conversational revisions can prefer morning, afternoon or evening and avoid named dates within the fictional student’s recorded study windows; they cannot yet express every constraint or precisely drag an individual block. The preferred period can fall back to other recorded windows when needed. A model may ask ordinary follow-up messages or native form questions.
 - User-edited study events are protected from automatic replacement when a checkpoint or draft observes the edit. Partial writes are reported, not rolled back automatically.
 - Markdown/JSON reports are written to ignored `.runtime/`; a model can supply an interpretation via MCP. A report created without one explicitly says so.
 

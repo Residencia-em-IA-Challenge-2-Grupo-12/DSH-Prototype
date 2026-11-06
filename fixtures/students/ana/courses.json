@@ -1,1 +1,41 @@
-{"student":"ana","timezone":"America/Sao_Paulo","targetHours":6,"courses":[{"name":"Machine Learning","deadline":"2026-11-30T18:00:00-03:00","source":"courses/machine-learning.md"},{"name":"Statistics","deadline":"2026-12-14T09:00:00-03:00","source":"courses/statistics.md"}]}
+{
+  "student": "ana",
+  "timezone": "America/Sao_Paulo",
+  "targetHours": 6,
+  "courses": [
+    {
+      "name": "Machine Learning",
+      "deadline": "2026-11-30T18:00:00-03:00",
+      "source": "courses/machine-learning.md"
+    },
+    {
+      "name": "Statistics",
+      "deadline": "2026-12-14T09:00:00-03:00",
+      "source": "courses/statistics.md"
+    }
+  ],
+  "studyWindows": [
+    {
+      "weekday": 1,
+      "start": "14:00",
+      "end": "16:15"
+    },
+    {
+      "weekday": 3,
+      "start": "14:00",
+      "end": "16:15"
+    },
+    {
+      "weekday": 5,
+      "start": "14:00",
+      "end": "16:15"
+    },
+    {
+      "weekday": 6,
+      "start": "10:00",
+      "end": "12:15"
+    }
+  ],
+  "maxDailyStudyHours": 2,
+  "studyBreakMinutes": 15
+}
