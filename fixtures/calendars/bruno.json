@@ -1,0 +1,99 @@
+{
+  "users": [
+    {
+      "id": "bruno",
+      "name": "Bruno",
+      "email": "bruno@example.test"
+    }
+  ],
+  "calendars": [
+    {
+      "id": "bruno-calendar",
+      "userId": "bruno",
+      "summary": "Study calendar",
+      "timeZone": "America/Sao_Paulo",
+      "primary": true
+    }
+  ],
+  "clients": [
+    {
+      "id": "study-demo",
+      "secret": "synthetic-only",
+      "redirectUris": [
+        "http://127.0.0.1:4175/callback"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "bruno-study-past",
+      "calendarId": "bruno-calendar",
+      "summary": "Study: review",
+      "description": "",
+      "start": {
+        "dateTime": "2026-10-30T10:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-10-30T11:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      }
+    },
+    {
+      "id": "bruno-class",
+      "calendarId": "bruno-calendar",
+      "summary": "Class",
+      "description": "Existing class: preserve this description.",
+      "start": {
+        "dateTime": "2026-11-02T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T11:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      }
+    },
+    {
+      "id": "bruno-work",
+      "calendarId": "bruno-calendar",
+      "summary": "Work",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-03T14:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      }
+    },
+    {
+      "id": "bruno-later",
+      "calendarId": "bruno-calendar",
+      "summary": "Nonweekly commitment",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-12T10:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      }
+    },
+    {
+      "id": "bruno-exercise",
+      "calendarId": "bruno-calendar",
+      "summary": "Physical activity",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-05T16:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      }
+    }
+  ]
+}

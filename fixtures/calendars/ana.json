@@ -1,0 +1,99 @@
+{
+  "users": [
+    {
+      "id": "ana",
+      "name": "Ana",
+      "email": "ana@example.test"
+    }
+  ],
+  "calendars": [
+    {
+      "id": "ana-calendar",
+      "userId": "ana",
+      "summary": "Study calendar",
+      "timeZone": "America/Sao_Paulo",
+      "primary": true
+    }
+  ],
+  "clients": [
+    {
+      "id": "study-demo",
+      "secret": "synthetic-only",
+      "redirectUris": [
+        "http://127.0.0.1:4175/callback"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "ana-study-past",
+      "calendarId": "ana-calendar",
+      "summary": "Study: review",
+      "description": "",
+      "start": {
+        "dateTime": "2026-10-30T10:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-10-30T11:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      }
+    },
+    {
+      "id": "ana-class",
+      "calendarId": "ana-calendar",
+      "summary": "Class",
+      "description": "Existing class: preserve this description.",
+      "start": {
+        "dateTime": "2026-11-02T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T11:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      }
+    },
+    {
+      "id": "ana-work",
+      "calendarId": "ana-calendar",
+      "summary": "Work",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-03T14:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      }
+    },
+    {
+      "id": "ana-later",
+      "calendarId": "ana-calendar",
+      "summary": "Nonweekly commitment",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-12T10:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      }
+    },
+    {
+      "id": "ana-exercise",
+      "calendarId": "ana-calendar",
+      "summary": "Physical activity",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-05T16:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      }
+    }
+  ]
+}

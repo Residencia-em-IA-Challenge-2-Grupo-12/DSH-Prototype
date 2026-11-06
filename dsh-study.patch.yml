@@ -1,0 +1,10 @@
+- insert:
+    - id: mcp-synthetic-study
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: study
+        transport: stdio
+        command: !!js "process.cwd() + '/node_modules/.bin/node'"
+        args:
+          - !!js "process.cwd() + '/src/mcp.mjs'"
+        cwd: !!js process.cwd()

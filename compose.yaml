@@ -1,0 +1,10 @@
+services:
+  calendarpit:
+    image: ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96
+    ports:
+      - "127.0.0.1:4173:4173"
+    environment:
+      CALENDARPIT_DATABASE: ":memory:"
+      CALENDARPIT_CONFIG: /fixtures/ana.json
+    volumes:
+      - ./fixtures/calendars:/fixtures:ro

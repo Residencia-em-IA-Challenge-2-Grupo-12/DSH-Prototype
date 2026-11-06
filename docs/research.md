@@ -1,0 +1,7 @@
+# Study pacing and memory: starting points
+
+Offer strategies as options, use the user's context, and avoid medical or performance claims. A [spacing study](https://pubmed.ncbi.nlm.nih.gov/19076480/) found the useful interval depended on the retention horizon. A [retrieval-practice experiment](https://pubmed.ncbi.nlm.nih.gov/21574747/) supports repeated retrieval but did not establish a universally best spacing pattern. [CDC guidance](https://www.cdc.gov/sleep/about/) describes sleep needs as age-dependent. Preserve user-stated rest windows, acknowledge missing data and ask rather than infer health.
+
+The demo saves explicit decisions and observed snapshots. Future memory could separate observed events, direct user preferences, user-approved decisions and tentative inferences, each with provenance, timestamps and correction/deletion controls. A structured index should be derived from, rather than silently overwrite, the underlying records. [Filesystem-memory research](https://arxiv.org/abs/2607.26637) found that a hierarchy alone does not guarantee better answers and can degrade as it grows.
+
+Rolling-horizon planning revisits decisions as conditions change; [this planning study](https://arxiv.org/abs/2402.14506) explores that principle in production planning, not student health. The demo adapts the idea with a manual checkpoint and distinct near-term/future proposals; it does not claim to implement a research-validated study optimizer.
