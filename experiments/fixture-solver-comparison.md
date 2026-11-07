@@ -37,3 +37,21 @@ python experiments/fixture_solver_comparison.py --timeout 5 > /tmp/fixture-solve
 ```
 
 Without OR-Tools, deterministic tests still run and CP-SAT reports `UNAVAILABLE`; do not interpret this as a solver result. The tests cover EN/PT fixture timing parity, conservative rounding, the week-2 exception, independent validation, score-versus-time tradeoffs, optional-task status and a constructed case where the heuristic leaves more work unscheduled. Run larger realistic scenarios, robust latency/resource tests, real task decomposition, constraint variety, and human review before making the planned foundation selection.
+
+## Transition-buffer sensitivity
+
+A separate, paired exploratory run compares the same three first-week uniform cases with zero and 30 minutes of symmetric buffer around every opaque, non-cancelled calendar event. The buffer is an invented sensitivity input, not inferred from the fictional students or offered as guidance. It also surrounds travel and protected time, so it can double-count transitions already present in a fixture; a real planner would need event-specific context and user preferences. Events just outside the selected week are considered if their buffer reaches into it. The padded times are rounded outward to the 30-minute grid.
+
+| Fictional case | Candidate task/start pairs, 0 → 30 min | Study time, both solvers, 0 → 30 min |
+| --- | ---: | ---: |
+| Working college | 66 → 48 | 4 h → 4 h |
+| Nonworking college | 84 → 56 | 5 h → 5 h |
+| Employed exam prep | 72 → 42 | 5 h → 5 h |
+
+The number of individual task/start pairs is not a count of complete feasible schedules: combinations can overlap or violate a daily cap. Both solvers returned validated assignments at both settings; CP-SAT reported `OPTIMAL` for its illustrative optional-task objective. Some times changed even where total minutes stayed the same. The unchanged totals do not imply buffers are free in general or that a user's goal is feasible. The objective is not total study time and the cases, duration patterns and buffer choice are limited.
+
+The recorded [JSON](results/2026-11-07-transition-sensitivity.json) contains assignments, objective scores, fixture and source hashes, solver statuses and assumptions. Tests independently check resulting blocks against the raw calendar timestamps, including boundary-crossing events. Reproduce separately from the original results:
+
+```sh
+python experiments/transition_sensitivity.py --timeout 5 > /tmp/transition-sensitivity.json
+```
