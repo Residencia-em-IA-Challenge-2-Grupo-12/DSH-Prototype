@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {PanelHost} from './index.mjs';
 
 const original={context:1,evidence:1,calendar:1};
-const event={id:'study',summary:'Study',start:{dateTime:'2026-11-03T14:00:00-03:00'},end:{dateTime:'2026-11-03T15:00:00-03:00'}};
+const event={id:'abcde0123456',summary:'Study',status:'confirmed',start:{dateTime:'2026-11-03T14:00:00-03:00'},end:{dateTime:'2026-11-03T15:00:00-03:00'},extendedProperties:{private:{studyDemo:'true',student:'ana',course:'Example'}}};
 const record=(versions=original)=>({id:'fixture',student:'ana',versions:{...versions},payload:{sections:{near:{action:{type:'create',calendarId:'ana-calendar',event}}}}});
 function setup({versions=original,latest={calendar:1,evidence:1,context:1},calendar,proposal}={}) {
   const values={versions,latest,calendar:calendar??{student:'ana',kind:'calendar',version:1,payload:{calendarId:'ana-calendar',timeZone:'America/Sao_Paulo',timeMin:'2026-11-02T00:00:00-03:00',timeMax:'2026-11-09T00:00:00-03:00',events:[]}},proposal:proposal??record()};let count=0;

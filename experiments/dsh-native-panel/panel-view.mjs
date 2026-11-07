@@ -27,8 +27,15 @@ function allDayDate(value){
   if(!m||!validDate(Number(m[1]),Number(m[2]),Number(m[3])))return null;
   return value;
 }
+function isCancelled(event){
+  return !!event&&typeof event==='object'&&!Array.isArray(event)&&typeof event.id==='string'&&!!event.id&&event.status==='cancelled';
+}
 function validExisting(event){
   if(!event||typeof event!=='object'||Array.isArray(event)||typeof event.id!=='string'||!event.id||typeof event.summary!=='string')return false;
+  if(event.status!==undefined&&!['confirmed','tentative'].includes(event.status))return false;
+  if(event.transparency!==undefined&&!['opaque','transparent'].includes(event.transparency))return false;
+  if(Object.prototype.hasOwnProperty.call(event,'recurrence')||event.endTimeUnspecified===true||(event.endTimeUnspecified!==undefined&&typeof event.endTimeUnspecified!=='boolean'))return false;
+  if(Object.prototype.hasOwnProperty.call(event,'recurringEventId')&&(typeof event.recurringEventId!=='string'||!event.recurringEventId.trim()))return false;
   const start=event.start,end=event.end;
   if(!start||!end||typeof start!=='object'||typeof end!=='object'||Array.isArray(start)||Array.isArray(end))return false;
   if('dateTime' in start||'dateTime' in end){
@@ -53,7 +60,8 @@ export function placement(event) {
 }
 export function panelData(payload) {
   const calendar=payload?.calendar;
-  if(!calendar||typeof calendar!=='object'||Array.isArray(calendar)||typeof calendar.calendarId!=='string'||!calendar.calendarId||calendar.timeZone!==ZONE||instant(calendar.timeMin)!==WEEK_START||instant(calendar.timeMax)!==WEEK_END||!Array.isArray(calendar.events)||calendar.events.some(event=>!validExisting(event)))throw new Error('Unsupported calendar observation');
+  if(!calendar||typeof calendar!=='object'||Array.isArray(calendar)||typeof calendar.calendarId!=='string'||!calendar.calendarId||calendar.timeZone!==ZONE||instant(calendar.timeMin)!==WEEK_START||instant(calendar.timeMax)!==WEEK_END||!Array.isArray(calendar.events)||calendar.events.some(event=>!isCancelled(event)&&!validExisting(event)))throw new Error('Unsupported calendar observation');
+  if(new Set(calendar.events.map(event=>event.id)).size!==calendar.events.length)throw new Error('Unsupported calendar observation');
   const proposal=payload?.proposal?.payload;
   const sections=proposal?.sections;
   if(!proposal||typeof proposal!=='object'||Array.isArray(proposal)||Object.keys(proposal).some(key=>!['sections','sources','assumptions'].includes(key)))throw new Error('Unsupported proposal schema');
@@ -63,6 +71,45 @@ export function panelData(payload) {
   const action=near.action;
   if(!action||action.type!=='create'||typeof action.calendarId!=='string'||!action.calendarId||action.calendarId!==calendar.calendarId||Object.keys(action).some(key=>!['type','calendarId','event'].includes(key)))throw new Error('Unsupported proposal action or calendar');
   const event=action.event;
-  if(!validExisting(event)||typeof event.start.dateTime!=='string'||typeof event.end.dateTime!=='string'||!placement(event))throw new Error('Unsupported proposed event or time');
-  return {events:[...calendar.events.map(item=>({...item,kind:'existing'})),{...event,kind:'add'}],proposedCount:1};
+  if(!validExisting(event)||!/^[a-v0-9]{5,128}$/.test(event.id)||!event.summary.trim()||
+    Object.keys(event).some(key=>!['id','summary','description','start','end','status','transparency','extendedProperties'].includes(key))||
+    (event.transparency!==undefined&&event.transparency!=='opaque')||
+    (event.description!==undefined&&typeof event.description!=='string')||
+    typeof event.start.dateTime!=='string'||typeof event.end.dateTime!=='string'||!placement(event))throw new Error('Unsupported proposed event or time');
+  for(const part of [event.start,event.end])if(Object.keys(part).some(key=>!['dateTime','timeZone'].includes(key))||(part.timeZone!==undefined&&part.timeZone!==ZONE))throw new Error('Unsupported proposed event or time');
+  if(calendar.events.some(existing=>existing.id===event.id))throw new Error('Proposed event identity already exists');
+  const properties=event.extendedProperties,privateProperties=properties?.private;
+  if(!properties||typeof properties!=='object'||Array.isArray(properties)||Object.keys(properties).some(key=>key!=='private')||
+    !privateProperties||typeof privateProperties!=='object'||Array.isArray(privateProperties)||
+    Object.keys(privateProperties).some(key=>!['studyDemo','student','course'].includes(key)||typeof privateProperties[key]!=='string')||
+    privateProperties.studyDemo!=='true'||privateProperties.student!=='ana')throw new Error('Synthetic proposal ownership is required');
+  for(const key of ['sources','assumptions'])if(proposal[key]!==undefined&&(!Array.isArray(proposal[key])||proposal[key].some(value=>typeof value!=='string')))throw new Error('Unsupported proposal details');
+  return {events:[...calendar.events.filter(item=>!isCancelled(item)).map(item=>({...item,kind:'existing'})),{...event,kind:'add'}],proposedCount:1,description:event.description||'',sources:proposal.sources||[],assumptions:proposal.assumptions||[]};
+}
+
+// Label nonstandard visible calendar states rather than suggesting they are firm busy events.
+export function eventLabel(event,portuguese=false){
+  const labels=[];
+  if(event.status==='tentative')labels.push(portuguese?'Provisório':'Tentative');
+  if(event.transparency==='transparent')labels.push(portuguese?'Não bloqueia horário':'Does not block time');
+  return (labels.length?labels.join(' · ')+': ':'')+event.summary;
+}
+
+export const viewNotices=Object.freeze({
+  en:{availability:'Empty space does not confirm availability; free/busy can include additional busy intervals.',short:'Short events may be enlarged or shifted to fit their labels; use the displayed times.'},
+  pt:{availability:'Espaços vazios não confirmam disponibilidade; a consulta de livre/ocupado pode incluir outros intervalos ocupados.',short:'Eventos curtos podem ser ampliados ou deslocados para exibir seus rótulos; use os horários mostrados.'},
+});
+export function hourLabels(){return Array.from({length:24},(_,hour)=>String(hour).padStart(2,'0')+':00');}
+function clockTime(value){
+  const time=weekTime(value);if(!time)return null;
+  const total=Math.round(time.hour*60);
+  return `${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`;
+}
+export function eventPresentation(event,portuguese=false){
+  const box=placement(event);if(!box)return null;
+  const start=clockTime(event.start.dateTime),end=clockTime(event.end.dateTime);
+  const timeRange=`${start}–${end}`,label=eventLabel(event,portuguese);
+  // Minimum height makes both the time and event label visible; clamp at day end.
+  const visibleHeight=Math.max(20,box.height),visibleTop=Math.min(box.top,480-visibleHeight);
+  return {...box,visibleTop,visibleHeight,timeRange,label,accessibleText:`${timeRange} · São Paulo · ${label}`};
 }
