@@ -7,6 +7,10 @@ import os from 'node:os';
 import path from 'node:path';
 import { CalendarApiError } from '../src/foundation/calendarpit-api.mjs';
 import { startCalendarExperiment, replayCalendarExperiment } from '../src/foundation/calendar-experiment.mjs';
+import { createDomainService } from '../src/domain-service.mjs';
+import { DomainObservationClient } from '../src/foundation/domain-http-observer-client.mjs';
+import { observeCalendar } from '../src/foundation/calendar-domain-observer.mjs';
+import { applyApprovedCreate } from '../src/foundation/calendar-approved-create.mjs';
 
 async function syntheticToken(run, userId, redirectUri) {
   const credentials = run.syntheticCredentials();
@@ -50,8 +54,40 @@ test('saved checkpoint replays into a new OAuth identity with preserved data and
     first = await startCalendarExperiment({ fixture, redirectUri, context });
     const token1 = await syntheticToken(first, 'ana', redirectUri);
     const firstClient = first.provider(token1, async (_action, approval) => approval.decisionId === 'synthetic-approved');
-    const event = { id: 'abcde0123456', summary: 'Synthetic checkpoint study', description: 'Retain this note', start: { dateTime: '2026-11-02T13:00:00-03:00' }, end: { dateTime: '2026-11-02T14:00:00-03:00' }, extendedProperties: { private: { studyDemo: 'true', student: 'ana' } } };
-    const firstEvent = await firstClient.createApprovedEvent({ calendarId: 'ana-calendar', event, approval: { decisionId: 'synthetic-approved' } });
+    const domain=createDomainService();let event,firstEvent;
+    try {
+      const address=await domain.listen();
+      const client=new DomainObservationClient(`http://127.0.0.1:${address.port}`);
+      const observation=await observeCalendar({provider:firstClient,store:client,student:'ana',calendarId:'ana-calendar',timeMin:'2026-11-02T00:00:00-03:00',timeMax:'2026-11-09T00:00:00-03:00'});
+      assert.equal(observation.version,1);
+      assert.equal(observation.payload.calendarId,'ana-calendar');
+      assert(observation.payload.events.length>0);
+      assert(observation.payload.busy.length>0);
+      assert(observation.payload.events.every(event=>event.etag));
+      assert.equal((await client.currentVersions('ana')).calendar,1);
+      await client.request('ana','revisions/context',{expectedVersion:0,payload:{synthetic:true}});
+      await client.request('ana','revisions/evidence',{expectedVersion:0,payload:{sources:[]}});
+      const base=Date.parse(observation.payload.timeMin),busy=observation.payload.busy;
+      let start;
+      for(let i=8;i<7*24-1;i++){
+        const candidate=base+i*3600000;
+        if(!busy.some(b=>candidate<Date.parse(b.end)&&Date.parse(b.start)<candidate+3600000)){start=candidate;break;}
+      }
+      assert(start,'one synthetic free hour exists');
+      event={id:'abcde0123456',summary:'Synthetic checkpoint study',description:'Retain this note',start:{dateTime:new Date(start).toISOString()},end:{dateTime:new Date(start+3600000).toISOString()},extendedProperties:{private:{studyDemo:'true',student:'ana'}}};
+      const action={type:'create',calendarId:'ana-calendar',event};
+      const proposal=await client.request('ana','proposals',{versions:await client.currentVersions('ana'),payload:{sections:{near:{action}}}});
+      const apply=()=>applyApprovedCreate({domain:client,student:'ana',proposalId:proposal.id,section:'near',action,origin:first.origin,accessToken:token1});
+      await assert.rejects(apply,/not approved/);
+      await client.request('ana',`proposals/${proposal.id}/decisions`,{section:'near',choice:'approve'});
+      const applied=await apply();
+      assert.equal(applied.state,'completed',JSON.stringify(applied.result));
+      assert.equal(applied.result.createdEventId,event.id);
+      assert.equal(applied.result.actualState.events.find(e=>e.id===event.id).description,event.description);
+      assert.equal((await client.currentVersions('ana')).calendar,2);
+      await assert.rejects(apply,/STALE|already claimed/);
+      firstEvent=await firstClient.getEvent('ana-calendar',event.id);
+    } finally { await domain.close(); }
     const checkpoint = await first.checkpoint();
     const saved = JSON.stringify(checkpoint, null, 2);
     assert(!saved.includes(token1), 'access token excluded from saved bundle');
