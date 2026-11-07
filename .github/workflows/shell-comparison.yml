@@ -19,7 +19,7 @@ jobs:
       - name: Check out the tested native panel revision
         uses: actions/checkout@v4
         with:
-          ref: 9adc2e2105ce4771901d554c00874a77684d926e
+          ref: ad8c020106825996c7393fc68a74552710adbbea
           path: .paired-native
           persist-credentials: false
       - name: Run synthetic same-data and parity checks
