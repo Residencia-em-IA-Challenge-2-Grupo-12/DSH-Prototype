@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "generatorVersion": "1",
+  "id": "employed-exam",
+  "language": "pt-BR",
+  "name": "Marcos Lima",
+  "simulationStart": "2026-11-02",
+  "timeZone": "America/Sao_Paulo",
+  "horizonWeeks": 6,
+  "deadline": "2026-12-14T18:00:00-03:00",
+  "course": "Preparação para concurso profissional",
+  "context": "Marcos é uma pessoa adulta que se prepara para um concurso enquanto trabalha em período integral. A agenda registra a jornada de trabalho, incluindo o intervalo usual para refeição. Ele quer alternar revisão e questões práticas e manter espaço para recuperação.",
+  "targetMinutesPerWeek": 360,
+  "weeklyCommitments": [
+    {
+      "id": "sleep-early",
+      "kind": "sleep",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "00:00",
+      "end": "07:00",
+      "flexibility": "unspecified",
+      "label": "Sono"
+    },
+    {
+      "id": "morning",
+      "kind": "personal",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "07:00",
+      "end": "08:00",
+      "flexibility": "unspecified",
+      "label": "Rotina da manhã"
+    },
+    {
+      "id": "wind-down",
+      "kind": "personal",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "22:00",
+      "end": "23:00",
+      "flexibility": "unspecified",
+      "label": "Desacelerar"
+    },
+    {
+      "id": "sleep-late",
+      "kind": "sleep",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "23:00",
+      "end": "24:00",
+      "flexibility": "unspecified",
+      "label": "Sono"
+    },
+    {
+      "id": "work-commute-out",
+      "kind": "commute",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "start": "08:00",
+      "end": "09:00",
+      "flexibility": "fixed",
+      "label": "Deslocamento para o trabalho"
+    },
+    {
+      "id": "work",
+      "kind": "work",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "start": "09:00",
+      "end": "17:00",
+      "flexibility": "fixed",
+      "label": "Jornada de trabalho integral"
+    },
+    {
+      "id": "work-commute-back",
+      "kind": "commute",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "start": "17:00",
+      "end": "18:00",
+      "flexibility": "fixed",
+      "label": "Volta para casa"
+    },
+    {
+      "id": "dinner",
+      "kind": "meal",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "start": "18:00",
+      "end": "19:00",
+      "flexibility": "unspecified",
+      "label": "Jantar"
+    },
+    {
+      "id": "weekend-lunch",
+      "kind": "meal",
+      "days": [
+        5,
+        6
+      ],
+      "start": "12:00",
+      "end": "13:00",
+      "flexibility": "unspecified",
+      "label": "Almoço"
+    },
+    {
+      "id": "family",
+      "kind": "personal",
+      "days": [
+        6
+      ],
+      "start": "15:00",
+      "end": "18:00",
+      "flexibility": "unspecified",
+      "label": "Tempo com a família"
+    }
+  ],
+  "studyWindows": [
+    {
+      "id": "evening",
+      "days": [
+        0,
+        1,
+        3
+      ],
+      "start": "19:00",
+      "end": "20:30"
+    },
+    {
+      "id": "sat-study",
+      "days": [
+        5
+      ],
+      "start": "10:00",
+      "end": "12:00"
+    },
+    {
+      "id": "sun-study",
+      "days": [
+        6
+      ],
+      "start": "10:00",
+      "end": "12:00"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "tuesday-conflict",
+      "date": "2026-11-10",
+      "start": "19:30",
+      "end": "20:30",
+      "kind": "personal",
+      "flexibility": "fixed",
+      "impactsStudyWindow": true,
+      "label": "Compromisso"
+    }
+  ]
+}

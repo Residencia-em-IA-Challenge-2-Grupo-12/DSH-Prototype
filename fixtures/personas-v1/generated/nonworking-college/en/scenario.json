@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "generatorVersion": "1",
+  "id": "nonworking-college",
+  "language": "en",
+  "name": "Luísa Nunes",
+  "simulationStart": "2026-11-02",
+  "timeZone": "America/Sao_Paulo",
+  "horizonWeeks": 4,
+  "deadline": "2026-11-30T18:00:00-03:00",
+  "course": "Public health research essay",
+  "context": "Luísa is an adult full-time university student with a substantial class schedule and a weekly family-care responsibility. She wants to make progress on a research essay without treating every free hour as study time.",
+  "targetMinutesPerWeek": 420,
+  "weeklyCommitments": [
+    {
+      "id": "sleep-early",
+      "kind": "sleep",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "00:00",
+      "end": "07:00",
+      "flexibility": "unspecified",
+      "label": "Sleep"
+    },
+    {
+      "id": "morning",
+      "kind": "personal",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "07:00",
+      "end": "08:00",
+      "flexibility": "unspecified",
+      "label": "Morning routine"
+    },
+    {
+      "id": "wind-down",
+      "kind": "personal",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "22:00",
+      "end": "23:00",
+      "flexibility": "unspecified",
+      "label": "Wind down"
+    },
+    {
+      "id": "sleep-late",
+      "kind": "sleep",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "23:00",
+      "end": "24:00",
+      "flexibility": "unspecified",
+      "label": "Sleep"
+    },
+    {
+      "id": "class-commute-out",
+      "kind": "commute",
+      "days": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "start": "08:00",
+      "end": "09:00",
+      "flexibility": "fixed",
+      "label": "Travel to campus"
+    },
+    {
+      "id": "class-am",
+      "kind": "class",
+      "days": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "start": "09:00",
+      "end": "12:00",
+      "flexibility": "fixed",
+      "label": "University classes"
+    },
+    {
+      "id": "lunch",
+      "kind": "meal",
+      "days": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "start": "12:00",
+      "end": "13:00",
+      "flexibility": "unspecified",
+      "label": "Lunch"
+    },
+    {
+      "id": "class-pm",
+      "kind": "class",
+      "days": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "start": "14:00",
+      "end": "17:00",
+      "flexibility": "fixed",
+      "label": "University classes"
+    },
+    {
+      "id": "class-commute-back",
+      "kind": "commute",
+      "days": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "start": "17:00",
+      "end": "18:00",
+      "flexibility": "fixed",
+      "label": "Travel home"
+    },
+    {
+      "id": "dinner",
+      "kind": "meal",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "start": "18:00",
+      "end": "19:00",
+      "flexibility": "unspecified",
+      "label": "Dinner"
+    },
+    {
+      "id": "care",
+      "kind": "care",
+      "days": [
+        2
+      ],
+      "start": "14:00",
+      "end": "17:00",
+      "flexibility": "fixed",
+      "label": "Family care"
+    },
+    {
+      "id": "groceries",
+      "kind": "personal",
+      "days": [
+        5
+      ],
+      "start": "11:00",
+      "end": "12:00",
+      "flexibility": "unspecified",
+      "label": "Groceries"
+    },
+    {
+      "id": "family-lunch",
+      "kind": "personal",
+      "days": [
+        6
+      ],
+      "start": "12:00",
+      "end": "14:00",
+      "flexibility": "unspecified",
+      "label": "Family lunch"
+    }
+  ],
+  "studyWindows": [
+    {
+      "id": "evening",
+      "days": [
+        0,
+        1,
+        3
+      ],
+      "start": "19:00",
+      "end": "20:30"
+    },
+    {
+      "id": "wed-study",
+      "days": [
+        2
+      ],
+      "start": "10:00",
+      "end": "12:00"
+    },
+    {
+      "id": "sat-study",
+      "days": [
+        5
+      ],
+      "start": "09:00",
+      "end": "11:00"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "appointment",
+      "date": "2026-11-11",
+      "start": "09:00",
+      "end": "10:00",
+      "kind": "personal",
+      "flexibility": "fixed",
+      "impactsStudyWindow": false,
+      "label": "Appointment"
+    }
+  ]
+}

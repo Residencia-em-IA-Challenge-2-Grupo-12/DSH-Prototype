@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "generatorVersion": "1",
+  "id": "nonworking-college",
+  "language": "pt-BR",
+  "name": "Luísa Nunes",
+  "simulationStart": "2026-11-02",
+  "timeZone": "America/Sao_Paulo",
+  "horizonWeeks": 4,
+  "deadline": "2026-11-30T18:00:00-03:00",
+  "course": "Ensaio de pesquisa em saúde pública",
+  "context": "Luísa é uma estudante universitária adulta em período integral, com muitas aulas e uma responsabilidade semanal de cuidado familiar. Ela quer avançar em um ensaio de pesquisa sem tratar todas as horas livres como tempo de estudo.",
+  "targetMinutesPerWeek": 420,
+  "weeklyCommitments": [
+    {
+      "id": "sleep-early",
+      "kind": "sleep",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "00:00",
+      "end": "07:00",
+      "flexibility": "unspecified",
+      "label": "Sono"
+    },
+    {
+      "id": "morning",
+      "kind": "personal",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "07:00",
+      "end": "08:00",
+      "flexibility": "unspecified",
+      "label": "Rotina da manhã"
+    },
+    {
+      "id": "wind-down",
+      "kind": "personal",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "22:00",
+      "end": "23:00",
+      "flexibility": "unspecified",
+      "label": "Desacelerar"
+    },
+    {
+      "id": "sleep-late",
+      "kind": "sleep",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "start": "23:00",
+      "end": "24:00",
+      "flexibility": "unspecified",
+      "label": "Sono"
+    },
+    {
+      "id": "class-commute-out",
+      "kind": "commute",
+      "days": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "start": "08:00",
+      "end": "09:00",
+      "flexibility": "fixed",
+      "label": "Deslocamento para o campus"
+    },
+    {
+      "id": "class-am",
+      "kind": "class",
+      "days": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "start": "09:00",
+      "end": "12:00",
+      "flexibility": "fixed",
+      "label": "Aulas na universidade"
+    },
+    {
+      "id": "lunch",
+      "kind": "meal",
+      "days": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "start": "12:00",
+      "end": "13:00",
+      "flexibility": "unspecified",
+      "label": "Almoço"
+    },
+    {
+      "id": "class-pm",
+      "kind": "class",
+      "days": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "start": "14:00",
+      "end": "17:00",
+      "flexibility": "fixed",
+      "label": "Aulas na universidade"
+    },
+    {
+      "id": "class-commute-back",
+      "kind": "commute",
+      "days": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "start": "17:00",
+      "end": "18:00",
+      "flexibility": "fixed",
+      "label": "Volta para casa"
+    },
+    {
+      "id": "dinner",
+      "kind": "meal",
+      "days": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "start": "18:00",
+      "end": "19:00",
+      "flexibility": "unspecified",
+      "label": "Jantar"
+    },
+    {
+      "id": "care",
+      "kind": "care",
+      "days": [
+        2
+      ],
+      "start": "14:00",
+      "end": "17:00",
+      "flexibility": "fixed",
+      "label": "Cuidado familiar"
+    },
+    {
+      "id": "groceries",
+      "kind": "personal",
+      "days": [
+        5
+      ],
+      "start": "11:00",
+      "end": "12:00",
+      "flexibility": "unspecified",
+      "label": "Compras"
+    },
+    {
+      "id": "family-lunch",
+      "kind": "personal",
+      "days": [
+        6
+      ],
+      "start": "12:00",
+      "end": "14:00",
+      "flexibility": "unspecified",
+      "label": "Almoço em família"
+    }
+  ],
+  "studyWindows": [
+    {
+      "id": "evening",
+      "days": [
+        0,
+        1,
+        3
+      ],
+      "start": "19:00",
+      "end": "20:30"
+    },
+    {
+      "id": "wed-study",
+      "days": [
+        2
+      ],
+      "start": "10:00",
+      "end": "12:00"
+    },
+    {
+      "id": "sat-study",
+      "days": [
+        5
+      ],
+      "start": "09:00",
+      "end": "11:00"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "appointment",
+      "date": "2026-11-11",
+      "start": "09:00",
+      "end": "10:00",
+      "kind": "personal",
+      "flexibility": "fixed",
+      "impactsStudyWindow": false,
+      "label": "Compromisso"
+    }
+  ]
+}

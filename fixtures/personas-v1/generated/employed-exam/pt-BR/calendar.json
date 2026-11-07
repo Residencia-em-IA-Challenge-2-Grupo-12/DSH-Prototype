@@ -1,0 +1,6161 @@
+{
+  "users": [
+    {
+      "id": "employed-exam",
+      "name": "Marcos Lima",
+      "email": "employed-exam@example.test"
+    }
+  ],
+  "calendars": [
+    {
+      "id": "calendar-employed-exam",
+      "userId": "employed-exam",
+      "summary": "Pessoa trabalhadora se preparando para concurso",
+      "timeZone": "America/Sao_Paulo",
+      "primary": true
+    }
+  ],
+  "events": [
+    {
+      "id": "sleep-early-2026-11-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-02T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-02T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-02T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-02T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-02T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-02T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-02T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-02T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-03T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-03T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-03T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-03T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-03T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-03T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-03T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-03T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-04T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-04T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-04T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-04T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-04T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-04T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-04T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-04T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-05T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-05T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-05T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-05T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-05T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-05T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-05T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-05T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-06T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-06T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-06T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-06T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-07T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-06T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-06T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-06T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-06T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-07T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-07T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-07T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-07T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-07T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-07T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-07T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-08T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-11-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-11-07T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-07T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-08T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-08T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-08T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-08T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-08T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-08T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-08T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-11-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-11-08T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-08T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "family-2026-11-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Tempo com a família",
+      "start": {
+        "dateTime": "2026-11-08T15:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-08T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-09T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-09T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-09T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-09T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-09T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-09T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-09T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-09T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-10T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-10T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-10T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-10T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-10T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-10T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-10T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-10T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "exception-tuesday-conflict",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Compromisso",
+      "start": {
+        "dateTime": "2026-11-10T19:30:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T20:30:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-11T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-11T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-11T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-11T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-11T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-11T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-11T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-11T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-12T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-12T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-12T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-12T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-12T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-12T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-12T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-12T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-13T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-13T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-13T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-13T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-14T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-13T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-13T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-13T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-13T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-14",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-14T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-14T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-14",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-14T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-14T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-14",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-14T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-14T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-14",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-14T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-15T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-11-14",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-11-14T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-14T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-15",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-15T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-15T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-15",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-15T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-15T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-15",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-15T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-15T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-15",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-15T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-11-15",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-11-15T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-15T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "family-2026-11-15",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Tempo com a família",
+      "start": {
+        "dateTime": "2026-11-15T15:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-15T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-16",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-16T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-16",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-16T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-16",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-16T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-16",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-16T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-16",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-16T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-16",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-16T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-16",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-16T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-16",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-16T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-17",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-17T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-17",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-17T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-17",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-17T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-17",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-17T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-17",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-17T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-17",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-17T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-17",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-17T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-17",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-17T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-18",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-18T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-18",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-18T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-18",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-18T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-18",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-18T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-18",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-18T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-18",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-18T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-18",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-18T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-18",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-18T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-19",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-19T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-19",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-19T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-19",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-19T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-19",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-19T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-19",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-19T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-19",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-19T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-19",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-19T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-19",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-19T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-20",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-20T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-20",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-20T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-20",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-20T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-20",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-20T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-21T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-20",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-20T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-20",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-20T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-20",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-20T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-20",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-20T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-21",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-21T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-21T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-21",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-21T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-21T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-21",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-21T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-21T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-21",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-21T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-22T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-11-21",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-11-21T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-21T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-22",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-22T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-22T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-22",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-22T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-22T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-22",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-22T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-22T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-22",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-22T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-11-22",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-11-22T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-22T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "family-2026-11-22",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Tempo com a família",
+      "start": {
+        "dateTime": "2026-11-22T15:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-22T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-23",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-23T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-23",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-23T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-23",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-23T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-23",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-23T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-23",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-23T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-23",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-23T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-23",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-23T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-23",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-23T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-24",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-24T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-24",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-24T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-24",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-24T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-24",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-24T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-24",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-24T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-24",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-24T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-24",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-24T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-24",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-24T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-25",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-25T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-25",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-25T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-25",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-25T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-25",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-25T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-25",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-25T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-25",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-25T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-25",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-25T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-25",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-25T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-26",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-26T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-26",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-26T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-26",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-26T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-26",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-26T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-26",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-26T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-26",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-26T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-26",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-26T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-26",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-26T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-27",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-27T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-27",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-27T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-27",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-27T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-27",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-27T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-28T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-27",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-27T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-27",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-27T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-27",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-27T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-27",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-27T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-28",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-28T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-28T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-28",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-28T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-28T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-28",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-28T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-28T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-28",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-28T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-29T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-11-28",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-11-28T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-28T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-29",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-29T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-29T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-29",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-29T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-29T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-29",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-29T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-29T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-29",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-29T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-11-29",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-11-29T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-29T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "family-2026-11-29",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Tempo com a família",
+      "start": {
+        "dateTime": "2026-11-29T15:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-29T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-11-30",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-30T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-11-30",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-11-30T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-11-30",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-11-30T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-11-30",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-11-30T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-11-30",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-11-30T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-11-30",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-11-30T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-11-30",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-11-30T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-11-30",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-11-30T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-01",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-01T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-01",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-01T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-01",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-01T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-01",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-01T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-12-01",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-12-01T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-12-01",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-12-01T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-12-01",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-12-01T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-12-01",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-12-01T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-02T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-02T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-02T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-02T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-12-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-12-02T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-12-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-12-02T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-12-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-12-02T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-12-02",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-12-02T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-03T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-03T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-03T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-03T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-12-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-12-03T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-12-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-12-03T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-12-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-12-03T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-12-03",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-12-03T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-04T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-04T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-04T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-04T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-05T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-12-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-12-04T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-12-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-12-04T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-12-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-12-04T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-12-04",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-12-04T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-05T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-05T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-05T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-05T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-05T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-05T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-05T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-06T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-12-05",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-12-05T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-05T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-06T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-06T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-06T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-06T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-06T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-06T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-06T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-12-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-12-06T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-06T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "family-2026-12-06",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Tempo com a família",
+      "start": {
+        "dateTime": "2026-12-06T15:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-06T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-07T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-07T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-07T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-07T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-12-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-12-07T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-12-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-12-07T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-12-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-12-07T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-12-07",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-12-07T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-08T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-08T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-08T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-08T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-12-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-12-08T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-12-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-12-08T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-12-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-12-08T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-12-08",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-12-08T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-09T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-09T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-09T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-09T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-12-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-12-09T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-12-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-12-09T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-12-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-12-09T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-12-09",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-12-09T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-10T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-10T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-10T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-10T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-12-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-12-10T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-12-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-12-10T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-12-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-12-10T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-12-10",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-12-10T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-11T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-11T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-11T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-11T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-12T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-out-2026-12-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Deslocamento para o trabalho",
+      "start": {
+        "dateTime": "2026-12-11T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-2026-12-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jornada de trabalho integral",
+      "start": {
+        "dateTime": "2026-12-11T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "work-commute-back-2026-12-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Volta para casa",
+      "start": {
+        "dateTime": "2026-12-11T17:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "commute",
+          "flexibility": "fixed",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "dinner-2026-12-11",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Jantar",
+      "start": {
+        "dateTime": "2026-12-11T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-12T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-12T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-12T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-12T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-12T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-12T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-12T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-13T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-12-12",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-12-12T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-12T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-early-2026-12-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-13T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-13T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "morning-2026-12-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Rotina da manhã",
+      "start": {
+        "dateTime": "2026-12-13T07:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-13T08:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "wind-down-2026-12-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Desacelerar",
+      "start": {
+        "dateTime": "2026-12-13T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-13T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "sleep-late-2026-12-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Sono",
+      "start": {
+        "dateTime": "2026-12-13T23:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-14T00:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "sleep",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "weekend-lunch-2026-12-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Almoço",
+      "start": {
+        "dateTime": "2026-12-13T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-13T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "meal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    },
+    {
+      "id": "family-2026-12-13",
+      "calendarId": "calendar-employed-exam",
+      "summary": "Tempo com a família",
+      "start": {
+        "dateTime": "2026-12-13T15:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-13T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal",
+          "flexibility": "unspecified",
+          "synthetic": "true"
+        }
+      }
+    }
+  ],
+  "clients": []
+}
