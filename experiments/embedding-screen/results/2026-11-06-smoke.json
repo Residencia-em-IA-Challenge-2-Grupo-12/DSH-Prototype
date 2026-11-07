@@ -1,0 +1,699 @@
+{
+  "corpus_version": "synthetic-smoke-v1",
+  "corpus_sha256": "fb59b5004a762a6d6192ba9aecfc986f8d2064597f74e8a1e3cd17111a1811ea",
+  "limitations": "unreviewed synthetic smoke corpus; not evidence or a model-selection benchmark",
+  "limits": {
+    "address_space_mib": 4096,
+    "wall_seconds": 180,
+    "cpu_threads": 1
+  },
+  "models": {
+    "embeddinggemma-2": {
+      "source": "google/embeddinggemma-2",
+      "local_directory": "models/embeddinggemma-2",
+      "files": [
+        {
+          "path": "1_Pooling/config.json",
+          "bytes": 90,
+          "sha256": "8759bdf7c77efc7df7723f64856a593c8943b71ee38baf2a88771fbaf78438f9"
+        },
+        {
+          "path": "2_Normalize/config.json",
+          "bytes": 97,
+          "sha256": "cdb09dfca347a56aa2d691744e38d5ad3c7cbc2834e7181272b9a15328b82524"
+        },
+        {
+          "path": "chat_template.jinja",
+          "bytes": 1016,
+          "sha256": "4b852efc0b9960283e735363331e6f325b33bc74bdbaa076f595bc4e9b94d85e"
+        },
+        {
+          "path": "config.json",
+          "bytes": 4455,
+          "sha256": "b8f1e9931b57fbc054acdb445c41765d55b0074c58d145fa82839941ad1b5bb3"
+        },
+        {
+          "path": "config_sentence_transformers.json",
+          "bytes": 1565,
+          "sha256": "031e56a498d33c349ab489a21885bcfe25b4fcba841149dc99e1e90d4a7c28f5"
+        },
+        {
+          "path": "model.safetensors",
+          "bytes": 1488915288,
+          "sha256": "197a32965d4b1105faf060417baa899e193fb73cd401f42ec9295234d5553d79"
+        },
+        {
+          "path": "modules.json",
+          "bytes": 413,
+          "sha256": "3d02572a0455b832de67fb8e63a54981bc7e8b46e337c95e917bd8122a533bfd"
+        },
+        {
+          "path": "preprocessor_config.json",
+          "bytes": 511,
+          "sha256": "ea2ae257e901064abdd98dceb19f2b0da06af600bed15e0f99f5c85c37ee9d78"
+        },
+        {
+          "path": "processor_config.json",
+          "bytes": 1788,
+          "sha256": "168f6a08522f3ce5dea596d94d003af2fd691742d4f41fe1f9d8cce76bfbf69c"
+        },
+        {
+          "path": "sentence_bert_config.json",
+          "bytes": 747,
+          "sha256": "b1bcd9f2dce3ae863b359e87d0710b5dbc3314a59ecb4e2f97c7778fc8e4b228"
+        },
+        {
+          "path": "study-revision.json",
+          "bytes": 97,
+          "sha256": "e08880e5ae94f4b7a88b527ee5f11ee95eec84f25d17062252b6e3e4f7c7e19a"
+        },
+        {
+          "path": "tokenizer.json",
+          "bytes": 32170510,
+          "sha256": "4d777ef5bdc1aa36227abdfb77c3e49e7b9c892d16e1b6bda41c393504828be4"
+        },
+        {
+          "path": "tokenizer.model",
+          "bytes": 4689013,
+          "sha256": "e594c8a90eb08d8bda498ff4747977dc827ae0c3c56b5c0d41a605a22d02ef03"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 1599,
+          "sha256": "17bd5d6e9364ca49a534e1502076593317c298d4a663623091ed45388f004874"
+        }
+      ],
+      "status": "ok",
+      "metrics": {
+        "hit_at_1": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "recall_at_3": 1.0,
+        "queries": [
+          {
+            "query_id": "class-q-en",
+            "language": "en",
+            "top3": [
+              "class-pt",
+              "class-en",
+              "energy-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "class-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "class-pt",
+              "class-en",
+              "shift-pt"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "shift-q-en",
+            "language": "en",
+            "top3": [
+              "shift-en",
+              "shift-pt",
+              "energy-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "shift-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "shift-pt",
+              "shift-en",
+              "energy-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "energy-q-en",
+            "language": "en",
+            "top3": [
+              "energy-en",
+              "energy-pt",
+              "shift-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "energy-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "energy-pt",
+              "energy-en",
+              "shift-pt"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "practice-q-en",
+            "language": "en",
+            "top3": [
+              "practice-en",
+              "practice-pt",
+              "energy-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "practice-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "practice-pt",
+              "practice-en",
+              "energy-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          }
+        ]
+      },
+      "model_load_seconds": 1.6531591989914887,
+      "document_encode_seconds": 0.7936431250418536,
+      "warm_query_seconds_p50": 0.07381257947417907,
+      "warm_query_seconds_p95": 0.08809846802614629,
+      "peak_rss_kib": 2037432,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.15.0+cpu",
+        "transformers": "5.22.2",
+        "sentence_transformers": "6.2.0"
+      },
+      "revision": "f9972ac22e696a105c482202646979e33e4b5a1e"
+    },
+    "qwen3-embedding-0.6b": {
+      "source": "Qwen/Qwen3-Embedding-0.6B",
+      "local_directory": "models/qwen3-embedding-0.6b",
+      "files": [
+        {
+          "path": "1_Pooling/config.json",
+          "bytes": 313,
+          "sha256": "37bf193fa101f19101bfad9c31d3eb0f786e247b7b1e5cb7f007d730eed1ddbd"
+        },
+        {
+          "path": "config.json",
+          "bytes": 727,
+          "sha256": "b5bf1f51fc45be473a54718cef92448d90a1be001bf9b9a44b8c7f10a19feaa9"
+        },
+        {
+          "path": "config_sentence_transformers.json",
+          "bytes": 215,
+          "sha256": "10667c72ddb772627bf1780cb7f86af8e2ae0032b8c243c731172064105c6961"
+        },
+        {
+          "path": "generation_config.json",
+          "bytes": 117,
+          "sha256": "28396d421a2108acce96383f6a7de78008f7f1b17f807958f3c14c51dbfb65fb"
+        },
+        {
+          "path": "merges.txt",
+          "bytes": 1671853,
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+        },
+        {
+          "path": "model.safetensors",
+          "bytes": 1191586416,
+          "sha256": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd"
+        },
+        {
+          "path": "modules.json",
+          "bytes": 349,
+          "sha256": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf"
+        },
+        {
+          "path": "study-revision.json",
+          "bytes": 99,
+          "sha256": "4304232733099e06145cc46b539c09ba6d5fa9110ad001d43b91e5dd55d7e712"
+        },
+        {
+          "path": "tokenizer.json",
+          "bytes": 11423705,
+          "sha256": "def76fb086971c7867b829c23a26261e38d9d74e02139253b38aeb9df8b4b50a"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 9706,
+          "sha256": "253153d0738ceb4c668d2eff957714dd2bea0b56de772a9fdccd96cbf517e6a0"
+        },
+        {
+          "path": "vocab.json",
+          "bytes": 2776833,
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        }
+      ],
+      "status": "ok",
+      "metrics": {
+        "hit_at_1": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "recall_at_3": 1.0,
+        "queries": [
+          {
+            "query_id": "class-q-en",
+            "language": "en",
+            "top3": [
+              "class-en",
+              "class-pt",
+              "shift-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "class-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "class-pt",
+              "class-en",
+              "practice-pt"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "shift-q-en",
+            "language": "en",
+            "top3": [
+              "shift-en",
+              "shift-pt",
+              "energy-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "shift-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "shift-pt",
+              "shift-en",
+              "energy-pt"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "energy-q-en",
+            "language": "en",
+            "top3": [
+              "energy-en",
+              "energy-pt",
+              "shift-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "energy-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "energy-pt",
+              "energy-en",
+              "class-pt"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "practice-q-en",
+            "language": "en",
+            "top3": [
+              "practice-en",
+              "practice-pt",
+              "class-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "practice-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "practice-pt",
+              "practice-en",
+              "class-pt"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          }
+        ]
+      },
+      "model_load_seconds": 0.47266053600469604,
+      "document_encode_seconds": 11.95452975295484,
+      "warm_query_seconds_p50": 1.161230618483387,
+      "warm_query_seconds_p95": 1.2932681850506924,
+      "peak_rss_kib": 1436656,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.15.0+cpu",
+        "transformers": "5.22.2",
+        "sentence_transformers": "6.2.0"
+      },
+      "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"
+    },
+    "bge-m3": {
+      "source": "BAAI/bge-m3",
+      "local_directory": "models/bge-m3",
+      "files": [
+        {
+          "path": "1_Pooling/config.json",
+          "bytes": 191,
+          "sha256": "e54c164a07274f2eb45bb724f54a79d1efcc90c41573887cd9a29aeee0597352"
+        },
+        {
+          "path": "config.json",
+          "bytes": 687,
+          "sha256": "26159e7ad065073448460117eb24b7a4572f6f4e78eadff65dc0a11c052449fa"
+        },
+        {
+          "path": "config_sentence_transformers.json",
+          "bytes": 123,
+          "sha256": "1eef72430e7194a1e59680e635aed81ffa083f05668dbc5bb1c56c04c0999c38"
+        },
+        {
+          "path": "modules.json",
+          "bytes": 349,
+          "sha256": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf"
+        },
+        {
+          "path": "pytorch_model.bin",
+          "bytes": 2271145830,
+          "sha256": "b5e0ce3470abf5ef3831aa1bd5553b486803e83251590ab7ff35a117cf6aad38"
+        },
+        {
+          "path": "sentence_bert_config.json",
+          "bytes": 54,
+          "sha256": "eb9b44b13c0f52a3b3685c3b1cbdea1ba8b04bea123b98f61610048940776eb1"
+        },
+        {
+          "path": "sentencepiece.bpe.model",
+          "bytes": 5069051,
+          "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "bytes": 964,
+          "sha256": "8c785abebea9ae3257b61681b4e6fd8365ceafde980c21970d001e834cf10835"
+        },
+        {
+          "path": "study-revision.json",
+          "bytes": 85,
+          "sha256": "7f0ace1d9cb54343e4d7a4fa0004d0d76b35c7b850ce02761ba4846684995c9f"
+        },
+        {
+          "path": "tokenizer.json",
+          "bytes": 17098108,
+          "sha256": "21106b6d7dab2952c1d496fb21d5dc9db75c28ed361a05f5020bbba27810dd08"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 444,
+          "sha256": "a62b2b6784f990259fddef5f16388693a8043be4f69179e6a5257eeb3f9abac4"
+        }
+      ],
+      "status": "ok",
+      "metrics": {
+        "hit_at_1": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "recall_at_3": 1.0,
+        "queries": [
+          {
+            "query_id": "class-q-en",
+            "language": "en",
+            "top3": [
+              "class-pt",
+              "class-en",
+              "shift-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "class-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "class-pt",
+              "class-en",
+              "practice-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "shift-q-en",
+            "language": "en",
+            "top3": [
+              "shift-en",
+              "shift-pt",
+              "energy-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "shift-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "shift-pt",
+              "shift-en",
+              "energy-pt"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "energy-q-en",
+            "language": "en",
+            "top3": [
+              "energy-en",
+              "energy-pt",
+              "shift-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "energy-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "energy-en",
+              "energy-pt",
+              "shift-pt"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "practice-q-en",
+            "language": "en",
+            "top3": [
+              "practice-en",
+              "practice-pt",
+              "shift-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "practice-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "practice-pt",
+              "practice-en",
+              "energy-pt"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          }
+        ]
+      },
+      "model_load_seconds": 1.2952891620225273,
+      "document_encode_seconds": 1.0691676700371318,
+      "warm_query_seconds_p50": 0.14619329100241885,
+      "warm_query_seconds_p95": 0.156102099979762,
+      "peak_rss_kib": 2015572,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.15.0+cpu",
+        "transformers": "5.22.2",
+        "sentence_transformers": "6.2.0"
+      },
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181"
+    },
+    "multilingual-e5-small": {
+      "source": "intfloat/multilingual-e5-small",
+      "local_directory": "models/multilingual-e5-small",
+      "files": [
+        {
+          "path": "1_Pooling/config.json",
+          "bytes": 200,
+          "sha256": "987f7a67a38fa564c849bb5d277c52ab9088a84368fc0be31a354125aebb12a0"
+        },
+        {
+          "path": "config.json",
+          "bytes": 655,
+          "sha256": "69137736cab8b8903a07fe8afaafdda25aac55415a12a55d1bffa9f581abf959"
+        },
+        {
+          "path": "model.safetensors",
+          "bytes": 470641600,
+          "sha256": "1a55775f53449dac10a2bcbc312469fac40b96d53198c407081a831f81c98477"
+        },
+        {
+          "path": "modules.json",
+          "bytes": 387,
+          "sha256": "c6e29747481e8b5dd2b58401966aeac910de39092f90cda9a704b1545f902b04"
+        },
+        {
+          "path": "sentence_bert_config.json",
+          "bytes": 57,
+          "sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529"
+        },
+        {
+          "path": "sentencepiece.bpe.model",
+          "bytes": 5069051,
+          "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "bytes": 167,
+          "sha256": "d05497f1da52c5e09554c0cd874037a083e1dc1b9cfd48034d1c717f1afc07a7"
+        },
+        {
+          "path": "study-revision.json",
+          "bytes": 104,
+          "sha256": "0cbd35aa1a26ceda9879c5e226f9089d5fc748db580b271f7a290e1634755776"
+        },
+        {
+          "path": "tokenizer.json",
+          "bytes": 17082730,
+          "sha256": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 443,
+          "sha256": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b"
+        }
+      ],
+      "status": "ok",
+      "metrics": {
+        "hit_at_1": 0.875,
+        "mean_reciprocal_rank": 0.9375,
+        "recall_at_3": 0.8125,
+        "queries": [
+          {
+            "query_id": "class-q-en",
+            "language": "en",
+            "top3": [
+              "class-en",
+              "class-pt",
+              "practice-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "class-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "class-pt",
+              "practice-pt",
+              "class-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "shift-q-en",
+            "language": "en",
+            "top3": [
+              "shift-en",
+              "practice-en",
+              "energy-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 0.5
+          },
+          {
+            "query_id": "shift-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "practice-pt",
+              "shift-pt",
+              "energy-pt"
+            ],
+            "first_relevant_rank": 2,
+            "recall_at_3": 0.5
+          },
+          {
+            "query_id": "energy-q-en",
+            "language": "en",
+            "top3": [
+              "energy-en",
+              "energy-pt",
+              "practice-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "energy-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "energy-pt",
+              "practice-pt",
+              "class-pt"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 0.5
+          },
+          {
+            "query_id": "practice-q-en",
+            "language": "en",
+            "top3": [
+              "practice-en",
+              "practice-pt",
+              "class-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          },
+          {
+            "query_id": "practice-q-pt",
+            "language": "pt-BR",
+            "top3": [
+              "practice-pt",
+              "class-pt",
+              "practice-en"
+            ],
+            "first_relevant_rank": 1,
+            "recall_at_3": 1.0
+          }
+        ]
+      },
+      "model_load_seconds": 1.3184192969929427,
+      "document_encode_seconds": 0.0938793679815717,
+      "warm_query_seconds_p50": 0.011283087485935539,
+      "warm_query_seconds_p95": 0.012596145970746875,
+      "peak_rss_kib": 912028,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.15.0+cpu",
+        "transformers": "5.22.2",
+        "sentence_transformers": "6.2.0"
+      },
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3"
+    }
+  },
+  "run_note": "Smoke test on 2026-11-06; Gemma rerun separately after adding Pillow, torchvision and its chat template. Model results use the same eight-query unreviewed synthetic corpus; not a selection benchmark."
+}
