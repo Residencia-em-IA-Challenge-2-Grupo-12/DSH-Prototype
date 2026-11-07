@@ -1,0 +1,24 @@
+{
+  "version": "synthetic-smoke-v1",
+  "status": "unreviewed synthetic smoke corpus; not evidence or a model-selection benchmark",
+  "documents": [
+    {"id":"class-en","language":"en","title":"Course timetable","source":"fixture://courses/en/timetable.md","text":"Statistics lectures meet Monday and Wednesday, 14:00–16:00. The assessment is due November 30."},
+    {"id":"class-pt","language":"pt-BR","title":"Horário da disciplina","source":"fixture://courses/pt-br/timetable.md","text":"As aulas de estatística são segunda e quarta, das 14h às 16h. A avaliação vence em 30 de novembro."},
+    {"id":"shift-en","language":"en","title":"Work schedule","source":"fixture://work/en/shifts.md","text":"The student works Tuesday and Thursday from 09:00 to 17:00, with a commute after each shift."},
+    {"id":"shift-pt","language":"pt-BR","title":"Escala de trabalho","source":"fixture://work/pt-br/shifts.md","text":"A estudante trabalha terça e quinta das 9h às 17h e precisa de tempo para o deslocamento após cada turno."},
+    {"id":"energy-en","language":"en","title":"Student preferences","source":"fixture://preferences/en/context.md","text":"The student usually has more energy for difficult reading in the morning and prefers to keep Sundays free."},
+    {"id":"energy-pt","language":"pt-BR","title":"Preferências da estudante","source":"fixture://preferences/pt-br/context.md","text":"A estudante costuma ter mais energia para leituras difíceis de manhã e prefere manter os domingos livres."},
+    {"id":"practice-en","language":"en","title":"Practice plan","source":"fixture://courses/en/practice.md","text":"The exam practice set covers algebra. The student wants to revisit mistakes a few days after each practice."},
+    {"id":"practice-pt","language":"pt-BR","title":"Plano de exercícios","source":"fixture://courses/pt-br/practice.md","text":"A lista de exercícios para a prova aborda álgebra. A estudante quer rever os erros alguns dias depois de cada prática."}
+  ],
+  "queries": [
+    {"id":"class-q-en","language":"en","text":"When are the statistics classes?","relevant":["class-en","class-pt"]},
+    {"id":"class-q-pt","language":"pt-BR","text":"Quando acontecem as aulas de estatística?","relevant":["class-en","class-pt"]},
+    {"id":"shift-q-en","language":"en","text":"Which days is the student at work?","relevant":["shift-en","shift-pt"]},
+    {"id":"shift-q-pt","language":"pt-BR","text":"Em quais dias a estudante trabalha?","relevant":["shift-en","shift-pt"]},
+    {"id":"energy-q-en","language":"en","text":"When is the student most alert for hard reading?","relevant":["energy-en","energy-pt"]},
+    {"id":"energy-q-pt","language":"pt-BR","text":"Qual período favorece leituras difíceis?","relevant":["energy-en","energy-pt"]},
+    {"id":"practice-q-en","language":"en","text":"What should happen after the algebra practice?","relevant":["practice-en","practice-pt"]},
+    {"id":"practice-q-pt","language":"pt-BR","text":"O que fazer depois dos exercícios de álgebra?","relevant":["practice-en","practice-pt"]}
+  ]
+}
