@@ -1,5 +1,6 @@
 import React from 'react';
 import {contribution} from './panel-descriptor.mjs';
+import {registerPanelBody} from './panel-registration.mjs';
 import {panelData,eventPresentation,hourLabels,viewNotices,eventTypeLabels} from './panel-view.mjs';
 const h=React.createElement;
 const id='study-calendar-browser-spike';
@@ -13,7 +14,7 @@ function Calendar({remote}){
  let view;try{view=panelData(state.data);}catch{return h('p',{role:'alert'},label('Unsupported calendar or proposal data.','Dados do calendário ou da proposta não suportados.'));}
  const events=view.events;const colors={existing:'#cce8da',add:'#dceaff'};
  const days=label(['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],['Seg','Ter','Qua','Qui','Sex','Sáb','Dom']);
- return h('section',{style:{padding:12,fontFamily:'sans-serif',color:'#17352c'}},
+ return h('section',{style:{padding:12,minHeight:'100%',background:'#fff',fontFamily:'sans-serif',color:'#17352c'}},
  h('h2',null,label('Synthetic calendar','Calendário sintético')),
  h('p',{role:'status'},state.data.stale?label('Proposal is stale; refresh before review.','Proposta desatualizada; atualize antes de revisar.'):label('Read-only preview; changes need separate review.','Prévia somente leitura; alterações exigem revisão separada.')),
  h('p',null,label('Point-in-time snapshot; later changes may not appear.','Retrato de um momento; alterações posteriores podem não aparecer.')),
@@ -37,5 +38,5 @@ export async function apply(ctx){
  const unmount=await ctx.remote.$mount(contribution);
  ctx.effect(()=>()=>unmount(),'study-panel: remote');
  ctx.effect(()=>ctx.sidebarRightTabs.register({id,kind:'study-calendar-browser',title:()=>label('Study calendar','Calendário de estudos'),guide:[{id:'open',title:()=>label('Study calendar','Calendário de estudos'),description:()=>label('Synthetic read-only calendar','Calendário sintético somente leitura')}]}),'study-panel: tab');
- ctx.slots.inject('sidebar.right.pane.tab',()=>ctx.slots.register({name:'sidebar.right.pane.tab',key:id},()=>h(Calendar,{remote:ctx.remote.calendarSpike})));
+ registerPanelBody(ctx,id,remote=>h(Calendar,{remote}));
 }

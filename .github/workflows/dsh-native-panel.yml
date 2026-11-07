@@ -21,6 +21,6 @@ jobs:
       - name: Build synthetic panel
         run: ESBUILD_BIN="$RUNNER_TEMP/study-panel-build/node_modules/.bin/esbuild" node experiments/dsh-native-panel/build.mjs
       - name: Test panel contract and cleanup
-        run: node --test --test-isolation=none experiments/dsh-native-panel/host.test.mjs experiments/dsh-native-panel/panel-view.test.mjs experiments/dsh-native-panel/process-cleanup.test.mjs
+        run: node --test --test-isolation=none experiments/dsh-native-panel/host.test.mjs experiments/dsh-native-panel/client-entry.test.mjs experiments/dsh-native-panel/panel-view.test.mjs experiments/dsh-native-panel/process-cleanup.test.mjs
       - name: Test isolated DSH carrier
         run: node experiments/dsh-native-panel/carrier-test.mjs
