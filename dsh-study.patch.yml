@@ -12,3 +12,17 @@
         args:
           - !!js "process.cwd() + '/src/mcp.mjs'"
         cwd: !!js process.cwd()
+# All model calls in this profile must use the authorized Luna route.
+- id: compaction-basic
+  config:
+    summarizationProvider: codex
+    summarizationModel: gpt-6-luna
+    maxTokens: 2048
+- id: session-title-llm
+  disabled: true
+- id: tool-web
+  disabled: true
+- id: tool-subagent
+  disabled: true
+- id: tool-subagent-fork
+  disabled: true

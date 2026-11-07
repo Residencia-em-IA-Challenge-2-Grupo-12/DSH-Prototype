@@ -1,0 +1,9 @@
+# Synthetic baseline readiness run — 2026-11-06
+
+This record describes a scripted local API exercise of the companion and its pinned DSH SDK profile, using `codex/gpt-6-luna` through the subscription plugin. The Calendarpit 0.9.7 container and runtime workspace were separate from the existing demonstration; no real account or personal calendar was used. The test used a loopback-only temporary server and a memory-backed simulator. User answers and the explicit near-term approval were supplied by the test driver.
+
+The agent asked native questions, listed synthetic files and calendar events, read the course materials and drafted four weeks at three study hours per week. The calendar still had 108 events before approval. After a request to avoid 2026-11-04, the agent created a revised proposal with three near-term blocks. A separate approval applied the near-term section, leaving 111 events; the future section remained pending. No calendar write was observed before that approval.
+
+The full offline suite passed 27 checks in a separate temporary copy: 25 baseline checks covering approval boundaries, stale state, protected edits, partial writes, scheduler regressions and SDK question forwarding, plus two checks for a separate foundation replay component. The GitHub Actions run and a person's complete browser walkthrough remain separate checks. The API run does not establish educational effectiveness or durable session recovery. Wall-clock duration and usage were not captured and are unknown.
+
+The SDK profile explicitly selects Luna. The study patch disables the native model-backed web tool and model-selecting subagent tools, pins compaction to Luna, and disables model-generated titles. This reduces known alternate routes; it is not a complete enforceable dispatch allowlist or an isolation audit. The existing runtime still allows host execution and is for fictional data only.

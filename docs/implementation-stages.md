@@ -2,15 +2,15 @@
 
 This is a working plan for a **synthetic, single-user demonstration**, not a production deployment commitment. GPT-6 Luna is the only authorized harness model until the user changes that preference. Calendar, files, feedback and conversations in the demonstration must remain fictional. Each stage should be reviewed as a working result, and its tests should distinguish deterministic checks from model behavior.
 
-## 1. Make calendar state legible — in progress
+## 1. Make calendar state legible — prototype implemented
 
-Show a navigable week with existing events and pending additions/removals visually distinguished; retain the separate approval controls and revalidation. The current day-column overview groups events by start date; it is not a proportional time grid, and spanning or recurring events need additional handling. It is not a conversational agent view.
+Show a navigable week with existing events and pending additions/removals visually distinguished; retain the separate approval controls and revalidation. The current day-column overview groups events by start date; it is not a proportional time grid, and spanning or recurring events need additional handling. The Collaborate tab also provides a conversational agent view.
 
 **Done when:** a reviewer can inspect both the current state and an unapplied proposal for either fixture, navigate weeks, and distinguish approval status without confusing previews with writes. Validate localized labels and calendar changes, including partial and stale state.
 
 ## 2. Prove the programmatic DSH boundary
 
-Run the pinned DSH SDK profile with the study MCP tools and the user's already-authorized Codex subscription route. Keep the GPT-6 Luna selection explicit. Verify session events, one native question and its answer, cancellation, and session recovery without browser automation. The pinned install contains the SDK server/protocol. On 2026-11-06 the pinned subscription plugin was also installed in the isolated SDK profile, and a local JSON-RPC probe initialized `codex/gpt-6-luna`, forwarded a native question to a scripted synthetic answer, streamed 31 session events, called the file-listing and calendar-reading tools, and completed. This is not yet a user-facing integration or a session-recovery test. Install the SDK-profile plugin with `npm run install:codex-plugin:sdk` and run the probe with `npm run probe:sdk`; it makes a live model request, responds to practice questions automatically and rejects approval requests. It requires the SDK profile plugin, an authorized sign-in, the running simulator, and a reset synthetic workspace. It does not copy credentials.
+Run the pinned DSH SDK profile with the study MCP tools and the user's already-authorized Codex subscription route. Keep the GPT-6 Luna selection explicit. Verify session events, one native question and its answer, cancellation, and session recovery without browser automation. The pinned install contains the SDK server/protocol. On 2026-11-06 the pinned subscription plugin was also installed in the isolated SDK profile, and a local JSON-RPC probe initialized `codex/gpt-6-luna`, forwarded a native question to a scripted synthetic answer, streamed 31 session events, called the file-listing and calendar-reading tools, and completed. The probe did not test the later user-facing integration or session recovery. Install the SDK-profile plugin with `npm run install:codex-plugin:sdk` and run the probe with `npm run probe:sdk`; it makes a live model request, responds to practice questions automatically and rejects approval requests. It requires the SDK profile plugin, an authorized sign-in, the running simulator, and a reset synthetic workspace. It does not copy credentials.
 
 **Done when:** a small reproducible synthetic run can be driven from a local client with a captured, sanitized trace and no unrelated model calls. Record blockers and actual tool failures.
 
@@ -45,4 +45,4 @@ Compare local, user-provided cloud and provisioned workspace approaches, with ex
 - DSH-native UI plugin versus our own UI using the SDK; compare a working question and calendar review in both before committing.
 - Docker-only isolation versus an additional kernel or VM boundary; choose against the actual threat model and workload.
 - Local versus bring-your-own-cloud versus provisioned workspace; avoid coupling the prototype to one before evaluating data access and privacy.
-- The agent's ability to shape proposals versus a deterministic scheduling tool; preserve visible assumptions and human review either way.
+- How to implement the agreed agent-guided planning and bounded critique, and which planner to select after comparison.

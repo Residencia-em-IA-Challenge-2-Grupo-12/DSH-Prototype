@@ -46,3 +46,40 @@ test('an explicit course focus changes allocations and rejects unknown courses',
   assert.equal(plan.near.filter(e=>e.summary==='Study: Statistics').length,4);
   assert.throws(()=>makePlan(student,events,{focusCourse:'Not a course'}),/not in the student course index/);
 });
+
+test('expired courses do not block available focused-course study time or shorten its horizon',()=>{
+  const student={student:'ana',timezone:'America/Sao_Paulo',targetHours:6,maxDailyStudyHours:2,studyBreakMinutes:15,
+    studyWindows:[1,2,3,4,5].map(weekday=>({weekday,start:'08:00',end:'12:00'})),
+    courses:[{name:'Expired',deadline:'2026-10-30T18:00:00-03:00',source:'expired.md'},
+      {name:'Active',deadline:'2026-11-30T18:00:00-03:00',source:'active.md'}]};
+  const plan=makePlan(student,[],{weeks:4,hours:6,focusCourse:'Active'});
+  assert.equal(plan.outlook.length,4);
+  assert(plan.outlook.every(week=>week.shortfall===0));
+  assert([...plan.near,...plan.future].every(block=>block.summary==='Study: Active'));
+});
+
+test('a course is only assigned blocks that finish by its deadline',()=>{
+  const student={student:'ana',timezone:'America/Sao_Paulo',targetHours:5,maxDailyStudyHours:2,studyBreakMinutes:15,
+    studyWindows:[1,2,3,4,5].map(weekday=>({weekday,start:'08:00',end:'12:00'})),
+    courses:[{name:'Soon',deadline:'2026-11-02T09:00:00-03:00',source:'soon.md'},
+      {name:'Later',deadline:'2026-11-30T18:00:00-03:00',source:'later.md'}]};
+  for(const options of [{},{focusCourse:'Soon'}]){
+    const plan=makePlan(student,[],{weeks:1,hours:5,...options});
+    assert.equal(plan.outlook[0].shortfall,0);
+    assert(plan.near.some(block=>block.summary==='Study: Later'));
+    for(const block of plan.near){
+      const course=student.courses.find(c=>block.summary==='Study: '+c.name);
+      assert(Date.parse(block.end.dateTime)<=Date.parse(course.deadline));
+    }
+  }
+});
+
+test('an entirely expired course list yields no invented study blocks',()=>{
+  const student={student:'ana',timezone:'America/Sao_Paulo',targetHours:2,
+    studyWindows:[{weekday:1,start:'08:00',end:'12:00'}],
+    courses:[{name:'Expired',deadline:'2026-10-30T18:00:00-03:00',source:'expired.md'}]};
+  const plan=makePlan(student,[],{weeks:4,hours:2});
+  assert.equal(plan.near.length,0);
+  assert.equal(plan.outlook.length,1);
+  assert.equal(plan.outlook[0].shortfall,2);
+});

@@ -121,8 +121,10 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
   if(!Array.isArray(windows)||windows.length>30||!Number.isInteger(maxDaily)||maxDaily<1||maxDaily>12||!Number.isInteger(breakMinutes)||breakMinutes<0||breakMinutes>120)throw new Error('Invalid study availability');
   for(const window of windows)if(!Number.isInteger(window.weekday)||window.weekday<0||window.weekday>6||parseTime(window.end)<=parseTime(window.start))throw new Error('Invalid study window');
   const start = new Date(FIXED_TODAY + 'T00:00:00Z');
-  const deadline = Math.min(...student.courses.map(c => Date.parse(c.deadline)));
-  const maxWeeks = Math.max(1, Math.ceil((deadline - Date.parse(FIXED_TODAY + 'T00:00:00-03:00')) / (7 * 86400000)));
+  const today = Date.parse(FIXED_TODAY + 'T00:00:00-03:00');
+  const upcomingDeadlines = student.courses.map(c => Date.parse(c.deadline)).filter(deadline => deadline > today);
+  const deadline = upcomingDeadlines.length ? Math.min(...upcomingDeadlines) : today;
+  const maxWeeks = Math.max(1, Math.ceil((deadline - today) / (7 * 86400000)));
   const count = Math.min(requested, maxWeeks, 16);
   const horizonEnd=Date.parse(FIXED_TODAY+'T00:00:00-03:00')+count*7*86400000;
   const replaceable=events.filter(e => e.extendedProperties?.private?.studyDemo==='true' && e.extendedProperties?.private?.student===student.student && !protectedIds.includes(e.id) && millis(e,'start')>=Date.parse(FIXED_TODAY+'T00:00:00-03:00') && millis(e,'start')<horizonEnd);
@@ -145,10 +147,14 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
       const candidate=candidates.shift();if((daily.get(candidate.dayKey)||0)>=maxDaily||busy.some(e=>overlaps(e,candidate)))continue;
       const cStart=millis(candidate,'start'),cEnd=millis(candidate,'end'),gap=breakMinutes*60000;
       if(weekBlocks.some(e=>cStart<millis(e,'end')+gap&&millis(e,'start')<cEnd+gap))continue;
-      const daysToDeadline=(Date.parse(sorted[0].deadline)-cStart)/86400000;
-      const other=focus?sorted.find(c=>c!==focus):null;
-      const course=focus?(placed%3===2&&other?other:focus):daysToDeadline<=14 && placed%3!==2?sorted[0]:sorted[(w+candidate.d)%sorted.length];
-      if(cEnd>Date.parse(course.deadline))continue;
+      // Choose among courses that can actually use this block. An expired
+      // course must not consume a candidate that another course can use.
+      const eligible=sorted.filter(c=>cEnd<=Date.parse(c.deadline));
+      if(!eligible.length)continue;
+      const daysToDeadline=(Date.parse(eligible[0].deadline)-cStart)/86400000;
+      const focused=focus&&eligible.includes(focus)?focus:null;
+      const other=focused?eligible.find(c=>c!==focused):null;
+      const course=focused?(placed%3===2&&other?other:focused):daysToDeadline<=14 && placed%3!==2?eligible[0]:eligible[(w+candidate.d)%eligible.length];
       const block={id:randomUUID().replaceAll('-',''),summary:'Study: '+course.name,start:candidate.start,end:candidate.end,
         status:w===0?'confirmed':'tentative',description:'Study planning demo. '+(w===0?'Near-term study block.':'Tentative; review at the next checkpoint.')+' Source: '+course.source,
         extendedProperties:{private:{studyDemo:'true',student:student.student,course:course.name}}};
