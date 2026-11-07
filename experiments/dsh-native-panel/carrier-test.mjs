@@ -15,7 +15,7 @@ try{
  const {port}=await service.listen(0);const origin=`http://127.0.0.1:${port}`,prefix='/v1/students/ana';
  const post=async(p,body)=>{let r=await fetch(origin+p,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});if(r.status!==201)throw Error('Synthetic setup failed: '+r.status);return r.json()};
  const event={id:'demo-class',summary:'Synthetic class',start:{dateTime:'2026-11-02T09:00:00-03:00'},end:{dateTime:'2026-11-02T11:00:00-03:00'}};
- for(const kind of ['context','evidence','calendar'])await post(prefix+'/revisions/'+kind,{expectedVersion:0,payload:kind==='calendar'?{events:[event]}:{synthetic:true}});
+ for(const kind of ['context','evidence','calendar'])await post(prefix+'/revisions/'+kind,{expectedVersion:0,payload:kind==='calendar'?{calendarId:'ana-calendar',timeZone:'America/Sao_Paulo',timeMin:'2026-11-02T00:00:00-03:00',timeMax:'2026-11-09T00:00:00-03:00',events:[event]}:{synthetic:true}});
  const proposal=await post(prefix+'/proposals',{versions:{context:1,evidence:1,calendar:1},payload:{sections:{near:{action:{type:'create',calendarId:'ana-calendar',event:{id:'demo-study',summary:'Synthetic study',start:{dateTime:'2026-11-03T14:00:00-03:00'},end:{dateTime:'2026-11-03T15:00:00-03:00'}}}}},sources:['course.md'],assumptions:[]}});
  child=spawn(repo+'/node_modules/.bin/node',[repo+'/node_modules/@deepseek-ai/dsh/lib/bin.js','--profile','web','--patch',patch,'--host','127.0.0.1','--port','0','--no-open'],{cwd:repo,env:{PATH:process.env.PATH,HOME:tmp,DSH_HOME:tmp+'/dsh',STUDY_PANEL_ORIGIN:origin,STUDY_PANEL_PROPOSAL:proposal.id},stdio:['ignore','pipe','pipe']});
  let pending='',target;

@@ -6,7 +6,7 @@ const original={context:1,evidence:1,calendar:1};
 const event={id:'study',summary:'Study',start:{dateTime:'2026-11-03T14:00:00-03:00'},end:{dateTime:'2026-11-03T15:00:00-03:00'}};
 const record=(versions=original)=>({id:'fixture',student:'ana',versions:{...versions},payload:{sections:{near:{action:{type:'create',calendarId:'ana-calendar',event}}}}});
 function setup({versions=original,latest={calendar:1,evidence:1,context:1},calendar,proposal}={}) {
-  const values={versions,latest,calendar:calendar??{student:'ana',kind:'calendar',version:1,payload:{events:[]}},proposal:proposal??record()};let count=0;
+  const values={versions,latest,calendar:calendar??{student:'ana',kind:'calendar',version:1,payload:{calendarId:'ana-calendar',timeZone:'America/Sao_Paulo',timeMin:'2026-11-02T00:00:00-03:00',timeMax:'2026-11-09T00:00:00-03:00',events:[]}},proposal:proposal??record()};let count=0;
   const fetchImpl=async url=>({ok:true,json:async()=>url.endsWith('/versions')?(count++?values.latest:values.versions):url.includes('/revisions/')?values.calendar:values.proposal});
   return {host:{origin:'http://127.0.0.1:12345',selected:'fixture',fetchImpl},values};
 }
@@ -29,4 +29,22 @@ test('panel reports stale proposals and rejects a concurrent revision',async()=>
 test('host rejects unsupported legacy proposal shape',async()=>{
   const unsupported=record();unsupported.payload={near:[event]};
   await assert.rejects(PanelHost.prototype.view.call(setup({proposal:unsupported}).host),/Unsupported proposal/);
+});
+
+test('host rejects unrepresented nested removals and sections',async()=>{
+  const nested=record();nested.payload.sections.near.remove=[event];
+  await assert.rejects(PanelHost.prototype.view.call(setup({proposal:nested}).host),/Unsupported proposal/);
+  const extra=record();extra.payload.sections.near.unexpected=true;
+  await assert.rejects(PanelHost.prototype.view.call(setup({proposal:extra}).host),/Unsupported proposal/);
+  const future=record();future.payload.sections.future={};
+  await assert.rejects(PanelHost.prototype.view.call(setup({proposal:future}).host),/Unsupported proposal/);
+});
+
+test('host rejects mismatched observation scope, calendar and malformed events',async()=>{
+  const calendar=structuredClone(setup().values.calendar);calendar.payload.calendarId='different';
+  await assert.rejects(PanelHost.prototype.view.call(setup({calendar}).host),/Unsupported proposal/);
+  const zone=structuredClone(setup().values.calendar);zone.payload.timeZone='UTC';
+  await assert.rejects(PanelHost.prototype.view.call(setup({calendar:zone}).host),/Unsupported calendar/);
+  const broken=structuredClone(setup().values.calendar);broken.payload.events=[null];
+  await assert.rejects(PanelHost.prototype.view.call(setup({calendar:broken}).host),/Unsupported calendar/);
 });
