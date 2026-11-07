@@ -104,3 +104,25 @@ test('calendar display labels after-attempt and stale snapshots in the actual cl
     assert.equal(nodes.get('#draft').hidden,true);
   }
 });
+
+test('client hides cancelled tombstones and labels tentative/free events and proposed details',async()=>{
+  const source=await readFile(new URL('../experiments/sdk-ui/app.js',import.meta.url),'utf8');
+  const nodes=new Map();
+  function element(){return {style:{},children:[],textContent:'',hidden:false,append(...items){this.children.push(...items)},replaceChildren(){this.children=[]},addEventListener(){}};}
+  const document={querySelector(key){if(!nodes.has(key))nodes.set(key,element());return nodes.get(key)},querySelectorAll(){return []},createElement(){return element()}};
+  const start={dateTime:'2026-11-03T14:00:00-03:00'},end={dateTime:'2026-11-03T15:00:00-03:00'};
+  const event={id:'abcde12345',summary:'Synthetic study',description:'Study planning demo.',status:'tentative',start,end};
+  const payload={calendarStatus:'shared-point-in-time',readOnly:true,events:[{id:'deleted',status:'cancelled'},{id:'existing',summary:'Flexible class',status:'tentative',transparency:'transparent',start,end}],proposal:{payload:{sections:{near:{action:{event}}}}},outcome:null};
+  const fetch=async()=>({ok:true,json:async()=>payload});
+  vm.runInNewContext(source,{document,fetch,Intl,Date});await new Promise(resolve=>setImmediate(resolve));
+  const rendered=JSON.stringify(nodes.get('#calendar'));
+  assert.match(rendered,/Existing · Flexible class · tentative · free/);assert.match(rendered,/Proposed · Synthetic study/);assert.doesNotMatch(rendered,/deleted/);
+  assert.equal(nodes.get('#event-status').textContent,'tentative');assert.equal(nodes.get('#description').textContent,'Study planning demo.');
+});
+
+test('both calendar pages explain that empty space is not confirmed availability',async()=>{
+  for(const name of ['index.html','compare-index.html']){
+    const html=await readFile(new URL('../experiments/sdk-ui/'+name,import.meta.url),'utf8');
+    assert.match(html,/Empty grid space is not confirmed availability/);
+  }
+});

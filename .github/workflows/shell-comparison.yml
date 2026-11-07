@@ -1,0 +1,30 @@
+name: Synthetic same-data shell comparison
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+          cache: npm
+      - run: npm ci
+      - name: Check out the tested native panel revision
+        uses: actions/checkout@v4
+        with:
+          ref: 7f3081d66bfa816d93c6a70ca92b4102afbe9a25
+          path: .paired-native
+          persist-credentials: false
+      - name: Run synthetic same-data and parity checks
+        run: |
+          ln -s "$GITHUB_WORKSPACE/node_modules" .paired-native/node_modules
+          SHELL_COMPARISON_INTEGRATION=1 \
+          DSH_NATIVE_PANEL_ENTRY="$GITHUB_WORKSPACE/.paired-native/experiments/dsh-native-panel/index.mjs" \
+            node --test --test-isolation=none tests/sdk-native-shared-domain.integration.mjs
