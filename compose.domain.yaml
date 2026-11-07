@@ -1,0 +1,26 @@
+# Linux local-development spike. Host networking lets the service bind strictly
+# to 127.0.0.1 and preserve its Host and remote-address validation.
+services:
+  domain:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.domain
+    network_mode: host
+    read_only: true
+    init: true
+    user: "1000:1000"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 256m
+    cpus: 0.5
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m
+    environment:
+      PORT: "${DOMAIN_PORT:-4176}"
+      DOMAIN_DB: /data/domain.sqlite
+    volumes:
+      - domain-state:/data
+    restart: "no"
+volumes:
+  domain-state:
