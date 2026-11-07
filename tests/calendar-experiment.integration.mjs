@@ -11,6 +11,7 @@ import { createDomainService } from '../src/domain-service.mjs';
 import { DomainObservationClient } from '../src/foundation/domain-http-observer-client.mjs';
 import { observeCalendar } from '../src/foundation/calendar-domain-observer.mjs';
 import { applyApprovedCreate } from '../src/foundation/calendar-approved-create.mjs';
+import { createSyntheticConsumer } from '../src/foundation/sdk-app-consumer.mjs';
 
 async function syntheticToken(run, userId, redirectUri) {
   const credentials = run.syntheticCredentials();
@@ -118,5 +119,30 @@ test('saved checkpoint replays into a new OAuth identity with preserved data and
     const results = await Promise.allSettled([first?.close(), second?.close(), fs.rm(temporary, { recursive: true, force: true })]);
     const failure = results.find(item => item.status === 'rejected');
     if (failure) throw failure.reason;
+  }
+});
+
+test('deterministic consumer reads context, drafts and applies one separately reviewed block', { skip: process.env.CALENDARPIT_LIVE_TEST !== '1', timeout: 90_000 }, async () => {
+  const fixture=JSON.parse(await fs.readFile(new URL('../fixtures/calendars/ana.json',import.meta.url),'utf8'));
+  const profile=JSON.parse(await fs.readFile(new URL('../fixtures/students/ana/courses.json',import.meta.url),'utf8'));
+  const redirectUri='http://127.0.0.1:4175/callback';
+  const context={scenarioId:'ana',simulatedClock:'2026-11-02T00:00:00-03:00',timeZone:'America/Sao_Paulo',generatorVersion:'fixture-v1',seed:'0'};
+  const domainService=createDomainService();let experiment;
+  try {
+    const address=await domainService.listen(),domain=new DomainObservationClient(`http://127.0.0.1:${address.port}`);
+    experiment=await startCalendarExperiment({fixture,redirectUri,context});
+    const token=await syntheticToken(experiment,'ana',redirectUri),provider=experiment.provider(token);
+    const {agent,human}=await createSyntheticConsumer({domain,provider,student:'ana',profile,origin:experiment.origin,accessToken:token});
+    assert.equal((await agent.readContext()).synthetic,true);
+    const calendar=await agent.readCalendar();assert(calendar.payload.events.length>0);
+    const proposal=await agent.draftOneBlock(),event=proposal.payload.sections.near.action.event;
+    await assert.rejects(()=>provider.getEvent('ana-calendar',event.id),error=>error instanceof CalendarApiError&&error.status===404);
+    await assert.rejects(()=>human.approveAndApply(proposal.id,'yes'),/Explicit APPROVE/);
+    const result=await human.approveAndApply(proposal.id,'APPROVE');
+    assert.equal(result.state,'completed',JSON.stringify(result.result));
+    assert.equal((await provider.getEvent('ana-calendar',event.id)).summary,event.summary);
+  } finally {
+    const results=await Promise.allSettled([experiment?.close(),domainService.close()]);
+    const failure=results.find(item=>item.status==='rejected');if(failure)throw failure.reason;
   }
 });
