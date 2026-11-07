@@ -4,6 +4,7 @@
   "notes": [
     "Invented text and records; do not use as a wellbeing or academic guidance source.",
     "PDF names and page numbers simulate extracted text; no corresponding PDFs are supplied.",
+    "All queries are evaluated as of 2026-11-09; scenario start references remain 2026-11-02. Surface source dates to the answering system.",
     "Bilingual cases are aligned by concept; labels and translations need independent human review."
   ],
   "passages": [
@@ -251,7 +252,7 @@
       "id": "feedback:en",
       "concept": "feedback",
       "language": "en",
-      "text": "For the previous week Ana provided no completion feedback; completion is unknown.",
+      "text": "For the previous week Ana provided no completion feedback for her study sessions; whether she completed them is unknown.",
       "source": {
         "path": "synthetic/feedback/checkins.json",
         "kind": "synthetic_text",
@@ -263,7 +264,7 @@
       "id": "feedback:pt-BR",
       "concept": "feedback",
       "language": "pt-BR",
-      "text": "Na semana anterior, Ana não enviou confirmação de conclusão; a conclusão é desconhecida.",
+      "text": "Na semana anterior, Ana não enviou informações sobre a conclusão das sessões de estudo; não se sabe se ela as concluiu.",
       "source": {
         "path": "synthetic/feedback/checkins.json",
         "kind": "synthetic_text",
@@ -299,7 +300,7 @@
       "id": "exam-outline:en",
       "concept": "exam-outline",
       "language": "en",
-      "text": "Bruno is preparing for a professional exam, with a target date six weeks from 2 November.",
+      "text": "Bruno is preparing for a public-service entrance exam, with a target date six weeks from 2 November.",
       "source": {
         "path": "synthetic/exam-prep/outline.pdf",
         "kind": "simulated_pdf_extraction",
@@ -311,7 +312,7 @@
       "id": "exam-outline:pt-BR",
       "concept": "exam-outline",
       "language": "pt-BR",
-      "text": "Bruno está se preparando para um concurso, com data-alvo seis semanas após 2 de novembro.",
+      "text": "Bruno está se preparando para um concurso público, com data-alvo seis semanas após 2 de novembro.",
       "source": {
         "path": "synthetic/exam-prep/outline.pdf",
         "kind": "simulated_pdf_extraction",
@@ -395,7 +396,7 @@
       "id": "food:en",
       "concept": "food",
       "language": "en",
-      "text": "Ana reserves a meal break on weekdays between 13:00 and 14:00.",
+      "text": "Ana reserves a lunch break on weekdays between 13:00 and 14:00.",
       "source": {
         "path": "synthetic/notes/preferences.md",
         "kind": "synthetic_text",
@@ -447,6 +448,7 @@
       "language": "en",
       "type": "exact",
       "text": "What is the final statistics exam date in the current syllabus?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "syllabus-new:en"
       ],
@@ -461,6 +463,7 @@
       "language": "pt-BR",
       "type": "exact",
       "text": "Qual é a data da prova final de estatística no plano atual?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "syllabus-new:pt-BR"
       ],
@@ -475,6 +478,7 @@
       "language": "en",
       "type": "paraphrase",
       "text": "When is Ana unavailable because of her job on weekdays?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "ana-work:en"
       ],
@@ -489,6 +493,7 @@
       "language": "pt-BR",
       "type": "paraphrase",
       "text": "Em que horário Ana não está disponível por causa do emprego nos dias úteis?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "ana-work:pt-BR"
       ],
@@ -503,6 +508,7 @@
       "language": "en",
       "type": "paraphrase",
       "text": "How long does Ana need to get from work to campus?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "travel:en"
       ],
@@ -517,6 +523,7 @@
       "language": "pt-BR",
       "type": "paraphrase",
       "text": "Quanto tempo Ana precisa para ir do trabalho ao campus?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "travel:pt-BR"
       ],
@@ -530,7 +537,8 @@
       "concept": "latest-hours",
       "language": "en",
       "type": "temporal",
-      "text": "What is Ana’s most recently stated weekly study capacity?",
+      "text": "What is Ana’s latest stated weekly study capacity?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "ana-new-hours:en"
       ],
@@ -538,7 +546,7 @@
         "ana-old-hours:en",
         "bruno-hours:en"
       ],
-      "expected_evidence_state": "superseded"
+      "expected_evidence_state": "supported"
     },
     {
       "id": "latest-hours:pt-BR",
@@ -546,6 +554,7 @@
       "language": "pt-BR",
       "type": "temporal",
       "text": "Qual é a capacidade semanal de estudo informada mais recentemente por Ana?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "ana-new-hours:pt-BR"
       ],
@@ -553,14 +562,15 @@
         "ana-old-hours:pt-BR",
         "bruno-hours:pt-BR"
       ],
-      "expected_evidence_state": "superseded"
+      "expected_evidence_state": "supported"
     },
     {
       "id": "hours-conflict:en",
       "concept": "hours-conflict",
       "language": "en",
       "type": "conflict",
-      "text": "Did Ana change her planned study hours, and how?",
+      "text": "How does Ana’s earlier weekly study goal compare with her latest stated capacity?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "ana-old-hours:en",
         "ana-new-hours:en"
@@ -568,14 +578,15 @@
       "hard_negative_ids": [
         "bruno-hours:en"
       ],
-      "expected_evidence_state": "changed-over-time"
+      "expected_evidence_state": "goal-vs-capacity"
     },
     {
       "id": "hours-conflict:pt-BR",
       "concept": "hours-conflict",
       "language": "pt-BR",
       "type": "conflict",
-      "text": "Ana mudou as horas de estudo planejadas? Como?",
+      "text": "Como a meta semanal de estudo anterior de Ana se compara à capacidade informada mais recentemente?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "ana-old-hours:pt-BR",
         "ana-new-hours:pt-BR"
@@ -583,7 +594,7 @@
       "hard_negative_ids": [
         "bruno-hours:pt-BR"
       ],
-      "expected_evidence_state": "changed-over-time"
+      "expected_evidence_state": "goal-vs-capacity"
     },
     {
       "id": "latest-deadline:en",
@@ -591,6 +602,7 @@
       "language": "en",
       "type": "temporal",
       "text": "Use the newest syllabus: when is the final exam?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "syllabus-new:en"
       ],
@@ -606,6 +618,7 @@
       "language": "pt-BR",
       "type": "temporal",
       "text": "Usando o plano de curso mais recente, quando é a prova final?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "syllabus-new:pt-BR"
       ],
@@ -621,6 +634,7 @@
       "language": "en",
       "type": "conflict",
       "text": "What differing final exam dates appear across syllabus versions?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "syllabus-new:en",
         "syllabus-old:en"
@@ -636,6 +650,7 @@
       "language": "pt-BR",
       "type": "conflict",
       "text": "Quais datas diferentes da prova final aparecem nas versões do plano de curso?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "syllabus-new:pt-BR",
         "syllabus-old:pt-BR"
@@ -651,6 +666,7 @@
       "language": "en",
       "type": "inapplicable",
       "text": "How much weekly study time did Bruno report?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "bruno-hours:en"
       ],
@@ -666,6 +682,7 @@
       "language": "pt-BR",
       "type": "inapplicable",
       "text": "Quanto tempo semanal de estudo Bruno informou?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "bruno-hours:pt-BR"
       ],
@@ -681,6 +698,7 @@
       "language": "en",
       "type": "paraphrase",
       "text": "What interval does Ana prefer between sessions?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "break:en"
       ],
@@ -695,6 +713,7 @@
       "language": "pt-BR",
       "type": "paraphrase",
       "text": "Qual intervalo Ana prefere entre as sessões?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "break:pt-BR"
       ],
@@ -708,28 +727,30 @@
       "concept": "missing-feedback",
       "language": "en",
       "type": "missing",
-      "text": "Did Ana finish her scheduled work last week?",
+      "text": "Did Ana finish her scheduled study sessions last week?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "feedback:en"
       ],
       "hard_negative_ids": [
         "ana-new-hours:en"
       ],
-      "expected_evidence_state": "unknown"
+      "expected_evidence_state": "unknown-with-evidence"
     },
     {
       "id": "missing-feedback:pt-BR",
       "concept": "missing-feedback",
       "language": "pt-BR",
       "type": "missing",
-      "text": "Ana concluiu o que estava programado na semana passada?",
+      "text": "Ana concluiu as sessões de estudo programadas para a semana passada?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "feedback:pt-BR"
       ],
       "hard_negative_ids": [
         "ana-new-hours:pt-BR"
       ],
-      "expected_evidence_state": "unknown"
+      "expected_evidence_state": "unknown-with-evidence"
     },
     {
       "id": "event-permission:en",
@@ -737,6 +758,7 @@
       "language": "en",
       "type": "exact",
       "text": "May the Friday leisure event be moved automatically?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "event-flex:en"
       ],
@@ -751,6 +773,7 @@
       "language": "pt-BR",
       "type": "exact",
       "text": "O evento de lazer de sexta pode ser remarcado automaticamente?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "event-flex:pt-BR"
       ],
@@ -764,7 +787,8 @@
       "concept": "academic-horizon",
       "language": "en",
       "type": "paraphrase",
-      "text": "How far away is Bruno’s professional exam target from the simulated start?",
+      "text": "How far away is Bruno’s public-service exam target from the simulated start?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "exam-outline:en"
       ],
@@ -779,7 +803,8 @@
       "concept": "academic-horizon",
       "language": "pt-BR",
       "type": "paraphrase",
-      "text": "Quanto tempo falta para a data-alvo do concurso de Bruno desde o início simulado?",
+      "text": "Quanto tempo falta para a data-alvo do concurso público de Bruno desde o início simulado?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "exam-outline:pt-BR"
       ],
@@ -795,6 +820,7 @@
       "language": "en",
       "type": "inapplicable",
       "text": "Which fictional sample guidance describes an adult learner’s review?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "mock-guide:en"
       ],
@@ -809,6 +835,7 @@
       "language": "pt-BR",
       "type": "inapplicable",
       "text": "Qual orientação fictícia de exemplo descreve a revisão de um estudante adulto?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "mock-guide:pt-BR"
       ],
@@ -822,28 +849,30 @@
       "concept": "desired-activity",
       "language": "en",
       "type": "paraphrase",
-      "text": "What outdoor activity matters to Ana, and when is it scheduled?",
+      "text": "What outdoor activity matters to Ana, and what is known about its time?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "exercise:en"
       ],
       "hard_negative_ids": [
         "event-flex:en"
       ],
-      "expected_evidence_state": "preference-not-commitment"
+      "expected_evidence_state": "partial-unknown-with-evidence"
     },
     {
       "id": "desired-activity:pt-BR",
       "concept": "desired-activity",
       "language": "pt-BR",
       "type": "paraphrase",
-      "text": "Que atividade ao ar livre importa para Ana e quando ela está agendada?",
+      "text": "Que atividade ao ar livre importa para Ana e o que se sabe sobre o horário dela?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "exercise:pt-BR"
       ],
       "hard_negative_ids": [
         "event-flex:pt-BR"
       ],
-      "expected_evidence_state": "preference-not-commitment"
+      "expected_evidence_state": "partial-unknown-with-evidence"
     },
     {
       "id": "two-contexts:en",
@@ -851,6 +880,7 @@
       "language": "en",
       "type": "multihop",
       "text": "What class comes immediately before Ana’s Monday study window?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "class:en",
         "window:en"
@@ -866,6 +896,7 @@
       "language": "pt-BR",
       "type": "multihop",
       "text": "Que aula ocorre imediatamente antes da janela de estudo de Ana na segunda-feira?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "class:pt-BR",
         "window:pt-BR"
@@ -881,6 +912,7 @@
       "language": "en",
       "type": "no-answer",
       "text": "What is Ana’s caffeine tolerance?",
+      "as_of": "2026-11-09",
       "relevant_ids": [],
       "hard_negative_ids": [
         "food:en",
@@ -894,6 +926,7 @@
       "language": "pt-BR",
       "type": "no-answer",
       "text": "Qual é a tolerância de Ana à cafeína?",
+      "as_of": "2026-11-09",
       "relevant_ids": [],
       "hard_negative_ids": [
         "food:pt-BR",
@@ -907,6 +940,7 @@
       "language": "en",
       "type": "no-answer",
       "text": "What scholarship amount does Bruno receive?",
+      "as_of": "2026-11-09",
       "relevant_ids": [],
       "hard_negative_ids": [
         "ana-work:en",
@@ -920,6 +954,7 @@
       "language": "pt-BR",
       "type": "no-answer",
       "text": "Qual é o valor da bolsa que Bruno recebe?",
+      "as_of": "2026-11-09",
       "relevant_ids": [],
       "hard_negative_ids": [
         "ana-work:pt-BR",
@@ -933,6 +968,7 @@
       "language": "en",
       "type": "exact",
       "text": "What is the due date of the statistics project?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "deadline-extra:en"
       ],
@@ -947,6 +983,7 @@
       "language": "pt-BR",
       "type": "exact",
       "text": "Qual é o prazo de entrega do projeto de estatística?",
+      "as_of": "2026-11-09",
       "relevant_ids": [
         "deadline-extra:pt-BR"
       ],
