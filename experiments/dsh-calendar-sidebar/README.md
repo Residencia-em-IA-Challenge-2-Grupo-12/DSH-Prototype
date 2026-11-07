@@ -9,3 +9,5 @@ Run the offline structure test from the repository root:
 ```sh
 node --test tests/dsh-calendar-sidebar.test.mjs
 ```
+
+The host-side Remote feasibility check can be run from the repository root with `node --test tests/dsh-remote-gateway.test.mjs`. It invokes the installed gateway in-process and checks a synthetic read and several denials. It uses source-mode fallback rather than generated strict descriptors; the generator and a client-to-host transport have not been verified. Owner principals bypass RemoteAccess policy, so a real backend must enforce its own write and review authority.
