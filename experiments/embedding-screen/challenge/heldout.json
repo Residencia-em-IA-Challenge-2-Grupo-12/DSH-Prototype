@@ -1,0 +1,959 @@
+{
+  "schema_version": 1,
+  "status": "synthetic-unreviewed-not-real-evidence",
+  "notes": [
+    "Invented text and records; do not use as a wellbeing or academic guidance source.",
+    "PDF names and page numbers simulate extracted text; no corresponding PDFs are supplied.",
+    "Bilingual cases are aligned by concept; labels and translations need independent human review."
+  ],
+  "passages": [
+    {
+      "id": "syllabus-new:en",
+      "concept": "syllabus-new",
+      "language": "en",
+      "text": "Final statistics exam: 14 December 2026. The preceding review is on 10 December.",
+      "source": {
+        "path": "synthetic/course/syllabus.pdf",
+        "kind": "simulated_pdf_extraction",
+        "page": 3,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "syllabus-new:pt-BR",
+      "concept": "syllabus-new",
+      "language": "pt-BR",
+      "text": "Prova final de estatística: 14 de dezembro de 2026. A revisão anterior ocorre em 10 de dezembro.",
+      "source": {
+        "path": "synthetic/course/syllabus.pdf",
+        "kind": "simulated_pdf_extraction",
+        "page": 3,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "syllabus-old:en",
+      "concept": "syllabus-old",
+      "language": "en",
+      "text": "Final statistics exam: 7 December 2026. This syllabus is an older course version.",
+      "source": {
+        "path": "synthetic/course/old-syllabus.pdf",
+        "kind": "simulated_pdf_extraction",
+        "page": 2,
+        "updated": "2026-10-05"
+      }
+    },
+    {
+      "id": "syllabus-old:pt-BR",
+      "concept": "syllabus-old",
+      "language": "pt-BR",
+      "text": "Prova final de estatística: 7 de dezembro de 2026. Este plano de curso é uma versão antiga.",
+      "source": {
+        "path": "synthetic/course/old-syllabus.pdf",
+        "kind": "simulated_pdf_extraction",
+        "page": 2,
+        "updated": "2026-10-05"
+      }
+    },
+    {
+      "id": "ana-old-hours:en",
+      "concept": "ana-old-hours",
+      "language": "en",
+      "text": "Ana initially planned six hours of independent study per week.",
+      "source": {
+        "path": "synthetic/notes/ana-context.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "ana-old-hours:pt-BR",
+      "concept": "ana-old-hours",
+      "language": "pt-BR",
+      "text": "Ana inicialmente planejou seis horas de estudo individual por semana.",
+      "source": {
+        "path": "synthetic/notes/ana-context.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "ana-new-hours:en",
+      "concept": "ana-new-hours",
+      "language": "en",
+      "text": "At her latest check-in, Ana reduced her available independent study time to four hours per week.",
+      "source": {
+        "path": "synthetic/notes/ana-checkin.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-09"
+      }
+    },
+    {
+      "id": "ana-new-hours:pt-BR",
+      "concept": "ana-new-hours",
+      "language": "pt-BR",
+      "text": "Na atualização mais recente, Ana reduziu o tempo disponível para estudo individual para quatro horas por semana.",
+      "source": {
+        "path": "synthetic/notes/ana-checkin.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-09"
+      }
+    },
+    {
+      "id": "bruno-hours:en",
+      "concept": "bruno-hours",
+      "language": "en",
+      "text": "Bruno, a different student, has six hours available for weekly study.",
+      "source": {
+        "path": "synthetic/notes/bruno-context.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-09"
+      }
+    },
+    {
+      "id": "bruno-hours:pt-BR",
+      "concept": "bruno-hours",
+      "language": "pt-BR",
+      "text": "Bruno, outro estudante, tem seis horas disponíveis para estudo semanal.",
+      "source": {
+        "path": "synthetic/notes/bruno-context.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-09"
+      }
+    },
+    {
+      "id": "ana-work:en",
+      "concept": "ana-work",
+      "language": "en",
+      "text": "Ana works Monday through Friday from 09:00 to 13:00.",
+      "source": {
+        "path": "synthetic/calendar/events.json",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "ana-work:pt-BR",
+      "concept": "ana-work",
+      "language": "pt-BR",
+      "text": "Ana trabalha de segunda a sexta-feira das 09:00 às 13:00.",
+      "source": {
+        "path": "synthetic/calendar/events.json",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "class:en",
+      "concept": "class",
+      "language": "en",
+      "text": "Ana has a statistics lecture on Monday from 18:00 to 20:00.",
+      "source": {
+        "path": "synthetic/calendar/events.json",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "class:pt-BR",
+      "concept": "class",
+      "language": "pt-BR",
+      "text": "Ana tem aula de estatística na segunda-feira das 18:00 às 20:00.",
+      "source": {
+        "path": "synthetic/calendar/events.json",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "window:en",
+      "concept": "window",
+      "language": "en",
+      "text": "Ana can study on Monday from 20:00 to 22:00, after class.",
+      "source": {
+        "path": "synthetic/notes/preferences.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "window:pt-BR",
+      "concept": "window",
+      "language": "pt-BR",
+      "text": "Ana pode estudar na segunda-feira das 20:00 às 22:00, depois da aula.",
+      "source": {
+        "path": "synthetic/notes/preferences.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "break:en",
+      "concept": "break",
+      "language": "en",
+      "text": "Ana prefers a 15-minute pause between study blocks when possible.",
+      "source": {
+        "path": "synthetic/notes/preferences.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "break:pt-BR",
+      "concept": "break",
+      "language": "pt-BR",
+      "text": "Ana prefere uma pausa de 15 minutos entre blocos de estudo quando possível.",
+      "source": {
+        "path": "synthetic/notes/preferences.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "travel:en",
+      "concept": "travel",
+      "language": "en",
+      "text": "The trip from Ana’s workplace to campus takes 45 minutes.",
+      "source": {
+        "path": "synthetic/notes/travel.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "travel:pt-BR",
+      "concept": "travel",
+      "language": "pt-BR",
+      "text": "O trajeto do trabalho de Ana até o campus leva 45 minutos.",
+      "source": {
+        "path": "synthetic/notes/travel.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "feedback:en",
+      "concept": "feedback",
+      "language": "en",
+      "text": "For the previous week Ana provided no completion feedback; completion is unknown.",
+      "source": {
+        "path": "synthetic/feedback/checkins.json",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-09"
+      }
+    },
+    {
+      "id": "feedback:pt-BR",
+      "concept": "feedback",
+      "language": "pt-BR",
+      "text": "Na semana anterior, Ana não enviou confirmação de conclusão; a conclusão é desconhecida.",
+      "source": {
+        "path": "synthetic/feedback/checkins.json",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-09"
+      }
+    },
+    {
+      "id": "event-flex:en",
+      "concept": "event-flex",
+      "language": "en",
+      "text": "Ana says the Friday leisure event can be moved if she explicitly approves the change.",
+      "source": {
+        "path": "synthetic/notes/preferences.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "event-flex:pt-BR",
+      "concept": "event-flex",
+      "language": "pt-BR",
+      "text": "Ana diz que o evento de lazer de sexta-feira pode ser remarcado se ela aprovar explicitamente a alteração.",
+      "source": {
+        "path": "synthetic/notes/preferences.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "exam-outline:en",
+      "concept": "exam-outline",
+      "language": "en",
+      "text": "Bruno is preparing for a professional exam, with a target date six weeks from 2 November.",
+      "source": {
+        "path": "synthetic/exam-prep/outline.pdf",
+        "kind": "simulated_pdf_extraction",
+        "page": 4,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "exam-outline:pt-BR",
+      "concept": "exam-outline",
+      "language": "pt-BR",
+      "text": "Bruno está se preparando para um concurso, com data-alvo seis semanas após 2 de novembro.",
+      "source": {
+        "path": "synthetic/exam-prep/outline.pdf",
+        "kind": "simulated_pdf_extraction",
+        "page": 4,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "exercise:en",
+      "concept": "exercise",
+      "language": "en",
+      "text": "Ana values a walk outside on Saturday, but has not chosen a time.",
+      "source": {
+        "path": "synthetic/notes/preferences.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "exercise:pt-BR",
+      "concept": "exercise",
+      "language": "pt-BR",
+      "text": "Ana valoriza caminhar ao ar livre no sábado, mas ainda não escolheu um horário.",
+      "source": {
+        "path": "synthetic/notes/preferences.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "mock-guide:en",
+      "concept": "mock-guide",
+      "language": "en",
+      "text": "FICTIONAL TEST GUIDE: For an adult learner, a short recall exercise is one possible review activity.",
+      "source": {
+        "path": "synthetic/guides/example-adult.pdf",
+        "kind": "simulated_pdf_extraction",
+        "page": 5,
+        "updated": "2026-10-01"
+      }
+    },
+    {
+      "id": "mock-guide:pt-BR",
+      "concept": "mock-guide",
+      "language": "pt-BR",
+      "text": "GUIA FICTÍCIO DE TESTE: Para um estudante adulto, um breve exercício de recordação é uma possível atividade de revisão.",
+      "source": {
+        "path": "synthetic/guides/example-adult.pdf",
+        "kind": "simulated_pdf_extraction",
+        "page": 5,
+        "updated": "2026-10-01"
+      }
+    },
+    {
+      "id": "mock-minor:en",
+      "concept": "mock-minor",
+      "language": "en",
+      "text": "FICTIONAL TEST GUIDE: A minor’s sample schedule includes an adult supervisor.",
+      "source": {
+        "path": "synthetic/guides/example-minor.pdf",
+        "kind": "simulated_pdf_extraction",
+        "page": 2,
+        "updated": "2026-10-01"
+      }
+    },
+    {
+      "id": "mock-minor:pt-BR",
+      "concept": "mock-minor",
+      "language": "pt-BR",
+      "text": "GUIA FICTÍCIO DE TESTE: Um exemplo de rotina para menores inclui a supervisão de um adulto.",
+      "source": {
+        "path": "synthetic/guides/example-minor.pdf",
+        "kind": "simulated_pdf_extraction",
+        "page": 2,
+        "updated": "2026-10-01"
+      }
+    },
+    {
+      "id": "food:en",
+      "concept": "food",
+      "language": "en",
+      "text": "Ana reserves a meal break on weekdays between 13:00 and 14:00.",
+      "source": {
+        "path": "synthetic/notes/preferences.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "food:pt-BR",
+      "concept": "food",
+      "language": "pt-BR",
+      "text": "Ana reserva uma pausa para almoço nos dias úteis entre 13:00 e 14:00.",
+      "source": {
+        "path": "synthetic/notes/preferences.md",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "deadline-extra:en",
+      "concept": "deadline-extra",
+      "language": "en",
+      "text": "The statistics project is due on 20 November; the final exam is a different deadline.",
+      "source": {
+        "path": "synthetic/course/assignment.txt",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    },
+    {
+      "id": "deadline-extra:pt-BR",
+      "concept": "deadline-extra",
+      "language": "pt-BR",
+      "text": "O projeto de estatística deve ser entregue em 20 de novembro; a prova final tem outro prazo.",
+      "source": {
+        "path": "synthetic/course/assignment.txt",
+        "kind": "synthetic_text",
+        "page": null,
+        "updated": "2026-11-02"
+      }
+    }
+  ],
+  "queries": [
+    {
+      "id": "exact-deadline:en",
+      "concept": "exact-deadline",
+      "language": "en",
+      "type": "exact",
+      "text": "What is the final statistics exam date in the current syllabus?",
+      "relevant_ids": [
+        "syllabus-new:en"
+      ],
+      "hard_negative_ids": [
+        "deadline-extra:en"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "exact-deadline:pt-BR",
+      "concept": "exact-deadline",
+      "language": "pt-BR",
+      "type": "exact",
+      "text": "Qual é a data da prova final de estatística no plano atual?",
+      "relevant_ids": [
+        "syllabus-new:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "deadline-extra:pt-BR"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "paraphrase-work:en",
+      "concept": "paraphrase-work",
+      "language": "en",
+      "type": "paraphrase",
+      "text": "When is Ana unavailable because of her job on weekdays?",
+      "relevant_ids": [
+        "ana-work:en"
+      ],
+      "hard_negative_ids": [
+        "bruno-hours:en"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "paraphrase-work:pt-BR",
+      "concept": "paraphrase-work",
+      "language": "pt-BR",
+      "type": "paraphrase",
+      "text": "Em que horário Ana não está disponível por causa do emprego nos dias úteis?",
+      "relevant_ids": [
+        "ana-work:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "bruno-hours:pt-BR"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "paraphrase-travel:en",
+      "concept": "paraphrase-travel",
+      "language": "en",
+      "type": "paraphrase",
+      "text": "How long does Ana need to get from work to campus?",
+      "relevant_ids": [
+        "travel:en"
+      ],
+      "hard_negative_ids": [
+        "ana-work:en"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "paraphrase-travel:pt-BR",
+      "concept": "paraphrase-travel",
+      "language": "pt-BR",
+      "type": "paraphrase",
+      "text": "Quanto tempo Ana precisa para ir do trabalho ao campus?",
+      "relevant_ids": [
+        "travel:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "ana-work:pt-BR"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "latest-hours:en",
+      "concept": "latest-hours",
+      "language": "en",
+      "type": "temporal",
+      "text": "What is Ana’s most recently stated weekly study capacity?",
+      "relevant_ids": [
+        "ana-new-hours:en"
+      ],
+      "hard_negative_ids": [
+        "ana-old-hours:en",
+        "bruno-hours:en"
+      ],
+      "expected_evidence_state": "superseded"
+    },
+    {
+      "id": "latest-hours:pt-BR",
+      "concept": "latest-hours",
+      "language": "pt-BR",
+      "type": "temporal",
+      "text": "Qual é a capacidade semanal de estudo informada mais recentemente por Ana?",
+      "relevant_ids": [
+        "ana-new-hours:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "ana-old-hours:pt-BR",
+        "bruno-hours:pt-BR"
+      ],
+      "expected_evidence_state": "superseded"
+    },
+    {
+      "id": "hours-conflict:en",
+      "concept": "hours-conflict",
+      "language": "en",
+      "type": "conflict",
+      "text": "Did Ana change her planned study hours, and how?",
+      "relevant_ids": [
+        "ana-old-hours:en",
+        "ana-new-hours:en"
+      ],
+      "hard_negative_ids": [
+        "bruno-hours:en"
+      ],
+      "expected_evidence_state": "changed-over-time"
+    },
+    {
+      "id": "hours-conflict:pt-BR",
+      "concept": "hours-conflict",
+      "language": "pt-BR",
+      "type": "conflict",
+      "text": "Ana mudou as horas de estudo planejadas? Como?",
+      "relevant_ids": [
+        "ana-old-hours:pt-BR",
+        "ana-new-hours:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "bruno-hours:pt-BR"
+      ],
+      "expected_evidence_state": "changed-over-time"
+    },
+    {
+      "id": "latest-deadline:en",
+      "concept": "latest-deadline",
+      "language": "en",
+      "type": "temporal",
+      "text": "Use the newest syllabus: when is the final exam?",
+      "relevant_ids": [
+        "syllabus-new:en"
+      ],
+      "hard_negative_ids": [
+        "syllabus-old:en",
+        "deadline-extra:en"
+      ],
+      "expected_evidence_state": "superseded"
+    },
+    {
+      "id": "latest-deadline:pt-BR",
+      "concept": "latest-deadline",
+      "language": "pt-BR",
+      "type": "temporal",
+      "text": "Usando o plano de curso mais recente, quando é a prova final?",
+      "relevant_ids": [
+        "syllabus-new:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "syllabus-old:pt-BR",
+        "deadline-extra:pt-BR"
+      ],
+      "expected_evidence_state": "superseded"
+    },
+    {
+      "id": "deadline-conflict:en",
+      "concept": "deadline-conflict",
+      "language": "en",
+      "type": "conflict",
+      "text": "What differing final exam dates appear across syllabus versions?",
+      "relevant_ids": [
+        "syllabus-new:en",
+        "syllabus-old:en"
+      ],
+      "hard_negative_ids": [
+        "deadline-extra:en"
+      ],
+      "expected_evidence_state": "changed-over-time"
+    },
+    {
+      "id": "deadline-conflict:pt-BR",
+      "concept": "deadline-conflict",
+      "language": "pt-BR",
+      "type": "conflict",
+      "text": "Quais datas diferentes da prova final aparecem nas versões do plano de curso?",
+      "relevant_ids": [
+        "syllabus-new:pt-BR",
+        "syllabus-old:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "deadline-extra:pt-BR"
+      ],
+      "expected_evidence_state": "changed-over-time"
+    },
+    {
+      "id": "separate-person:en",
+      "concept": "separate-person",
+      "language": "en",
+      "type": "inapplicable",
+      "text": "How much weekly study time did Bruno report?",
+      "relevant_ids": [
+        "bruno-hours:en"
+      ],
+      "hard_negative_ids": [
+        "ana-old-hours:en",
+        "ana-new-hours:en"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "separate-person:pt-BR",
+      "concept": "separate-person",
+      "language": "pt-BR",
+      "type": "inapplicable",
+      "text": "Quanto tempo semanal de estudo Bruno informou?",
+      "relevant_ids": [
+        "bruno-hours:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "ana-old-hours:pt-BR",
+        "ana-new-hours:pt-BR"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "student-break:en",
+      "concept": "student-break",
+      "language": "en",
+      "type": "paraphrase",
+      "text": "What interval does Ana prefer between sessions?",
+      "relevant_ids": [
+        "break:en"
+      ],
+      "hard_negative_ids": [
+        "food:en"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "student-break:pt-BR",
+      "concept": "student-break",
+      "language": "pt-BR",
+      "type": "paraphrase",
+      "text": "Qual intervalo Ana prefere entre as sessões?",
+      "relevant_ids": [
+        "break:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "food:pt-BR"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "missing-feedback:en",
+      "concept": "missing-feedback",
+      "language": "en",
+      "type": "missing",
+      "text": "Did Ana finish her scheduled work last week?",
+      "relevant_ids": [
+        "feedback:en"
+      ],
+      "hard_negative_ids": [
+        "ana-new-hours:en"
+      ],
+      "expected_evidence_state": "unknown"
+    },
+    {
+      "id": "missing-feedback:pt-BR",
+      "concept": "missing-feedback",
+      "language": "pt-BR",
+      "type": "missing",
+      "text": "Ana concluiu o que estava programado na semana passada?",
+      "relevant_ids": [
+        "feedback:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "ana-new-hours:pt-BR"
+      ],
+      "expected_evidence_state": "unknown"
+    },
+    {
+      "id": "event-permission:en",
+      "concept": "event-permission",
+      "language": "en",
+      "type": "exact",
+      "text": "May the Friday leisure event be moved automatically?",
+      "relevant_ids": [
+        "event-flex:en"
+      ],
+      "hard_negative_ids": [
+        "exercise:en"
+      ],
+      "expected_evidence_state": "conditional"
+    },
+    {
+      "id": "event-permission:pt-BR",
+      "concept": "event-permission",
+      "language": "pt-BR",
+      "type": "exact",
+      "text": "O evento de lazer de sexta pode ser remarcado automaticamente?",
+      "relevant_ids": [
+        "event-flex:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "exercise:pt-BR"
+      ],
+      "expected_evidence_state": "conditional"
+    },
+    {
+      "id": "academic-horizon:en",
+      "concept": "academic-horizon",
+      "language": "en",
+      "type": "paraphrase",
+      "text": "How far away is Bruno’s professional exam target from the simulated start?",
+      "relevant_ids": [
+        "exam-outline:en"
+      ],
+      "hard_negative_ids": [
+        "syllabus-new:en",
+        "deadline-extra:en"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "academic-horizon:pt-BR",
+      "concept": "academic-horizon",
+      "language": "pt-BR",
+      "type": "paraphrase",
+      "text": "Quanto tempo falta para a data-alvo do concurso de Bruno desde o início simulado?",
+      "relevant_ids": [
+        "exam-outline:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "syllabus-new:pt-BR",
+        "deadline-extra:pt-BR"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "adult-applicability:en",
+      "concept": "adult-applicability",
+      "language": "en",
+      "type": "inapplicable",
+      "text": "Which fictional sample guidance describes an adult learner’s review?",
+      "relevant_ids": [
+        "mock-guide:en"
+      ],
+      "hard_negative_ids": [
+        "mock-minor:en"
+      ],
+      "expected_evidence_state": "fictional-only"
+    },
+    {
+      "id": "adult-applicability:pt-BR",
+      "concept": "adult-applicability",
+      "language": "pt-BR",
+      "type": "inapplicable",
+      "text": "Qual orientação fictícia de exemplo descreve a revisão de um estudante adulto?",
+      "relevant_ids": [
+        "mock-guide:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "mock-minor:pt-BR"
+      ],
+      "expected_evidence_state": "fictional-only"
+    },
+    {
+      "id": "desired-activity:en",
+      "concept": "desired-activity",
+      "language": "en",
+      "type": "paraphrase",
+      "text": "What outdoor activity matters to Ana, and when is it scheduled?",
+      "relevant_ids": [
+        "exercise:en"
+      ],
+      "hard_negative_ids": [
+        "event-flex:en"
+      ],
+      "expected_evidence_state": "preference-not-commitment"
+    },
+    {
+      "id": "desired-activity:pt-BR",
+      "concept": "desired-activity",
+      "language": "pt-BR",
+      "type": "paraphrase",
+      "text": "Que atividade ao ar livre importa para Ana e quando ela está agendada?",
+      "relevant_ids": [
+        "exercise:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "event-flex:pt-BR"
+      ],
+      "expected_evidence_state": "preference-not-commitment"
+    },
+    {
+      "id": "two-contexts:en",
+      "concept": "two-contexts",
+      "language": "en",
+      "type": "multihop",
+      "text": "What class comes immediately before Ana’s Monday study window?",
+      "relevant_ids": [
+        "class:en",
+        "window:en"
+      ],
+      "hard_negative_ids": [
+        "ana-work:en"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "two-contexts:pt-BR",
+      "concept": "two-contexts",
+      "language": "pt-BR",
+      "type": "multihop",
+      "text": "Que aula ocorre imediatamente antes da janela de estudo de Ana na segunda-feira?",
+      "relevant_ids": [
+        "class:pt-BR",
+        "window:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "ana-work:pt-BR"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "no-caffeine:en",
+      "concept": "no-caffeine",
+      "language": "en",
+      "type": "no-answer",
+      "text": "What is Ana’s caffeine tolerance?",
+      "relevant_ids": [],
+      "hard_negative_ids": [
+        "food:en",
+        "break:en"
+      ],
+      "expected_evidence_state": "no-source"
+    },
+    {
+      "id": "no-caffeine:pt-BR",
+      "concept": "no-caffeine",
+      "language": "pt-BR",
+      "type": "no-answer",
+      "text": "Qual é a tolerância de Ana à cafeína?",
+      "relevant_ids": [],
+      "hard_negative_ids": [
+        "food:pt-BR",
+        "break:pt-BR"
+      ],
+      "expected_evidence_state": "no-source"
+    },
+    {
+      "id": "no-financial:en",
+      "concept": "no-financial",
+      "language": "en",
+      "type": "no-answer",
+      "text": "What scholarship amount does Bruno receive?",
+      "relevant_ids": [],
+      "hard_negative_ids": [
+        "ana-work:en",
+        "exam-outline:en"
+      ],
+      "expected_evidence_state": "no-source"
+    },
+    {
+      "id": "no-financial:pt-BR",
+      "concept": "no-financial",
+      "language": "pt-BR",
+      "type": "no-answer",
+      "text": "Qual é o valor da bolsa que Bruno recebe?",
+      "relevant_ids": [],
+      "hard_negative_ids": [
+        "ana-work:pt-BR",
+        "exam-outline:pt-BR"
+      ],
+      "expected_evidence_state": "no-source"
+    },
+    {
+      "id": "specific-deadline:en",
+      "concept": "specific-deadline",
+      "language": "en",
+      "type": "exact",
+      "text": "What is the due date of the statistics project?",
+      "relevant_ids": [
+        "deadline-extra:en"
+      ],
+      "hard_negative_ids": [
+        "syllabus-new:en"
+      ],
+      "expected_evidence_state": "supported"
+    },
+    {
+      "id": "specific-deadline:pt-BR",
+      "concept": "specific-deadline",
+      "language": "pt-BR",
+      "type": "exact",
+      "text": "Qual é o prazo de entrega do projeto de estatística?",
+      "relevant_ids": [
+        "deadline-extra:pt-BR"
+      ],
+      "hard_negative_ids": [
+        "syllabus-new:pt-BR"
+      ],
+      "expected_evidence_state": "supported"
+    }
+  ]
+}
