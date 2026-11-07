@@ -1,0 +1,11 @@
+# Disposable synthetic Calendarpit runs
+
+`src/foundation/calendarpit-runner.mjs` is a standalone lifecycle spike. It is not wired into the existing application, and it does not implement provider-style OAuth, checkpoint replay or experiment bundles.
+
+A trusted local orchestrator may call `startCalendarpitRun({ fixture, redirectUri })` with a synthetic Calendarpit fixture. Fixture users must have explicit IDs and `.test` email addresses; calendars and events must have explicit IDs. Auth clients in the input fixture are replaced by a freshly generated synthetic client. The redirect must be an HTTP loopback URL with an explicit port. This format check does not establish that arbitrary event titles or descriptions are fictional; only use synthetic content.
+
+Each run creates a dedicated Docker bridge network and an in-memory pinned Calendarpit container, with an ephemeral port published on `127.0.0.1`. An internal-only Docker network did not publish a host port on the tested host. The bridge allows simulator egress and is **not** the worker isolation boundary; workers must use a separate restricted network and must not reach the management API. The returned `origin` includes its assigned port. The returned `client` is a temporary local OAuth client; do not log, serialize or include its secret in experiment bundles. The management API is unauthenticated and remains accessible to other processes on the local host, so it must never be given to an agent worker or exposed on the LAN. The orchestrator must call `await run.close()` in a `finally` block. Startup failures attempt the same cleanup. Do not give a worker access to the Docker socket.
+
+The generated startup fixture is stored in a private temporary directory and mounted read-only; it is removed with the container and network during cleanup. Abrupt termination can prevent cleanup, so inspect and remove resources named `study-calendar-*` and `study-calendar-net-*` if the orchestrator is killed. Do not treat a restart as an exact process checkpoint.
+
+Unit tests exercise configuration, cleanup and validation through an injected fake Docker driver. A real daemon integration test is still required to verify port publishing on the dedicated bridge, fixture mounting, health and isolation on the target deployment host.
