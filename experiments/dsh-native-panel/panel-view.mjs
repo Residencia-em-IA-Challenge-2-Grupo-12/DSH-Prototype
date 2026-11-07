@@ -87,12 +87,15 @@ export function panelData(payload) {
   return {events:[...calendar.events.filter(item=>!isCancelled(item)).map(item=>({...item,kind:'existing'})),{...event,kind:'add'}],proposedCount:1,description:event.description||'',sources:proposal.sources||[],assumptions:proposal.assumptions||[]};
 }
 
-// Label nonstandard visible calendar states rather than suggesting they are firm busy events.
+// A visible/accessible kind label supplements color and other calendar states.
+export const eventTypeLabels=Object.freeze({en:Object.freeze({existing:'Existing',add:'Proposed'}),pt:Object.freeze({existing:'Existente',add:'Proposto'})});
 export function eventLabel(event,portuguese=false){
-  const labels=[];
+  const kind=eventTypeLabels[portuguese?'pt':'en'][event.kind];
+  if(!kind)throw new Error('Unsupported event kind');
+  const labels=[kind];
   if(event.status==='tentative')labels.push(portuguese?'Provisório':'Tentative');
   if(event.transparency==='transparent')labels.push(portuguese?'Não bloqueia horário':'Does not block time');
-  return (labels.length?labels.join(' · ')+': ':'')+event.summary;
+  return labels.join(' · ')+': '+event.summary;
 }
 
 export const viewNotices=Object.freeze({
@@ -109,7 +112,9 @@ export function eventPresentation(event,portuguese=false){
   const box=placement(event);if(!box)return null;
   const start=clockTime(event.start.dateTime),end=clockTime(event.end.dateTime);
   const timeRange=`${start}–${end}`,label=eventLabel(event,portuguese);
+  const days=portuguese?['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado','Domingo']:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const date=portuguese?`${days[box.day]}, ${box.day+2} de novembro de 2026`:`${days[box.day]}, ${box.day+2} November 2026`;
   // Minimum height makes both the time and event label visible; clamp at day end.
   const visibleHeight=Math.max(20,box.height),visibleTop=Math.min(box.top,480-visibleHeight);
-  return {...box,visibleTop,visibleHeight,timeRange,label,accessibleText:`${timeRange} · São Paulo · ${label}`};
+  return {...box,visibleTop,visibleHeight,timeRange,label,accessibleText:`${date} · ${timeRange} · São Paulo · ${label}`};
 }

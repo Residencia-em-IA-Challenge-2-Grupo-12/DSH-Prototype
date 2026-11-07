@@ -1,6 +1,6 @@
 import React from 'react';
 import {contribution} from './panel-descriptor.mjs';
-import {panelData,eventPresentation,hourLabels,viewNotices} from './panel-view.mjs';
+import {panelData,eventPresentation,hourLabels,viewNotices,eventTypeLabels} from './panel-view.mjs';
 const h=React.createElement;
 const id='study-calendar-browser-spike';
 const isPt=()=>globalThis.navigator?.language?.toLowerCase().startsWith('pt');
@@ -20,6 +20,9 @@ function Calendar({remote}){
  h('p',null,viewNotices[isPt()?'pt':'en'].availability),
  h('p',null,viewNotices[isPt()?'pt':'en'].short),
  h('p',null,label('2–8 November 2026 · São Paulo','2–8 de novembro de 2026 · São Paulo')),
+ h('div',{role:'group','aria-label':label('Calendar legend','Legenda do calendário'),style:{display:'flex',gap:12,alignItems:'center'}},
+  ...['existing','add'].map(kind=>h('span',{key:kind,style:{display:'inline-flex',gap:4,alignItems:'center'}},
+   h('span',{'aria-hidden':true,style:{width:12,height:12,display:'inline-block',background:colors[kind],border:'1px solid #70837a'}}),eventTypeLabels[isPt()?'pt':'en'][kind]))),
  h('p',null,label('Only same-day timed events in this week are shown. Events starting and ending in the same minute are omitted; overlaps may cover one another.','Apenas eventos com horário que começam e terminam no mesmo dia são exibidos nesta semana. Eventos que começam e terminam no mesmo minuto são omitidos; eventos sobrepostos podem encobrir uns aos outros.')),
  h('div',{style:{display:'grid',gridTemplateColumns:'46px repeat(7, 86px)',overflowX:'auto'}},
  h('div',{'aria-hidden':true},h('strong',null,label('Time','Hora')),h('div',{style:{height:480,position:'relative'}},...hourLabels().map((text,hour)=>h('span',{key:text,style:{position:'absolute',top:hour*20,fontSize:9}},text)))),

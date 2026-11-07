@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {panelData,placement,weekTime,eventLabel,eventPresentation,hourLabels,viewNotices} from './panel-view.mjs';
+import {panelData,placement,weekTime,eventLabel,eventPresentation,hourLabels,viewNotices,eventTypeLabels} from './panel-view.mjs';
 import {makePlan} from '../../src/core.mjs';
 
 const fixture=JSON.parse(await readFile(new URL('../../fixtures/calendars/ana.json',import.meta.url),'utf8'));
@@ -97,13 +97,26 @@ test('proposed identity cannot duplicate an observed event or cancelled tombston
 
 test('hour axis and short events expose readable local times and accessible summaries',()=>{
   const hours=hourLabels();assert.equal(hours.length,24);assert.equal(hours[0],'00:00');assert.equal(hours[23],'23:00');
-  const regular=eventPresentation(work);assert.equal(regular.timeRange,'08:00–12:00');assert.equal(regular.visibleTop,160);assert.equal(regular.visibleHeight,80);assert.match(regular.accessibleText,/08:00–12:00.*São Paulo.*Part-time work/);
-  const short={...study,status:'tentative',start:{dateTime:'2026-11-03T17:00:00Z'},end:{dateTime:'2026-11-03T17:01:00Z'}};
+  const regular=eventPresentation({...work,kind:'existing'});assert.equal(regular.timeRange,'08:00–12:00');assert.equal(regular.visibleTop,160);assert.equal(regular.visibleHeight,80);assert.match(regular.accessibleText,/08:00–12:00.*São Paulo.*Part-time work/);
+  const short={...study,kind:'add',status:'tentative',start:{dateTime:'2026-11-03T17:00:00Z'},end:{dateTime:'2026-11-03T17:01:00Z'}};
   const visible=eventPresentation(short,true);assert.equal(visible.timeRange,'14:00–14:01');assert.equal(visible.visibleHeight,20);assert.match(visible.accessibleText,/14:00–14:01.*Provisório.*Synthetic study/);
-  const late={...study,start:{dateTime:'2026-11-08T23:58:00-03:00'},end:{dateTime:'2026-11-08T23:59:00-03:00'}};assert.equal(eventPresentation(late).visibleTop,460);
+  const late={...study,kind:'add',start:{dateTime:'2026-11-08T23:58:00-03:00'},end:{dateTime:'2026-11-08T23:59:00-03:00'}};assert.equal(eventPresentation(late).visibleTop,460);
 });
 test('availability and short-event limitations are disclosed in both languages',()=>{
   assert.match(viewNotices.en.availability,/does not confirm availability/);assert.match(viewNotices.en.availability,/free\/busy/);
   assert.match(viewNotices.pt.availability,/não confirmam disponibilidade/);assert.match(viewNotices.pt.availability,/livre\/ocupado/);
   assert.match(viewNotices.en.short,/enlarged or shifted/);assert.match(viewNotices.pt.short,/ampliados ou deslocados/);
+});
+
+test('legend and block labels identify existing and proposed events in both languages',()=>{
+  const view=panelData(common()), existing=view.events[0],proposed=view.events[1];
+  assert.deepEqual(eventTypeLabels.en,{existing:'Existing',add:'Proposed'});
+  assert.deepEqual(eventTypeLabels.pt,{existing:'Existente',add:'Proposto'});
+  assert.match(eventPresentation(existing).label,/^Existing: Part-time work$/);
+  assert.match(eventPresentation(existing).accessibleText,/Monday, 2 November 2026.*Existing: Part-time work/);
+  assert.match(eventPresentation(proposed).label,/^Proposed: Synthetic study$/);
+  assert.match(eventPresentation(proposed).accessibleText,/Proposed: Synthetic study/);
+  assert.match(eventPresentation(existing,true).accessibleText,/Existente: Part-time work/);
+  assert.match(eventPresentation(proposed,true).accessibleText,/Terça-feira, 3 de novembro de 2026.*Proposto: Synthetic study/);
+  assert.throws(()=>eventLabel({...existing,kind:'other'}),/Unsupported event kind/);
 });

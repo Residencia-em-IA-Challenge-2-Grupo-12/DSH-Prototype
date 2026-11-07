@@ -26,7 +26,7 @@ try{
  console.log('authenticated index',page.status,'plugin boot row',html.includes('study-calendar-browser-spike'));
  const links=[...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m=>m[1].replaceAll('&amp;','&'));
  const bundle=links.find(link=>link.includes('study-calendar-browser-spike/client.js'));assert(bundle,'native client bundle reference missing');
- const asset=await fetch(new URL(bundle,base+'/'));assert.equal(asset.status,200);const source=await asset.text();assert(source.includes('study-calendar-browser-spike'));assert(source.includes('Read-only preview'));console.log('DSH client bundle served',asset.status);
+ const asset=await fetch(new URL(bundle,base+'/'));assert.equal(asset.status,200);const source=await asset.text();assert(source.includes('study-calendar-browser-spike'));assert(source.includes('Read-only preview'));assert(source.includes('Calendar legend'));assert(source.includes('Proposed'));assert(source.includes('Existing'));console.log('DSH client bundle served',asset.status);
  let envelope={type:'client-request',rpcId:randomUUID(),method:'calendarSpike/view',payload:{args:{}}};
  let rpc=await fetch(base+'/api/calendarSpike/view',{method:'POST',headers:{cookie,'content-type':'application/json'},body:JSON.stringify(envelope)});const reply=await rpc.json();
  console.log('authenticated RPC',rpc.status,reply.result?.ok?'ok':'failed');
