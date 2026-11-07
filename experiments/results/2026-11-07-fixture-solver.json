@@ -1,0 +1,760 @@
+{
+  "schemaVersion": 1,
+  "execution": {
+    "recorded_at_utc": "2026-11-07T19:07:55.557345+00:00",
+    "python": "3.13.16",
+    "ortools": "9.14.6206",
+    "architecture": "x86_64",
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13700T",
+    "solver_threads": 1,
+    "solver_search_timeout_seconds": 5.0,
+    "comparison_source_sha256": "00d2345898ed751bd489c600d4a6ac043c9bfdf0de73762a9d8a88097631f639",
+    "shared_solver_sha256": "83c7d5972331a6dc3f2eea245b0cf83eb38a31def6d558351c8a392e86a3d8a4"
+  },
+  "slotMinutes": 30,
+  "limitations": [
+    "One week only; 30/60/90-minute task decompositions are illustrative, not from syllabi.",
+    "Thirty-minute slots and gap, and a two-hour daily cap are assumptions of this experiment, not user policy.",
+    "All tasks optional: OPTIMAL maximizes the illustrative utility; it does not prove all tasks can be scheduled or that any omitted goal is universally infeasible.",
+    "CP-SAT search timeout does not bound Python model construction or total wall time.",
+    "No dependencies, splitting, learning effectiveness or user outcomes are modeled.",
+    "The gap is enforced only between proposed study blocks, not between study and existing commitments; transition feasibility is not established.",
+    "Recorded runs use English fixtures; Portuguese fixture timing parity is tested separately."
+  ],
+  "cases": [
+    {
+      "scenario": "working-college-week1-goal1x-uniform",
+      "task_count": 6,
+      "metadata": {
+        "scenario": "working-college",
+        "language": "en",
+        "week": 1,
+        "goal_minutes": 360,
+        "fixture_target_minutes": 360,
+        "task_durations_minutes": [
+          60,
+          60,
+          60,
+          60,
+          60,
+          60
+        ],
+        "window_count": 4,
+        "busy_count": 69,
+        "assumed_daily_cap_minutes": 120,
+        "assumed_break_minutes": 30,
+        "hashes": {
+          "scenario_sha256": "d452d5fefd83481e87ec8e68294e88f8a929da8b84328bb4017d63987355943d",
+          "calendar_sha256": "604dcc6351c6f78f7971b18afb863964aa1e5c7433960716bf8c63305585ec96"
+        }
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "illustrative-1": 126,
+            "illustrative-2": 258,
+            "illustrative-3": 134,
+            "illustrative-4": 308
+          },
+          "duration_ms": 6.175,
+          "validation_errors": [],
+          "score": 80619,
+          "scheduled_minutes": 240,
+          "unscheduled": [
+            "illustrative-5",
+            "illustrative-6"
+          ]
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "illustrative-3": 308,
+            "illustrative-4": 258,
+            "illustrative-5": 134,
+            "illustrative-6": 126
+          },
+          "duration_ms": 7.532,
+          "validation_errors": [],
+          "score": 80619,
+          "scheduled_minutes": 240,
+          "unscheduled": [
+            "illustrative-1",
+            "illustrative-2"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "working-college-week1-goal2x-uniform",
+      "task_count": 12,
+      "metadata": {
+        "scenario": "working-college",
+        "language": "en",
+        "week": 1,
+        "goal_minutes": 720,
+        "fixture_target_minutes": 360,
+        "task_durations_minutes": [
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60
+        ],
+        "window_count": 4,
+        "busy_count": 69,
+        "assumed_daily_cap_minutes": 120,
+        "assumed_break_minutes": 30,
+        "hashes": {
+          "scenario_sha256": "d452d5fefd83481e87ec8e68294e88f8a929da8b84328bb4017d63987355943d",
+          "calendar_sha256": "604dcc6351c6f78f7971b18afb863964aa1e5c7433960716bf8c63305585ec96"
+        }
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "illustrative-1": 126,
+            "illustrative-10": 258,
+            "illustrative-11": 134,
+            "illustrative-12": 308
+          },
+          "duration_ms": 19.52,
+          "validation_errors": [],
+          "score": 80619,
+          "scheduled_minutes": 240,
+          "unscheduled": [
+            "illustrative-2",
+            "illustrative-3",
+            "illustrative-4",
+            "illustrative-5",
+            "illustrative-6",
+            "illustrative-7",
+            "illustrative-8",
+            "illustrative-9"
+          ]
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "illustrative-9": 308,
+            "illustrative-10": 258,
+            "illustrative-11": 134,
+            "illustrative-12": 126
+          },
+          "duration_ms": 21.122,
+          "validation_errors": [],
+          "score": 80619,
+          "scheduled_minutes": 240,
+          "unscheduled": [
+            "illustrative-1",
+            "illustrative-2",
+            "illustrative-3",
+            "illustrative-4",
+            "illustrative-5",
+            "illustrative-6",
+            "illustrative-7",
+            "illustrative-8"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "nonworking-college-week1-goal1x-uniform",
+      "task_count": 7,
+      "metadata": {
+        "scenario": "nonworking-college",
+        "language": "en",
+        "week": 1,
+        "goal_minutes": 420,
+        "fixture_target_minutes": 420,
+        "task_durations_minutes": [
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60
+        ],
+        "window_count": 5,
+        "busy_count": 56,
+        "assumed_daily_cap_minutes": 120,
+        "assumed_break_minutes": 30,
+        "hashes": {
+          "scenario_sha256": "05ba41dced9749d57df05c3285cc9b555cdd49d6b9f02c838d691274ab8692df",
+          "calendar_sha256": "f7e96c9d09c9716c18702e578e607465a2c8e4abaf4d6ab79b77d557913bc99e"
+        }
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "illustrative-1": 116,
+            "illustrative-2": 38,
+            "illustrative-3": 86,
+            "illustrative-4": 258,
+            "illustrative-5": 182
+          },
+          "duration_ms": 6.827,
+          "validation_errors": [],
+          "score": 100793,
+          "scheduled_minutes": 300,
+          "unscheduled": [
+            "illustrative-6",
+            "illustrative-7"
+          ]
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "illustrative-3": 86,
+            "illustrative-4": 182,
+            "illustrative-5": 116,
+            "illustrative-6": 258,
+            "illustrative-7": 38
+          },
+          "duration_ms": 7.659,
+          "validation_errors": [],
+          "score": 100793,
+          "scheduled_minutes": 300,
+          "unscheduled": [
+            "illustrative-1",
+            "illustrative-2"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "nonworking-college-week1-goal2x-uniform",
+      "task_count": 14,
+      "metadata": {
+        "scenario": "nonworking-college",
+        "language": "en",
+        "week": 1,
+        "goal_minutes": 840,
+        "fixture_target_minutes": 420,
+        "task_durations_minutes": [
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60
+        ],
+        "window_count": 5,
+        "busy_count": 56,
+        "assumed_daily_cap_minutes": 120,
+        "assumed_break_minutes": 30,
+        "hashes": {
+          "scenario_sha256": "05ba41dced9749d57df05c3285cc9b555cdd49d6b9f02c838d691274ab8692df",
+          "calendar_sha256": "f7e96c9d09c9716c18702e578e607465a2c8e4abaf4d6ab79b77d557913bc99e"
+        }
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "illustrative-1": 116,
+            "illustrative-10": 38,
+            "illustrative-11": 86,
+            "illustrative-12": 258,
+            "illustrative-13": 182
+          },
+          "duration_ms": 26.866,
+          "validation_errors": [],
+          "score": 100793,
+          "scheduled_minutes": 300,
+          "unscheduled": [
+            "illustrative-14",
+            "illustrative-2",
+            "illustrative-3",
+            "illustrative-4",
+            "illustrative-5",
+            "illustrative-6",
+            "illustrative-7",
+            "illustrative-8",
+            "illustrative-9"
+          ]
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "illustrative-10": 86,
+            "illustrative-11": 182,
+            "illustrative-12": 116,
+            "illustrative-13": 258,
+            "illustrative-14": 38
+          },
+          "duration_ms": 26.907,
+          "validation_errors": [],
+          "score": 100793,
+          "scheduled_minutes": 300,
+          "unscheduled": [
+            "illustrative-1",
+            "illustrative-2",
+            "illustrative-3",
+            "illustrative-4",
+            "illustrative-5",
+            "illustrative-6",
+            "illustrative-7",
+            "illustrative-8",
+            "illustrative-9"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "employed-exam-week1-goal1x-uniform",
+      "task_count": 6,
+      "metadata": {
+        "scenario": "employed-exam",
+        "language": "en",
+        "week": 1,
+        "goal_minutes": 360,
+        "fixture_target_minutes": 360,
+        "task_durations_minutes": [
+          60,
+          60,
+          60,
+          60,
+          60,
+          60
+        ],
+        "window_count": 5,
+        "busy_count": 51,
+        "assumed_daily_cap_minutes": 120,
+        "assumed_break_minutes": 30,
+        "hashes": {
+          "scenario_sha256": "5b74f20b0fc65b73007c256a6ef87a67c479c8614f7c41b17c06ea3e7e20ca9e",
+          "calendar_sha256": "7aaf97999098e77837c30034c7548e5831fdc55b9fbbb4a0b2817ea941a262c0"
+        }
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "illustrative-1": 38,
+            "illustrative-2": 86,
+            "illustrative-3": 260,
+            "illustrative-4": 308,
+            "illustrative-5": 182
+          },
+          "duration_ms": 3.606,
+          "validation_errors": [],
+          "score": 100771,
+          "scheduled_minutes": 300,
+          "unscheduled": [
+            "illustrative-6"
+          ]
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "illustrative-2": 308,
+            "illustrative-3": 260,
+            "illustrative-4": 182,
+            "illustrative-5": 86,
+            "illustrative-6": 38
+          },
+          "duration_ms": 5.888,
+          "validation_errors": [],
+          "score": 100771,
+          "scheduled_minutes": 300,
+          "unscheduled": [
+            "illustrative-1"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "employed-exam-week1-goal2x-uniform",
+      "task_count": 12,
+      "metadata": {
+        "scenario": "employed-exam",
+        "language": "en",
+        "week": 1,
+        "goal_minutes": 720,
+        "fixture_target_minutes": 360,
+        "task_durations_minutes": [
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60
+        ],
+        "window_count": 5,
+        "busy_count": 51,
+        "assumed_daily_cap_minutes": 120,
+        "assumed_break_minutes": 30,
+        "hashes": {
+          "scenario_sha256": "5b74f20b0fc65b73007c256a6ef87a67c479c8614f7c41b17c06ea3e7e20ca9e",
+          "calendar_sha256": "7aaf97999098e77837c30034c7548e5831fdc55b9fbbb4a0b2817ea941a262c0"
+        }
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "illustrative-1": 38,
+            "illustrative-10": 86,
+            "illustrative-11": 260,
+            "illustrative-12": 308,
+            "illustrative-2": 182
+          },
+          "duration_ms": 19.299,
+          "validation_errors": [],
+          "score": 100771,
+          "scheduled_minutes": 300,
+          "unscheduled": [
+            "illustrative-3",
+            "illustrative-4",
+            "illustrative-5",
+            "illustrative-6",
+            "illustrative-7",
+            "illustrative-8",
+            "illustrative-9"
+          ]
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "illustrative-8": 308,
+            "illustrative-9": 260,
+            "illustrative-10": 182,
+            "illustrative-11": 86,
+            "illustrative-12": 38
+          },
+          "duration_ms": 19.28,
+          "validation_errors": [],
+          "score": 100771,
+          "scheduled_minutes": 300,
+          "unscheduled": [
+            "illustrative-1",
+            "illustrative-2",
+            "illustrative-3",
+            "illustrative-4",
+            "illustrative-5",
+            "illustrative-6",
+            "illustrative-7"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "working-college-week1-goal1x-mixed",
+      "task_count": 6,
+      "metadata": {
+        "scenario": "working-college",
+        "language": "en",
+        "week": 1,
+        "goal_minutes": 360,
+        "fixture_target_minutes": 360,
+        "task_durations_minutes": [
+          90,
+          30,
+          60,
+          90,
+          30,
+          60
+        ],
+        "window_count": 4,
+        "busy_count": 69,
+        "assumed_daily_cap_minutes": 120,
+        "assumed_break_minutes": 30,
+        "hashes": {
+          "scenario_sha256": "d452d5fefd83481e87ec8e68294e88f8a929da8b84328bb4017d63987355943d",
+          "calendar_sha256": "604dcc6351c6f78f7971b18afb863964aa1e5c7433960716bf8c63305585ec96"
+        }
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "illustrative-1": 126,
+            "illustrative-4": 258,
+            "illustrative-3": 308,
+            "illustrative-2": 134,
+            "illustrative-5": 311
+          },
+          "duration_ms": 4.64,
+          "validation_errors": [],
+          "score": 100766,
+          "scheduled_minutes": 300,
+          "unscheduled": [
+            "illustrative-6"
+          ]
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "illustrative-1": 308,
+            "illustrative-2": 126,
+            "illustrative-3": 128,
+            "illustrative-5": 258,
+            "illustrative-6": 260
+          },
+          "duration_ms": 9.555,
+          "validation_errors": [],
+          "score": 100780,
+          "scheduled_minutes": 270,
+          "unscheduled": [
+            "illustrative-4"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "nonworking-college-week1-goal1x-mixed",
+      "task_count": 7,
+      "metadata": {
+        "scenario": "nonworking-college",
+        "language": "en",
+        "week": 1,
+        "goal_minutes": 420,
+        "fixture_target_minutes": 420,
+        "task_durations_minutes": [
+          90,
+          30,
+          60,
+          90,
+          30,
+          60,
+          60
+        ],
+        "window_count": 5,
+        "busy_count": 56,
+        "assumed_daily_cap_minutes": 120,
+        "assumed_break_minutes": 30,
+        "hashes": {
+          "scenario_sha256": "05ba41dced9749d57df05c3285cc9b555cdd49d6b9f02c838d691274ab8692df",
+          "calendar_sha256": "f7e96c9d09c9716c18702e578e607465a2c8e4abaf4d6ab79b77d557913bc99e"
+        }
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "illustrative-1": 116,
+            "illustrative-4": 38,
+            "illustrative-3": 86,
+            "illustrative-6": 258,
+            "illustrative-7": 182,
+            "illustrative-2": 261
+          },
+          "duration_ms": 7.996,
+          "validation_errors": [],
+          "score": 120947,
+          "scheduled_minutes": 390,
+          "unscheduled": [
+            "illustrative-5"
+          ]
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "illustrative-1": 38,
+            "illustrative-2": 116,
+            "illustrative-3": 118,
+            "illustrative-4": 182,
+            "illustrative-5": 258,
+            "illustrative-6": 260,
+            "illustrative-7": 86
+          },
+          "duration_ms": 8.535,
+          "validation_errors": [],
+          "score": 141116,
+          "scheduled_minutes": 420,
+          "unscheduled": []
+        }
+      }
+    },
+    {
+      "scenario": "employed-exam-week1-goal1x-mixed",
+      "task_count": 6,
+      "metadata": {
+        "scenario": "employed-exam",
+        "language": "en",
+        "week": 1,
+        "goal_minutes": 360,
+        "fixture_target_minutes": 360,
+        "task_durations_minutes": [
+          90,
+          30,
+          60,
+          90,
+          30,
+          60
+        ],
+        "window_count": 5,
+        "busy_count": 51,
+        "assumed_daily_cap_minutes": 120,
+        "assumed_break_minutes": 30,
+        "hashes": {
+          "scenario_sha256": "5b74f20b0fc65b73007c256a6ef87a67c479c8614f7c41b17c06ea3e7e20ca9e",
+          "calendar_sha256": "7aaf97999098e77837c30034c7548e5831fdc55b9fbbb4a0b2817ea941a262c0"
+        }
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "illustrative-1": 38,
+            "illustrative-4": 86,
+            "illustrative-3": 260,
+            "illustrative-6": 308,
+            "illustrative-2": 263,
+            "illustrative-5": 182
+          },
+          "duration_ms": 1.838,
+          "validation_errors": [],
+          "score": 120923,
+          "scheduled_minutes": 360,
+          "unscheduled": []
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "illustrative-1": 182,
+            "illustrative-2": 38,
+            "illustrative-3": 260,
+            "illustrative-4": 86,
+            "illustrative-5": 40,
+            "illustrative-6": 308
+          },
+          "duration_ms": 6.431,
+          "validation_errors": [],
+          "score": 120931,
+          "scheduled_minutes": 360,
+          "unscheduled": []
+        }
+      }
+    },
+    {
+      "scenario": "employed-exam-week2-goal1x-uniform",
+      "task_count": 6,
+      "metadata": {
+        "scenario": "employed-exam",
+        "language": "en",
+        "week": 2,
+        "goal_minutes": 360,
+        "fixture_target_minutes": 360,
+        "task_durations_minutes": [
+          60,
+          60,
+          60,
+          60,
+          60,
+          60
+        ],
+        "window_count": 5,
+        "busy_count": 52,
+        "assumed_daily_cap_minutes": 120,
+        "assumed_break_minutes": 30,
+        "hashes": {
+          "scenario_sha256": "5b74f20b0fc65b73007c256a6ef87a67c479c8614f7c41b17c06ea3e7e20ca9e",
+          "calendar_sha256": "7aaf97999098e77837c30034c7548e5831fdc55b9fbbb4a0b2817ea941a262c0"
+        }
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "illustrative-1": 38,
+            "illustrative-2": 260,
+            "illustrative-3": 308,
+            "illustrative-4": 182
+          },
+          "duration_ms": 3.798,
+          "validation_errors": [],
+          "score": 80614,
+          "scheduled_minutes": 240,
+          "unscheduled": [
+            "illustrative-5",
+            "illustrative-6"
+          ]
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "illustrative-3": 308,
+            "illustrative-4": 260,
+            "illustrative-5": 182,
+            "illustrative-6": 38
+          },
+          "duration_ms": 5.209,
+          "validation_errors": [],
+          "score": 80614,
+          "scheduled_minutes": 240,
+          "unscheduled": [
+            "illustrative-1",
+            "illustrative-2"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "adversarial-mixed-priority",
+      "task_count": 5,
+      "metadata": {
+        "fixture": "independently constructed adversarial example; not a student schedule"
+      },
+      "outcomes": {
+        "heuristic": {
+          "status": "FEASIBLE",
+          "assignments": {
+            "D": 64,
+            "A": 66,
+            "E": 16
+          },
+          "duration_ms": 0.37,
+          "validation_errors": [],
+          "score": 80340,
+          "scheduled_minutes": 120,
+          "unscheduled": [
+            "B",
+            "C"
+          ]
+        },
+        "cp_sat": {
+          "status": "OPTIMAL",
+          "assignments": {
+            "A": 66,
+            "C": 21,
+            "D": 64,
+            "E": 16
+          },
+          "duration_ms": 2.904,
+          "validation_errors": [],
+          "score": 100319,
+          "scheduled_minutes": 180,
+          "unscheduled": [
+            "B"
+          ]
+        }
+      }
+    }
+  ]
+}
