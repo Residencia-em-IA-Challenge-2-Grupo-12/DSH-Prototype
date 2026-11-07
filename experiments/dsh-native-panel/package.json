@@ -1,0 +1,1 @@
+{"name":"study-calendar-browser-spike","version":"0.0.1","private":true,"type":"module","main":"./index.mjs","exports":{".":"./index.mjs","./client":"./client.js","./package.json":"./package.json"},"dsh":{"client":{"inject":["@deepseek-ai/dsh-client-ui-sidebar-right","@deepseek-ai/dsh-client-ui-slots","@deepseek-ai/dsh-api-gateway"],"platform":"web"}}}
