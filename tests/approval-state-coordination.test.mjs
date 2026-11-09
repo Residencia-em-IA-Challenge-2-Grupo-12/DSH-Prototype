@@ -28,7 +28,7 @@ test('feedback saved while a calendar approval is running survives the applicati
   assert.equal(state.plan.status.near,'applied');
 });
 
-test('a newer proposal is not silently replaced when an earlier approval finishes', async()=>{
+test('a new proposal is blocked until the earlier approval finishes', async()=>{
   let release, started;
   const entered=new Promise(resolve=>{started=resolve;});
   const calendar={
@@ -41,13 +41,12 @@ test('a newer proposal is not silently replaced when an earlier approval finishe
   const first=await draft(calendar,'ana',{weeks:1,hours:1});
   const applying=applyApproved(calendar,'ana',first.id,'near');
   await entered;
-  let newer;
-  try {newer=await draft(calendar,'ana',{weeks:1,hours:2});}
+  try {await assert.rejects(()=>draft(calendar,'ana',{weeks:1,hours:2}),/unresolved/i);}
   finally {release();}
-  await assert.rejects(applying,/proposal was replaced/);
+  await applying;
   const state=await loadState('ana');
-  assert.equal(state.plan.id,newer.id);
-  assert(state.history.some(item=>item.planId===first.id&&item.type==='approved'&&item.superseded));
+  assert.equal(state.plan.id,first.id);
+  assert(state.history.some(item=>item.planId===first.id&&item.type==='approved'));
 });
 
 test('a failed post-write observation records a partial approval without inventing calendar state',async()=>{
@@ -88,8 +87,8 @@ test('a user edit during a multi-action application is protected from later remo
   calendar.editOnRemove=editedId;
   await assert.rejects(()=>applyApproved(calendar,'ana',replacement.id,'near'),/PARTIAL/);
   assert.equal((await calendar.events()).find(event=>event.id===editedId)?.summary,'User changed this study block');
-  const next=await draft(calendar,'ana',{weeks:1,hours:1});
-  assert(!next.remove.near.some(event=>event.id===editedId));
+  assert((await loadState('ana')).protectedIds.includes(editedId));
+  await assert.rejects(()=>draft(calendar,'ana',{weeks:1,hours:1}),/unresolved/i);
 });
 
 test('a lost create response is reported as unknown even when a later read finds the event',async()=>{

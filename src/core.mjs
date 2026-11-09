@@ -37,6 +37,7 @@ const stateStore=new Proxy({}, {get(_target,key){
 }});
 export async function loadState(student) { return stateStore.load(assertStudent(student)); }
 export async function saveState(student, state) { return stateStore.save(assertStudent(student),state); }
+export async function getRecoveryClaim() { return stateStore.getCalendarClaim(); }
 async function workspaceRoot(student) {
   assertStudent(student);
   const staged=path.join(runtimeDir(),'workspaces',student);
@@ -178,15 +179,28 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
     baseHash:digest(events), status:{near:'pending',future:'pending'} };
 }
 export async function resetScenario(calendar, student) {
-  assertStudent(student); await calendar.reset(student);
-  const staged=path.join(runtimeDir(),'workspaces',student);
-  await fs.rm(staged,{recursive:true,force:true});
-  await fs.mkdir(path.dirname(staged),{recursive:true});
-  await fs.cp(path.join(ROOT,'fixtures/students',student),staged,{recursive:true});
-  const events=await calendar.events(student);
-  const feedback=(await readJSON(path.join(ROOT, 'fixtures/feedback', student+'.json'))).map(validateFeedback);
-  const state={student,feedback,history:[],plan:null,lastSnapshot:snapshot(events),annotations:{},protectedIds:[]};
-  await saveState(student,state); return state;
+  assertStudent(student);
+  const id=randomUUID(),actionId='reset:'+student;
+  await stateStore.acquireCalendarClaim({id,student,kind:'reset',actions:[{actionId}],startedAt:new Date().toISOString()});
+  try {
+    await stateStore.appendCalendarClaimStep(id,{actionId,status:'sent'});
+    await calendar.reset(student);
+    await stateStore.appendCalendarClaimStep(id,{actionId,status:'acknowledged'});
+    const staged=path.join(runtimeDir(),'workspaces',student);
+    await fs.rm(staged,{recursive:true,force:true});
+    await fs.mkdir(path.dirname(staged),{recursive:true});
+    await fs.cp(path.join(ROOT,'fixtures/students',student),staged,{recursive:true});
+    const events=await calendar.events(student);
+    const expected=(await readJSON(path.join(ROOT,'fixtures/calendars',student+'.json'))).events;
+    if(digest(events)!==digest(expected))throw new Error('Observed calendar does not match the reset fixture');
+    const feedback=(await readJSON(path.join(ROOT, 'fixtures/feedback', student+'.json'))).map(validateFeedback);
+    const state={student,feedback,history:[],plan:null,lastSnapshot:snapshot(events),annotations:{},protectedIds:[]};
+    await stateStore.appendCalendarClaimStep(id,{actionId,status:'confirmed'});
+    await stateStore.completeCalendarClaim(id,{student,replacement:state});
+    return state;
+  } catch(error) {
+    throw new Error('RESET UNRESOLVED: synthetic simulator or workspace may have changed; do not retry blindly. '+error.message);
+  }
 }
 export async function draft(calendar, student, options={}) {
   const events=await calendar.events(student), profile=await getStudent(student);
@@ -196,7 +210,7 @@ export async function draft(calendar, student, options={}) {
     const plan=makePlan(profile, events, {...options,protectedIds:state.protectedIds||[]});
     state.plan=plan; state.history.push({type:'proposal',at:new Date().toISOString(),planId:plan.id,options});
     return plan;
-  });
+  },{requiresIdle:true});
 }
 export async function applyApproved(calendar, student, planId, section) {
   return withWriteLock(student,()=>applyApprovedLocked(calendar,student,planId,section));
@@ -207,33 +221,56 @@ async function applyApprovedLocked(calendar, student, planId, section) {
   if (!plan || plan.id!==planId || plan.status[section]!=='pending') throw new Error('Proposal not pending');
   const current=await calendar.events(student);
   if (digest(current)!==plan.baseHash) throw new Error('STALE: calendar changed; review a new proposal');
+  const claimId=randomUUID();
+  const actions=[...(plan.remove?.[section]||[]).map(event=>({actionId:'remove:'+event.id,type:'remove',event})),
+    ...plan[section].map(event=>({actionId:'create:'+event.id,type:'create',event}))];
+  await stateStore.acquireCalendarClaim({id:claimId,student,kind:'approval',proposalId:planId,section,proposal:plan,actions,
+    decision:{kind:'approved',section,at:new Date().toISOString()},startedAt:new Date().toISOString()},
+    {student,change:latest=>{
+      if(JSON.stringify(latest.plan)!==JSON.stringify(plan)||latest.plan?.status[section]!=='pending')throw new Error('Proposal not pending');
+      latest.plan.status[section]='applying';
+    }});
   const written=[];
   const removed=[];
   let expected=plan.baseHash;
   let expectedEvents=current;
-  let after,attempt=null;
+  let after,attempt=null,sent=false;
   try {
     for (const old of (plan.remove?.[section]||[])) {
       if(digest(await calendar.events(student))!==expected) throw new Error('Calendar changed during application');
       attempt={type:'remove',id:old.id};
+      const actionId='remove:'+old.id;
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'sent'});sent=true;
       await calendar.remove(student,old.id); removed.push(old.id); attempt=null;
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'acknowledged'});
       expectedEvents=expectedEvents.filter(event=>event.id!==old.id);
       const observed=await calendar.events(student);
       if(digest(observed)!==digest(expectedEvents))throw new Error('Calendar changed during application');
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'confirmed'});
       expectedEvents=observed;expected=digest(observed);
     }
     for (const block of plan[section]) {
       if(digest(await calendar.events(student))!==expected) throw new Error('Calendar changed during application');
       attempt={type:'create',id:block.id};
+      const actionId='create:'+block.id;
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'sent'});sent=true;
       const result=await calendar.create(student,block); written.push(result.id);attempt=null;
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'acknowledged',resultId:result.id});
       expectedEvents=[...expectedEvents,result];
       const observed=await calendar.events(student);
       if(digest(observed)!==digest(expectedEvents))throw new Error('Calendar changed during application');
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'confirmed'});
       expectedEvents=observed;expected=digest(observed);
     }
     after=await calendar.events(student);
     if(digest(after)!==expected)throw new Error('Calendar changed during application');
   } catch (err) {
+    if(!sent){
+      await stateStore.cancelCalendarClaim(claimId,{student,change:latest=>{
+        if(latest.plan?.id===planId&&latest.plan.status[section]==='applying')latest.plan.status[section]='pending';
+      }});
+      throw err;
+    }
     let observed=null;
     try {observed=await calendar.events(student);} catch { /* Preserve the last trusted snapshot. */ }
     await stateStore.update(assertStudent(student),latest=>{
@@ -241,20 +278,17 @@ async function applyApprovedLocked(calendar, student, planId, section) {
       if(observed){
         const edited=diffSnapshots(latest.lastSnapshot,observed).filter(change=>change.before?.extendedProperties?.private?.studyDemo==='true'&&!removed.includes(change.id));
         latest.protectedIds=[...new Set([...(latest.protectedIds||[]),...edited.map(change=>change.id)])];
-        latest.lastSnapshot=snapshot(observed);
       }
-      latest.history.push({type:'partial-write',section,at:new Date().toISOString(),planId,written,removed,error:String(err),observation:observed?'available':'unavailable',...(attempt?{unknownAction:attempt}:{})});
+      latest.history.push({type:'partial-write',section,at:new Date().toISOString(),planId,written,removed,error:String(err),observation:observed?'available':'unavailable',...(observed?{observedSnapshot:snapshot(observed)}:{}),...(attempt?{unknownAction:attempt}:{})});
     });
     throw new Error('PARTIAL: created '+JSON.stringify(written)+'; removed '+JSON.stringify(removed)+(attempt?'; outcome unknown for '+JSON.stringify(attempt):'')+'. '+(observed?'Inspect calendar before retry.':'Calendar observation unavailable; inspect when available.')+' '+err.message);
   }
-  const superseded=await stateStore.update(assertStudent(student),latest=>{
-    const changed=latest.plan?.id!==planId;
-    if(!changed){latest.plan.status[section]='applied';latest.plan.baseHash=digest(after);}
+  await stateStore.completeCalendarClaim(claimId,{student,change:latest=>{
+    if(latest.plan?.id!==planId||latest.plan.status[section]!=='applying')throw new Error('Approved proposal changed while applying');
+    latest.plan.status[section]='applied';latest.plan.baseHash=digest(after);
     latest.lastSnapshot=snapshot(after);
-    latest.history.push({type:'approved',section,at:new Date().toISOString(),planId,written,removed,...(changed?{superseded:true}:{})});
-    return changed;
-  });
-  if(superseded)throw new Error('Calendar was changed but the proposal was replaced during application; inspect the calendar');
+    latest.history.push({type:'approved',section,at:new Date().toISOString(),planId,written,removed});
+  }});
   return {written,removed,section};
 }
 export function diffSnapshots(before, after) {
@@ -272,7 +306,7 @@ export async function checkpoint(calendar, student, reason='') {
     state.protectedIds=[...new Set([...(state.protectedIds||[]),...changes.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
     state.history.push({type:'checkpoint',at:new Date().toISOString(),reason,changes});
     state.lastSnapshot=snapshot(current); return {changes,reason};
-  });
+  },{requiresIdle:true});
 }
 export function validateFeedback(input) {
   if (typeof input.eventId!=='string' || !input.eventId.trim()) throw new Error('eventId required');
@@ -301,41 +335,56 @@ export async function draftAnnotation(calendar,student,eventId,category) {
     state.pendingAnnotation={id:randomUUID(),eventId,category,baseHash:digest(events),before:significant(event),after:{description,
       extendedProperties:{...(event.extendedProperties||{}),private:{...(event.extendedProperties?.private||{}),studyCategory:category}}}};
     return state.pendingAnnotation;
-  });
+  },{requiresIdle:true});
 }
 export async function applyAnnotation(calendar,student,id) {
   return withWriteLock(student,()=>applyAnnotationLocked(calendar,student,id));
 }
 async function applyAnnotationLocked(calendar,student,id) {
   const state=await loadState(student),p=state.pendingAnnotation;
-  if(!p||p.id!==id||p.status==='partial')throw new Error('Annotation proposal not pending');
+  if(!p||p.id!==id||(p.status&&p.status!=='pending'))throw new Error('Annotation proposal not pending');
   const events=await calendar.events(student);if(digest(events)!==p.baseHash)throw new Error('STALE: calendar changed; review again');
-  let acknowledged=false,after;
+  const claimId=randomUUID(),actionId='patch:'+p.eventId;
+  await stateStore.acquireCalendarClaim({id:claimId,student,kind:'annotation',proposalId:id,proposal:p,decision:{kind:'approved',at:new Date().toISOString()},
+    actions:[{actionId,type:'patch',eventId:p.eventId,before:p.before,after:p.after}],startedAt:new Date().toISOString()},
+    {student,change:latest=>{
+      if(JSON.stringify(latest.pendingAnnotation)!==JSON.stringify(p))throw new Error('Annotation proposal not pending');
+      latest.pendingAnnotation.status='applying';
+    }});
+  let acknowledged=false,after,sent=false;
   try {
+    if(digest(await calendar.events(student))!==p.baseHash)throw new Error('STALE: calendar changed; review again');
+    await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'sent'});sent=true;
     await calendar.patch(student,p.eventId,p.after);acknowledged=true;
+    await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'acknowledged'});
     after=await calendar.events(student);
     const expected=events.map(event=>event.id===p.eventId?{...event,...p.after}:event);
     if(digest(after)!==digest(expected))throw new Error('Calendar changed during annotation');
+    await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'confirmed'});
   } catch(error) {
+    if(!sent){
+      await stateStore.cancelCalendarClaim(claimId,{student,change:latest=>{
+        if(latest.pendingAnnotation?.id===id)latest.pendingAnnotation=p;
+      }});
+      throw error;
+    }
     let observed=null;try {observed=await calendar.events(student);} catch { /* Keep the last trusted snapshot. */ }
     await stateStore.update(assertStudent(student),latest=>{
       if(latest.pendingAnnotation?.id===id)latest.pendingAnnotation.status='partial';
       if(observed){
         const edited=diffSnapshots(latest.lastSnapshot,observed).filter(change=>change.before?.extendedProperties?.private?.studyDemo==='true');
         latest.protectedIds=[...new Set([...(latest.protectedIds||[]),...edited.map(change=>change.id)])];
-        latest.lastSnapshot=snapshot(observed);
       }
-      latest.history.push({type:'annotation-partial',proposalId:id,eventId:p.eventId,at:new Date().toISOString(),acknowledged,observation:observed?'available':'unavailable',error:String(error)});
+      latest.history.push({type:'annotation-partial',proposalId:id,eventId:p.eventId,at:new Date().toISOString(),acknowledged,observation:observed?'available':'unavailable',...(observed?{observedSnapshot:snapshot(observed)}:{}),error:String(error)});
     });
     throw new Error('PARTIAL: annotation '+(acknowledged?'acknowledged; resulting calendar needs review':'outcome unknown')+'. '+error.message);
   }
-  const superseded=await stateStore.update(assertStudent(student),latest=>{
-    const changed=latest.pendingAnnotation?.id!==id;
-    if(!changed){latest.annotations[p.eventId]={category:p.category,source:'user-confirmed',at:new Date().toISOString()};latest.pendingAnnotation=null;}
-    latest.history.push({type:'annotation-approved',eventId:p.eventId,category:p.category,at:new Date().toISOString(),...(changed?{superseded:true}:{})});
-    latest.lastSnapshot=snapshot(after);return changed;
-  });
-  if(superseded)throw new Error('Annotation was applied but the proposal was replaced; inspect the calendar');
+  await stateStore.completeCalendarClaim(claimId,{student,change:latest=>{
+    if(latest.pendingAnnotation?.id!==id||latest.pendingAnnotation.status!=='applying')throw new Error('Annotation proposal changed while applying');
+    latest.annotations[p.eventId]={category:p.category,source:'user-confirmed',at:new Date().toISOString()};latest.pendingAnnotation=null;
+    latest.history.push({type:'annotation-approved',eventId:p.eventId,category:p.category,at:new Date().toISOString()});
+    latest.lastSnapshot=snapshot(after);
+  }});
   return {saved:true};
 }
 export function summarize(events, feedback, state) {

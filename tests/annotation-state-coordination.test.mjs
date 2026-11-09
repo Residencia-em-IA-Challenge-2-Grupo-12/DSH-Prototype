@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ROOT,readJSON,resetScenario,draftAnnotation,applyAnnotation,addFeedback,loadState} from '../src/core.mjs';
+import {ROOT,readJSON,resetScenario,draftAnnotation,applyAnnotation,addFeedback,loadState,getRecoveryClaim} from '../src/core.mjs';
 
 test('an annotation patch followed by an unavailable observation is not left pending',async()=>{
   const calendar={
@@ -16,6 +16,10 @@ test('an annotation patch followed by an unavailable observation is not left pen
   assert.equal(state.pendingAnnotation.status,'partial');
   assert.deepEqual(state.lastSnapshot,before);
   assert.equal(state.history.findLast(item=>item.type==='annotation-partial').observation,'unavailable');
+  const claim=await getRecoveryClaim();
+  assert.equal(claim.kind,'annotation');
+  assert(claim.steps.some(step=>step.status==='acknowledged'));
+  assert(!claim.steps.some(step=>step.status==='confirmed'));
   calendar.offline=false;
   await assert.rejects(()=>applyAnnotation(calendar,'ana',proposal.id),/not pending/);
 });

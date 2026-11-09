@@ -37,6 +37,7 @@ test('partial replacement records removed IDs and actual surviving calendar stat
   const replacement = await draft(calendar, 'ana', { weeks: 1, hours: 1 });
   const expectedRemoved = replacement.remove.near.map(event => event.id);
   assert.equal(expectedRemoved.length, first.near.length);
+  const trustedSnapshot=(await loadState('ana')).lastSnapshot;
   calendar.failCreate = true;
   await assert.rejects(() => applyApproved(calendar, 'ana', replacement.id, 'near'), /PARTIAL/);
   const actual = await calendar.events();
@@ -47,6 +48,7 @@ test('partial replacement records removed IDs and actual surviving calendar stat
   assert(expectedRemoved.every(id => !actual.some(event => event.id === id)));
   assert(!actual.some(event => event.id === replacement.near[0].id));
   assert.equal(state.plan.status.near, 'partial');
-  assert.deepEqual(state.lastSnapshot.map(event => event.id).sort(), actual.map(event => event.id).sort());
+  assert.deepEqual(state.lastSnapshot,trustedSnapshot);
+  assert.deepEqual(entry.observedSnapshot.map(event => event.id).sort(), actual.map(event => event.id).sort());
   await assert.rejects(() => applyApproved(calendar, 'ana', replacement.id, 'near'), /not pending/);
 });
