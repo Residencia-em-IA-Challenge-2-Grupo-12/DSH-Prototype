@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { createStateStore } from './state-store.mjs';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const FIXED_TODAY = '2026-11-02';
@@ -26,8 +27,9 @@ export async function writeJSON(p, obj) {
   await fs.rename(tmp, p);
 }
 export function statePath(student) { return path.join(RUNTIME, assertStudent(student) + '.json'); }
-export async function loadState(student) { return readJSON(statePath(student)); }
-export async function saveState(student, state) { return writeJSON(statePath(student), state); }
+const stateStore=createStateStore(RUNTIME);
+export async function loadState(student) { return stateStore.load(assertStudent(student)); }
+export async function saveState(student, state) { return stateStore.save(assertStudent(student),state); }
 async function workspaceRoot(student) {
   assertStudent(student);
   const staged=path.join(RUNTIME,'workspaces',student);
@@ -230,11 +232,13 @@ export function diffSnapshots(before, after) {
   } return result;
 }
 export async function checkpoint(calendar, student, reason='') {
-  const state=await loadState(student), current=await calendar.events(student);
-  const changes=diffSnapshots(state.lastSnapshot,current);
-  state.protectedIds=[...new Set([...(state.protectedIds||[]),...changes.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
-  state.history.push({type:'checkpoint',at:new Date().toISOString(),reason,changes});
-  state.lastSnapshot=snapshot(current); await saveState(student,state); return {changes,reason};
+  const current=await calendar.events(student);
+  return stateStore.update(assertStudent(student),state=>{
+    const changes=diffSnapshots(state.lastSnapshot,current);
+    state.protectedIds=[...new Set([...(state.protectedIds||[]),...changes.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
+    state.history.push({type:'checkpoint',at:new Date().toISOString(),reason,changes});
+    state.lastSnapshot=snapshot(current); return {changes,reason};
+  });
 }
 export function validateFeedback(input) {
   if (typeof input.eventId!=='string' || !input.eventId.trim()) throw new Error('eventId required');
@@ -247,8 +251,8 @@ export function validateFeedback(input) {
   return {eventId:input.eventId.trim(),completion:input.completion||'unknown',actualMinutes:input.actualMinutes==null?null:Number(input.actualMinutes),effort:input.effort==null?null:Number(input.effort),note:String(input.note||'').slice(0,2000),recordedAt};
 }
 export async function addFeedback(student, input) {
-  const state=await loadState(student), record=validateFeedback(input);
-  state.feedback.push(record); await saveState(student,state); return record;
+  const record=validateFeedback(input);
+  return stateStore.update(assertStudent(student),state=>{state.feedback.push(record);return record;});
 }
 export async function draftAnnotation(calendar,student,eventId,category) {
   if(!['study','classes','work','rest','physical','other','unknown'].includes(category)) throw new Error('Invalid category');
