@@ -8,7 +8,9 @@ import { createStateStore } from './state-store.mjs';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const FIXED_TODAY = '2026-11-02';
-const RUNTIME = path.join(ROOT, '.runtime');
+// The optional override is intended for disposable synthetic runs. Every
+// process that shares a simulator must use the same local runtime directory.
+export function runtimeDir() { return path.resolve(process.env.STUDY_ATLAS_RUNTIME_DIR || path.join(ROOT,'.runtime')); }
 const STUDENTS = ['ana', 'bruno'];
 const writeLocks = new Set();
 async function withWriteLock(student, fn) {
@@ -26,13 +28,18 @@ export async function writeJSON(p, obj) {
   await fs.writeFile(tmp, json(obj), { mode: 0o600 });
   await fs.rename(tmp, p);
 }
-export function statePath(student) { return path.join(RUNTIME, assertStudent(student) + '.json'); }
-const stateStore=createStateStore(RUNTIME);
+export function statePath(student) { return path.join(runtimeDir(), assertStudent(student) + '.json'); }
+const stores=new Map();
+const stateStore=new Proxy({}, {get(_target,key){
+  const directory=runtimeDir();
+  if(!stores.has(directory))stores.set(directory,createStateStore(directory));
+  return stores.get(directory)[key];
+}});
 export async function loadState(student) { return stateStore.load(assertStudent(student)); }
 export async function saveState(student, state) { return stateStore.save(assertStudent(student),state); }
 async function workspaceRoot(student) {
   assertStudent(student);
-  const staged=path.join(RUNTIME,'workspaces',student);
+  const staged=path.join(runtimeDir(),'workspaces',student);
   try { await fs.access(staged); return staged; } catch { return path.join(ROOT,'fixtures/students',student); }
 }
 export async function getStudent(student) {
@@ -172,7 +179,7 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
 }
 export async function resetScenario(calendar, student) {
   assertStudent(student); await calendar.reset(student);
-  const staged=path.join(RUNTIME,'workspaces',student);
+  const staged=path.join(runtimeDir(),'workspaces',student);
   await fs.rm(staged,{recursive:true,force:true});
   await fs.mkdir(path.dirname(staged),{recursive:true});
   await fs.cp(path.join(ROOT,'fixtures/students',student),staged,{recursive:true});
@@ -361,9 +368,9 @@ export function summarize(events, feedback, state) {
 export async function report(calendar, student) {
   const state=await loadState(student), events=await calendar.events(student);
   const metrics=summarize(events,state.feedback,state);
-  const out=path.join(RUNTIME,student+'-report.json'); await writeJSON(out,metrics);
+  const out=path.join(runtimeDir(),student+'-report.json'); await writeJSON(out,metrics);
   const markdown='# Synthetic routine report / Relatório sintético\n\nRecent week / Semana anterior: '+metrics.periods.recent.scheduledHours+'h scheduled; '+metrics.periods.recent.reportedMinutes+' minutes reported.\n\nComing week / Próxima semana: '+metrics.periods.upcoming.scheduledHours+'h scheduled.\n\nScheduled time is not proof of completion. / Tempo agendado não comprova realização.\n\n## Categories / Categorias\n\n'+Object.entries(metrics.categories).map(([k,v])=>'- '+k+': '+v+'h').join('\n')+'\n\n## Agent interpretation / Interpretação do agente\n\n'+(state.narrative||'Not yet provided by an agent. / Ainda não fornecida por um agente.')+'\n';
-  await fs.writeFile(path.join(RUNTIME,student+'-report.md'),markdown); return metrics;
+  await fs.writeFile(path.join(runtimeDir(),student+'-report.md'),markdown); return metrics;
 }
 export async function saveNarrative(student, narrative) {
   if (typeof narrative!=='string'||narrative.length>12000) throw new Error('Invalid narrative');

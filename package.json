@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
-    "test:integration": "node --test tests/calendarpit.integration.mjs",
+    "test": "node --test --test-concurrency=1 --import ./tests/isolate-runtime.mjs tests/*.test.mjs",
+    "test:integration": "node --test --test-concurrency=1 --import ./tests/isolate-runtime.mjs tests/calendarpit.integration.mjs",
     "install:codex-plugin": "bash scripts/install-codex-plugin.sh",
     "install:codex-plugin:sdk": "bash scripts/install-codex-plugin.sh sdk",
     "probe:sdk": "python3 scripts/probe-sdk.py",

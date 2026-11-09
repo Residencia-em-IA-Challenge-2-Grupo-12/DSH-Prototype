@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
-import { ROOT,readJSON,resetScenario,draft,applyApproved,checkpoint,getStudent,makePlan } from '../src/core.mjs';
+import { ROOT,readJSON,resetScenario,draft,applyApproved,checkpoint,getStudent,makePlan,runtimeDir } from '../src/core.mjs';
 
 class ScenarioCalendar {
   async reset(student){this.eventsData=structuredClone((await readJSON(ROOT+'/fixtures/calendars/'+student+'.json')).events);}
@@ -29,7 +29,7 @@ test('checkpoint: a new commitment is detected and avoided in a revised proposal
 });
 test('checkpoint: changed synthetic syllabus deadline changes the outlook',async()=>{
   const {c}=await baseline();await checkpoint(c,'ana','The project deadline moved.');
-  const file=ROOT+'/.runtime/workspaces/ana/courses/machine-learning.md',syllabus=await fs.readFile(file,'utf8');
+  const file=runtimeDir()+'/workspaces/ana/courses/machine-learning.md',syllabus=await fs.readFile(file,'utf8');
   await fs.writeFile(file,syllabus.replace('2026-11-30','2026-11-16'));
   const next=await draft(c,'ana',{weeks:4,hours:6});assert.equal(next.outlook.length,3);
 });
