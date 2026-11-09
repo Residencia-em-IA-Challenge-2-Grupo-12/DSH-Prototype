@@ -203,24 +203,43 @@ async function applyApprovedLocked(calendar, student, planId, section) {
   const written=[];
   const removed=[];
   let expected=plan.baseHash;
+  let expectedEvents=current;
+  let after,attempt=null;
   try {
     for (const old of (plan.remove?.[section]||[])) {
       if(digest(await calendar.events(student))!==expected) throw new Error('Calendar changed during application');
-      await calendar.remove(student,old.id); removed.push(old.id); expected=digest(await calendar.events(student));
+      attempt={type:'remove',id:old.id};
+      await calendar.remove(student,old.id); removed.push(old.id); attempt=null;
+      expectedEvents=expectedEvents.filter(event=>event.id!==old.id);
+      const observed=await calendar.events(student);
+      if(digest(observed)!==digest(expectedEvents))throw new Error('Calendar changed during application');
+      expectedEvents=observed;expected=digest(observed);
     }
     for (const block of plan[section]) {
       if(digest(await calendar.events(student))!==expected) throw new Error('Calendar changed during application');
-      const result=await calendar.create(student,block); written.push(result.id);
-      expected=digest(await calendar.events(student));
+      attempt={type:'create',id:block.id};
+      const result=await calendar.create(student,block); written.push(result.id);attempt=null;
+      expectedEvents=[...expectedEvents,result];
+      const observed=await calendar.events(student);
+      if(digest(observed)!==digest(expectedEvents))throw new Error('Calendar changed during application');
+      expectedEvents=observed;expected=digest(observed);
     }
-    plan.status[section]='applied';
+    after=await calendar.events(student);
+    if(digest(after)!==expected)throw new Error('Calendar changed during application');
   } catch (err) {
-    plan.status[section]='partial';
-    state.history.push({type:'partial-write',section,at:new Date().toISOString(),written,removed,error:String(err)});
-    state.lastSnapshot=snapshot(await calendar.events(student)); await saveState(student,state);
-    throw new Error('PARTIAL: created '+JSON.stringify(written)+'; removed '+JSON.stringify(removed)+'. Inspect calendar before retry. '+err.message);
+    let observed=null;
+    try {observed=await calendar.events(student);} catch { /* Preserve the last trusted snapshot. */ }
+    await stateStore.update(assertStudent(student),latest=>{
+      if(latest.plan?.id===planId)latest.plan.status[section]='partial';
+      if(observed){
+        const edited=diffSnapshots(latest.lastSnapshot,observed).filter(change=>change.before?.extendedProperties?.private?.studyDemo==='true'&&!removed.includes(change.id));
+        latest.protectedIds=[...new Set([...(latest.protectedIds||[]),...edited.map(change=>change.id)])];
+        latest.lastSnapshot=snapshot(observed);
+      }
+      latest.history.push({type:'partial-write',section,at:new Date().toISOString(),planId,written,removed,error:String(err),observation:observed?'available':'unavailable',...(attempt?{unknownAction:attempt}:{})});
+    });
+    throw new Error('PARTIAL: created '+JSON.stringify(written)+'; removed '+JSON.stringify(removed)+(attempt?'; outcome unknown for '+JSON.stringify(attempt):'')+'. '+(observed?'Inspect calendar before retry.':'Calendar observation unavailable; inspect when available.')+' '+err.message);
   }
-  const after=await calendar.events(student);
   const superseded=await stateStore.update(assertStudent(student),latest=>{
     const changed=latest.plan?.id!==planId;
     if(!changed){latest.plan.status[section]='applied';latest.plan.baseHash=digest(after);}
