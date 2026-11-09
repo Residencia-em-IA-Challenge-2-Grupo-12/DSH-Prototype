@@ -54,7 +54,14 @@ with tempfile.TemporaryDirectory(prefix='dsh-worker-sdk-') as directory:
    if worker.get('isError') is True:raise RuntimeError('Worker execution failed: '+worker.get('error',{}).get('message','unknown'))
    if 'fictional syllabus' not in json.dumps(worker):raise RuntimeError('Expected fictional result missing')
   elif worker.get('isError') is not True:raise RuntimeError('Unconfigured worker unexpectedly ran')
+  if 'SYNTHETIC_WORKER_TEST_IMAGE' in env:
+   cancelled=report.get('cancel',{}).get('results',[])
+   if len(cancelled)!=1 or not cancelled[0].get('result',{}).get('isError'):
+    raise RuntimeError('SDK cancellation did not report an error')
+   message=cancelled[0]['result'].get('error',{}).get('message')
+   if message!='Synthetic worker cancelled':
+    raise RuntimeError('SDK tool did not report worker cancellation')
   if process.returncode!=0:raise RuntimeError(f'SDK did not exit cleanly: {process.returncode}')
-  print('global_catalog=synthetic_bash host_tool_probes=UNKNOWN_TOOL worker='+('ok' if 'SYNTHETIC_WORKER_TEST_IMAGE' in env else 'fail-closed-no-image'))
+  print('global_catalog=synthetic_bash host_tool_probes=UNKNOWN_TOOL worker='+('ok' if 'SYNTHETIC_WORKER_TEST_IMAGE' in env else 'fail-closed-no-image')+(' cancellation=aborted' if 'SYNTHETIC_WORKER_TEST_IMAGE' in env else ''))
  finally:
   if process.poll() is None:process.kill();process.wait()

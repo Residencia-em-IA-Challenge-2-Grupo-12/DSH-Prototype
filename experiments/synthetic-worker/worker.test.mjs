@@ -66,6 +66,15 @@ test('without a pinned image, no worker is started',async()=>{
   await assert.rejects(runSyntheticWorker({image:'latest',files:{},script:'true'}),/digest-pinned/);
 });
 
+test('already cancelled work is rejected before creating local state',async()=>{
+  const before=new Set((await readdir(tmpdir())).filter(name=>name.startsWith('synthetic-worker-')));
+  const controller=new AbortController();controller.abort('do not expose this reason');
+  await assert.rejects(runSyntheticWorker({image,files:{},script:'true',signal:controller.signal}),error=>error.name==='AbortError'&&!error.message.includes('do not expose'));
+  const after=new Set((await readdir(tmpdir())).filter(name=>name.startsWith('synthetic-worker-')));
+  assert.deepEqual([...after].filter(name=>!before.has(name)),[]);
+  await assert.rejects(runSyntheticWorker({image,files:{},script:'true',signal:{aborted:false}}),/Invalid cancellation signal/);
+});
+
 const imageUnderTest=process.env.SYNTHETIC_WORKER_TEST_IMAGE;
 test('disposable worker enforces isolation, timeout, output limits and cleanup', {skip:!imageUnderTest,timeout:120000},async()=>{
   // The canary is synthetic and never mounted. No local user data is used.
@@ -95,4 +104,31 @@ printf 'synthetic result' > /output/result.txt`;
     assert.deepEqual([...await containers()].filter(id=>!originalContainers.has(id)),[],'worker containers cleaned up');
     assert.deepEqual([...await dirs()].filter(name=>!originalDirs.has(name)),[],'synthetic input directories cleaned up');
   } finally {await rm(canary,{force:true});}
+});
+
+
+test('cancellation stops a running worker and confirms cleanup', {skip:!imageUnderTest,timeout:30000},async()=>{
+  const docker=promisify(execFile);
+  const list=async()=>new Set((await docker('/usr/bin/docker',['ps','--all','--quiet','--filter','name=synthetic-worker-'])).stdout.trim().split(/\s+/).filter(Boolean));
+  const baseline=await list();
+  const originalDirs=new Set((await readdir(tmpdir())).filter(name=>name.startsWith('synthetic-worker-')));
+  const controller=new AbortController();
+  const promise=runSyntheticWorker({image:imageUnderTest,files:{},script:'printf ready > /output/started; while :; do :; done',timeoutMs:30000,signal:controller.signal});
+  promise.catch(()=>{});
+  let observed=false;
+  try {
+    const deadline=Date.now()+12000;
+    while(Date.now()<deadline&&!observed){
+      for(const id of await list())if(!baseline.has(id)){
+        try {await docker('/usr/bin/docker',['exec',id,'/bin/bash','-c','test -f /output/started']);observed=true;}catch {}
+      }
+      if(!observed)await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    assert.ok(observed,'worker did not reach running script');
+    const started=Date.now();controller.abort();
+    await assert.rejects(promise,error=>error.name==='AbortError');
+    assert.ok(Date.now()-started<10000,'cancellation and cleanup exceeded test bound');
+    assert.deepEqual([...await list()].filter(id=>!baseline.has(id)),[],'cancelled container remains');
+    assert.deepEqual((await readdir(tmpdir())).filter(name=>name.startsWith('synthetic-worker-')&&!originalDirs.has(name)),[],'cancelled input directory remains');
+  } finally {controller.abort();await promise.catch(()=>{});}
 });

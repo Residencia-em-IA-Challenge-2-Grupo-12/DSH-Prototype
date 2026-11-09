@@ -11,8 +11,8 @@ export function apply(ctx) {
     parameters:{script:{type:'string',required:true,description:'Bounded Bash script for fictional inputs only.'}},
     output:{schema:{type:'object',additionalProperties:false,properties:{artifact:{type:'string',required:true},stdout:{type:'string',required:true},stderr:{type:'string',required:true}}},
       render:(_args,value)=>[{type:'text',text:JSON.stringify(value)}]},
-    async execute({script}) {
-      const result=await runSyntheticWorker({image:process.env.SYNTHETIC_WORKER_TEST_IMAGE,files:{'course.txt':'fictional syllabus\n'},script,timeoutMs:5000});
+    async execute({script},exec) {
+      const result=await runSyntheticWorker({image:process.env.SYNTHETIC_WORKER_TEST_IMAGE,files:{'course.txt':'fictional syllabus\n'},script,timeoutMs:5000,signal:exec.signal});
       return {artifact:result.artifact.toString('utf8'),stdout:result.stdout,stderr:result.stderr};
     },
   }));
@@ -26,6 +26,13 @@ export function apply(ctx) {
       const calls=[{type:'tool-call',id:'worker',name:'synthetic_bash',arguments:JSON.stringify({script})},
         ...denied.map((name,index)=>({type:'tool-call',id:`denied-${index}`,name,arguments:'{}'}))];
       report.batch=await ctx.tools.execute({calls,signal:new AbortController().signal});
+      if(process.env.SYNTHETIC_WORKER_TEST_IMAGE){
+        const aborter=new AbortController();
+        const abortTimer=setTimeout(()=>aborter.abort(),1500);
+        try {
+          report.cancel=await ctx.tools.execute({calls:[{type:'tool-call',id:'cancel-worker',name:'synthetic_bash',arguments:JSON.stringify({script:'while :; do :; done'})}],signal:aborter.signal});
+        } finally {clearTimeout(abortTimer);}
+      }
     } catch(error) {report.error={name:error.name,message:error.message};}
     const destination=process.env.STUDY_WORKER_PROBE_REPORT;
     await writeFile(destination+'.tmp',JSON.stringify(report,null,2),{mode:0o600});

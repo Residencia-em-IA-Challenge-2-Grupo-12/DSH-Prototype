@@ -58,20 +58,28 @@ export function verifyContainer(info, inputPath) {
 export function dockerInvocation(context,args) {
   return {args:['--config',context.config,...args],env:{PATH:'/usr/bin:/bin',HOME:context.home,DOCKER_CONFIG:context.config,DOCKER_HOST:`unix://${context.socket}`}};
 }
-function call(context,args,{timeout=10000,maxBytes=MAX_LOG_BYTES}={}) {
+function cancellationError() {const error=new Error('Synthetic worker cancelled');error.name='AbortError';return error;}
+function throwIfCancelled(signal) {if(signal?.aborted)throw cancellationError();}
+function call(context,args,{timeout=10000,maxBytes=MAX_LOG_BYTES,signal}={}) {
   return new Promise((resolve,reject)=>{
+    if(signal?.aborted){reject(cancellationError());return;}
     const invocation=dockerInvocation(context,args);
     const child=spawn(docker,invocation.args,{env:invocation.env,stdio:['ignore','pipe','pipe']});
     let size=0,stdout=[],stderr=[],reason=null;
-    const timer=setTimeout(()=>{reason='Command timed out';child.kill('SIGKILL');},timeout);
+    const stop=why=>{if(reason)return;reason=why;child.kill('SIGKILL');};
+    const onAbort=()=>stop('cancelled');
+    signal?.addEventListener('abort',onAbort,{once:true});
+    const timer=setTimeout(()=>stop('Command timed out'),timeout);
+    if(signal?.aborted)onAbort();
+    const cleanupListeners=()=>{clearTimeout(timer);signal?.removeEventListener('abort',onAbort);};
     function collect(target,chunk) {
       size+=chunk.length;
-      if(size>maxBytes){reason='Output limit exceeded';child.kill('SIGKILL');return;}
+      if(size>maxBytes){stop('Output limit exceeded');return;}
       target.push(chunk);
     }
     child.stdout.on('data',chunk=>collect(stdout,chunk)); child.stderr.on('data',chunk=>collect(stderr,chunk));
-    child.on('error',err=>{clearTimeout(timer);reject(err);});
-    child.on('close',(code)=>{clearTimeout(timer);if(reason)return reject(new Error(reason));
+    child.on('error',err=>{cleanupListeners();reject(reason==='cancelled'?cancellationError():err);});
+    child.on('close',(code)=>{cleanupListeners();if(reason)return reject(reason==='cancelled'?cancellationError():new Error(reason));
       resolve({code,stdout:Buffer.concat(stdout),stderr:Buffer.concat(stderr)});});
   });
 }
@@ -143,18 +151,21 @@ export async function finalizeCleanup({createState,removeContainer,removeRoot,re
 }
 
 /** Runs fictional inputs only, with a trusted locally available pinned image. */
-export async function runSyntheticWorker({image,files,script,timeoutMs=5000,dockerSocket='/var/run/docker.sock'}) {
+export async function runSyntheticWorker({image,files,script,timeoutMs=5000,dockerSocket='/var/run/docker.sock',signal}) {
   validateImageReference(image);validateInput(files);
   check(typeof script==='string'&&Buffer.byteLength(script)<=16384,'Script must be bounded text');
   check(Number.isInteger(timeoutMs)&&timeoutMs>=100&&timeoutMs<=30000,'Invalid timeout');
   check(typeof dockerSocket==='string'&&isAbsolute(dockerSocket)&&!/[\r\n]/.test(dockerSocket),'An explicit local Unix Docker socket is required');
+  check(signal===undefined||signal instanceof AbortSignal,'Invalid cancellation signal');
+  throwIfCancelled(signal);
   const root=await mkdtemp(join(tmpdir(),'synthetic-worker-')), input=join(root,'workspace');
   const context={home:root,config:join(root,'docker-config'),socket:dockerSocket};
   const name=`synthetic-worker-${randomUUID()}`; let createState='not-started', result, primaryError, cleanup;
   try {
     await mkdir(context.config,{mode:0o700});
     await writeFile(join(context.config,'config.json'),'{}',{mode:0o600,flag:'wx'});
-    const imageInfo=JSON.parse((await checked(context,['image','inspect',image])).toString('utf8'));
+    throwIfCancelled(signal);
+    const imageInfo=JSON.parse((await checked(context,['image','inspect',image],{signal})).toString('utf8'));
     check(Array.isArray(imageInfo)&&imageInfo.length===1,'Image inspection failed');verifyImage(imageInfo[0]);
     await mkdir(input,{mode:0o755});
     for(const [filename,content] of Object.entries(files))await writeFile(join(input,filename),content,{mode:0o444,flag:'wx'});
@@ -163,13 +174,15 @@ export async function runSyntheticWorker({image,files,script,timeoutMs=5000,dock
       '--tmpfs','/tmp:rw,noexec,nosuid,nodev,size=16m','--tmpfs','/output:rw,noexec,nosuid,nodev,size=8m,mode=1777',
       '--mount',`type=bind,source=${input},target=/workspace,readonly`, '--workdir','/workspace',
       '--env','HOME=/tmp','--env','PATH=/usr/bin:/bin','--no-healthcheck','--entrypoint','/bin/bash',image,'-c','exec /bin/sleep 60'];
-    createState='ambiguous'; await checked(context,args); createState='created';
-    const info=JSON.parse((await checked(context,['inspect',name])).toString('utf8'));verifyContainer(info[0],input);
-    await checked(context,['start',name]);
-    const started=await call(context,['exec',name,'/bin/bash','-c',script],{timeout:timeoutMs,maxBytes:MAX_LOG_BYTES});
+    throwIfCancelled(signal);
+    createState='ambiguous'; await checked(context,args,{signal}); createState='created';
+    const info=JSON.parse((await checked(context,['inspect',name],{signal})).toString('utf8'));verifyContainer(info[0],input);
+    await checked(context,['start',name],{signal});
+    const started=await call(context,['exec',name,'/bin/bash','-c',script],{timeout:timeoutMs,maxBytes:MAX_LOG_BYTES,signal});
     check(started.code!==null,'Shell process terminated without an exit code');
     if(started.code!==0)throw new WorkerExitError(started.code,started.stderr.toString('utf8'));
-    const output=await checked(context,['exec',name,'/bin/tar','--format=ustar','-C','/output','-cf','-','--','result.txt'],{maxBytes:MAX_OUTPUT_BYTES+128*1024});
+    const output=await checked(context,['exec',name,'/bin/tar','--format=ustar','-C','/output','-cf','-','--','result.txt'],{maxBytes:MAX_OUTPUT_BYTES+128*1024,signal});
+    throwIfCancelled(signal);
     result={runName:name,exitCode:started.code,stdout:started.stdout.toString('utf8'),stderr:started.stderr.toString('utf8'),artifact:readResultTar(output)};
   } catch(error) {primaryError=error;}
   finally {
@@ -194,5 +207,6 @@ export async function runSyntheticWorker({image,files,script,timeoutMs=5000,dock
     throw error;
   }
   if(primaryError)throw primaryError;
+  throwIfCancelled(signal);
   return result;
 }
