@@ -16,4 +16,4 @@ jobs:
         with:
           node-version: '24.11.1'
       - name: Test worker validation and cleanup logic
-        run: node --test --test-isolation=none experiments/synthetic-worker/worker.test.mjs
+        run: node --test --test-isolation=none experiments/synthetic-worker/worker.test.mjs experiments/synthetic-worker/bounded-process.test.mjs

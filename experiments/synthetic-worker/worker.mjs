@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, writeFile, rm, lstat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, isAbsolute } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { spawn } from 'node:child_process';
+import { cancellationError, runBoundedProcess } from './bounded-process.mjs';
 
 const MAX_INPUT_BYTES=1024*1024, MAX_OUTPUT_BYTES=1024*1024, MAX_LOG_BYTES=64*1024;
 const USER='65534:65534', MEMORY=256*1024*1024, NANO_CPUS=500000000;
@@ -58,30 +58,10 @@ export function verifyContainer(info, inputPath) {
 export function dockerInvocation(context,args) {
   return {args:['--config',context.config,...args],env:{PATH:'/usr/bin:/bin',HOME:context.home,DOCKER_CONFIG:context.config,DOCKER_HOST:`unix://${context.socket}`}};
 }
-function cancellationError() {const error=new Error('Synthetic worker cancelled');error.name='AbortError';return error;}
 function throwIfCancelled(signal) {if(signal?.aborted)throw cancellationError();}
 function call(context,args,{timeout=10000,maxBytes=MAX_LOG_BYTES,signal}={}) {
-  return new Promise((resolve,reject)=>{
-    if(signal?.aborted){reject(cancellationError());return;}
-    const invocation=dockerInvocation(context,args);
-    const child=spawn(docker,invocation.args,{env:invocation.env,stdio:['ignore','pipe','pipe']});
-    let size=0,stdout=[],stderr=[],reason=null;
-    const stop=why=>{if(reason)return;reason=why;child.kill('SIGKILL');};
-    const onAbort=()=>stop('cancelled');
-    signal?.addEventListener('abort',onAbort,{once:true});
-    const timer=setTimeout(()=>stop('Command timed out'),timeout);
-    if(signal?.aborted)onAbort();
-    const cleanupListeners=()=>{clearTimeout(timer);signal?.removeEventListener('abort',onAbort);};
-    function collect(target,chunk) {
-      size+=chunk.length;
-      if(size>maxBytes){stop('Output limit exceeded');return;}
-      target.push(chunk);
-    }
-    child.stdout.on('data',chunk=>collect(stdout,chunk)); child.stderr.on('data',chunk=>collect(stderr,chunk));
-    child.on('error',err=>{cleanupListeners();reject(reason==='cancelled'?cancellationError():err);});
-    child.on('close',(code)=>{cleanupListeners();if(reason)return reject(reason==='cancelled'?cancellationError():new Error(reason));
-      resolve({code,stdout:Buffer.concat(stdout),stderr:Buffer.concat(stderr)});});
-  });
+  const invocation=dockerInvocation(context,args);
+  return runBoundedProcess(docker,invocation.args,{env:invocation.env,timeout,maxBytes,signal});
 }
 async function checked(context,args,options) {
   const result=await call(context,args,options);

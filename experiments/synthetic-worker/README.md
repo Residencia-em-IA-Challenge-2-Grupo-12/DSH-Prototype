@@ -11,17 +11,17 @@ A successful script must write `/output/result.txt`. While the container is runn
 Run offline tests:
 
 ```bash
-node --test --test-isolation=none experiments/synthetic-worker/worker.test.mjs
+node --test --test-isolation=none experiments/synthetic-worker/worker.test.mjs experiments/synthetic-worker/bounded-process.test.mjs
 ```
 
 The live test needs Docker permission and a locally available **digest-pinned, trusted** image with `/bin/bash`, `/bin/sleep`, `/bin/tar` supporting ustar, and `/bin/ln`. The image must have no declared volumes and only `PATH`, `HOME`, `LANG`, `LC_ALL` or `TERM` environment keys. Example tested on this host by the parent agent:
 
 ```bash
 SYNTHETIC_WORKER_TEST_IMAGE='ubuntu@sha256:513c074113a871b51a8d16ab445c88779d6452d937a164fb5cc479f32668a41d' \
-  node --test --test-isolation=none experiments/synthetic-worker/worker.test.mjs
+  node --test --test-isolation=none experiments/synthetic-worker/worker.test.mjs experiments/synthetic-worker/bounded-process.test.mjs
 ```
 
-The final live suite passed on the development host with that image after the private Docker config, IPC validation and cleanup changes. It covered synthetic input/output, host canary and socket absence, a network attempt, timeout, log cap, symlink rejection and cleanup. A separate live test waits for a running script, cancels it, and confirms removal of its container and input directory. Cancellation plus cleanup has no guaranteed end-to-end latency bound if the Docker daemon fails; unknown cleanup is surfaced. These tests did not independently demonstrate cgroup memory or process enforcement.
+The offline suite also exercises cancellation of an already-running host subprocess, timeout and output bounds without Docker; this does not prove Docker daemon cleanup. The final live suite passed on the development host with that image after the private Docker config, IPC validation and cleanup changes. It covered synthetic input/output, host canary and socket absence, a network attempt, timeout, log cap, symlink rejection and cleanup. A separate live test waits for a running script, cancels it, and confirms removal of its container and input directory. Cancellation plus cleanup has no guaranteed end-to-end latency bound if the Docker daemon fails; unknown cleanup is surfaced. These tests did not independently demonstrate cgroup memory or process enforcement.
 
 ## Limits before integration
 
