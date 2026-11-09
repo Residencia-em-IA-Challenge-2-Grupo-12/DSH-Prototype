@@ -2,6 +2,8 @@
 
 **English · [Português](README.pt-BR.md)**
 
+> **Recovery work in progress — do not merge or use as a reliable demonstration.** Calendar-write recovery is incomplete, including after a process crash or delayed provider response. Use only disposable synthetic data. See [the recovery status](docs/recovery-work-in-progress.md). GPT-6 Luna is the only authorized generative model for this project.
+
 Study Atlas explores a collaborative study assistant using DeepSeek Harness (DSH), two synthetic student workspaces and a local Calendarpit calendar. The companion interface drafts near-term and future study blocks, reviews them separately, records optional feedback, compares checkpoint snapshots and displays a routine summary.
 
 The sample planner is deterministic. DSH can call the MCP tools and add an explanation when a model is configured; a live model run is **not** the same as the deterministic test. No real Google account or real user documents are needed.
