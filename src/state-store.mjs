@@ -10,7 +10,7 @@ export function createStateStore(directory) {
     await fs.mkdir(directory,{recursive:true,mode:0o700});
     const db=new DatabaseSync(path.join(directory,'state.sqlite'));
     try {
-      db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS student_state (student TEXT PRIMARY KEY, body TEXT NOT NULL);');
+      db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS student_state (student TEXT PRIMARY KEY, body TEXT NOT NULL); CREATE TABLE IF NOT EXISTS calendar_claim (singleton INTEGER PRIMARY KEY CHECK(singleton=1), body TEXT NOT NULL);');
       await fs.chmod(path.join(directory,'state.sqlite'),0o600);
       return db;
     } catch(error) {db.close();throw error;}
@@ -47,5 +47,36 @@ export function createStateStore(directory) {
       return result;
     });
   }
-  return {load,save,update};
+  // Infrastructure only: callers do not yet acquire or enforce this claim.
+  // It has no timeout or release operation; neither elapsed time nor a missing
+  // provider response proves that a write cannot still arrive later.
+  async function getCalendarClaim() {
+    const db=await database();
+    const current=db.prepare('SELECT body FROM calendar_claim WHERE singleton=1').get();
+    return current?JSON.parse(current.body):null;
+  }
+  async function acquireCalendarClaim(intent) {
+    if(!intent || typeof intent.id!=='string' || !intent.id || typeof intent.student!=='string' || !Array.isArray(intent.actions))throw new Error('Invalid calendar claim');
+    const db=await database();
+    return transaction(db,()=>{
+      if(db.prepare('SELECT 1 FROM calendar_claim WHERE singleton=1').get())throw new Error('A calendar operation is unresolved');
+      const claim={...intent,steps:[]};
+      db.prepare('INSERT INTO calendar_claim(singleton,body) VALUES(1,?)').run(JSON.stringify(claim));
+      return claim;
+    });
+  }
+  async function appendCalendarClaimStep(id,step) {
+    const db=await database();
+    return transaction(db,()=>{
+      const row=db.prepare('SELECT body FROM calendar_claim WHERE singleton=1').get();
+      if(!row)throw new Error('Calendar claim not found');
+      const claim=JSON.parse(row.body);
+      if(claim.id!==id)throw new Error('Calendar claim does not match');
+      if(!step || typeof step.actionId!=='string' || !['sent','confirmed','unknown'].includes(step.status))throw new Error('Invalid calendar claim step');
+      claim.steps.push(step);
+      db.prepare('UPDATE calendar_claim SET body=? WHERE singleton=1').run(JSON.stringify(claim));
+      return claim;
+    });
+  }
+  return {load,save,update,getCalendarClaim,acquireCalendarClaim,appendCalendarClaimStep};
 }
