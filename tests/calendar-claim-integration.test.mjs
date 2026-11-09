@@ -3,19 +3,21 @@ import assert from 'node:assert/strict';
 import {spawn,spawnSync} from 'node:child_process';
 import {readFile,access} from 'node:fs/promises';
 import {join} from 'node:path';
-import {ROOT,readJSON,resetScenario,draft,applyApproved,addFeedback,loadState,getRecoveryClaim,runtimeDir} from '../src/core.mjs';
+import {ROOT,readJSON,resetScenario,draft,applyApproved,addFeedback,loadState,getRecoveryClaim,runtimeDir,draftAnnotation,applyAnnotation} from '../src/core.mjs';
 
 test('an in-flight approved write has a durable claim and blocks drafts and simulator reset',async()=>{
   let release,started;
   const entered=new Promise(resolve=>{started=resolve;});
   const calendar={
-    resets:0,
+    resets:0,patches:0,
     async reset(student){this.resets++;this.items=structuredClone((await readJSON(`${ROOT}/fixtures/calendars/${student}.json`)).events);},
     async events(){return structuredClone(this.items);},
-    async create(_student,event){this.items.push(structuredClone(event));started();await new Promise(resolve=>{release=resolve;});return event;},
-    async remove(_student,id){this.items=this.items.filter(event=>event.id!==id);}
+    async create(_student,event){started();await new Promise(resolve=>{release=resolve;});this.items.push(structuredClone(event));return event;},
+    async remove(_student,id){this.items=this.items.filter(event=>event.id!==id);},
+    async patch(){this.patches++;}
   };
   await resetScenario(calendar,'ana');
+  const annotation=await draftAnnotation(calendar,'ana','ana-class','classes');
   const plan=await draft(calendar,'ana',{weeks:1,hours:1});
   const applying=applyApproved(calendar,'ana',plan.id,'near');
   await entered;
@@ -37,14 +39,43 @@ test('an in-flight approved write has a durable claim and blocks drafts and simu
     assert.equal(competing.status,0,competing.stderr);
     const result=JSON.parse(await readFile(contender,'utf8'));
     assert.equal(result.called,false);assert.match(result.error,/unresolved/i);
+    const annotationResult=join(runtimeDir(),'annotation-contender.json');
+    const annotationCode=`import {applyAnnotation,readJSON,ROOT} from ${JSON.stringify(new URL('../src/core.mjs',import.meta.url).href)};import {writeFile} from 'node:fs/promises';
+      let called=false,error='';const c={events:async()=> (await readJSON(ROOT+'/fixtures/calendars/ana.json')).events,patch:async()=>{called=true;}};
+      try{await applyAnnotation(c,'ana',process.argv[2]);}catch(e){error=e.message;}await writeFile(process.argv[1],JSON.stringify({called,error}));`;
+    const annotationChild=spawnSync(process.execPath,['--input-type=module','-e',annotationCode,annotationResult,annotation.id],{env:process.env,encoding:'utf8'});
+    assert.equal(annotationChild.status,0,annotationChild.stderr);
+    const annotationAttempt=JSON.parse(await readFile(annotationResult,'utf8'));
+    assert.equal(annotationAttempt.called,false);assert.match(annotationAttempt.error,/unresolved/i);
     await assert.rejects(()=>draft(calendar,'ana',{weeks:1,hours:1}),/unresolved/i);
     await assert.rejects(()=>resetScenario(calendar,'bruno'),/unresolved/i);
+    await assert.rejects(()=>applyAnnotation(calendar,'ana',annotation.id),/unresolved|another approval/i);
     assert.equal(calendar.resets,1);
+    assert.equal(calendar.patches,0);
     await addFeedback('ana',{eventId:'during-claimed-write'});
   } finally {release();}
   await applying;
   assert.equal(await getRecoveryClaim(),null);
   assert((await loadState('ana')).feedback.some(record=>record.eventId==='during-claimed-write'));
+});
+
+test('an absent event after a lost response does not permit a reset before late delivery',async()=>{
+  let deliver;
+  const calendar={
+    async reset(student){this.items=structuredClone((await readJSON(`${ROOT}/fixtures/calendars/${student}.json`)).events);},
+    async events(){return structuredClone(this.items);},
+    async create(_student,event){deliver=()=>this.items.push(structuredClone(event));throw new Error('response lost');},
+    async remove(_student,id){this.items=this.items.filter(event=>event.id!==id);}
+  };
+  await resetScenario(calendar,'ana');
+  const plan=await draft(calendar,'ana',{weeks:1,hours:1});
+  await assert.rejects(()=>applyApproved(calendar,'ana',plan.id,'near'),/outcome unknown/i);
+  assert(!(await calendar.events()).some(event=>event.id===plan.near[0].id));
+  await assert.rejects(()=>resetScenario(calendar,'ana'),/unresolved/i);
+  deliver();
+  assert((await calendar.events()).some(event=>event.id===plan.near[0].id));
+  await assert.rejects(()=>draft(calendar,'ana',{weeks:1,hours:1}),/unresolved/i);
+  assert((await getRecoveryClaim()).steps.some(step=>step.actionId===`create:${plan.near[0].id}`&&step.status==='sent'));
 });
 
 test('an interrupted writer leaves its sent action claimed across restart', {timeout:10000}, async()=>{
