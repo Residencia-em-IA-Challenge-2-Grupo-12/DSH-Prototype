@@ -182,12 +182,14 @@ export async function resetScenario(calendar, student) {
   await saveState(student,state); return state;
 }
 export async function draft(calendar, student, options={}) {
-  const events=await calendar.events(student), state=await loadState(student);
-  const unseen=diffSnapshots(state.lastSnapshot,events);
-  state.protectedIds=[...new Set([...(state.protectedIds||[]),...unseen.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
-  const plan=makePlan(await getStudent(student), events, {...options,protectedIds:state.protectedIds||[]});
-  state.plan=plan; state.history.push({type:'proposal',at:new Date().toISOString(),planId:plan.id,options});
-  await saveState(student,state); return plan;
+  const events=await calendar.events(student), profile=await getStudent(student);
+  return stateStore.update(assertStudent(student),state=>{
+    const unseen=diffSnapshots(state.lastSnapshot,events);
+    state.protectedIds=[...new Set([...(state.protectedIds||[]),...unseen.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
+    const plan=makePlan(profile, events, {...options,protectedIds:state.protectedIds||[]});
+    state.plan=plan; state.history.push({type:'proposal',at:new Date().toISOString(),planId:plan.id,options});
+    return plan;
+  });
 }
 export async function applyApproved(calendar, student, planId, section) {
   return withWriteLock(student,()=>applyApprovedLocked(calendar,student,planId,section));
@@ -256,16 +258,18 @@ export async function addFeedback(student, input) {
 }
 export async function draftAnnotation(calendar,student,eventId,category) {
   if(!['study','classes','work','rest','physical','other','unknown'].includes(category)) throw new Error('Invalid category');
-  const state=await loadState(student),events=await calendar.events(student),event=events.find(e=>e.id===eventId);
+  const events=await calendar.events(student),event=events.find(e=>e.id===eventId);
   if(!event)throw new Error('Event not found');
   const start='[Study Atlas]',end='[/Study Atlas]',original=event.description||'';
   const pattern=/\n?\[Study Atlas\][\s\S]*?\[\/Study Atlas\]/g;
   const preserved=original.replace(pattern,'').trimEnd();
   const section=start+'\nCategory / Categoria: '+category+'\n'+end;
   const description=(preserved?preserved+'\n\n':'')+section;
-  state.pendingAnnotation={id:randomUUID(),eventId,category,baseHash:digest(events),before:significant(event),after:{description,
-    extendedProperties:{...(event.extendedProperties||{}),private:{...(event.extendedProperties?.private||{}),studyCategory:category}}}};
-  await saveState(student,state);return state.pendingAnnotation;
+  return stateStore.update(assertStudent(student),state=>{
+    state.pendingAnnotation={id:randomUUID(),eventId,category,baseHash:digest(events),before:significant(event),after:{description,
+      extendedProperties:{...(event.extendedProperties||{}),private:{...(event.extendedProperties?.private||{}),studyCategory:category}}}};
+    return state.pendingAnnotation;
+  });
 }
 export async function applyAnnotation(calendar,student,id) {
   return withWriteLock(student,()=>applyAnnotationLocked(calendar,student,id));
@@ -316,5 +320,5 @@ export async function report(calendar, student) {
 }
 export async function saveNarrative(student, narrative) {
   if (typeof narrative!=='string'||narrative.length>12000) throw new Error('Invalid narrative');
-  const state=await loadState(student); state.narrative=narrative; await saveState(student,state); return {saved:true};
+  return stateStore.update(assertStudent(student),state=>{state.narrative=narrative;return {saved:true};});
 }
