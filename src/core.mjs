@@ -221,9 +221,15 @@ async function applyApprovedLocked(calendar, student, planId, section) {
     throw new Error('PARTIAL: created '+JSON.stringify(written)+'; removed '+JSON.stringify(removed)+'. Inspect calendar before retry. '+err.message);
   }
   const after=await calendar.events(student);
-  plan.baseHash=digest(after); state.lastSnapshot=snapshot(after);
-  state.history.push({type:'approved',section,at:new Date().toISOString(),planId,written,removed});
-  await saveState(student,state); return {written,removed,section};
+  const superseded=await stateStore.update(assertStudent(student),latest=>{
+    const changed=latest.plan?.id!==planId;
+    if(!changed){latest.plan.status[section]='applied';latest.plan.baseHash=digest(after);}
+    latest.lastSnapshot=snapshot(after);
+    latest.history.push({type:'approved',section,at:new Date().toISOString(),planId,written,removed,...(changed?{superseded:true}:{})});
+    return changed;
+  });
+  if(superseded)throw new Error('Calendar was changed but the proposal was replaced during application; inspect the calendar');
+  return {written,removed,section};
 }
 export function diffSnapshots(before, after) {
   const a=new Map(snapshot(before).map(e=>[e.id,e])), b=new Map(snapshot(after).map(e=>[e.id,e]));
