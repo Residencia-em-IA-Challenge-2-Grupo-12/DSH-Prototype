@@ -301,12 +301,34 @@ export async function applyAnnotation(calendar,student,id) {
 }
 async function applyAnnotationLocked(calendar,student,id) {
   const state=await loadState(student),p=state.pendingAnnotation;
-  if(!p||p.id!==id)throw new Error('Annotation proposal not pending');
+  if(!p||p.id!==id||p.status==='partial')throw new Error('Annotation proposal not pending');
   const events=await calendar.events(student);if(digest(events)!==p.baseHash)throw new Error('STALE: calendar changed; review again');
-  await calendar.patch(student,p.eventId,p.after);
-  state.annotations[p.eventId]={category:p.category,source:'user-confirmed',at:new Date().toISOString()};
-  state.history.push({type:'annotation-approved',eventId:p.eventId,category:p.category,at:new Date().toISOString()});
-  state.pendingAnnotation=null;state.lastSnapshot=snapshot(await calendar.events(student));await saveState(student,state);
+  let acknowledged=false,after;
+  try {
+    await calendar.patch(student,p.eventId,p.after);acknowledged=true;
+    after=await calendar.events(student);
+    const expected=events.map(event=>event.id===p.eventId?{...event,...p.after}:event);
+    if(digest(after)!==digest(expected))throw new Error('Calendar changed during annotation');
+  } catch(error) {
+    let observed=null;try {observed=await calendar.events(student);} catch { /* Keep the last trusted snapshot. */ }
+    await stateStore.update(assertStudent(student),latest=>{
+      if(latest.pendingAnnotation?.id===id)latest.pendingAnnotation.status='partial';
+      if(observed){
+        const edited=diffSnapshots(latest.lastSnapshot,observed).filter(change=>change.before?.extendedProperties?.private?.studyDemo==='true');
+        latest.protectedIds=[...new Set([...(latest.protectedIds||[]),...edited.map(change=>change.id)])];
+        latest.lastSnapshot=snapshot(observed);
+      }
+      latest.history.push({type:'annotation-partial',proposalId:id,eventId:p.eventId,at:new Date().toISOString(),acknowledged,observation:observed?'available':'unavailable',error:String(error)});
+    });
+    throw new Error('PARTIAL: annotation '+(acknowledged?'acknowledged; resulting calendar needs review':'outcome unknown')+'. '+error.message);
+  }
+  const superseded=await stateStore.update(assertStudent(student),latest=>{
+    const changed=latest.pendingAnnotation?.id!==id;
+    if(!changed){latest.annotations[p.eventId]={category:p.category,source:'user-confirmed',at:new Date().toISOString()};latest.pendingAnnotation=null;}
+    latest.history.push({type:'annotation-approved',eventId:p.eventId,category:p.category,at:new Date().toISOString(),...(changed?{superseded:true}:{})});
+    latest.lastSnapshot=snapshot(after);return changed;
+  });
+  if(superseded)throw new Error('Annotation was applied but the proposal was replaced; inspect the calendar');
   return {saved:true};
 }
 export function summarize(events, feedback, state) {
