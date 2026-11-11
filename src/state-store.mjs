@@ -69,6 +69,20 @@ export function createStateStore(directory) {
     const current=db.prepare('SELECT body FROM calendar_claim WHERE singleton=1').get();
     return current?JSON.parse(current.body):null;
   }
+  // Trusted archival code uses a single transaction so state and claims are
+  // captured at one database point. This does not retire writers or sanitize
+  // free text; callers must do both before archiving.
+  async function snapshotForArchive(student) {
+    if(typeof student!=='string'||!student)throw new Error('Archive student is required');
+    const db=await database();
+    return transaction(db,()=>{
+      const current=row(db,student),active=db.prepare('SELECT body FROM calendar_claim WHERE singleton=1').get();
+      const claim=active?JSON.parse(active.body):null;
+      if(claim&&claim.student!==student)throw new Error('An unresolved claim belongs to another student');
+      const claimHistory=db.prepare('SELECT body FROM calendar_claim_history ORDER BY rowid').all().map(item=>JSON.parse(item.body)).filter(item=>item.student===student);
+      return {schemaVersion:1,state:current?JSON.parse(current.body):null,claim,claimHistory};
+    });
+  }
   async function acquireCalendarClaim(intent,{student,change}={}) {
     if(!intent || typeof intent.id!=='string' || !intent.id || typeof intent.student!=='string' || !Array.isArray(intent.actions))throw new Error('Invalid calendar claim');
     if(student&&student!==intent.student)throw new Error('Calendar claim student does not match');
@@ -130,7 +144,7 @@ export function createStateStore(directory) {
       db.prepare('DELETE FROM calendar_claim WHERE singleton=1').run();
     });
   }
-  return {load,save,create,update,getCalendarClaim,acquireCalendarClaim,appendCalendarClaimStep,
+  return {load,save,create,update,getCalendarClaim,snapshotForArchive,acquireCalendarClaim,appendCalendarClaimStep,
     completeCalendarClaim:(id,options={})=>finishCalendarClaim(id,options,false),
     cancelCalendarClaim:(id,options={})=>finishCalendarClaim(id,options,true)};
 }
