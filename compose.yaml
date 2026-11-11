@@ -9,7 +9,7 @@ services:
     volumes:
       - ./fixtures/calendars:/fixtures:ro
 
-  # Experimental only: there is deliberately no route from DSH to this service yet.
+  # Experimental only: no external egress or verified pricing for paid requests.
   model-gateway:
     profiles: [model-gateway]
     labels:
