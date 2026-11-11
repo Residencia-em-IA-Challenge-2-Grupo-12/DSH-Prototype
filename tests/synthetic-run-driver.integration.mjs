@@ -64,6 +64,40 @@ for(const student of ['ana','bruno'])for(let repetition=1;repetition<=repeats;re
   }
 });
 
+test('managed retirement records an unavailable simulator rather than an empty calendar',
+  {skip:process.env.STUDY_DOCKER_TEST!=='1',timeout:120000},async()=>{
+  const root=await mkdtemp(join(tmpdir(),'study-managed-unavailable-')),testId=randomUUID(),gatewayName=`study-test-gateway-${testId}`,gatewayNetwork=`study-test-gateway-net-${testId}`;
+  const exec=promisify(execFile),docker=async(...args)=>(await exec('docker',args,{timeout:20000,maxBuffer:64000})).stdout.trim();
+  let manager,driver,run;
+  try {
+    const control=join(root,'control');await mkdir(control,{mode:0o700});const tokenFile=join(control,'gateway-token');await writeFile(tokenFile,'a'.repeat(64)+'\n',{mode:0o600});
+    const agentImage=await docker('image','inspect','--format','{{.Id}}',process.env.STUDY_DSH_IMAGE||'study-dsh-agent:synthetic');
+    await docker('network','create','--internal',gatewayNetwork);
+    const gatewayId=await docker('run','-d','--rm','--name',gatewayName,'--label','study.role=model-gateway','--network',gatewayNetwork,
+      '--user','node','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges:true','--tmpfs','/tmp:rw,nosuid,nodev',
+      '--env','STUDY_TEST_STUDENT=ana','--mount',`type=bind,source=${join(ROOT,'src')},target=/app/src,readonly`,
+      '--mount',`type=bind,source=${join(ROOT,'tests/fixtures/fake-gateway-container.mjs')},target=/app/fake-gateway.mjs,readonly`,
+      'node:24.11.1-bookworm-slim@sha256:48abc13a19400ca3985071e287bd405a1d99306770eb81d61202fb6b65cf0b57','node','/app/fake-gateway.mjs');
+    manager=await createExclusiveRunManager({root,driverFactory:({lease})=>{
+      driver=createSyntheticRunDriver({root,lease,agentImage,tokenFile,gatewayId});return driver;
+    }});
+    run=await manager.start('ana');assert(driver.active(run.id));
+    await docker('rm','-f',`study-calendar-${run.id}`);
+    await manager.retire();
+    const archive=JSON.parse(await readFile(join(root,'archives',`${run.id}.json`),'utf8'));
+    assert.equal(archive.observation.availability,'unavailable');assert.equal(archive.observation.events,null);
+    assert.equal(await manager.current(),null);
+  } finally {
+    const remaining=run||await manager?.current().catch(()=>null);let closeError;
+    try {await manager?.close();}catch(error){closeError=error;}
+    if(remaining)for(const name of [`study-agent-${remaining.id}`,`study-calendar-${remaining.id}`])spawnSync('docker',['rm','-f',name],{stdio:'ignore',timeout:10000});
+    spawnSync('docker',['rm','-f',gatewayName],{stdio:'ignore',timeout:10000});
+    if(remaining)for(const name of [`study-agent-net-${remaining.id}`,`study-calendar-net-${remaining.id}`])spawnSync('docker',['network','rm',name],{stdio:'ignore',timeout:10000});
+    spawnSync('docker',['network','rm',gatewayNetwork],{stdio:'ignore',timeout:10000});await rm(root,{recursive:true,force:true});
+    if(closeError)throw closeError;
+  }
+});
+
 test('managed agent refuses a turn when its policy plugin fails to activate',
   {skip:process.env.STUDY_DOCKER_TEST!=='1'||!process.env.STUDY_BAD_DSH_IMAGE,timeout:120000},async()=>{
   const root=await mkdtemp(join(tmpdir(),'study-managed-policy-')),testId=randomUUID(),gatewayName=`study-test-gateway-${testId}`,gatewayNetwork=`study-test-gateway-net-${testId}`;
