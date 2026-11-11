@@ -95,7 +95,7 @@ export class Calendarpit {
       body: body === undefined ? undefined : JSON.stringify(body)
     });
     const text = await res.text();
-    if (!res.ok) throw new Error('Calendarpit ' + res.status + ': ' + text);
+    if (!res.ok) {const error=new Error('Calendarpit ' + res.status + ': ' + text);error.status=res.status;throw error;}
     return text ? JSON.parse(text) : null;
   }
   async events(student) { return (await this.request('GET', '/calendars/' + assertStudent(student) + '-calendar/events')).items; }
