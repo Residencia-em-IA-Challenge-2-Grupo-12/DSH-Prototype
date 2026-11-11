@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
 import { PassThrough, Writable } from 'node:stream';
+import {writeFileSync} from 'node:fs';
 import { StudySession } from '../src/sdk-session.mjs';
 
 function fakeHarness(expected={provider:'codex',model:'gpt-6-luna'}) {
@@ -65,7 +66,7 @@ test('an explicitly configured comparison session uses only the gateway credenti
 test('a brokered session uses the broker-only MCP profile and does not inherit provider keys',async()=>{
   const fake=fakeHarness();let launch;const previous=process.env.OPENROUTER_API_KEY;process.env.OPENROUTER_API_KEY='synthetic-private-key';
   const session=new StudySession('ana',{brokerSocket:'/run/study-broker/agent.sock',brokerProbe:async()=>true,
-    launch:(command,args,options)=>{launch={args,options};return fake.child;}});
+    launch:(command,args,options)=>{launch={args,options};writeFileSync(options.env.STUDY_POLICY_READY,'guard-registered',{mode:0o600,flag:'wx'});return fake.child;}});
   try {
     await session.start();
     assert(launch.args.some(arg=>arg.endsWith('/dsh-broker.patch.yml')));
@@ -76,4 +77,13 @@ test('a brokered session uses the broker-only MCP profile and does not inherit p
   } finally {
     session.stop();if(previous===undefined)delete process.env.OPENROUTER_API_KEY;else process.env.OPENROUTER_API_KEY=previous;
   }
+});
+
+test('a brokered session rejects startup when the tool policy did not activate',async()=>{
+  const fake=fakeHarness();
+  const session=new StudySession('ana',{brokerSocket:'/run/study-broker/agent.sock',brokerProbe:async()=>true,launch:()=>fake.child});
+  try {
+    await assert.rejects(session.start(),/tool policy/i);
+    assert(fake.child.killed);
+  } finally {session.stop();}
 });

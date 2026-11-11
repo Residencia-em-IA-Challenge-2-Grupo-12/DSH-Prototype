@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { createInterface } from 'node:readline';
+import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { ROOT, assertStudent, runtimeDir } from './core.mjs';
 import { createGatewayRoute } from './foundation/dsh-model-route.mjs';
@@ -44,17 +45,29 @@ export class StudySession {
     // there; loading the read-only installed binary works with noexec tmpfs.
     if(isolated)env.NARB_DISABLE_NATIVE_CACHE='1';
     Object.assign(env,{DSH_HOME:path.join(runtimeDir(),'dsh'),DSH_PERMISSION_MODE:'read-only'},this.route?.env||{});
-    if(this.brokerSocket)env.STUDY_BROKER_SOCKET=this.brokerSocket;
+    let policyDirectory;
+    if(this.brokerSocket){
+      env.STUDY_BROKER_SOCKET=this.brokerSocket;
+      await fs.mkdir(runtimeDir(),{recursive:true,mode:0o700});
+      policyDirectory=await fs.mkdtemp(path.join(runtimeDir(),'.study-policy-'));
+      env.STUDY_POLICY_READY=path.join(policyDirectory,'ready');
+    }
     const args=[path.join(ROOT,'node_modules/@deepseek-ai/dsh/lib/bin.js'),'--profile','sdk','--patch',path.join(ROOT,'dsh-study.patch.yml')];
     if(this.brokerSocket)args.push('--patch',path.join(ROOT,'dsh-broker.patch.yml'));
     if(this.route)args.push('--patch',this.route.patch);
-    this.child=this.launch(process.execPath,args,{cwd:ROOT,env,stdio:['pipe','pipe','pipe']});
-    this.child.stderr.resume();
-    this.child.stdin.on('error',()=>this.fail(this.closed?null:'Harness connection failed; start a new session'));
-    createInterface({input:this.child.stdout}).on('line',line=>{try{this.receive(JSON.parse(line));}catch{/* Ignore non-JSON output. */}});
-    this.child.on('error',()=>this.fail('Harness could not be started'));
-    this.child.on('exit',()=>this.fail(this.closed?null:'Harness stopped; start a new session'));
-    await this.request('initialize',{cwd:path.join(runtimeDir(),'workspaces',this.student),provider:this.route?.provider||'codex',model:this.route?.model||'gpt-6-luna',capabilities:{userQuestions:true},approvalRequests:true});
+    try {
+      this.child=this.launch(process.execPath,args,{cwd:ROOT,env,stdio:['pipe','pipe','pipe']});
+      this.child.stderr.resume();
+      this.child.stdin.on('error',()=>this.fail(this.closed?null:'Harness connection failed; start a new session'));
+      createInterface({input:this.child.stdout}).on('line',line=>{try{this.receive(JSON.parse(line));}catch{/* Ignore non-JSON output. */}});
+      this.child.on('error',()=>this.fail('Harness could not be started'));
+      this.child.on('exit',()=>this.fail(this.closed?null:'Harness stopped; start a new session'));
+      await this.request('initialize',{cwd:path.join(runtimeDir(),'workspaces',this.student),provider:this.route?.provider||'codex',model:this.route?.model||'gpt-6-luna',capabilities:{userQuestions:true},approvalRequests:true});
+      if(policyDirectory){
+        let ready=false;try{ready=(await fs.readFile(env.STUDY_POLICY_READY,'utf8'))==='guard-registered';}catch{/* Missing marker fails closed. */}
+        if(!ready)throw new Error('Synthetic tool policy did not activate');
+      }
+    } finally {if(policyDirectory)await fs.rm(policyDirectory,{recursive:true,force:true});}
   }
   receive(frame) {
     if(frame.id!==undefined && !frame.method) {

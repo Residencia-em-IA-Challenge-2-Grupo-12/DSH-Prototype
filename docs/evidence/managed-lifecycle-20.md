@@ -15,9 +15,11 @@ To reproduce on the development host after building the agent image:
 ```sh
 STUDY_DOCKER_TEST=1 STUDY_MANAGED_REPEATS=10 STUDY_DSH_IMAGE=study-dsh-agent:synthetic ./node_modules/.bin/node --test --test-concurrency=1 --test-name-pattern='trusted lifecycle:' tests/synthetic-run-driver.integration.mjs
 STUDY_DOCKER_TEST=1 STUDY_DSH_IMAGE=study-dsh-agent:synthetic ./node_modules/.bin/node --test --test-name-pattern='crashed controller' tests/synthetic-run-driver.integration.mjs
+docker build -f tests/fixtures/Dockerfile.broken-policy -t study-dsh-agent:broken-policy .
+STUDY_DOCKER_TEST=1 STUDY_BAD_DSH_IMAGE=study-dsh-agent:broken-policy ./node_modules/.bin/node --test --test-name-pattern='policy plugin fails' tests/synthetic-run-driver.integration.mjs
 ```
 
-The observed packaged agent image ID was `sha256:d2d4145fb529319a3fe885ddf6cf2d9e25b15912f06812da13c4d6cde37069ae`. The gateway contained only synthetic credentials and test responses; no paid request was made.
+The observed packaged agent image ID for the 20 runs was `sha256:d2d4145fb529319a3fe885ddf6cf2d9e25b15912f06812da13c4d6cde37069ae`. After those runs, an updated image added a tool-policy startup check. Both personas and the crash drill passed again; a deliberately broken-policy image was rejected before generating a proposal or changing the calendar. The gateway contained only synthetic credentials and test responses; no paid request was made.
 
 ## Português brasileiro
 

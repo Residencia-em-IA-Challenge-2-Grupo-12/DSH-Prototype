@@ -1,4 +1,5 @@
 import {createStudyBrokerClient} from './foundation/study-broker.mjs';
+import {writeFileSync} from 'node:fs';
 
 // Defense in depth for the synthetic study profile. This guards tool dispatch;
 // it is not an OS sandbox or a substitute for a restricted runtime/network.
@@ -24,5 +25,7 @@ export function apply(ctx){
       try {await broker.ping();}catch{throw new Error('Synthetic study broker is unavailable');}
       return next();
     });
+    // Startup wiring evidence, not protection against a compromised same-UID process.
+    if(process.env.STUDY_POLICY_READY)writeFileSync(process.env.STUDY_POLICY_READY,'guard-registered',{mode:0o600,flag:'wx'});
   }
 }
