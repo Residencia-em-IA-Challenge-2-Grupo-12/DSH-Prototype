@@ -24,6 +24,11 @@ export async function createRunManager({root,driver}) {
   });
   return {
     async current(){return read();},
+    async completed(id){
+      if(typeof id!=='string'||!id)throw new Error('Run ID is required');
+      const record=db.prepare('SELECT body FROM completed_run WHERE id=?').get(id);
+      return record?JSON.parse(record.body):null;
+    },
     async start(student){
       if(!['ana','bruno'].includes(student))throw new Error('Unknown synthetic student');
       const id=randomUUID();
@@ -42,12 +47,14 @@ export async function createRunManager({root,driver}) {
       const run=transition(initial.id,['active','start-failed','archive-failed','retirement-failed'],'retiring',{forceRequested:!!initial.forceRequested||force,discardRequested:discardUnsaved});
       try {await driver.stopWriters(structuredClone(run),{force});}
       catch(error){transition(run.id,['retiring'],'retirement-failed');throw new Error('Could not verify writer retirement',{cause:error});}
-      let archiveId=null;
+      let archiveId=null,archiveSha256=null;
       if(!discardUnsaved){
         try {
           const archive=await driver.archive(structuredClone(run));
           if(archive?.archiveId!==run.id)throw new Error('Archive identity does not match the run');
+          if(archive.sha256!==undefined&&!/^[a-f0-9]{64}$/.test(archive.sha256))throw new Error('Archive hash is invalid');
           archiveId=archive.archiveId;
+          archiveSha256=archive.sha256??null;
         } catch(error){transition(run.id,['retiring'],'archive-failed');throw new Error('Could not archive synthetic run evidence',{cause:error});}
       }
       try {
@@ -56,10 +63,10 @@ export async function createRunManager({root,driver}) {
       } catch(error){transition(run.id,['retiring'],'retirement-failed');throw new Error('Synthetic run retirement could not be verified',{cause:error});}
       transaction(()=>{
         const current=read();if(!current||current.id!==run.id||current.phase!=='retiring')throw new Error('Active run changed before retirement');
-        db.prepare('INSERT INTO completed_run(id,body) VALUES(?,?)').run(run.id,JSON.stringify({...current,phase:'retired',archiveId,discarded:discardUnsaved,retiredAt:new Date().toISOString()}));
+        db.prepare('INSERT INTO completed_run(id,body) VALUES(?,?)').run(run.id,JSON.stringify({...current,phase:'retired',archiveId,archiveSha256,discarded:discardUnsaved,retiredAt:new Date().toISOString()}));
         db.prepare('DELETE FROM active_run WHERE slot=1').run();
       });
-      return {id:run.id,archiveId,discarded:discardUnsaved};
+      return {id:run.id,archiveId,archiveSha256,discarded:discardUnsaved};
     },
     async close(){db.close();}
   };

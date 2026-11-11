@@ -14,6 +14,8 @@ import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {StdioClientTransport} from '@modelcontextprotocol/sdk/client/stdio.js';
 import path from 'node:path';
 import {syntheticToken} from './fixtures/calendarpit-oauth.mjs';
+import {createStateStore} from '../src/state-store.mjs';
+import {archiveSyntheticRun} from '../src/foundation/run-archive.mjs';
 
 test('synthetic OAuth supports v3 reads and reviewed ETag-protected event writes', { skip: process.env.CALENDARPIT_LIVE_TEST !== '1', timeout: 60_000 }, async () => {
   const fixture = JSON.parse(await fs.readFile(new URL('../fixtures/calendars/ana.json', import.meta.url), 'utf8'));
@@ -103,5 +105,13 @@ test('brokered agent draft reaches the provider only after separate trusted appr
     assert.equal((await calendar.events('ana')).length,before.length+plan.near.length);
     assert.equal((await loadState('ana')).plan.status.future,'pending');
     assert.equal(await getRecoveryClaim(),null);
+    const snapshot=await createStateStore(runtimeDir()).snapshotForArchive('ana');
+    const directory=path.join(runtimeDir(),'archives');
+    await archiveSyntheticRun({directory,run:{id:run.id,student:'ana',createdAt:'2026-11-02T00:00:00Z'},snapshot,
+      observation:{availability:'available',events:await calendar.events('ana')}});
+    const archived=JSON.parse(await fs.readFile(path.join(directory,`${run.id}.json`),'utf8'));
+    assert.equal(archived.snapshot.claimHistory.length,1);assert.equal(archived.snapshot.claimHistory[0].decision.kind,'approved');
+    assert.equal(archived.snapshot.claimHistory[0].steps.filter(step=>step.status==='confirmed').length,plan.near.length);
+    assert.equal(archived.observation.events.length,before.length+plan.near.length);
   } finally {await client?.close();await broker?.close();await run.close();}
 });

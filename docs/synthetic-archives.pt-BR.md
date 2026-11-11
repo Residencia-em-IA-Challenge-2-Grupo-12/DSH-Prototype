@@ -1,0 +1,9 @@
+# Arquivos experimentais das execuções sintéticas
+
+O componente de arquivo é experimental. A aplicação em execução **ainda não** arquiva execuções automaticamente nem verifica se os processos antigos do Docker pararam. Ele se destina apenas aos cenários fictícios da Ana e do Bruno.
+
+Depois que um controlador confiável parar e verificar todos os processos que podem escrever, ele poderá capturar o estado em uma transação e gravar um arquivo privado com a identidade da execução, a estrutura da proposta atual, decisões e ações aprovadas, confirmações de escrita, IDs protegidos, métricas de feedback e a observação disponível do calendário. Uma observação indisponível é registrada como indisponível, e não como calendário vazio. O arquivo recebe um hash de integridade; uma repetição idêntica é idempotente, e evidências diferentes não substituem um arquivo existente. Um teste do ciclo de vida verifica que uma falha de arquivamento bloqueia a substituição até uma nova tentativa ou descarte explícito.
+
+A projeção atual omite textos livres, notas de feedback, conversa, erros brutos, campos de credenciais e arquivos do espaço de trabalho. Títulos, descrições e propriedades dos eventos são guardados como hashes; portanto, o arquivo **não reconstrói esses textos nem permite uma reprodução completa**. Hashes de texto previsível não são confidenciais. Identificadores e horários são mantidos e também precisam ser fictícios. Não insira dados reais de calendário ou credenciais nesta fase.
+
+Antes de chamar o arquivador, o ciclo de vida real precisa comprovar que os processos antigos pararam; um snapshot do banco não comprova isso. Ele também precisa determinar se existe observação do simulador e preservar a operação pendente quando houver incerteza. Recuperação, resumo na interface, pacotes de experimento mais completos e sanitizados, reprodução de snapshots e encerramento gerenciado pelo Docker ainda não estão prontos.
