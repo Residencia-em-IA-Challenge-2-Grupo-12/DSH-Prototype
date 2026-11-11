@@ -2,43 +2,18 @@
 // Uses a disposable Calendarpit container and synthetic consent only.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { randomBytes } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import { CalendarpitApi, CalendarApiError } from '../src/foundation/calendarpit-api.mjs';
 import { startCalendarpitRun } from '../src/foundation/calendarpit-runner.mjs';
 import { createClaimedCalendar } from '../src/foundation/claimed-calendar.mjs';
 import {initializeScenario,draft,applyApproved,getRecoveryClaim,loadState} from '../src/core.mjs';
-
-async function syntheticToken(run, userId, redirectUri) {
-  const state = randomBytes(16).toString('hex');
-  const authUrl = new URL('/oauth/authorize', run.origin);
-  authUrl.search = new URLSearchParams({
-    client_id: run.client.id, redirect_uri: redirectUri, response_type: 'code',
-    scope: 'https://www.googleapis.com/auth/calendar', state
-  });
-  const page = await fetch(authUrl, { signal: AbortSignal.timeout(5_000) });
-  assert.equal(page.status, 200, 'synthetic authorization page');
-  const nonce = (await page.text()).match(/name="consent" value="([^"]+)"/)?.[1];
-  assert(nonce, 'synthetic consent nonce');
-  const decision = await fetch(`${run.origin}/oauth/authorize`, {
-    method: 'POST', redirect: 'manual', headers: { origin: run.origin, 'content-type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ consent: nonce, user_id: userId, decision: 'approve' }), signal: AbortSignal.timeout(5_000)
-  });
-  assert.equal(decision.status, 302, 'synthetic consent accepted');
-  const callback = new URL(decision.headers.get('location'));
-  assert.equal(callback.origin + callback.pathname, redirectUri);
-  assert.equal(callback.searchParams.get('state'), state);
-  const code = callback.searchParams.get('code');
-  assert(code, 'synthetic authorization code');
-  const tokenResponse = await fetch(`${run.origin}/oauth/token`, {
-    method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ grant_type: 'authorization_code', code, redirect_uri: redirectUri, client_id: run.client.id, client_secret: run.client.secret }), signal: AbortSignal.timeout(5_000)
-  });
-  assert.equal(tokenResponse.status, 200, 'synthetic token exchange');
-  const { access_token: token } = await tokenResponse.json();
-  assert(token, 'synthetic bearer token');
-  return token;
-}
+import {runtimeDir,ROOT} from '../src/core.mjs';
+import {createStudyBoundary} from '../src/foundation/study-boundary.mjs';
+import {startStudyBroker} from '../src/foundation/study-broker.mjs';
+import {Client} from '@modelcontextprotocol/sdk/client/index.js';
+import {StdioClientTransport} from '@modelcontextprotocol/sdk/client/stdio.js';
+import path from 'node:path';
+import {syntheticToken} from './fixtures/calendarpit-oauth.mjs';
 
 test('synthetic OAuth supports v3 reads and reviewed ETag-protected event writes', { skip: process.env.CALENDARPIT_LIVE_TEST !== '1', timeout: 60_000 }, async () => {
   const fixture = JSON.parse(await fs.readFile(new URL('../fixtures/calendars/ana.json', import.meta.url), 'utf8'));
@@ -106,4 +81,27 @@ test('the study planner applies a separately approved section through the provid
     assert.equal(state.plan.status.near,'applied');assert.equal(state.plan.status.future,'pending');
     assert.equal(await getRecoveryClaim(),null);
   } finally {await run.close();}
+});
+
+test('brokered agent draft reaches the provider only after separate trusted approval', {skip:process.env.CALENDARPIT_LIVE_TEST!=='1',timeout:60000},async()=>{
+  const fixture=JSON.parse(await fs.readFile(new URL('../fixtures/calendars/ana.json',import.meta.url),'utf8'));
+  const redirectUri='http://127.0.0.1:4175/callback',run=await startCalendarpitRun({fixture,redirectUri});let broker,client;
+  try {
+    const accessToken=await syntheticToken(run,'ana',redirectUri);
+    const calendar=createClaimedCalendar({origin:run.origin,accessToken,getClaim:getRecoveryClaim});
+    await initializeScenario(calendar,'ana');
+    const ipc=path.join(runtimeDir(),'ipc');await fs.mkdir(ipc,{mode:0o700});const socketPath=path.join(ipc,'agent.sock');
+    broker=await startStudyBroker({socketPath,boundary:createStudyBoundary({student:'ana',calendar})});
+    client=new Client({name:'synthetic-provider-broker',version:'1.0.0'});
+    await client.connect(new StdioClientTransport({command:process.execPath,args:[ROOT+'/src/mcp-broker.mjs'],env:{PATH:process.env.PATH,STUDY_BROKER_SOCKET:socketPath}}));
+    const before=await calendar.events('ana');
+    const out=await client.callTool({name:'draft_study_plan',arguments:{student:'ana',weeks:2,hours:2}});
+    assert(!out.isError,JSON.stringify(out));const plan=JSON.parse(out.content[0].text);assert(plan.near.length>0);
+    assert.equal((await calendar.events('ana')).length,before.length);
+    const tools=(await client.listTools()).tools;assert(!tools.some(tool=>/approve|apply|delete|write_calendar/.test(tool.name)));
+    await applyApproved(calendar,'ana',plan.id,'near');
+    assert.equal((await calendar.events('ana')).length,before.length+plan.near.length);
+    assert.equal((await loadState('ana')).plan.status.future,'pending');
+    assert.equal(await getRecoveryClaim(),null);
+  } finally {await client?.close();await broker?.close();await run.close();}
 });

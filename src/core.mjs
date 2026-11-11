@@ -38,13 +38,20 @@ const stateStore=new Proxy({}, {get(_target,key){
 export async function loadState(student) { return stateStore.load(assertStudent(student)); }
 export async function saveState(student, state) { return stateStore.save(assertStudent(student),state); }
 export async function getRecoveryClaim() { return stateStore.getCalendarClaim(); }
-async function workspaceRoot(student) {
+async function workspaceRoot(student,requireStaged=false) {
   assertStudent(student);
   const staged=path.join(runtimeDir(),'workspaces',student);
+  if(requireStaged){
+    for(const directory of [path.dirname(staged),staged]){
+      const entry=await fs.lstat(directory);
+      if(!entry.isDirectory())throw new Error('Synthetic run workspace is unavailable');
+    }
+    return staged;
+  }
   try { await fs.access(staged); return staged; } catch { return path.join(ROOT,'fixtures/students',student); }
 }
-export async function getStudent(student) {
-  const root=await workspaceRoot(student);
+export async function getStudent(student,{requireStaged=false}={}) {
+  const root=await workspaceRoot(student,requireStaged);
   const data=await readJSON(path.join(root, 'courses.json'));
   for(const course of data.courses) {
     const text=await fs.readFile(await checkedPath(root,course.source),'utf8');
@@ -57,8 +64,8 @@ export async function getStudent(student) {
   }
   return data;
 }
-export async function listWorkspace(student, relative = '') {
-  const root = await workspaceRoot(student);
+export async function listWorkspace(student, relative = '',{requireStaged=false}={}) {
+  const root = await workspaceRoot(student,requireStaged);
   const target = await checkedPath(root, relative);
   const entries = await fs.readdir(target, { withFileTypes: true });
   return entries.filter(e => !e.isSymbolicLink()).map(e => ({ name: e.name, type: e.isDirectory() ? 'directory' : 'file' }));
@@ -69,8 +76,8 @@ async function checkedPath(root, relative) {
   if (candidate !== resolvedRoot && !candidate.startsWith(resolvedRoot + path.sep)) throw new Error('Path is outside synthetic workspace');
   return candidate;
 }
-export async function readWorkspace(student, relative) {
-  const root = await workspaceRoot(student);
+export async function readWorkspace(student, relative,{requireStaged=false}={}) {
+  const root = await workspaceRoot(student,requireStaged);
   const p = await checkedPath(root, relative);
   const ext=path.extname(p).toLowerCase();
   if (!['.md', '.json', '.txt', '.pdf'].includes(ext)) throw new Error('Unsupported synthetic file type');
@@ -220,8 +227,8 @@ export async function resetScenario(calendar, student) {
     throw new Error('RESET UNRESOLVED: synthetic simulator or workspace may have changed; do not retry blindly. '+error.message);
   }
 }
-export async function draft(calendar, student, options={}) {
-  const events=await calendar.events(student), profile=await getStudent(student);
+export async function draft(calendar, student, options={}, {requireStaged=false}={}) {
+  const events=await calendar.events(student), profile=await getStudent(student,{requireStaged});
   return stateStore.update(assertStudent(student),state=>{
     const unseen=diffSnapshots(state.lastSnapshot,events);
     state.protectedIds=[...new Set([...(state.protectedIds||[]),...unseen.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
