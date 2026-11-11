@@ -33,9 +33,10 @@ function syntheticSeed(fixture, redirectUri) {
  * The returned OAuth credentials are temporary local test credentials: never log or export them.
  * Call close() in a finally block. Startup failures also clean up created resources.
  */
-export async function startCalendarpitRun({ fixture, redirectUri, runDocker = docker, fetchHealth = fetch, wait = sleep, startupTimeoutMs = 15_000 }) {
+export async function startCalendarpitRun({ fixture, redirectUri, runId = randomUUID(), runDocker = docker, fetchHealth = fetch, wait = sleep, startupTimeoutMs = 15_000 }) {
+  if(typeof runId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(runId))throw new Error('Invalid synthetic run ID');
   const prepared = syntheticSeed(fixture, redirectUri);
-  const id = randomUUID();
+  const id = runId;
   const container = `study-calendar-${id}`;
   const network = `study-calendar-net-${id}`;
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'study-calendar-'));
@@ -58,10 +59,10 @@ export async function startCalendarpitRun({ fixture, redirectUri, runDocker = do
     await fs.writeFile(filename, JSON.stringify(prepared.fixture), { mode: 0o644 });
     // A dedicated bridge supports loopback port publishing on the target host.
     // It is not an agent-worker network and does not block simulator egress.
-    await runDocker('network', 'create', network);
+    await runDocker('network', 'create', '--label', `study.run.id=${id}`, network);
     networkCreated = true;
     containerAttempted = true;
-    await runDocker('run', '-d', '--name', container, '--network', network,
+    await runDocker('run', '-d', '--name', container, '--label', `study.run.id=${id}`, '--network', network,
       '--publish', '127.0.0.1::4173', '--memory', '512m', '--cpus', '1', '--pids-limit', '128',
       '--mount', `type=bind,source=${filename},target=/fixtures/startup.json,readonly`,
       '--env', 'CALENDARPIT_DATABASE=:memory:', '--env', 'CALENDARPIT_CONFIG=/fixtures/startup.json', CALENDARPIT_IMAGE);

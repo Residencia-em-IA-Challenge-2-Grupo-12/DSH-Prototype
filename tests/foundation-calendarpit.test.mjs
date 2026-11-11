@@ -56,6 +56,19 @@ test('isolated runs use loopback, distinct resources and generated synthetic cre
   assert.equal(fake.calls.filter(call => call[0] === 'network' && call[1] === 'rm').length, 2);
 });
 
+test('the lifecycle registry can assign the simulator identity before Docker creates resources',async()=>{
+  const fake=fakeDocker(),runId='12345678-1234-4234-8234-123456789abc';
+  const run=await startCalendarpitRun({fixture,redirectUri,runId,runDocker:fake.runDocker,fetchHealth:async()=>({ok:true})});
+  try {
+    assert.equal(run.id,runId);
+    const network=fake.calls.find(call=>call[0]==='network'&&call[1]==='create');
+    const container=fake.calls.find(call=>call[0]==='run');
+    assert(network.includes(`study.run.id=${runId}`));assert(container.includes(`study.run.id=${runId}`));
+    assert(container.includes(`study-calendar-${runId}`));
+  } finally {await run.close();}
+  await assert.rejects(()=>startCalendarpitRun({fixture,redirectUri,runId:'../../invalid',runDocker:fake.runDocker}),/run id/i);
+});
+
 test('invalid exposure triggers cleanup and real-account fixtures are rejected before Docker', async () => {
   const fake = fakeDocker({ invalidPort: true });
   await assert.rejects(() => startCalendarpitRun({ fixture, redirectUri, runDocker: fake.runDocker }), /loopback-only/);
