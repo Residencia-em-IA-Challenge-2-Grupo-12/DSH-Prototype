@@ -39,6 +39,16 @@ export function createStateStore(directory) {
     const db=await database();const body=JSON.stringify(state);
     transaction(db,()=>{assertIdle(db);db.prepare('INSERT INTO student_state (student,body) VALUES (?,?) ON CONFLICT(student) DO UPDATE SET body=excluded.body').run(student,body);});
   }
+  async function create(student,state) {
+    try {await load(student);throw new Error('Synthetic scenario already initialized');}
+    catch(error){if(error.code!=='ENOENT')throw error;}
+    const db=await database();
+    transaction(db,()=>{
+      assertIdle(db);
+      if(row(db,student))throw new Error('Synthetic scenario already initialized');
+      db.prepare('INSERT INTO student_state(student,body) VALUES(?,?)').run(student,JSON.stringify(state));
+    });
+  }
   async function update(student,change,{requiresIdle=false}={}) {
     await load(student); // Also imports a legacy synthetic state if needed.
     const db=await database();
@@ -120,7 +130,7 @@ export function createStateStore(directory) {
       db.prepare('DELETE FROM calendar_claim WHERE singleton=1').run();
     });
   }
-  return {load,save,update,getCalendarClaim,acquireCalendarClaim,appendCalendarClaimStep,
+  return {load,save,create,update,getCalendarClaim,acquireCalendarClaim,appendCalendarClaimStep,
     completeCalendarClaim:(id,options={})=>finishCalendarClaim(id,options,false),
     cancelCalendarClaim:(id,options={})=>finishCalendarClaim(id,options,true)};
 }

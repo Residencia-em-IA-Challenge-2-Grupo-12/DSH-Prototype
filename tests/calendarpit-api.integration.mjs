@@ -6,6 +6,8 @@ import { randomBytes } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import { CalendarpitApi, CalendarApiError } from '../src/foundation/calendarpit-api.mjs';
 import { startCalendarpitRun } from '../src/foundation/calendarpit-runner.mjs';
+import { createClaimedCalendar } from '../src/foundation/claimed-calendar.mjs';
+import {initializeScenario,draft,applyApproved,getRecoveryClaim,loadState} from '../src/core.mjs';
 
 async function syntheticToken(run, userId, redirectUri) {
   const state = randomBytes(16).toString('hex');
@@ -63,4 +65,45 @@ test('synthetic OAuth supports v3 reads and reviewed ETag-protected event writes
   } finally {
     await run.close();
   }
+});
+
+test('claim-bound calendar adapter uses synthetic OAuth for reviewed writes', { skip: process.env.CALENDARPIT_LIVE_TEST !== '1', timeout: 60000 }, async()=>{
+  const fixture=JSON.parse(await fs.readFile(new URL('../fixtures/calendars/ana.json',import.meta.url),'utf8'));
+  const redirectUri='http://127.0.0.1:4175/callback',run=await startCalendarpitRun({fixture,redirectUri});
+  try {
+    const accessToken=await syntheticToken(run,'ana',redirectUri);
+    let claim;
+    const calendar=createClaimedCalendar({origin:run.origin,accessToken,getClaim:async()=>claim});
+    const initial=await calendar.events('ana');assert(initial.length>5);
+    const event={id:'aabbccddee2027',summary:'Synthetic study',description:'Original notes',start:{dateTime:'2026-11-03T12:00:00-03:00'},end:{dateTime:'2026-11-03T13:00:00-03:00'}};
+    const setClaim=action=>{claim={id:'claim',student:'ana',kind:action.type==='patch'?'annotation':'approval',section:'near',decision:{kind:'approved',section:'near'},actions:[action],steps:[{actionId:action.actionId,status:'sent'}]};};
+    setClaim({actionId:`create:${event.id}`,type:'create',event});
+    await calendar.create('ana',event);
+    const created=(await calendar.events('ana')).find(item=>item.id===event.id);assert(created);
+    const changes={description:'Original notes\n\n[Study Atlas]\nCategory / Categoria: study\n[/Study Atlas]'};
+    setClaim({actionId:`patch:${event.id}`,type:'patch',eventId:event.id,before:created,after:changes});
+    await calendar.patch('ana',event.id,changes);
+    const edited=(await calendar.events('ana')).find(item=>item.id===event.id);assert.equal(edited.description,changes.description);
+    setClaim({actionId:`remove:${event.id}`,type:'remove',event:edited});
+    await calendar.remove('ana',event.id);
+    assert(!(await calendar.events('ana')).some(item=>item.id===event.id));
+  } finally {await run.close();}
+});
+
+test('the study planner applies a separately approved section through the provider API', { skip: process.env.CALENDARPIT_LIVE_TEST !== '1', timeout: 60000 }, async()=>{
+  const fixture=JSON.parse(await fs.readFile(new URL('../fixtures/calendars/ana.json',import.meta.url),'utf8'));
+  const redirectUri='http://127.0.0.1:4175/callback',run=await startCalendarpitRun({fixture,redirectUri});
+  try {
+    const accessToken=await syntheticToken(run,'ana',redirectUri);
+    const calendar=createClaimedCalendar({origin:run.origin,accessToken,getClaim:getRecoveryClaim});
+    await initializeScenario(calendar,'ana');
+    const before=await calendar.events('ana');
+    const proposal=await draft(calendar,'ana',{weeks:2,hours:2});
+    assert.equal((await calendar.events('ana')).length,before.length);
+    await applyApproved(calendar,'ana',proposal.id,'near');
+    assert.equal((await calendar.events('ana')).length,before.length+proposal.near.length);
+    const state=await loadState('ana');
+    assert.equal(state.plan.status.near,'applied');assert.equal(state.plan.status.future,'pending');
+    assert.equal(await getRecoveryClaim(),null);
+  } finally {await run.close();}
 });

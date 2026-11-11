@@ -178,6 +178,24 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
     remove:{near:replaceable.filter(e=>millis(e,'start')<Date.parse('2026-11-09T00:00:00-03:00')).map(significant),future:replaceable.filter(e=>millis(e,'start')>=Date.parse('2026-11-09T00:00:00-03:00')).map(significant)},
     baseHash:digest(events), status:{near:'pending',future:'pending'} };
 }
+// Initializes an already-seeded, fresh synthetic run. It does not invoke the
+// simulator's administrative reset endpoint or overwrite an existing run.
+export async function initializeScenario(calendar,student) {
+  assertStudent(student);
+  try {await loadState(student);throw new Error('Synthetic scenario already initialized');}
+  catch(error){if(error.code!=='ENOENT')throw error;}
+  const events=await calendar.events(student);
+  const expected=(await readJSON(path.join(ROOT,'fixtures/calendars',student+'.json'))).events;
+  if(digest(events)!==digest(expected))throw new Error('Observed calendar does not match the synthetic fixture');
+  const staged=path.join(runtimeDir(),'workspaces',student);
+  await fs.mkdir(path.dirname(staged),{recursive:true});
+  try {await fs.mkdir(staged);} catch(error){if(error.code==='EEXIST')throw new Error('Synthetic workspace already initialized');throw error;}
+  await fs.cp(path.join(ROOT,'fixtures/students',student),staged,{recursive:true,force:false,errorOnExist:true});
+  const feedback=(await readJSON(path.join(ROOT,'fixtures/feedback',student+'.json'))).map(validateFeedback);
+  const state={student,feedback,history:[],plan:null,lastSnapshot:snapshot(events),annotations:{},protectedIds:[]};
+  await stateStore.create(student,state);
+  return state;
+}
 export async function resetScenario(calendar, student) {
   assertStudent(student);
   const id=randomUUID(),actionId='reset:'+student;
