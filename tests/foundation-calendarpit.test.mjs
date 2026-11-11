@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
-import { CALENDARPIT_IMAGE, startCalendarpitRun } from '../src/foundation/calendarpit-runner.mjs';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import { CALENDARPIT_IMAGE, startCalendarpitRun, inspectCalendarpitRun } from '../src/foundation/calendarpit-runner.mjs';
 
 const fixture = {
   users: [{ id: 'student', name: 'Student', email: 'student@example.test' }],
@@ -98,4 +100,46 @@ test('missing published port reports bounded container state and cleans up', asy
   assert(fake.calls.some(call => call[0] === 'rm'));
   assert(fake.calls.some(call => call[0] === 'network' && call[1] === 'rm'));
   await assert.rejects(() => fs.access(fake.mountedFile));
+});
+
+test('a run can retain its synthetic simulator control files under a private run directory',async()=>{
+  const root=await fs.mkdtemp(join(tmpdir(),'study-calendar-control-')),fake=fakeDocker();let run;
+  try {
+    run=await startCalendarpitRun({fixture,redirectUri,runDirectory:root,runDocker:fake.runDocker,fetchHealth:async()=>({ok:true})});
+    assert.equal(run.controlDirectory,join(root,'calendarpit-control'));
+    assert.equal(fake.mountedFile,join(run.controlDirectory,'fixture.json'));
+    await assert.rejects(startCalendarpitRun({fixture,redirectUri,runDirectory:root,runDocker:fake.runDocker,fetchHealth:async()=>({ok:true})}));
+    assert.equal((JSON.parse(await fs.readFile(fake.mountedFile,'utf8'))).clients[0].secret,run.client.secret);
+  } finally {await run?.close();await fs.rm(root,{recursive:true,force:true});}
+});
+
+test('failed simulator retirement preserves its control evidence for a safe retry',async()=>{
+  const root=await fs.mkdtemp(join(tmpdir(),'study-calendar-retire-')),fake=fakeDocker();let fail=true,run;
+  const runDocker=async(...args)=>{if(args[0]==='rm'&&fail)throw new Error('synthetic daemon failure');return fake.runDocker(...args);};
+  try {
+    run=await startCalendarpitRun({fixture,redirectUri,runDirectory:root,runDocker,fetchHealth:async()=>({ok:true})});
+    await assert.rejects(run.close(),/cleanup/i);
+    await fs.access(fake.mountedFile);
+    fail=false;await run.close();await assert.rejects(fs.access(fake.mountedFile));
+  } finally {await fs.rm(root,{recursive:true,force:true});}
+});
+
+test('a restarted controller inspects the labelled synthetic simulator without assuming writers stopped',async()=>{
+  const root=await fs.mkdtemp(join(tmpdir(),'study-calendar-inspect-')),fake=fakeDocker();let run,badLabel=false;
+  try {
+    const scenario=JSON.parse(await fs.readFile(new URL('../fixtures/calendars/ana.json',import.meta.url),'utf8'));
+    run=await startCalendarpitRun({fixture:scenario,redirectUri,runDirectory:root,runDocker:fake.runDocker,fetchHealth:async()=>({ok:true})});
+    const containerName=`study-calendar-${run.id}`,networkName=`study-calendar-net-${run.id}`;
+    const inspectDocker=async(...args)=>{
+      if(args[0]==='inspect')return JSON.stringify({Id:'a'.repeat(64),Name:`/${containerName}`,Config:{Labels:{'study.run.id':badLabel?'another-run':run.id}},State:{Running:true},NetworkSettings:{Networks:{[networkName]:{}}}});
+      if(args[0]==='network'&&args[1]==='inspect')return JSON.stringify({Name:networkName,Labels:{'study.run.id':run.id}});
+      if(args[0]==='port')return '127.0.0.1:55000';
+      throw new Error('Unexpected Docker operation');
+    };
+    const observed=await inspectCalendarpitRun({runId:run.id,student:'ana',runDirectory:root,runDocker:inspectDocker,fetchHealth:async()=>({ok:true})});
+    assert.equal(observed.id,run.id);assert.equal(observed.origin,'http://127.0.0.1:55000');
+    assert.equal(observed.client.secret,run.client.secret);assert.equal(observed.writersVerified,false);
+    badLabel=true;await assert.rejects(inspectCalendarpitRun({runId:run.id,student:'ana',runDirectory:root,runDocker:inspectDocker}),/identity/i);
+    await assert.rejects(inspectCalendarpitRun({runId:run.id,student:'ana',runDirectory:root,runDocker:async()=>{throw new Error('daemon unavailable');}}));
+  } finally {await run?.close();await fs.rm(root,{recursive:true,force:true});}
 });

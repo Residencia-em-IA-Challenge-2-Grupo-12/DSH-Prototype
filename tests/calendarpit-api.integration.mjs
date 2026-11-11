@@ -3,19 +3,34 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
 import { CalendarpitApi, CalendarApiError } from '../src/foundation/calendarpit-api.mjs';
 import { startCalendarpitRun } from '../src/foundation/calendarpit-runner.mjs';
 import { createClaimedCalendar } from '../src/foundation/claimed-calendar.mjs';
 import {initializeScenario,draft,applyApproved,getRecoveryClaim,loadState} from '../src/core.mjs';
 import {runtimeDir,ROOT} from '../src/core.mjs';
-import {createStudyBoundary} from '../src/foundation/study-boundary.mjs';
 import {startStudyBroker} from '../src/foundation/study-broker.mjs';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {StdioClientTransport} from '@modelcontextprotocol/sdk/client/stdio.js';
 import path from 'node:path';
 import {syntheticToken} from './fixtures/calendarpit-oauth.mjs';
-import {createStateStore} from '../src/state-store.mjs';
 import {archiveSyntheticRun} from '../src/foundation/run-archive.mjs';
+import {createTrustedStudyService} from '../src/foundation/trusted-study-service.mjs';
+
+test('another trusted process can inspect a labelled synthetic simulator without claiming writers stopped', {skip:process.env.CALENDARPIT_LIVE_TEST!=='1',timeout:60000},async()=>{
+  const fixture=JSON.parse(await fs.readFile(new URL('../fixtures/calendars/ana.json',import.meta.url),'utf8'));
+  const redirectUri='http://127.0.0.1:4175/callback';
+  const run=await startCalendarpitRun({fixture,redirectUri,runDirectory:runtimeDir()});
+  try {
+    const runner=new URL('../src/foundation/calendarpit-runner.mjs',import.meta.url).href;
+    const api=new URL('../src/foundation/calendarpit-api.mjs',import.meta.url).href;
+    const auth=new URL('../src/foundation/synthetic-calendar-auth.mjs',import.meta.url).href;
+    const script=`import {inspectCalendarpitRun} from ${JSON.stringify(runner)};import {CalendarpitApi} from ${JSON.stringify(api)};import {authorizeSyntheticCalendar} from ${JSON.stringify(auth)}; const run=await inspectCalendarpitRun({runId:process.argv[1],student:'ana',runDirectory:process.argv[2]}); const accessToken=await authorizeSyntheticCalendar({run,student:'ana',redirectUri:'http://127.0.0.1:4175/callback'}); const calendar=new CalendarpitApi({origin:run.origin,accessToken}); const events=await calendar.listEvents('ana-calendar'); console.log(JSON.stringify({id:run.id,writersVerified:run.writersVerified,count:events.items.length}));`;
+    const {stdout}=await promisify(execFile)(process.execPath,['--input-type=module','-e',script,run.id,runtimeDir()],{timeout:20000,maxBuffer:5000});
+    const observed=JSON.parse(stdout);assert.equal(observed.id,run.id);assert.equal(observed.writersVerified,false);assert(observed.count>0);
+  } finally {await run.close();}
+});
 
 test('synthetic OAuth supports v3 reads and reviewed ETag-protected event writes', { skip: process.env.CALENDARPIT_LIVE_TEST !== '1', timeout: 60_000 }, async () => {
   const fixture = JSON.parse(await fs.readFile(new URL('../fixtures/calendars/ana.json', import.meta.url), 'utf8'));
@@ -92,8 +107,9 @@ test('brokered agent draft reaches the provider only after separate trusted appr
     const accessToken=await syntheticToken(run,'ana',redirectUri);
     const calendar=createClaimedCalendar({origin:run.origin,accessToken,getClaim:getRecoveryClaim});
     await initializeScenario(calendar,'ana');
+    const service=createTrustedStudyService({student:'ana',calendar});
     const ipc=path.join(runtimeDir(),'ipc');await fs.mkdir(ipc,{mode:0o700});const socketPath=path.join(ipc,'agent.sock');
-    broker=await startStudyBroker({socketPath,boundary:createStudyBoundary({student:'ana',calendar})});
+    broker=await startStudyBroker({socketPath,boundary:service.agent});
     client=new Client({name:'synthetic-provider-broker',version:'1.0.0'});
     await client.connect(new StdioClientTransport({command:process.execPath,args:[ROOT+'/src/mcp-broker.mjs'],env:{PATH:process.env.PATH,STUDY_BROKER_SOCKET:socketPath}}));
     const before=await calendar.events('ana');
@@ -101,11 +117,11 @@ test('brokered agent draft reaches the provider only after separate trusted appr
     assert(!out.isError,JSON.stringify(out));const plan=JSON.parse(out.content[0].text);assert(plan.near.length>0);
     assert.equal((await calendar.events('ana')).length,before.length);
     const tools=(await client.listTools()).tools;assert(!tools.some(tool=>/approve|apply|delete|write_calendar/.test(tool.name)));
-    await applyApproved(calendar,'ana',plan.id,'near');
+    await service.approvePlan(plan.id,'near');
     assert.equal((await calendar.events('ana')).length,before.length+plan.near.length);
     assert.equal((await loadState('ana')).plan.status.future,'pending');
     assert.equal(await getRecoveryClaim(),null);
-    const snapshot=await createStateStore(runtimeDir()).snapshotForArchive('ana');
+    await service.drain();const snapshot=await service.snapshotForArchive();
     const directory=path.join(runtimeDir(),'archives');
     await archiveSyntheticRun({directory,run:{id:run.id,student:'ana',createdAt:'2026-11-02T00:00:00Z'},snapshot,
       observation:{availability:'available',events:await calendar.events('ana')}});
