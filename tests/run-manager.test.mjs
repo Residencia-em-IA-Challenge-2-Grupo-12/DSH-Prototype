@@ -63,6 +63,17 @@ test('a failed startup retains its run identity and blocks another run until ver
   } finally {await manager?.close();await rm(root,{recursive:true,force:true});}
 });
 
+test('retirement retries retain the original startup-failure state',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'study-run-start-origin-'));let manager,seen=[];
+  const driver={async start(){throw new Error('synthetic startup failure');},async stopWriters(run){seen.push(run.retireFromPhase);throw new Error('cannot verify');},
+    async archive(run){return {archiveId:run.id};},async stopSimulator(){},async verifyRetired(){return true;}};
+  try {
+    manager=await createRunManager({root,driver});await assert.rejects(manager.start('ana'));
+    await assert.rejects(manager.retire());await assert.rejects(manager.retire());
+    assert.deepEqual(seen,['start-failed','start-failed']);
+  } finally {await manager?.close();await rm(root,{recursive:true,force:true});}
+});
+
 test('a run is reserved before resource creation so another manager cannot start concurrently',async()=>{
   const root=await mkdtemp(join(tmpdir(),'study-run-reserve-'));let first,second,release,started;
   const entered=new Promise(resolve=>{started=resolve;});

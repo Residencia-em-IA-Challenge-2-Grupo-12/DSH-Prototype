@@ -52,3 +52,27 @@ test('closing a controller waits for its lifecycle operation before releasing th
     const next=await createExclusiveRunManager({root,driver});try{assert.equal((await next.current()).phase,'active');}finally{await next.close();}
   } finally {release?.();await manager?.close();await rm(root,{recursive:true,force:true});}
 });
+
+test('the trusted driver is constructed only after acquiring the controller lease',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'study-exclusive-driver-'));let manager,seen=false;
+  try {
+    manager=await createExclusiveRunManager({root,driverFactory:async({lease})=>{
+      lease.assertHeld();seen=true;
+      return {async start(){},async stopWriters(){lease.assertHeld();},async archive(run){return {archiveId:run.id};},async stopSimulator(){},async verifyRetired(){return true;}};
+    }});
+    assert(seen);await manager.start('ana');await manager.retire();
+  } finally {await manager?.close();await rm(root,{recursive:true,force:true});}
+});
+
+test('controller close retains its lease until a driver shutdown succeeds',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'study-exclusive-close-'));let first,second,fail=true;
+  const driver={async start(){},async stopWriters(){},async archive(run){return {archiveId:run.id};},async stopSimulator(){},async verifyRetired(){return true;},
+    async shutdown(){if(fail)throw new Error('synthetic writer still active');}};
+  try {
+    first=await createExclusiveRunManager({root,driver});await first.start('ana');
+    await assert.rejects(first.close(),/writer still active/i);
+    await assert.rejects(createExclusiveRunManager({root,driver}),/already active/i);
+    fail=false;await first.close();second=await createExclusiveRunManager({root,driver});
+    assert.equal((await second.current()).phase,'active');
+  } finally {fail=false;await first?.close();await second?.close();await rm(root,{recursive:true,force:true});}
+});

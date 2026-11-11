@@ -12,6 +12,8 @@ services:
   # Experimental only: there is deliberately no route from DSH to this service yet.
   model-gateway:
     profiles: [model-gateway]
+    labels:
+      study.role: model-gateway
     build:
       context: .
       dockerfile: Dockerfile.model-gateway

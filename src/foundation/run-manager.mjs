@@ -44,7 +44,8 @@ export async function createRunManager({root,driver}) {
       if(typeof force!=='boolean'||typeof discardUnsaved!=='boolean')throw new Error('Retirement decisions must be boolean');
       const initial=read();if(!initial)throw new Error('No active synthetic run');
       if(discardUnsaved&&initial.phase!=='archive-failed')throw new Error('Unsaved evidence can only be discarded after an archive failure');
-      const run=transition(initial.id,['active','start-failed','archive-failed','retirement-failed'],'retiring',{forceRequested:!!initial.forceRequested||force,discardRequested:discardUnsaved});
+      const run=transition(initial.id,['active','start-failed','archive-failed','retirement-failed'],'retiring',{
+        retireFromPhase:initial.retireFromPhase||initial.phase,forceRequested:!!initial.forceRequested||force,discardRequested:discardUnsaved});
       try {await driver.stopWriters(structuredClone(run),{force});}
       catch(error){transition(run.id,['retiring'],'retirement-failed');throw new Error('Could not verify writer retirement',{cause:error});}
       let archiveId=null,archiveSha256=null;
