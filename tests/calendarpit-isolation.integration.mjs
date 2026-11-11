@@ -4,6 +4,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import {randomUUID} from 'node:crypto';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
 import { startCalendarpitRun } from '../src/foundation/calendarpit-runner.mjs';
 
 const enabled = process.env.CALENDARPIT_LIVE_TEST === '1';
@@ -59,5 +62,27 @@ test('concurrent synthetic runs isolate state and reset and are cleaned up', { s
   }
   for (const origin of [first.origin, second.origin]) {
     await assert.rejects(() => fetch(`${origin}/__calendarpit/health`, { signal: AbortSignal.timeout(2_000) }));
+  }
+});
+
+test('a separate agent network cannot reach simulator administration or the Docker socket', {skip:!enabled,timeout:60000},async()=>{
+  const docker=promisify(execFile),agentNetwork=`study-agent-test-${randomUUID()}`;
+  const fixture=JSON.parse(await fs.readFile(fileURLToPath(fixtureUrl('ana')),'utf8'));
+  let run,networkCreated=false;
+  try {
+    run=await startCalendarpitRun({fixture,redirectUri:'http://127.0.0.1:4175/callback'});
+    await docker('docker',['network','create',agentNetwork]);networkCreated=true;
+    const inspect=await docker('docker',['inspect','--format','{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}',`study-calendar-${run.id}`]);
+    const ip=inspect.stdout.trim();assert.match(ip,/^\d+\.\d+\.\d+\.\d+$/);
+    const hostPort=new URL(run.origin).port;
+    const script=`const fs=require('node:fs');const urls=process.argv.slice(1);Promise.all(urls.map(async u=>{try{await fetch(u,{signal:AbortSignal.timeout(1200)});return true}catch{return false}})).then(reachable=>console.log(JSON.stringify({reachable,socket:fs.existsSync('/var/run/docker.sock')})));`;
+    const result=await docker('docker',['run','--rm','--pull=never','--network',agentNetwork,'--add-host','host.docker.internal:host-gateway',
+      'node:24.11.1-bookworm-slim','node','-e',script,`http://${ip}:4173/__calendarpit/health`,`http://host.docker.internal:${hostPort}/__calendarpit/health`],{timeout:15000});
+    const observed=JSON.parse(result.stdout.trim());
+    assert.deepEqual(observed.reachable,[false,false],'agent network reached the simulator administration endpoint');
+    assert.equal(observed.socket,false,'agent container exposed the Docker socket');
+  } finally {
+    if(networkCreated)await docker('docker',['network','rm',agentNetwork]);
+    await run?.close();
   }
 });
