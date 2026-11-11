@@ -19,7 +19,7 @@ test('the model gateway pins routing and accounts for the reported cost without 
     assert.equal(response.status,200);const body=await response.text();
     assert(!body.includes('synthetic-provider-secret'));
     assert.equal(calls.length,1);assert.equal(calls[0].url,'https://openrouter.ai/api/v1/chat/completions');
-    assert.deepEqual(JSON.parse(calls[0].options.body).provider,{only:['DeepSeek'],allow_fallbacks:false,require_parameters:true});
+    assert.deepEqual(JSON.parse(calls[0].options.body).provider,{only:['deepseek'],allow_fallbacks:false,require_parameters:true});
     assert.equal((await budget.summary()).observedUsd,0.001);
   } finally {if(server)await new Promise(resolve=>server.close(resolve));await budget?.close();await rm(directory,{recursive:true,force:true});}
 });

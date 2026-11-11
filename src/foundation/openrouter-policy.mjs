@@ -10,7 +10,7 @@ export function prepareOpenRouterRequest(input){
   const requested=input.max_tokens??input.max_completion_tokens??MAX_OUTPUT_TOKENS;
   if(!Number.isSafeInteger(requested)||requested<1)throw new Error('Invalid output token limit');
   const body={...input,max_tokens:Math.min(requested,MAX_OUTPUT_TOKENS),
-    provider:{only:['DeepSeek'],allow_fallbacks:false,require_parameters:true},usage:{include:true}};
+    provider:{only:['deepseek'],allow_fallbacks:false,require_parameters:true},usage:{include:true}};
   delete body.max_completion_tokens;
   if(input.stream)body.stream_options={...(input.stream_options||{}),include_usage:true};
   return body;
