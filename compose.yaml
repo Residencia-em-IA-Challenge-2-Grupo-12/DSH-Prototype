@@ -20,7 +20,7 @@ services:
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
     tmpfs: [/tmp]
-    secrets: [openrouter_env]
+    secrets: [openrouter_env, gateway_token]
     volumes:
       - model-budget:/var/lib/study-model-budget
     networks: [gateway-isolated]
@@ -28,6 +28,8 @@ services:
 secrets:
   openrouter_env:
     file: ${STUDY_OPENROUTER_ENV_FILE:-${HOME}/.config/study-atlas/openrouter.env}
+  gateway_token:
+    file: ${STUDY_GATEWAY_TOKEN_FILE:-./.gateway-control/gateway-token}
 
 volumes:
   model-budget:
