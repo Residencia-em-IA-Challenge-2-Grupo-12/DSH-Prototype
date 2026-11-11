@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,9 +9,14 @@ import { createStateStore } from './state-store.mjs';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const FIXED_TODAY = '2026-11-02';
-// The optional override is intended for disposable synthetic runs. Every
-// process that shares a simulator must use the same local runtime directory.
-export function runtimeDir() { return path.resolve(process.env.STUDY_ATLAS_RUNTIME_DIR || path.join(ROOT,'.runtime')); }
+const runtimeContext=new AsyncLocalStorage();
+// Trusted services may bind operations to a per-run runtime without changing
+// process-wide environment; the legacy baseline keeps its existing override.
+export function runtimeDir() { return path.resolve(runtimeContext.getStore()||process.env.STUDY_ATLAS_RUNTIME_DIR||path.join(ROOT,'.runtime')); }
+export function withSyntheticRuntime(directory,operation){
+  if(typeof directory!=='string'||!path.isAbsolute(directory)||path.normalize(directory)!==directory||directory===path.parse(directory).root||typeof operation!=='function')throw new Error('A valid synthetic runtime and operation are required');
+  return runtimeContext.run(directory,operation);
+}
 const STUDENTS = ['ana', 'bruno'];
 const writeLocks = new Set();
 async function withWriteLock(student, fn) {
@@ -38,6 +44,7 @@ const stateStore=new Proxy({}, {get(_target,key){
 export async function loadState(student) { return stateStore.load(assertStudent(student)); }
 export async function saveState(student, state) { return stateStore.save(assertStudent(student),state); }
 export async function getRecoveryClaim() { return stateStore.getCalendarClaim(); }
+export async function snapshotForArchive(student) { return stateStore.snapshotForArchive(assertStudent(student)); }
 async function workspaceRoot(student,requireStaged=false) {
   assertStudent(student);
   const staged=path.join(runtimeDir(),'workspaces',student);

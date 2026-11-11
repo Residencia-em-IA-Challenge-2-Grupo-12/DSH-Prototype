@@ -6,13 +6,14 @@ import {mkdir,mkdtemp,readFile,realpath,rm,writeFile} from 'node:fs/promises';
 import {dirname,join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {tmpdir} from 'node:os';
-import {ROOT,initializeScenario,loadState,applyApproved,getRecoveryClaim,digest} from '../src/core.mjs';
-import {createStudyBoundary} from '../src/foundation/study-boundary.mjs';
+import {ROOT,initializeScenario,loadState,getRecoveryClaim,digest} from '../src/core.mjs';
 import {startStudyBroker} from '../src/foundation/study-broker.mjs';
 import {startCalendarpitRun} from '../src/foundation/calendarpit-runner.mjs';
 import {createClaimedCalendar} from '../src/foundation/claimed-calendar.mjs';
 import {syntheticToken} from './fixtures/calendarpit-oauth.mjs';
 import {startDockerAgent} from '../src/foundation/docker-agent.mjs';
+import {createTrustedStudyService} from '../src/foundation/trusted-study-service.mjs';
+import {archiveSyntheticRun} from '../src/foundation/run-archive.mjs';
 
 const image='node:24.11.1-bookworm-slim@sha256:48abc13a19400ca3985071e287bd405a1d99306770eb81d61202fb6b65cf0b57';
 const agentImage=process.env.STUDY_DSH_IMAGE||image;
@@ -32,13 +33,14 @@ for(const student of ['ana','bruno'])for(let repeat=1;repeat<=repeats;repeat++)t
   try {
     process.env.STUDY_ATLAS_RUNTIME_DIR=directory;
     const fixture=JSON.parse(await readFile(new URL(`../fixtures/calendars/${student}.json`,import.meta.url),'utf8'));
-    const redirectUri='http://127.0.0.1:4175/callback';simulator=await startCalendarpitRun({fixture,redirectUri});
+    const redirectUri='http://127.0.0.1:4175/callback';simulator=await startCalendarpitRun({fixture,redirectUri,runId:id});assert.equal(simulator.id,id);
     const token=await syntheticToken(simulator,student,redirectUri);
     const calendar=createClaimedCalendar({origin:simulator.origin,accessToken:token,getClaim:getRecoveryClaim});
     await initializeScenario(calendar,student);const before=await calendar.events(student);
+    const service=createTrustedStudyService({student,calendar});
     const ipc=join(directory,'ipc');await mkdir(ipc,{mode:0o700});
     const controlToken=join(directory,'synthetic-gateway-token');await writeFile(controlToken,'a'.repeat(64)+'\n',{mode:0o600});
-    broker=await startStudyBroker({socketPath:join(ipc,'agent.sock'),boundary:createStudyBoundary({student,calendar})});
+    broker=await startStudyBroker({socketPath:join(ipc,'agent.sock'),boundary:service.agent});
     docker('network','create','--internal','--label',`study.run.id=${id}`,network);created=true;
     docker('run','-d','--rm','--name',gateway,...restrictions,'--network-alias','model-gateway','--env',`STUDY_TEST_STUDENT=${student}`,
       ...mount(join(ROOT,'src'),'/app/src'),...mount(join(ROOT,'tests/fixtures/fake-gateway-container.mjs'),'/app/fake-gateway.mjs'),image,'node','/app/fake-gateway.mjs');
@@ -74,12 +76,16 @@ for(const student of ['ana','bruno'])for(let repeat=1;repeat<=repeats;repeat++)t
     const time=(event,key)=>Date.parse(event[key]?.dateTime||event[key]?.date);
     for(const block of plan.near)for(const existing of before.filter(event=>event.status!=='cancelled'&&event.transparency!=='transparent'))
       assert(!(time(block,'start')<time(existing,'end')&&time(existing,'start')<time(block,'end')),'study block conflicts with an existing commitment');
-    await applyApproved(calendar,student,plan.id,'near');
+    await service.approvePlan(plan.id,'near');
     const after=await calendar.events(student);
     assert.equal(after.length,before.length+plan.near.length);
     for(const event of before)assert.equal(digest(after.filter(actual=>actual.id===event.id)),digest([event]),'existing event changed');
     for(const event of plan.future)assert(!after.some(actual=>actual.id===event.id),'future section was not approved');
     assert.equal((await loadState(student)).plan.status.future,'pending');assert.equal(await getRecoveryClaim(),null);
+    await service.drain();
+    const archived=await archiveSyntheticRun({directory:join(directory,'archives'),run:{id,student,createdAt:'2026-11-02T00:00:00Z'},
+      snapshot:await service.snapshotForArchive(),observation:{availability:'available',events:after}});
+    assert.equal(archived.archiveId,id);assert.match(archived.sha256,/^[a-f0-9]{64}$/);
   } finally {
     control?.close();
     if(agentProcess&&agentProcess.exitCode===null&&agentProcess.signalCode===null)spawnSync('docker',['rm','-f',agentName],{encoding:'utf8',timeout:20000});
