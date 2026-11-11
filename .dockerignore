@@ -8,6 +8,8 @@
 !src/core.mjs
 !src/state-store.mjs
 !src/sdk-session.mjs
+!src/agent-control.mjs
+!src/agent-stdio.mjs
 !src/dsh-tool-policy.mjs
 !src/mcp-tools.mjs
 !src/mcp-broker.mjs
