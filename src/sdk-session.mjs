@@ -3,11 +3,13 @@ import { randomUUID } from 'node:crypto';
 import { createInterface } from 'node:readline';
 import path from 'node:path';
 import { ROOT, assertStudent, runtimeDir } from './core.mjs';
+import { createGatewayRoute } from './foundation/dsh-model-route.mjs';
 
 // A single-user synthetic demo: no credentials or raw SDK event payloads reach the browser.
 export class StudySession {
-  constructor(student, { launch=spawn }={}) {
+  constructor(student, { launch=spawn, gateway }={}) {
     this.student=assertStudent(student); this.launch=launch; this.sessionId='study-'+randomUUID();
+    this.route=gateway===undefined?null:createGatewayRoute(gateway);
     this.messages=[]; this.question=null; this.busy=false; this.error=null;
     this.requests=new Map(); this.nextId=1; this.child=null; this.starting=null; this.closed=false;
   }
@@ -29,14 +31,22 @@ export class StudySession {
     return this.starting;
   }
   async boot() {
-    const env={...process.env,DSH_HOME:path.join(runtimeDir(),'dsh'),DSH_PERMISSION_MODE:'read-only'};
-    this.child=this.launch(path.join(ROOT,'node_modules/.bin/node'),[path.join(ROOT,'node_modules/@deepseek-ai/dsh/lib/bin.js'),'--profile','sdk','--patch',path.join(ROOT,'dsh-study.patch.yml')],{cwd:ROOT,env,stdio:['pipe','pipe','pipe']});
+    // Comparison children receive a small allowlist, never ambient provider keys.
+    // Luna's existing login path remains unchanged until it is containerized.
+    const env=this.route?Object.fromEntries(['PATH','LANG','LC_ALL','TZ','TMPDIR','STUDY_ATLAS_RUNTIME_DIR'].filter(key=>process.env[key]!==undefined).map(key=>[key,process.env[key]])):{...process.env};
+    // The native addon otherwise copies itself into /tmp and tries to execute
+    // there; loading the read-only installed binary works with noexec tmpfs.
+    if(this.route)env.NARB_DISABLE_NATIVE_CACHE='1';
+    Object.assign(env,{DSH_HOME:path.join(runtimeDir(),'dsh'),DSH_PERMISSION_MODE:'read-only'},this.route?.env||{});
+    const args=[path.join(ROOT,'node_modules/@deepseek-ai/dsh/lib/bin.js'),'--profile','sdk','--patch',path.join(ROOT,'dsh-study.patch.yml')];
+    if(this.route)args.push('--patch',this.route.patch);
+    this.child=this.launch(path.join(ROOT,'node_modules/.bin/node'),args,{cwd:ROOT,env,stdio:['pipe','pipe','pipe']});
     this.child.stderr.resume();
     this.child.stdin.on('error',()=>this.fail(this.closed?null:'Harness connection failed; start a new session'));
     createInterface({input:this.child.stdout}).on('line',line=>{try{this.receive(JSON.parse(line));}catch{/* Ignore non-JSON output. */}});
     this.child.on('error',()=>this.fail('Harness could not be started'));
     this.child.on('exit',()=>this.fail(this.closed?null:'Harness stopped; start a new session'));
-    await this.request('initialize',{cwd:path.join(runtimeDir(),'workspaces',this.student),provider:'codex',model:'gpt-6-luna',capabilities:{userQuestions:true},approvalRequests:true});
+    await this.request('initialize',{cwd:path.join(runtimeDir(),'workspaces',this.student),provider:this.route?.provider||'codex',model:this.route?.model||'gpt-6-luna',capabilities:{userQuestions:true},approvalRequests:true});
   }
   receive(frame) {
     if(frame.id!==undefined && !frame.method) {

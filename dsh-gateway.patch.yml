@@ -1,0 +1,18 @@
+# Explicit comparison overlay. The real provider key never enters this profile.
+- id: llm-pi-ai
+  config:
+    providers:
+      study-gateway:
+        apiKeyEnv: STUDY_GATEWAY_TOKEN
+        api: openai-completions
+        baseURL: !!js process.env.STUDY_GATEWAY_BASE_URL
+        defaultMaxTokens: 1024
+        retryPolicy:
+          mode: normal
+          maxRetries: 0
+        models:
+          - id: deepseek/deepseek-v4.1-flash-1017
+            contextWindow: 1000000
+# The existing Luna compactor must not make auxiliary calls in this route.
+- id: compaction-basic
+  disabled: true
