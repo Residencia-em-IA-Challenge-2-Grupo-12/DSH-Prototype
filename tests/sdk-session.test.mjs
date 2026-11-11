@@ -60,3 +60,19 @@ test('an explicitly configured comparison session uses only the gateway credenti
     session.stop();if(previous===undefined)delete process.env.OPENROUTER_API_KEY;else process.env.OPENROUTER_API_KEY=previous;
   }
 });
+
+test('a brokered session uses the broker-only MCP profile and does not inherit provider keys',async()=>{
+  const fake=fakeHarness();let launch;const previous=process.env.OPENROUTER_API_KEY;process.env.OPENROUTER_API_KEY='synthetic-private-key';
+  const session=new StudySession('ana',{brokerSocket:'/run/study-broker/agent.sock',brokerProbe:async()=>true,
+    launch:(command,args,options)=>{launch={args,options};return fake.child;}});
+  try {
+    await session.start();
+    assert(launch.args.some(arg=>arg.endsWith('/dsh-broker.patch.yml')));
+    assert.equal(launch.options.env.STUDY_BROKER_SOCKET,'/run/study-broker/agent.sock');
+    assert.equal(launch.options.env.OPENROUTER_API_KEY,undefined);
+    assert.equal(launch.options.env.NARB_DISABLE_NATIVE_CACHE,'1');
+    assert.throws(()=>new StudySession('ana',{brokerSocket:'relative'}));
+  } finally {
+    session.stop();if(previous===undefined)delete process.env.OPENROUTER_API_KEY;else process.env.OPENROUTER_API_KEY=previous;
+  }
+});

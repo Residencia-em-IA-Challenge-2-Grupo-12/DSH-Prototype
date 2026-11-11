@@ -1,0 +1,12 @@
+# Disposable sessions must use the broker-only MCP; no simulator fallback.
+- id: mcp-synthetic-study
+  config:
+    serverName: study
+    transport: stdio
+    command: !!js "process.cwd() + '/node_modules/.bin/node'"
+    args:
+      - !!js "process.cwd() + '/src/mcp-broker.mjs'"
+    cwd: !!js process.cwd()
+    env:
+      STUDY_BROKER_SOCKET: !!js process.env.STUDY_BROKER_SOCKET
+    failOnStartupError: true

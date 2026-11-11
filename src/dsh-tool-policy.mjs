@@ -1,3 +1,5 @@
+import {createStudyBrokerClient} from './foundation/study-broker.mjs';
+
 // Defense in depth for the synthetic study profile. This guards tool dispatch;
 // it is not an OS sandbox or a substitute for a restricted runtime/network.
 export const name='study-tool-policy';
@@ -12,4 +14,15 @@ const allowed=new Set([
   'mcp__study__routine_report',
   'mcp__study__save_report_interpretation'
 ]);
-export function apply(ctx){ctx.tools.guard(execution=>allowed.has(execution.name)?undefined:'This tool is not available in the synthetic study run.');}
+export function apply(ctx){
+  ctx.tools.guard(execution=>allowed.has(execution.name)?undefined:'This tool is not available in the synthetic study run.');
+  if(process.env.STUDY_BROKER_SOCKET){
+    const broker=createStudyBrokerClient({socketPath:process.env.STUDY_BROKER_SOCKET});
+    ctx.on('agent/pre-step',async({agent},next)=>{
+      const names=(agent?.ctx?.tools||ctx.tools).schemas().map(item=>item.name);
+      if(names.length!==allowed.size||names.some(name=>!allowed.has(name)))throw new Error('Required synthetic study tools are unavailable');
+      try {await broker.ping();}catch{throw new Error('Synthetic study broker is unavailable');}
+      return next();
+    });
+  }
+}

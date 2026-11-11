@@ -2,6 +2,7 @@ import {access,mkdir,readFile} from 'node:fs/promises';
 import {spawn} from 'node:child_process';
 import {StudySession} from '/app/src/sdk-session.mjs';
 
+const student=process.env.STUDY_TEST_STUDENT;if(!['ana','bruno'].includes(student))throw new Error('Unknown synthetic persona');
 if(process.getuid()===0)throw new Error('Synthetic agent must run as non-root');
 const mounts=await readFile('/proc/self/mountinfo','utf8');
 const tmpMount=mounts.split('\n').find(line=>line.split(' ')[4]==='/tmp');
@@ -12,9 +13,9 @@ for(const forbidden of ['/var/run/docker.sock','/app/.env','/run/secrets/openrou
 let reachable=false;
 for(let n=0;n<50;n++){try{await fetch('http://model-gateway:8090/');reachable=true;break;}catch{await new Promise(resolve=>setTimeout(resolve,100));}}
 if(!reachable)throw new Error('Synthetic gateway did not start');
-await mkdir('/tmp/study-runtime/workspaces/ana',{recursive:true});
+await mkdir(`/tmp/study-runtime/workspaces/${student}`,{recursive:true});
 let diagnostic='';
-const session=new StudySession('ana',{gateway:{baseURL:'http://model-gateway:8090/v1',accessToken:'a'.repeat(64)},
+const session=new StudySession(student,{brokerSocket:'/run/study-broker/agent.sock',gateway:{baseURL:'http://model-gateway:8090/v1',accessToken:'a'.repeat(64)},
   launch:(...args)=>{const child=spawn(...args);child.stderr.on('data',chunk=>{diagnostic=(diagnostic+String(chunk)).slice(-4000);});return child;}});
 try {
   await session.prompt('This is a synthetic container test.');

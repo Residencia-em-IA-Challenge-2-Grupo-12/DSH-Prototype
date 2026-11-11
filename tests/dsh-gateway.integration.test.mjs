@@ -2,14 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {createInterface} from 'node:readline';
-import {mkdir,mkdtemp,rm} from 'node:fs/promises';
+import {mkdir,mkdtemp,readFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {ROOT} from '../src/core.mjs';
+import {ROOT,initializeScenario} from '../src/core.mjs';
 import {createModelBudget} from '../src/foundation/model-budget.mjs';
 import {createOpenRouterGateway} from '../src/foundation/openrouter-gateway.mjs';
 import {createGatewayRoute} from '../src/foundation/dsh-model-route.mjs';
 import {StudySession} from '../src/sdk-session.mjs';
+import {createStudyBoundary} from '../src/foundation/study-boundary.mjs';
+import {startStudyBroker} from '../src/foundation/study-broker.mjs';
 
 test('actual DSH uses only the isolated gateway and records a simulated provider charge',{timeout:30000},async()=>{
   const directory=await mkdtemp(join(tmpdir(),'study-dsh-route-'));let budget,server,child;const upstream=[];
@@ -58,6 +60,52 @@ test('actual DSH uses only the isolated gateway and records a simulated provider
   }
 });
 
+test('actual DSH uses the broker-only calendar tool through a simulated model',{timeout:30000},async()=>{
+  const directory=await mkdtemp(join(tmpdir(),'study-dsh-broker-'));let budget,server,session,broker,calls=0,writes=0,diagnostic='';const seen=[];
+  const previous=process.env.STUDY_ATLAS_RUNTIME_DIR;
+  try {
+    process.env.STUDY_ATLAS_RUNTIME_DIR=directory;
+    const fixture=JSON.parse(await readFile(new URL('../fixtures/calendars/ana.json',import.meta.url),'utf8'));
+    const calendar={events:async()=>structuredClone(fixture.events),create:async()=>{writes++;throw new Error('unexpected write');}};
+    await initializeScenario(calendar,'ana');
+    const ipc=join(directory,'ipc');await mkdir(ipc,{mode:0o700});const socketPath=join(ipc,'agent.sock');
+    broker=await startStudyBroker({socketPath,boundary:createStudyBoundary({student:'ana',calendar})});
+    budget=await createModelBudget({directory:join(directory,'budget')});
+    server=createOpenRouterGateway({apiKey:'synthetic-provider-key',accessToken:'c'.repeat(64),budget,
+      pricing:{inputPerMillion:0.3,outputPerMillion:1.2,verifiedAt:new Date().toISOString()},
+      fetchImpl:async(_url,options)=>{
+        calls++;const request=JSON.parse(options.body);
+        seen.push({tools:request.tools?.map(tool=>tool.function?.name),messages:request.messages?.map(message=>({role:message.role,hasDate:JSON.stringify(message).includes('2026-11-02')}))});
+        const base={id:'synthetic-'+calls,object:'chat.completion.chunk',created:1,model:'deepseek/deepseek-v4.1-flash-1017'};
+        let frames;
+        if(calls===1){
+          assert(request.tools?.some(tool=>tool.function?.name==='mcp__study__list_calendar'),'calendar tool absent from DSH request');
+          frames=[{...base,choices:[{index:0,delta:{role:'assistant',tool_calls:[{index:0,id:'call_calendar',type:'function',function:{name:'mcp__study__list_calendar',arguments:'{"student":"ana"}'}}]},finish_reason:null}]},
+            {...base,choices:[{index:0,delta:{},finish_reason:'tool_calls'}],usage:{prompt_tokens:20,completion_tokens:10,cost:0.001}}];
+        } else {
+          assert(request.messages?.some(message=>message.role==='tool'&&JSON.stringify(message).includes('2026-11-02')),'broker result missing from model continuation');
+          frames=[{...base,choices:[{index:0,delta:{role:'assistant',content:'I inspected the synthetic calendar.'},finish_reason:null}]},
+            {...base,choices:[{index:0,delta:{},finish_reason:'stop'}],usage:{prompt_tokens:20,completion_tokens:10,cost:0.001}}];
+        }
+        return new Response(frames.map(frame=>'data: '+JSON.stringify(frame)+'\n\n').join('')+'data: [DONE]\n\n',{status:200,headers:{'content-type':'text/event-stream'}});
+      }});
+    await new Promise((resolve,reject)=>server.once('error',reject).listen(0,'127.0.0.1',resolve));
+    session=new StudySession('ana',{brokerSocket:socketPath,gateway:{baseURL:`http://127.0.0.1:${server.address().port}/v1`,accessToken:'c'.repeat(64)},
+      launch:(...args)=>{const child=spawn(...args);child.stderr.on('data',chunk=>{diagnostic=(diagnostic+String(chunk)).slice(-5000);});return child;}});
+    await session.prompt('Inspect the synthetic calendar.');
+    const deadline=Date.now()+15000;
+    while(session.snapshot().busy&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,50));
+    assert.equal(session.snapshot().busy,false);assert.equal(session.snapshot().error,null,JSON.stringify({calls,seen,messages:session.snapshot().messages,diagnostic}));
+    assert(session.snapshot().messages.some(message=>message.type==='assistant'&&message.text.includes('I inspected the synthetic calendar.')));
+    assert.equal(calls,2);assert.equal(writes,0);assert.equal((await budget.summary()).observedUsd,0.002);
+  } finally {
+    if(session?.child&&session.child.exitCode===null){const exited=new Promise(resolve=>session.child.once('exit',resolve));session.stop();await exited;}
+    if(server)await new Promise(resolve=>server.close(resolve));await broker?.close();await budget?.close();
+    if(previous===undefined)delete process.env.STUDY_ATLAS_RUNTIME_DIR;else process.env.STUDY_ATLAS_RUNTIME_DIR=previous;
+    await rm(directory,{recursive:true,force:true});
+  }
+});
+
 test('the application session wrapper can use the DSH gateway route without provider credentials',{timeout:30000},async()=>{
   const directory=await mkdtemp(join(tmpdir(),'study-session-route-'));let budget,server,session,calls=0;
   const previous=process.env.STUDY_ATLAS_RUNTIME_DIR;
@@ -85,6 +133,66 @@ test('the application session wrapper can use the DSH gateway route without prov
   } finally {
     if(session?.child){const exited=new Promise(resolve=>session.child.once('exit',resolve));session.stop();await exited;}
     if(server)await new Promise(resolve=>server.close(resolve));await budget?.close();
+    if(previous===undefined)delete process.env.STUDY_ATLAS_RUNTIME_DIR;else process.env.STUDY_ATLAS_RUNTIME_DIR=previous;
+    await rm(directory,{recursive:true,force:true});
+  }
+});
+
+test('a missing broker prevents a DSH model request',{timeout:30000},async()=>{
+  const directory=await mkdtemp(join(tmpdir(),'study-missing-broker-'));let budget,server,session,calls=0;
+  const previous=process.env.STUDY_ATLAS_RUNTIME_DIR;
+  try {
+    process.env.STUDY_ATLAS_RUNTIME_DIR=directory;
+    await mkdir(join(directory,'workspaces','ana'),{recursive:true});await mkdir(join(directory,'ipc'),{mode:0o700});
+    budget=await createModelBudget({directory:join(directory,'budget')});
+    server=createOpenRouterGateway({apiKey:'synthetic-provider-key',accessToken:'d'.repeat(64),budget,
+      pricing:{inputPerMillion:0.3,outputPerMillion:1.2,verifiedAt:new Date().toISOString()},
+      fetchImpl:async()=>{calls++;return new Response('data: [DONE]\n\n',{status:200,headers:{'content-type':'text/event-stream'}});}});
+    await new Promise((resolve,reject)=>server.once('error',reject).listen(0,'127.0.0.1',resolve));
+    session=new StudySession('ana',{brokerSocket:join(directory,'ipc','missing.sock'),gateway:{baseURL:`http://127.0.0.1:${server.address().port}/v1`,accessToken:'d'.repeat(64)}});
+    try {await session.prompt('Inspect the synthetic calendar.');}catch{/* Failing before prompting is also safe. */}
+    const deadline=Date.now()+12000;
+    while(session.snapshot().busy&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,50));
+    assert.equal(session.snapshot().busy,false);assert(session.snapshot().error);
+    assert.equal(calls,0,'a missing broker must prevent any model call');
+    assert.equal((await budget.summary()).observedUsd,0);
+  } finally {
+    if(session?.child&&session.child.exitCode===null){const exited=new Promise(resolve=>session.child.once('exit',resolve));session.stop();await exited;}
+    if(server)await new Promise(resolve=>server.close(resolve));await budget?.close();
+    if(previous===undefined)delete process.env.STUDY_ATLAS_RUNTIME_DIR;else process.env.STUDY_ATLAS_RUNTIME_DIR=previous;
+    await rm(directory,{recursive:true,force:true});
+  }
+});
+
+test('losing the broker during a turn prevents the next DSH model request',{timeout:30000},async()=>{
+  const directory=await mkdtemp(join(tmpdir(),'study-broker-loss-'));let budget,server,session,broker,calls=0;
+  const previous=process.env.STUDY_ATLAS_RUNTIME_DIR;
+  try {
+    process.env.STUDY_ATLAS_RUNTIME_DIR=directory;
+    const fixture=JSON.parse(await readFile(new URL('../fixtures/calendars/ana.json',import.meta.url),'utf8'));
+    const calendar={events:async()=>structuredClone(fixture.events)};await initializeScenario(calendar,'ana');
+    const ipc=join(directory,'ipc');await mkdir(ipc,{mode:0o700});const socketPath=join(ipc,'agent.sock');
+    broker=await startStudyBroker({socketPath,boundary:createStudyBoundary({student:'ana',calendar})});
+    budget=await createModelBudget({directory:join(directory,'budget')});
+    server=createOpenRouterGateway({apiKey:'synthetic-provider-key',accessToken:'e'.repeat(64),budget,
+      pricing:{inputPerMillion:0.3,outputPerMillion:1.2,verifiedAt:new Date().toISOString()},
+      fetchImpl:async()=>{
+        calls++;await broker?.close();broker=null;
+        const base={id:'synthetic',object:'chat.completion.chunk',created:1,model:'deepseek/deepseek-v4.1-flash-1017'};
+        const frames=[{...base,choices:[{index:0,delta:{role:'assistant',tool_calls:[{index:0,id:'call_calendar',type:'function',function:{name:'mcp__study__list_calendar',arguments:'{"student":"ana"}'}}]},finish_reason:null}]},
+          {...base,choices:[{index:0,delta:{},finish_reason:'tool_calls'}],usage:{prompt_tokens:20,completion_tokens:10,cost:0.001}}];
+        return new Response(frames.map(frame=>'data: '+JSON.stringify(frame)+'\n\n').join('')+'data: [DONE]\n\n',{status:200,headers:{'content-type':'text/event-stream'}});
+      }});
+    await new Promise((resolve,reject)=>server.once('error',reject).listen(0,'127.0.0.1',resolve));
+    session=new StudySession('ana',{brokerSocket:socketPath,gateway:{baseURL:`http://127.0.0.1:${server.address().port}/v1`,accessToken:'e'.repeat(64)}});
+    await session.prompt('Inspect the synthetic calendar.');
+    const deadline=Date.now()+15000;while(session.snapshot().busy&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,50));
+    assert.equal(session.snapshot().busy,false);assert(session.snapshot().error);
+    assert.equal(calls,1,'DSH must not make another request after the broker is lost');
+    assert.equal((await budget.summary()).observedUsd,0.001);
+  } finally {
+    if(session?.child&&session.child.exitCode===null){const exited=new Promise(resolve=>session.child.once('exit',resolve));session.stop();await exited;}
+    if(server)await new Promise(resolve=>server.close(resolve));await broker?.close();await budget?.close();
     if(previous===undefined)delete process.env.STUDY_ATLAS_RUNTIME_DIR;else process.env.STUDY_ATLAS_RUNTIME_DIR=previous;
     await rm(directory,{recursive:true,force:true});
   }
