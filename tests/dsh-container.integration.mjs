@@ -14,13 +14,14 @@ import {createClaimedCalendar} from '../src/foundation/claimed-calendar.mjs';
 import {syntheticToken} from './fixtures/calendarpit-oauth.mjs';
 
 const image='node:24.11.1-bookworm-slim@sha256:48abc13a19400ca3985071e287bd405a1d99306770eb81d61202fb6b65cf0b57';
+const agentImage=process.env.STUDY_DSH_IMAGE||image;
 const repeats=Number(process.env.STUDY_DOCKER_REPEATS||1);
 if(!Number.isInteger(repeats)||repeats<1||repeats>10)throw new Error('Synthetic Docker repeats must be 1 to 10');
 
 for(const student of ['ana','bruno'])for(let repeat=1;repeat<=repeats;repeat++)test(`${student} run ${repeat}: isolated DSH drafts and separately approved Calendarpit changes`,
   {skip:process.env.STUDY_DOCKER_TEST!=='1',timeout:120000},async()=>{
   const id=randomBytes(6).toString('hex'),network=`study-model-test-${id}`,gateway=`study-fake-gateway-${id}`;
-  const modules=dirname(await realpath(join(ROOT,'node_modules/@deepseek-ai')));
+  const modules=agentImage===image?dirname(await realpath(join(ROOT,'node_modules/@deepseek-ai'))):null;
   const docker=(...args)=>{const result=spawnSync('docker',args,{encoding:'utf8',timeout:60000});assert.equal(result.status,0,`Docker ${args[0]} failed: ${result.stderr}`);return result.stdout;};
   const dockerAsync=async(...args)=>(await promisify(execFile)('docker',args,{encoding:'utf8',timeout:60000})).stdout;
   const mount=(source,target)=>['--mount',`type=bind,source=${source},target=${target},readonly`];
@@ -39,11 +40,11 @@ for(const student of ['ana','bruno'])for(let repeat=1;repeat<=repeats;repeat++)t
     docker('network','create','--internal','--label','study.test=synthetic-model',network);created=true;
     docker('run','-d','--rm','--name',gateway,...restrictions,'--network-alias','model-gateway','--env',`STUDY_TEST_STUDENT=${student}`,
       ...mount(join(ROOT,'src'),'/app/src'),...mount(join(ROOT,'tests/fixtures/fake-gateway-container.mjs'),'/app/fake-gateway.mjs'),image,'node','/app/fake-gateway.mjs');
+    const agentMounts=modules?[...mount(join(ROOT,'src'),'/app/src'),...mount(modules,'/app/node_modules'),
+      ...mount(join(ROOT,'dsh-study.patch.yml'),'/app/dsh-study.patch.yml'),...mount(join(ROOT,'dsh-broker.patch.yml'),'/app/dsh-broker.patch.yml'),
+      ...mount(join(ROOT,'dsh-gateway.patch.yml'),'/app/dsh-gateway.patch.yml')]:[];
     const output=await dockerAsync('run','--rm',...restrictions,'--workdir','/app','--env','STUDY_ATLAS_RUNTIME_DIR=/tmp/study-runtime','--env',`STUDY_TEST_STUDENT=${student}`,
-      ...mount(join(ROOT,'src'),'/app/src'),...mount(modules,'/app/node_modules'),
-      ...mount(ipc,'/run/study-broker'),...mount(join(ROOT,'dsh-study.patch.yml'),'/app/dsh-study.patch.yml'),
-      ...mount(join(ROOT,'dsh-broker.patch.yml'),'/app/dsh-broker.patch.yml'),...mount(join(ROOT,'dsh-gateway.patch.yml'),'/app/dsh-gateway.patch.yml'),
-      ...mount(join(ROOT,'tests/fixtures/dsh-container-probe.mjs'),'/app/probe.mjs'),image,'node','/app/probe.mjs');
+      ...agentMounts,...mount(ipc,'/run/study-broker'),...mount(join(ROOT,'tests/fixtures/dsh-container-probe.mjs'),'/app/probe.mjs'),agentImage,'node','/app/probe.mjs');
     assert.match(output,/Synthetic DSH container completed/);
     assert.equal(digest(await calendar.events(student)),digest(before),'an agent draft must not write to the calendar');
     const plan=(await loadState(student)).plan;assert(plan?.near.length>0);

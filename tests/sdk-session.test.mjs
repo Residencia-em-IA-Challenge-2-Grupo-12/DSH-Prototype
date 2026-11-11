@@ -49,9 +49,10 @@ test('an explicitly configured comparison session uses only the gateway credenti
   const fake=fakeHarness({provider:'study-gateway',model:'deepseek/deepseek-v4.1-flash-1017'});let launch;
   const previous=process.env.OPENROUTER_API_KEY;process.env.OPENROUTER_API_KEY='synthetic-private-key';
   const session=new StudySession('ana',{gateway:{baseURL:'http://127.0.0.1:12345/v1',accessToken:'a'.repeat(64)},
-    launch:(command,args,options)=>{launch={args,options};return fake.child;}});
+    launch:(command,args,options)=>{launch={command,args,options};return fake.child;}});
   try {
     await session.start();
+    assert.equal(launch.command,process.execPath);
     assert(launch.args.some(arg=>arg.endsWith('/dsh-gateway.patch.yml')));
     assert.equal(launch.options.env.STUDY_GATEWAY_TOKEN,'a'.repeat(64));
     assert.equal(launch.options.env.OPENROUTER_API_KEY,undefined);

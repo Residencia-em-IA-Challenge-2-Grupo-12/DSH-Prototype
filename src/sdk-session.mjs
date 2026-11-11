@@ -48,7 +48,7 @@ export class StudySession {
     const args=[path.join(ROOT,'node_modules/@deepseek-ai/dsh/lib/bin.js'),'--profile','sdk','--patch',path.join(ROOT,'dsh-study.patch.yml')];
     if(this.brokerSocket)args.push('--patch',path.join(ROOT,'dsh-broker.patch.yml'));
     if(this.route)args.push('--patch',this.route.patch);
-    this.child=this.launch(path.join(ROOT,'node_modules/.bin/node'),args,{cwd:ROOT,env,stdio:['pipe','pipe','pipe']});
+    this.child=this.launch(process.execPath,args,{cwd:ROOT,env,stdio:['pipe','pipe','pipe']});
     this.child.stderr.resume();
     this.child.stdin.on('error',()=>this.fail(this.closed?null:'Harness connection failed; start a new session'));
     createInterface({input:this.child.stdout}).on('line',line=>{try{this.receive(JSON.parse(line));}catch{/* Ignore non-JSON output. */}});
