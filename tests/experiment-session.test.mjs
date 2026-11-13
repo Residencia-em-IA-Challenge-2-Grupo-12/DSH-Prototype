@@ -18,3 +18,9 @@ test('failure to capture a prompt blocks it before it reaches the agent',async()
   let invoked=false;const session=createExperimentSession({client:{prompt:async()=>{invoked=true;}},trace:{append:async()=>{throw Error('disk full');}}});
   await assert.rejects(session.prompt('Plan'),/disk full/);assert.equal(invoked,false);
 });
+
+test('evidence failure after an agent action reports that state may have changed',async()=>{
+  let writes=0;const session=createExperimentSession({client:{prompt:async()=>({messages:[{id:'m',type:'assistant',text:'Done'}]})},
+    trace:{append:async()=>{if(++writes===2)throw Error('disk full');}}});
+  await assert.rejects(session.prompt('Plan'),/state may have changed/i);
+});

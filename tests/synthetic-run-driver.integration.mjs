@@ -52,6 +52,8 @@ for(const student of ['ana','bruno'])for(let repetition=1;repetition<=repeats;re
     const trace=(await readFile(join(active.runDirectory,'experiments',attempts[0],'trace.jsonl'),'utf8')).trim().split('\n').map(JSON.parse);
     assert(trace.some(row=>row.kind==='configuration'&&row.data.fixtureSha256));
     assert(trace.some(row=>row.kind==='tool'&&row.data.method==='draft_study_plan'&&row.data.phase==='completed'));
+    assert(trace.some(row=>row.kind==='message'&&row.data.role==='user'));
+    assert(trace.some(row=>row.kind==='message'&&row.data.role==='assistant'));
     assert(trace.some(row=>row.kind==='decision'&&row.data.section==='near'));
     assert(trace.some(row=>row.kind==='write'&&row.data.section==='near'));
     const result=await manager.retire();assert.equal(result.archiveId,run.id);assert.match(result.archiveSha256,/^[a-f0-9]{64}$/);

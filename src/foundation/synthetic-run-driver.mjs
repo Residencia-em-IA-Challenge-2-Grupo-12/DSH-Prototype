@@ -15,6 +15,7 @@ import {attachRunGateway,detachRunGateway} from './docker-gateway.mjs';
 import {inspectDockerAgent,inspectDockerCalendar,inspectDockerNetwork,retireDockerAgent,retireDockerCalendar,retireDockerNetwork} from './docker-retirement.mjs';
 import {archiveSyntheticRun} from './run-archive.mjs';
 import {createExperimentTrace} from './experiment-trace.mjs';
+import {createExperimentSession} from './experiment-session.mjs';
 
 const exec=promisify(execFile);
 const docker=async(...args)=>(await exec('docker',args,{timeout:20000,maxBuffer:64000})).stdout.trim();
@@ -68,7 +69,7 @@ export function createSyntheticRunDriver({root,lease,agentImage,tokenFile,gatewa
   return {
     active(id){
       if(!current||current.id!==id||!current.ready||current.quiesced)return null;
-      return {id:current.id,student:current.student,runDirectory:current.runDirectory,service:current.service,client:current.agent.client};
+      return {id:current.id,student:current.student,runDirectory:current.runDirectory,service:current.service,client:current.client};
     },
     async start(run){
       lease.assertHeld();const directory=runDirectory(run),runs=path.dirname(directory);
@@ -93,7 +94,8 @@ export function createSyntheticRunDriver({root,lease,agentImage,tokenFile,gatewa
       lease.assertHeld();await runDocker('network','create','--internal','--label',`study.run.id=${run.id}`,`study-agent-net-${run.id}`);
       await attachRunGateway({runId:run.id,gatewayId,lease,runDocker});
       current.agent=await startDockerAgent({runId:run.id,student:run.student,runDirectory:directory,tokenFile,image:agentImage});
-      const initial=await current.agent.client.snapshot();
+      current.client=createExperimentSession({client:current.agent.client,trace});
+      const initial=await current.client.snapshot();
       if(initial?.student!==run.student)throw new Error('Synthetic agent did not report the selected student');
       current.ready=true;
     },

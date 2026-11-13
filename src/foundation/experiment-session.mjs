@@ -16,11 +16,15 @@ export function createExperimentSession({client,trace}={}){
     return view;
   }
   const serial=operation=>{const next=queue.then(operation);queue=next.catch(()=>{});return next;};
+  const captureAfter=async operation=>{
+    const view=await operation();
+    try{return await capture(view);}catch(error){throw new Error('Evidence recording failed after agent action; state may have changed',{cause:error});}
+  };
   return {
     snapshot:()=>serial(async()=>capture(await client.snapshot())),
-    prompt:text=>serial(async()=>{await trace.append('message',{role:'user',text});return capture(await client.prompt(text));}),
-    answer:(requestId,answers)=>serial(async()=>{await trace.append('question',{phase:'answer',requestId,answers});return capture(await client.answer(requestId,answers));}),
-    cancelQuestion:requestId=>serial(async()=>{await trace.append('question',{phase:'cancelled',requestId});return capture(await client.cancelQuestion(requestId));}),
+    prompt:text=>serial(async()=>{await trace.append('message',{role:'user',text});return captureAfter(()=>client.prompt(text));}),
+    answer:(requestId,answers)=>serial(async()=>{await trace.append('question',{phase:'answer',requestId,answers});return captureAfter(()=>client.answer(requestId,answers));}),
+    cancelQuestion:requestId=>serial(async()=>{await trace.append('question',{phase:'cancelled',requestId});return captureAfter(()=>client.cancelQuestion(requestId));}),
     close:()=>client.close()
   };
 }
