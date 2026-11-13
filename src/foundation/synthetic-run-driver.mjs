@@ -2,6 +2,7 @@ import {execFile} from 'node:child_process';
 import {constants,promises as fs} from 'node:fs';
 import path from 'node:path';
 import {promisify} from 'node:util';
+import {createHash,randomUUID} from 'node:crypto';
 import {ROOT,initializeScenario,withSyntheticRuntime} from '../core.mjs';
 import {createStateStore} from '../state-store.mjs';
 import {startCalendarpitRun,inspectCalendarpitRun} from './calendarpit-runner.mjs';
@@ -13,6 +14,7 @@ import {startDockerAgent} from './docker-agent.mjs';
 import {attachRunGateway,detachRunGateway} from './docker-gateway.mjs';
 import {inspectDockerAgent,inspectDockerCalendar,inspectDockerNetwork,retireDockerAgent,retireDockerCalendar,retireDockerNetwork} from './docker-retirement.mjs';
 import {archiveSyntheticRun} from './run-archive.mjs';
+import {createExperimentTrace} from './experiment-trace.mjs';
 
 const exec=promisify(execFile);
 const docker=async(...args)=>(await exec('docker',args,{timeout:20000,maxBuffer:64000})).stdout.trim();
@@ -75,13 +77,17 @@ export function createSyntheticRunDriver({root,lease,agentImage,tokenFile,gatewa
       const file=await fs.open(path.join(directory,'run-manifest.json'),constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
       try{await file.writeFile(JSON.stringify({version:1,id:run.id,student:run.student,gatewayId,agentImage})+'\n');await file.sync();}finally{await file.close();}
       await syncDirectory(directory);await syncDirectory(runs);
-      const fixture=JSON.parse(await fs.readFile(path.join(ROOT,'fixtures/calendars',`${run.student}.json`),'utf8'));
+      const fixtureText=await fs.readFile(path.join(ROOT,'fixtures/calendars',`${run.student}.json`),'utf8');
+      const fixture=JSON.parse(fixtureText),attemptId=randomUUID(),traceDirectory=path.join(directory,'experiments',attemptId);
+      await fs.mkdir(traceDirectory,{recursive:true,mode:0o700});
+      const trace=await createExperimentTrace({directory:traceDirectory,runId:run.id,attemptId});current.trace=trace;
+      await trace.append('configuration',{student:run.student,fixtureSha256:createHash('sha256').update(fixtureText).digest('hex'),agentImage,route:'gateway',usage:'unknown'});
       const simulator=await startCalendarpitRun({fixture,redirectUri,runId:run.id,runDirectory:directory,runDocker});current.simulator=simulator;
       const accessToken=await authorizeSyntheticCalendar({run:simulator,student:run.student,redirectUri});
       const store=createStateStore(directory);
       const calendar=createClaimedCalendar({origin:simulator.origin,accessToken,getClaim:()=>store.getCalendarClaim()});current.calendar=calendar;
       await withSyntheticRuntime(directory,()=>initializeScenario(calendar,run.student));
-      const service=createTrustedStudyService({student:run.student,calendar,runtimeDirectory:directory});current.service=service;
+      const service=createTrustedStudyService({student:run.student,calendar,runtimeDirectory:directory,trace});current.service=service;
       const ipc=path.join(directory,'ipc');await fs.mkdir(ipc,{mode:0o700});
       current.broker=await startStudyBroker({socketPath:path.join(ipc,'agent.sock'),boundary:service.agent});
       lease.assertHeld();await runDocker('network','create','--internal','--label',`study.run.id=${run.id}`,`study-agent-net-${run.id}`);

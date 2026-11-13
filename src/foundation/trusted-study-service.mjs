@@ -5,21 +5,41 @@ import {createWriteGate} from './write-gate.mjs';
 // Trusted application side. Only its `agent` member may be exposed through
 // the broker; approval methods require a separate authenticated user action.
 // Draining covers operations in this process, not unknown external writers.
-export function createTrustedStudyService({student,calendar,runtimeDirectory}={}){
+export function createTrustedStudyService({student,calendar,runtimeDirectory,trace}={}){
   assertStudent(student);
+  if(trace!==undefined&&typeof trace?.append!=='function')throw new Error('Invalid synthetic evidence trace');
   if(runtimeDirectory!==undefined)withSyntheticRuntime(runtimeDirectory,()=>{});
   const inRuntime=operation=>runtimeDirectory===undefined?operation():withSyntheticRuntime(runtimeDirectory,operation);
   const boundary=createStudyBoundary({student,calendar}),gate=createWriteGate(),agentCalls=new Set();
   let retiring=false,drained=false;
   const agent={call(method,args){
     if(retiring)return Promise.reject(new Error('Synthetic run is retiring')); 
-    const operation=Promise.resolve().then(()=>inRuntime(()=>boundary.call(method,args)));agentCalls.add(operation);
+    const operation=Promise.resolve().then(async()=>{
+      if(trace)await trace.append('tool',{phase:'requested',method,args});
+      let result;
+      try{result=await inRuntime(()=>boundary.call(method,args));}
+      catch(error){if(trace){try{await trace.append('failure',{operation:method,outcome:'failed'});}catch(traceError){throw new Error('Evidence recording failed after the operation; state may have changed',{cause:traceError});}}throw error;}
+      if(trace){try{await trace.append('tool',{phase:'completed',method,result});}catch(error){throw new Error('Evidence recording failed after the operation; state may have changed',{cause:error});}}
+      return result;
+    });agentCalls.add(operation);
     operation.then(()=>agentCalls.delete(operation),()=>agentCalls.delete(operation));return operation;
   }};
   return {
     agent,
-    approvePlan:(planId,section)=>gate.run(()=>inRuntime(()=>applyApproved(calendar,student,planId,section))),
-    approveAnnotation:id=>gate.run(()=>inRuntime(()=>applyAnnotation(calendar,student,id))),
+    approvePlan:(planId,section)=>gate.run(async()=>{
+      if(trace)await trace.append('decision',{operation:'approve_plan',planId,section});
+      let result;try{result=await inRuntime(()=>applyApproved(calendar,student,planId,section));}
+      catch(error){if(trace){try{await trace.append('failure',{operation:'approve_plan',planId,section,outcome:'failed_or_unknown'});}catch(traceError){throw new Error('Evidence recording failed after approval attempt; state may have changed',{cause:traceError});}}throw error;}
+      if(trace){try{await trace.append('write',{operation:'approve_plan',planId,section,result});}catch(error){throw new Error('Evidence recording failed after approval; state may have changed',{cause:error});}}
+      return result;
+    }),
+    approveAnnotation:id=>gate.run(async()=>{
+      if(trace)await trace.append('decision',{operation:'approve_annotation',id});
+      let result;try{result=await inRuntime(()=>applyAnnotation(calendar,student,id));}
+      catch(error){if(trace){try{await trace.append('failure',{operation:'approve_annotation',id,outcome:'failed_or_unknown'});}catch(traceError){throw new Error('Evidence recording failed after approval attempt; state may have changed',{cause:traceError});}}throw error;}
+      if(trace){try{await trace.append('write',{operation:'approve_annotation',id,result});}catch(error){throw new Error('Evidence recording failed after approval; state may have changed',{cause:error});}}
+      return result;
+    }),
     writerStatus:()=>gate.snapshot(),
     async drain(options){
       retiring=true;await gate.drain(options);
