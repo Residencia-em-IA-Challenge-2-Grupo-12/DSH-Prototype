@@ -1,6 +1,6 @@
 # Draft PR consolidation proposal
 
-**Inspected 13 November 2026. Proposal only.** No PR was merged, retargeted or closed and no source branch was rewritten or deleted by this review. There are 23 open draft PRs; their reported checks were successful at inspection. Checks reflect each existing base, not the future integrated stack. The earlier [head inventory](evidence/pr-inventory-2026-11-12.md) remains historical evidence; #38 has since advanced to `38da40034632` and contains 113 changed files relative to #37.
+**Inspected 13 November 2026. Proposal only.** No PR was merged, retargeted or closed and no source branch was rewritten or deleted by this review. A fresh GitHub CLI inspection reports 24 open draft PRs and successful reported checks at inspection. Checks reflect each existing base, not the future integrated stack. The earlier [head inventory](evidence/pr-inventory-2026-11-12.md) remains historical evidence; #38 has since advanced to `38da40034632` and contains 113 changed files relative to #37. The browser child is now #39, inspected at `934b0fb19ddf`; its scripted browser evidence does not establish a live Luna walkthrough.
 
 ## Current dependency map
 
@@ -22,7 +22,7 @@ flowchart TD
   P8 --> P22["#22 sidebar spike"]
   P8 --> P28["#28 worker spike"]
   P8 --> P32["#32 guidance dossiers"]
-  P38 -.-> NEXT["Proposed: focused browser walkthrough PR"]
+  P38 --> P39["#39 focused browser walkthrough"]
 ```
 
 ## Review and preservation map
@@ -34,6 +34,7 @@ Each PR below links to its original evidence. A destination marked â€œcandidateâ
 | [#8](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/8) / main | Keep the bounded experimental baseline. Review readiness and the resulting integrated diff before the user's explicit merge decision. Head `6bce31c1ab13`. |
 | [#37](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/37) / #8 | Review recovery and state coordination independently, including migration, uncertain writes and unavailable-calendar UI. Its unresolved-run limitations remain acceptance items, not proof of a finished workflow. Head `bad383e8721b`. |
 | [#38](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/38) / #37 | Freeze infrastructure scope; review provider/claim, lifecycle/retirement, broker/agent, evidence and model-routing units at pinned heads. Prefer a focused browser integration child; do not mechanically rewrite this dependency-heavy PR just because it is large. |
+| [#39](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/39) / #38 | Focused companion/controller RPC, runtime-policy preparation, review guidance and scripted browser evidence. Keep draft pending the actual Luna route/tool audit, live workflow and remaining delivery checks. Do not import the broader comparison stacks to finish the demonstration. |
 | [#16](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/16) / #8 | Candidate consolidation with #23. Preserve dedicated replay unit/integration tests; do not close on converter-code equality. |
 | [#18](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/18) / #8 | #38 carries an evolved runner and isolation tests. Preserve original lifecycle documentation and compare every original acceptance case before proposing supersession. |
 | [#21](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/21) / #18 | #38 carries the API client and unit tests with evolved integration tests. Preserve OAuth, paging, ETag and management/provider boundary evidence before proposing supersession. |

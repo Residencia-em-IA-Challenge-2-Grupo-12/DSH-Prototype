@@ -23,9 +23,9 @@ The plugin registers `image_generate` when Codex is configured. Its `toolEnabled
 
 A temporary credential-free probe loaded the installed plugin by its public package entrypoint with Codex only and pools disabled, using a fresh empty DSH home. A Node preload rejected TCP/TLS connections; no initialize/prompt request was sent. The observed global tool catalog contained `ask_user_question` and `image_generate`; the study dispatch guard denied image execution. The study MCP tools did **not** register in this restricted probe, so this was not a passing complete-catalog test and does not establish the exact cause of the missing MCP tools. A separate baseline catalog test also failed in this restricted execution environment, while the fake SDK-session tests passed. Do not interpret those failures as proof that the brokered profile is broken on the actual development host.
 
-## Narrow correction to test
+## Narrow correction implemented; actual plugin validation pending
 
-Keep the global deny-by-default dispatch guard. At `agent/created`, apply an agent-local tool restriction to the fixed study allowlist before the existing pre-step catalog check. The subscription plugin itself uses the supported `agent.ctx.tools.restrict({deny})` hook to hide optional tools for a session; our policy can use that same public seam to remove unrelated tools rather than changing the user's stored preferences. Continue checking the exact catalog and broker readiness before every step so later unexpected registration fails closed. This is a proposed correction, not a verified implementation.
+The branch now keeps the global deny-by-default dispatch guard and applies an agent-local restriction to the fixed study allowlist at `agent/created`, before the pre-step catalog check. The subscription plugin itself uses the supported `agent.ctx.tools.restrict({deny})` hook to hide optional tools for a session; the policy uses that public seam rather than changing the user's stored preferences. Exact catalog and broker readiness checks remain before every step so later unexpected registration fails closed. The wiring has fake-harness coverage, but the actual subscription-loaded catalog check is still pending. The scripted browser run used an older pinned agent image and does not verify this correction inside that image.
 
 ## Runnable non-model checks
 
