@@ -1,6 +1,6 @@
 # Foundation roadmap and current boundaries
 
-The agreed product is a calendar-centered assistant for adult students. This phase uses synthetic calendars, workspaces and personas. GPT-6 Luna is the only authorized generative model, including auxiliary and evaluation roles; local embedding models are a separate dependency.
+The agreed product is a calendar-centered assistant for adult students. This phase uses synthetic calendars, workspaces and personas. GPT-6 Luna remains the default model. A later, bounded comparison also authorizes `deepseek/deepseek-v4.1-flash-1017` through OpenRouter's official DeepSeek provider, with fallback disabled and setup, agent and evaluator calls sharing the approximate $5 locally tracked target. Other generative models and paid-provider fallback are not authorized; local embedding models are separate dependencies.
 
 ## Delivery checkpoints
 
@@ -11,7 +11,7 @@ The agreed product is a calendar-centered assistant for adult students. This pha
 
 ## Baseline versus target
 
-The current prototype has a companion UI, native DSH question forwarding, a simple deterministic scheduler and separate review controls. It uses one shared Calendarpit instance, the management API, JSON state, in-memory sessions and host tools. Its view groups events by day; it is not a proportional time grid. Model output can influence limited scheduler inputs but there is no enforced evidence-based critique, rich solver, durable recovery or isolated tool worker. The current preview is unauthenticated and only suitable for fictional data.
+The running companion has a UI, DSH question forwarding, a simple deterministic scheduler and separate review controls. It still uses the earlier shared Calendarpit management API and in-memory agent sessions; recovery work adds SQLite-backed state and durable claims on the stacked branch. The experimental managed lifecycle has isolated simulator instances, a broker and restricted agent container, but is not connected to the companion. Its scripted runs do not establish live-model behavior. See [current disposable-run progress](disposable-run-progress.md). The agent influences limited scheduler inputs; evidence-based critique and rich alternatives are not enforced. The current preview is unauthenticated and suitable only for fictional data.
 
 The target uses a transactional SQLite-backed domain service, isolated Calendarpit instances with the Google-compatible API, replayable checkpoints, Docker workers without credentials or Docker socket, and a proportional calendar. Recheck proposal context, evidence and calendar versions before separately approved writes. Retain actual state after partial failures. A review of an inference or question response is never calendar approval.
 
