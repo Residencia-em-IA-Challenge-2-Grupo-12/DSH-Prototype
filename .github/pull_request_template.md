@@ -16,6 +16,14 @@ List the checks run and any remaining limitations.
 
 Record the head and base used for the checks. Distinguish offline, scripted Docker, live-model and human observations; include failed or incomplete attempts where relevant.
 
+## Issue and Project handoff
+
+Canonical issue and current result/next action:
+
+Project fields/relationships read back, or exact sync blocker and next action:
+
+Acceptance items: met / unmet / not observed:
+
 ## Data and security
 
 Describe any impact on synthetic data, credentials, calendar writes or privacy.

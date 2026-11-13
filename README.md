@@ -2,7 +2,9 @@
 
 **English · [Português](README.pt-BR.md)**
 
-> **Recovery work in progress — do not merge or use as a reliable demonstration.** Calendar-write recovery is incomplete, including after a process crash or delayed provider response. Use only disposable synthetic data. See [the recovery status](docs/recovery-work-in-progress.md). GPT-6 Luna is the only authorized generative model for this project.
+> **Experimental draft; not yet a reliable demonstration.** Calendar-write recovery remains incomplete, including after a process crash or delayed provider response. Use only disposable synthetic data. See [recovery status](docs/recovery-work-in-progress.md). GPT-6 Luna remains the default route. One bounded comparison is separately authorized for `deepseek/deepseek-v4.1-flash-1017` through the official DeepSeek provider on OpenRouter, with fallback disabled and a shared approximate $5 target for setup, agent and evaluator calls. That paid route is currently disabled pending verified pricing, egress and accounting; it is not a model default. See [model setup](docs/models.md) for the routing boundary.
+
+This README describes the runnable **draft branch**. The current `main` branch is a documentation scaffold and does not contain the runnable `package.json` workflow shown here. Check out the intended draft branch before using these commands; do not infer that its code is already integrated into `main`. The current handoff is tracked by [#9 baseline readiness](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/9), [#40 browser walkthrough and bilingual package](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/40), and [#41 lossless integration review](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/41). The scripted browser flow is evidence of integration only; the actual Luna browser walkthrough and recording remain outstanding. These gates do not authorize a merge or select a foundation. See the [current work sequence](docs/project-work-sequence.md).
 
 Study Atlas explores a collaborative study assistant using DeepSeek Harness (DSH), two synthetic student workspaces and a local Calendarpit calendar. The companion interface drafts near-term and future study blocks, reviews them separately, records optional feedback, compares checkpoint snapshots and displays a routine summary.
 
@@ -24,7 +26,7 @@ npm start
 
 Open http://127.0.0.1:4174. The companion server binds all interfaces for a LAN preview and contains no authentication; expose it only on a trusted network. Calendarpit's administration and test API is loopback-only at http://127.0.0.1:4173. Both contain synthetic data only.
 
-For the **Collaborate** tab's live agent, first follow [model setup](docs/models.md), including the user's Codex sign-in, and install the same pinned plugin in the SDK profile with `npm run install:codex-plugin:sdk`. Open the companion at `http://localhost:4174` or `http://127.0.0.1:4174` on the development machine: model-control endpoints reject LAN and Tailscale clients because this preview has no authentication. Only GPT-6 Luna is configured. Agent conversations are in memory and do not resume after restarting the companion.
+For the **Collaborate** tab's live agent, first follow [model setup](docs/models.md), including the user's Codex sign-in, and install the same pinned plugin in the SDK profile with `npm run install:codex-plugin:sdk`. Open the companion at `http://localhost:4174` or `http://127.0.0.1:4174` on the development machine: model-control endpoints reject LAN and Tailscale clients because this preview has no authentication. GPT-6 Luna is the default route. The bounded DeepSeek comparison route is not enabled in this runnable path. Agent conversations are in memory and do not resume after restarting the companion.
 
 In a second terminal, start the project-isolated DSH web profile:
 
