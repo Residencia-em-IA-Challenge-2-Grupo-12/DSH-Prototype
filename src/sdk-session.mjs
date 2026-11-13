@@ -9,8 +9,10 @@ import { createStudyBrokerClient } from './foundation/study-broker.mjs';
 
 // A single-user synthetic demo: no credentials or raw SDK event payloads reach the browser.
 export class StudySession {
-  constructor(student, { launch=spawn, gateway, brokerSocket, dshHome, brokerProbe=socketPath=>createStudyBrokerClient({socketPath}).ping() }={}) {
+  constructor(student, { launch=spawn, gateway, brokerSocket, dshHome, turnTimeoutMs=180000, brokerProbe=socketPath=>createStudyBrokerClient({socketPath}).ping() }={}) {
     this.student=assertStudent(student); this.launch=launch; this.sessionId='study-'+randomUUID();
+    if(!Number.isInteger(turnTimeoutMs)||turnTimeoutMs<1||turnTimeoutMs>600000)throw new Error('Invalid turn execution budget');
+    this.turnTimeoutMs=turnTimeoutMs;
     this.route=gateway===undefined?null:createGatewayRoute(gateway);
     if(brokerSocket!==undefined&&(typeof brokerSocket!=='string'||!path.isAbsolute(brokerSocket)||path.normalize(brokerSocket)!==brokerSocket||brokerSocket.includes('\0')||Buffer.byteLength(brokerSocket)>100))throw new Error('A valid broker socket path is required');
     if(dshHome!==undefined&&(typeof dshHome!=='string'||!path.isAbsolute(dshHome)||path.normalize(dshHome)!==dshHome||dshHome.includes('\0')))throw new Error('A valid trusted DSH profile path is required');
@@ -23,12 +25,19 @@ export class StudySession {
   snapshot() { return {student:this.student,messages:this.messages,question:this.question?.view||null,busy:this.busy,error:this.error}; }
   add(type,text) { if(typeof text==='string' && text.trim()) { this.messages.push({id:randomUUID(),type,text:text.slice(0,12000)}); if(this.messages.length>200)this.messages.shift(); } }
   send(frame) { if(!this.child || this.child.stdin.destroyed) throw new Error('Harness is not running'); this.child.stdin.write(JSON.stringify(frame)+'\n'); }
+  updateWaitBudget() {
+    for(const entry of this.requests.values())if(entry.wait){
+      if(this.question&&entry.timer){clearTimeout(entry.timer);entry.remaining=Math.max(0,entry.remaining-(performance.now()-entry.started));entry.timer=null;}
+      else if(!this.question&&!entry.timer)entry.arm();
+    }
+  }
   request(method,params,timeout=20000) {
     const id=this.nextId++;
     return new Promise((resolve,reject)=>{
-      const timer=setTimeout(()=>{this.requests.delete(id);reject(new Error('Harness request timed out'));},timeout);
-      this.requests.set(id,{resolve,reject,timer});
-      try{this.send({jsonrpc:'2.0',id,method,params});}catch(e){clearTimeout(timer);this.requests.delete(id);reject(e);}
+      const entry={resolve,reject,timer:null,remaining:timeout,started:0,wait:method==='session/wait'};
+      entry.arm=()=>{entry.started=performance.now();entry.timer=setTimeout(()=>{this.requests.delete(id);reject(new Error('Harness request timed out'));},entry.remaining);};
+      this.requests.set(id,entry);if(!entry.wait||!this.question)entry.arm();
+      try{this.send({jsonrpc:'2.0',id,method,params});}catch(e){clearTimeout(entry.timer);this.requests.delete(id);reject(e);}
     });
   }
   async start() {
@@ -82,9 +91,9 @@ export class StudySession {
     if(frame.method==='user-question/ask' && frame.id!==undefined) {
       if(this.question) { this.send({jsonrpc:'2.0',id:frame.id,result:{cancelled:true}});return; }
       const questions=Array.isArray(frame.params?.questions)?frame.params.questions:[];
-      this.question={rpcId:frame.id,requestId:frame.params.requestId,view:{requestId:frame.params.requestId,questions}};return;
+      this.question={rpcId:frame.id,requestId:frame.params.requestId,view:{requestId:frame.params.requestId,questions}};this.updateWaitBudget();return;
     }
-    if(frame.method==='user-question.cancelled' && this.question?.requestId===frame.params?.requestId) {this.question=null;return;}
+    if(frame.method==='user-question.cancelled' && this.question?.requestId===frame.params?.requestId) {this.question=null;this.updateWaitBudget();return;}
     if(frame.method!=='session.event' || frame.params?.sessionId!==this.sessionId)return;
     const ev=frame.params.event;
     if(ev?.type==='assistant/message') {
@@ -105,7 +114,7 @@ export class StudySession {
       const content=(this.messages.length?text.trim():guidance+text.trim());
       await this.request('session/prompt',{sessionId:this.sessionId,contentBlocks:[{type:'text',text:content}]});
       this.add('user',text.trim());
-      this.request('session/wait',{sessionId:this.sessionId},180000).then(()=>{this.busy=false;},()=>{this.error='The harness did not complete this turn. Inspect the proposal and start a new conversation before retrying.';this.stop();});
+      this.request('session/wait',{sessionId:this.sessionId},this.turnTimeoutMs).then(()=>{this.busy=false;},()=>{this.error='The harness did not complete this turn. Inspect the proposal and start a new conversation before retrying.';this.stop();});
     } catch(e) {this.error=e.message+'; inspect the proposal and start a new conversation before retrying.';this.stop();throw e;}
   }
   answer(requestId,answers) {
@@ -117,11 +126,11 @@ export class StudySession {
       if(!answer||!Array.isArray(answer.selected)||answer.selected.some(x=>!q.options?.some(o=>o.label===x))||(!answer.selected.length&&!String(answer.custom||'').trim())||(!q.multiSelect&&answer.selected.length>1)||String(answer.custom||'').length>2000)throw new Error('Invalid answer');
     }
     const selected=answers.map(a=>a.custom||a.selected.join(', ')).join(' · ');
-    this.send({jsonrpc:'2.0',id:this.question.rpcId,result:{answers}});this.question=null;this.add('user',selected);
+    this.send({jsonrpc:'2.0',id:this.question.rpcId,result:{answers}});this.question=null;this.updateWaitBudget();this.add('user',selected);
   }
   cancelQuestion(requestId) {
     if(!this.question||this.question.requestId!==requestId)throw new Error('Question is no longer pending');
-    this.send({jsonrpc:'2.0',id:this.question.rpcId,result:{cancelled:true}});this.question=null;
+    this.send({jsonrpc:'2.0',id:this.question.rpcId,result:{cancelled:true}});this.question=null;this.updateWaitBudget();
   }
   fail(message) {
     for(const req of this.requests.values()){clearTimeout(req.timer);req.reject(new Error(message||'Session closed'));}this.requests.clear();

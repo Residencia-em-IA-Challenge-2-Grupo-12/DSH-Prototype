@@ -19,6 +19,9 @@ export function apply(ctx){
   ctx.tools.guard(execution=>allowed.has(execution.name)?undefined:'This tool is not available in the synthetic study run.');
   if(process.env.STUDY_BROKER_SOCKET){
     const broker=createStudyBrokerClient({socketPath:process.env.STUDY_BROKER_SOCKET});
+    ctx.on('agent/created',({agent})=>{
+      agent.ctx.tools.restrict({allow:[...allowed]});
+    });
     ctx.on('agent/pre-step',async({agent},next)=>{
       const names=(agent?.ctx?.tools||ctx.tools).schemas().map(item=>item.name);
       if(names.length!==allowed.size||names.some(name=>!allowed.has(name)))throw new Error('Required synthetic study tools are unavailable');
