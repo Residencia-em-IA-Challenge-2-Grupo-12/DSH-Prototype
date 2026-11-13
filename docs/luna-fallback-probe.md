@@ -57,3 +57,8 @@ STUDY_SUBSCRIPTIONS_ENTRY=/absolute/installed/plugin/lib/index.js ./node_modules
 ```
 
 The brokered policy also rejects generative calls to any route other than the configured Luna subscription or explicitly selected comparison gateway route. The persistent Luna overlay limits subscription registration to Codex with pooling disabled without changing saved preferences. The offline suite passes 150 checks. Live workflow evidence remains a separate acceptance item.
+
+
+## Current host fallback exercised
+
+Two real Luna API attempts completed with the existing persistent subscription profile, the brokered study tools and fresh Google-compatible Calendarpit instances. Both produced an initial proposal, asked a native question, revised for Monday exclusion and applied only the test-driver-approved near-term section. The first exposed conflicting real/fixed clock context; a regression reproduces that injection and the synthetic overlay now disables it. The second did not repeat the competing-date explanation. See the [schedule review](onboarding/luna-schedule-review.md) for both attempts, timings, evidence and quality flags. This is current-route API evidence, not browser or managed-agent-container readiness. No paid OpenRouter request was made; subscription usage is unavailable.

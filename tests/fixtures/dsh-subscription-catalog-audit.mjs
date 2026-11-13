@@ -15,10 +15,10 @@ export function apply(ctx){
     try{
       handle=await ctx.agents.create({sessionId:'synthetic-catalog-audit',meta:{cwd:process.cwd()},agentOptions:{provider:'codex',model:'gpt-6-luna'}});
       const agent=handle.agent,tools=agent.ctx.tools;
-      let preStepPassed=false,preStepError=null;
-      try{await ctx.waterfall(scopeTarget(agent,agent),'agent/pre-step',{agent,messages:[],turn:1,step:1,signal:new AbortController().signal,modelSelection:agent.model.current()},()=>Promise.resolve({kind:'enter',messages:[]}));preStepPassed=true;}catch(error){preStepError=error.message;}
+      let preStepPassed=false,preStepError=null,hostClockInjected=false;
+      try{const decision=await ctx.waterfall(scopeTarget(agent,agent),'agent/pre-step',{agent,messages:[],turn:1,step:1,signal:new AbortController().signal,modelSelection:agent.model.current()},()=>Promise.resolve({kind:'enter',messages:[]}));hostClockInjected=decision.messages.some(message=>message.source?.kind==='time-context');preStepPassed=true;}catch(error){preStepError=error.message;}
       await writeFile(process.env.STUDY_TOOL_AUDIT_FILE,JSON.stringify({
-        globalNames,preStepPassed,preStepError,modelAttempts,names:tools.schemas(agent).map(item=>item.name).sort(),
+        globalNames,preStepPassed,preStepError,hostClockInjected,modelAttempts,names:tools.schemas(agent).map(item=>item.name).sort(),
         model:handle.agent.model.current(),
         denials:Object.fromEntries(['bash','image_generate','mcp__study__approve','unknown_tool'].map(name=>[name,tools.checkGuards({name})??null])),
         studyDenial:tools.checkGuards({name:'mcp__study__list_calendar'})??null

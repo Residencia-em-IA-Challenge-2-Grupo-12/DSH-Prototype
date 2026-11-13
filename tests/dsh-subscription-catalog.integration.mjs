@@ -31,6 +31,7 @@ test('the actual subscription plugin is restricted to the eight study tools with
     assert.deepEqual(catalog.model,{provider:'codex',model:'gpt-6-luna'});
     assert.equal(catalog.studyDenial,null);
     assert.equal(catalog.modelAttempts,0);
+    assert.equal(catalog.hostClockInjected,false,'Synthetic planning must not inject the real host clock');
     assert.equal(catalog.preStepPassed,true,catalog.preStepError||'Pre-step policy did not complete');
     for(const [name,denial] of Object.entries(catalog.denials))assert.match(denial||'',/not available/i,name);
     console.log(JSON.stringify({kind:'actual-plugin-catalog',names:catalog.names,model:catalog.model,extraToolHidden:true,generativeRequests:catalog.modelAttempts}));
