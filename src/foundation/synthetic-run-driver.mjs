@@ -58,6 +58,7 @@ export function createSyntheticRunDriver({root,lease,agentImage,tokenFile,gatewa
     lease.assertHeld();
     if(run.retireFromPhase==='start-failed')throw new Error('Startup resource outcome is unknown; managed retirement is blocked');
     const details=await manifest(run),owned=current?.id===run.id?current:null;
+    if(owned?.client)await owned.client.drain();
     if(owned?.service)await owned.service.drain({force});
     if(owned?.agent){owned.agent.client.close();await waitForExit(owned.agent.child);}
     await retireDockerAgent({runId:run.id,lease,runDocker,force});

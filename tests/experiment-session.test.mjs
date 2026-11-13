@@ -24,3 +24,13 @@ test('evidence failure after an agent action reports that state may have changed
     trace:{append:async()=>{if(++writes===2)throw Error('disk full');}}});
   await assert.rejects(session.prompt('Plan'),/state may have changed/i);
 });
+
+test('drain waits for an accepted prompt and refuses later operations',async()=>{
+  let release,entered;const started=new Promise(resolve=>{entered=resolve;});
+  const client={prompt:async()=>{entered();await new Promise(resolve=>{release=resolve;});return {messages:[]};},snapshot:async()=>({messages:[]})};
+  const session=createExperimentSession({client,trace:{append:async()=>{}}});
+  const prompt=session.prompt('Plan');await started;let drained=false;
+  const stopping=session.drain().then(()=>{drained=true;});
+  await assert.rejects(session.snapshot(),/retiring/);assert.equal(drained,false);
+  release();await prompt;await stopping;assert.equal(drained,true);
+});
