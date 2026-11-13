@@ -2,6 +2,10 @@
 
 **Draft · 13 November 2026.** Copy this local document per session. This is a lightweight human review, not a validated scientific scale. Keep deterministic test results and model-generated evaluations separate. Use the [persona](bruno-persona.md) and [checklist](facilitator-checklist.md).
 
+Agreed review expectations: [horizon balance and consequential load questions](schedule-review-decisions.md). When needs are unknown and deadlines match, inspect total course allocation across the horizon, not just one week's equality. Check whether a relevant workday/weekend choice was discussed and actually represented in the proposed plan; mark unsupported behavior explicitly. The precise strength and persistence of those preferences are still being clarified.
+
+Expectativas combinadas: [equilíbrio no horizonte e perguntas relevantes sobre a carga](schedule-review-decisions.md). Com necessidades desconhecidas e prazos equivalentes, conferir o total por matéria no horizonte, não a igualdade em cada semana. Verificar se a troca entre dias de trabalho e fim de semana foi discutida e representada na proposta. A força e a persistência dessas preferências ainda estão sendo definidas.
+
 ## Session record / Registro da sessão
 
 | Field / Campo | Fill in / Preencher |
