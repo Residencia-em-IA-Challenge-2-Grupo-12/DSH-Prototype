@@ -12,6 +12,8 @@ A separate managed Docker drill removed the simulator before retirement. The arc
 
 After tool and approval trace recording was enabled at commit `c78a510`, a further [20 fresh managed runs](managed-trace-20.log) passed, ten per persona. Each checked that its trace contained fixture identification, a completed planning tool event, a near-term approval and a write result. These runs used the same scripted model and synthetic approval; they do not establish complete conversation, write-acknowledgment or usage capture.
 
+After bounded conversation snapshot capture was integrated at `7e7f6a6`, another [20 scripted managed runs](managed-conversation-20.log) passed. After accepted conversation operations were drained before retirement at `834713e`, a further [20 runs](managed-drain-20.log) passed. Each batch used ten runs per persona. These logs do not establish complete SDK-event capture or a live model conversation.
+
 The model messages and approvals were scripted. These tests do **not** demonstrate a real conversation, a live provider, the current browser interface, or complete recovery from interruptions during startup or retirement. Test archives were inspected and then removed with their temporary directories; they are not the full experiment bundles required for comparison. The broader failure-drill and live-model suites remain incomplete.
 
 To reproduce on the development host after building the agent image:
