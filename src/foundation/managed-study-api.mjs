@@ -14,6 +14,7 @@ export function createManagedStudyApi({manager,driver}={}){
     start:student=>manager.start(student),
     async retire(runId){if(typeof runId!=='string'||!runId)throw new Error('Selected run is required');return manager.retire({expectedRunId:runId});},
     async snapshot(runId){return (await selected(runId)).client.snapshot();},
+    async status(runId){return (await selected(runId)).service.status();},
     async prompt(runId,text){return (await selected(runId)).client.prompt(text);},
     async answer(runId,requestId,answers){return (await selected(runId)).client.answer(requestId,answers);},
     async cancelQuestion(runId,requestId){return (await selected(runId)).client.cancelQuestion(requestId);},

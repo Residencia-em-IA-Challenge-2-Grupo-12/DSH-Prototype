@@ -5,6 +5,9 @@ export function createManagedHttpHandler({api,origin}={}){
   if(allowed.protocol!=='http:'||!['localhost','127.0.0.1','[::1]'].includes(allowed.hostname)||allowed.origin!==origin)throw Error('A local HTTP origin is required');
   const routes={
     'GET /api/run':()=>api.runStatus(),
+    'GET /api/status':a=>api.status(a.runId),
+    'GET /api/workspace':a=>api.agentRead(a.runId,'list_synthetic_files',{path:a.path||''}),
+    'GET /api/file':a=>api.agentRead(a.runId,'read_synthetic_file',{path:a.path}),
     'POST /api/run/start':a=>api.start(a.student),
     'POST /api/run/retire':a=>api.retire(a.runId),
     'GET /api/chat/state':a=>api.snapshot(a.runId),

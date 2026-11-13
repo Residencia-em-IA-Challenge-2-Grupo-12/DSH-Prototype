@@ -57,3 +57,11 @@ test('a trace failure after an approved write reports that state may have change
   await assert.rejects(service.approvePlan(plan.id,'near'),/state may have changed/i);
   assert(calendar.items.some(event=>event.id===plan.near[0].id));
 });
+
+test('managed status retains stored state when the calendar is unavailable',async()=>{
+  const fixture=JSON.parse(await readFile(new URL('../fixtures/calendars/ana.json',import.meta.url),'utf8'));let unavailable=false;
+  const calendar={async events(){if(unavailable)throw Error('offline');return structuredClone(fixture.events);}};
+  await initializeScenario(calendar,'ana');unavailable=true;
+  const view=await createTrustedStudyService({student:'ana',calendar}).status();
+  assert(view.state);assert.equal(view.events,null);assert.equal(view.calendar.availability,'unavailable');
+});
