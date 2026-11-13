@@ -65,6 +65,7 @@ export class StudySession {
     }
     const args=[path.join(ROOT,'node_modules/@deepseek-ai/dsh/lib/bin.js'),'--profile','sdk','--patch',path.join(ROOT,'dsh-study.patch.yml')];
     if(this.brokerSocket)args.push('--patch',path.join(ROOT,'dsh-broker.patch.yml'));
+    if(this.dshHome)args.push('--patch',path.join(ROOT,'dsh-luna.patch.yml'));
     if(this.route)args.push('--patch',this.route.patch);
     try {
       this.child=this.launch(process.execPath,args,{cwd:ROOT,env,stdio:['pipe','pipe','pipe']});

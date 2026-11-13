@@ -23,9 +23,9 @@ The plugin registers `image_generate` when Codex is configured. Its `toolEnabled
 
 A temporary credential-free probe loaded the installed plugin by its public package entrypoint with Codex only and pools disabled, using a fresh empty DSH home. A Node preload rejected TCP/TLS connections; no initialize/prompt request was sent. The observed global tool catalog contained `ask_user_question` and `image_generate`; the study dispatch guard denied image execution. The study MCP tools did **not** register in this restricted probe, so this was not a passing complete-catalog test and does not establish the exact cause of the missing MCP tools. A separate baseline catalog test also failed in this restricted execution environment, while the fake SDK-session tests passed. Do not interpret those failures as proof that the brokered profile is broken on the actual development host.
 
-## Narrow correction implemented; actual plugin validation pending
+## Scoped inspection correction verified with the actual plugin
 
-The branch now keeps the global deny-by-default dispatch guard and applies an agent-local restriction to the fixed study allowlist at `agent/created`, before the pre-step catalog check. The subscription plugin itself uses the supported `agent.ctx.tools.restrict({deny})` hook to hide optional tools for a session; the policy uses that public seam rather than changing the user's stored preferences. Exact catalog and broker readiness checks remain before every step so later unexpected registration fails closed. The wiring has fake-harness coverage, but the actual subscription-loaded catalog check is still pending. The scripted browser run used an older pinned agent image and does not verify this correction inside that image.
+The branch now keeps the global deny-by-default dispatch guard and applies an agent-local restriction to the fixed study allowlist at `agent/created`, before the pre-step catalog check. The subscription plugin itself uses the supported `agent.ctx.tools.restrict({deny})` hook to hide optional tools for a session; the policy uses that public seam rather than changing the user's stored preferences. Exact catalog and broker readiness checks remain before every step so later unexpected registration fails closed. The actual subscription-loaded, credential-free probe now passes with exactly eight agent-visible tools and the extra global image tool hidden. It exercises the real pre-step hook and broker readiness with TCP/TLS blocked and no model request. The first scoped audit exposed a bug in our inspection: `schemas()` without the agent selects the global view even through `agent.ctx.tools`. The pre-step check now uses `schemas(agent)`. The scripted browser run used an older pinned agent image and does not verify this correction inside that image.
 
 ## Runnable non-model checks
 
@@ -46,3 +46,14 @@ For a plugin-loaded catalog check, use an empty temporary DSH home, insert `llm-
 Before a live fallback run, test the corrected policy with the actual installed plugin, broker and staged workspace; verify only the eight approved tools are model-visible, native/extra tools are denied, no provider/model fallback can occur, and the existing login works without copying credentials. The fake tests and historical host success do not satisfy that acceptance gate.
 
 Public package documentation: [subscription plugin](https://github.com/V1ki/dsh-plugin-subscriptions) and [DSH LLM seam](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/llm/llm/README.md).
+
+
+## Repeatable actual-plugin probe
+
+`tests/dsh-subscription-catalog.integration.mjs` accepts a trusted absolute `STUDY_SUBSCRIPTIONS_ENTRY` pointing to the installed package's public entrypoint. It uses an empty temporary DSH home, Codex-only registration, pooling disabled, a private broker and network-denial preload. It creates an agent through the public factory without prompting it, then inspects `schemas(agent)` and runs the actual pre-step waterfall. The global `image_generate` registration is a negative control; the agent's exact catalog excludes it, and dispatch guards deny it and unknown/native tools. No login credential is loaded. The preload is a test control, not an OS sandbox.
+
+```sh
+STUDY_SUBSCRIPTIONS_ENTRY=/absolute/installed/plugin/lib/index.js ./node_modules/.bin/node --test tests/dsh-subscription-catalog.integration.mjs
+```
+
+The brokered policy also rejects generative calls to any route other than the configured Luna subscription or explicitly selected comparison gateway route. The persistent Luna overlay limits subscription registration to Codex with pooling disabled without changing saved preferences. The offline suite passes 150 checks. Live workflow evidence remains a separate acceptance item.
