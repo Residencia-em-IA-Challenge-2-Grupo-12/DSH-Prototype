@@ -20,7 +20,7 @@ export async function createExperimentTrace({directory,runId,attemptId}={}){
   const info=await fs.lstat(directory);
   if(!info.isDirectory()||(info.mode&0o077)!==0||(process.getuid&&info.uid!==process.getuid()))throw new Error('Trace directory must be private');
   const handle=await fs.open(path.join(directory,'trace.jsonl'),constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
-  await handle.close();let sequence=0,queue=Promise.resolve();
+  await handle.close();let sequence=0,queue=Promise.resolve(),healthy=true;
   return {append(kind,data){
     if(!kinds.has(kind))return Promise.reject(new Error('Invalid trace event type'));
     let projected;try{projected=project(data);}catch(error){return Promise.reject(error);}
@@ -30,6 +30,6 @@ export async function createExperimentTrace({directory,runId,attemptId}={}){
       const output=await fs.open(path.join(directory,'trace.jsonl'),constants.O_WRONLY|constants.O_APPEND|constants.O_NOFOLLOW);
       try{await output.writeFile(line);await output.sync();}finally{await output.close();}
       return row.sequence;
-    });return queue;
-  }};
+    }).catch(error=>{healthy=false;throw error;});return queue;
+  },healthy:()=>healthy};
 }

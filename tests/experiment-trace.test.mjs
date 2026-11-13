@@ -31,3 +31,14 @@ test('trace refuses existing files and non-private directories',async()=>{
     await assert.rejects(createExperimentTrace({directory:dir,runId:'run',attemptId:'b'}),{code:'EEXIST'});
   } finally {await rm(dir,{recursive:true,force:true});}
 });
+
+test('a failed evidence write leaves the trace unhealthy',async()=>{
+  const dir=await mkdtemp(join(tmpdir(),'study-trace-failure-'));
+  try {
+    const trace=await createExperimentTrace({directory:dir,runId:'run',attemptId:'a'});
+    await rm(join(dir,'trace.jsonl'));
+    await assert.rejects(trace.append('message',{text:'Synthetic'}));
+    assert.equal(trace.healthy(),false);
+    await assert.rejects(trace.append('message',{text:'Retry'}));
+  } finally {await rm(dir,{recursive:true,force:true});}
+});

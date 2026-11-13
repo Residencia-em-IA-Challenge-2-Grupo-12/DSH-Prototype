@@ -102,6 +102,7 @@ export function createSyntheticRunDriver({root,lease,agentImage,tokenFile,gatewa
       lease.assertHeld();const directory=runDirectory(run);await manifest(run);
       const owned=current?.id===run.id?current:null;
       if(owned&&!owned.quiesced)throw new Error('Synthetic run has not been drained');
+      if(owned?.trace&&!owned.trace.healthy())throw new Error('Synthetic experiment evidence could not be persisted');
       const store=createStateStore(directory);
       const stateFile=await fs.lstat(path.join(directory,'state.sqlite'));
       if(!stateFile.isFile())throw new Error('Synthetic run state is unavailable');
