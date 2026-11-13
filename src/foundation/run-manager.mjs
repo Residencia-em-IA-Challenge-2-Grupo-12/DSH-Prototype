@@ -40,9 +40,10 @@ export async function createRunManager({root,driver}) {
       try {await driver.start(structuredClone(run));return transition(id,['starting'],'active');}
       catch(error){transition(id,['starting'],'start-failed');throw new Error('Synthetic run startup failed; inspect and retire its managed resources',{cause:error});}
     },
-    async retire({force=false,discardUnsaved=false}={}){
+    async retire({force=false,discardUnsaved=false,expectedRunId}={}){
       if(typeof force!=='boolean'||typeof discardUnsaved!=='boolean')throw new Error('Retirement decisions must be boolean');
       const initial=read();if(!initial)throw new Error('No active synthetic run');
+      if(expectedRunId!==undefined&&(typeof expectedRunId!=='string'||expectedRunId!==initial.id))throw new Error('Selected run changed; refresh the current run');
       if(discardUnsaved&&initial.phase!=='archive-failed')throw new Error('Unsaved evidence can only be discarded after an archive failure');
       const run=transition(initial.id,['active','start-failed','archive-failed','retirement-failed'],'retiring',{
         retireFromPhase:initial.retireFromPhase||initial.phase,forceRequested:!!initial.forceRequested||force,discardRequested:discardUnsaved});

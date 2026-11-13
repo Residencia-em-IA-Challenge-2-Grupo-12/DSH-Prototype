@@ -122,3 +122,14 @@ test('forced stops and evidence discard require explicit boolean decisions',asyn
     assert.equal(received.run.forceRequested,true);
   } finally {await manager?.close();await rm(root,{recursive:true,force:true});}
 });
+
+test('retirement refuses a stale run identity before stopping any writer',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'study-run-stale-retire-'));let manager,stopped=false;
+  const driver={async start(){},async stopWriters(){stopped=true;},async archive(run){return {archiveId:run.id};},async stopSimulator(){},async verifyRetired(){return true;}};
+  try {
+    manager=await createRunManager({root,driver});const run=await manager.start('ana');
+    await assert.rejects(manager.retire({expectedRunId:'previous-run'}),/run.*changed/i);
+    assert.equal(stopped,false);assert.equal((await manager.current()).id,run.id);
+    await manager.retire({expectedRunId:run.id});assert.equal(stopped,true);
+  } finally {await manager?.close();await rm(root,{recursive:true,force:true});}
+});
