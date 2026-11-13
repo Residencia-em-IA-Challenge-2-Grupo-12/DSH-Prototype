@@ -10,4 +10,6 @@ A candidate to investigate is a trusted, separately isolated Luna provider servi
 
 The installed package contains an internal `CodexAdapter` implementation with a streaming method, but its package export map does not expose that provider module as a public subpath. Reaching into that internal file would couple the bridge to an unsupported implementation detail; this source inspection alone does not rule out another supported integration.
 
+The SDK session now accepts a trusted, absolute persistent DSH profile path only with the brokered Luna route. A fake-harness test verifies that this path is passed separately from the per-run workspace without copying credentials. This is groundwork for a host fallback, not proof the installed login, plugin catalog and synthetic calendar workflow work together; no live Luna request has been made through this path. The host DSH process can access its subscription credentials, and this route does not have the managed agent container's isolation.
+
 The real DeepSeek gateway is also intentionally unable to make paid calls until trusted current pricing, egress and accounting are wired and tested. No live model comparison or user-facing integration follows automatically from this investigation.

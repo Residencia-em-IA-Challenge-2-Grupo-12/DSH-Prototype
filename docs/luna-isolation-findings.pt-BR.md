@@ -10,4 +10,6 @@ Uma opção a investigar é um serviço confiável separado para o provedor Luna
 
 O pacote instalado contém uma implementação interna `CodexAdapter` com um método de streaming, mas seu mapa de exportações não oferece o módulo do provedor como subcaminho público. Acessar esse arquivo interno acoplaria a ponte a um detalhe sem interface pública; essa inspeção, por si só, não descarta outra integração compatível.
 
+A sessão SDK agora aceita um caminho absoluto e confiável para um perfil DSH persistente somente com a rota Luna mediada pelo broker. Um teste com harness fictício verifica que o perfil é passado separadamente do espaço de trabalho da execução, sem copiar credenciais. Isso prepara a alternativa no host, mas não comprova o funcionamento conjunto do login, catálogo de plugins e calendário sintético; nenhuma chamada Luna real foi feita por esse caminho. O processo DSH no host pode acessar suas credenciais de assinatura, e essa rota não tem o isolamento do contêiner do agente gerenciado.
+
 O gateway DeepSeek real também permanece incapaz de fazer chamadas pagas até que preço atual confiável, saída de rede e contabilização sejam integrados e testados. Esta investigação não conclui a comparação real nem a integração com a interface.

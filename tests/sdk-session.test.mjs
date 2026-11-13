@@ -87,3 +87,16 @@ test('a brokered session rejects startup when the tool policy did not activate',
     assert(fake.child.killed);
   } finally {session.stop();}
 });
+
+test('a trusted host fallback can use a persistent DSH profile without changing the run workspace',async()=>{
+  const fake=fakeHarness();let launch;
+  const session=new StudySession('bruno',{dshHome:'/private/persistent-dsh',brokerSocket:'/run/study-broker/agent.sock',brokerProbe:async()=>true,
+    launch:(command,args,options)=>{launch={args,options};writeFileSync(options.env.STUDY_POLICY_READY,'guard-registered',{mode:0o600,flag:'wx'});return fake.child;}});
+  try {
+    await session.start();assert.equal(launch.options.env.DSH_HOME,'/private/persistent-dsh');
+    assert.equal(launch.options.env.STUDY_BROKER_SOCKET,'/run/study-broker/agent.sock');
+    assert.throws(()=>new StudySession('ana',{dshHome:'relative'}),/DSH profile/i);
+    assert.throws(()=>new StudySession('ana',{dshHome:'/private/persistent-dsh'}),/brokered Luna/i);
+    assert.throws(()=>new StudySession('ana',{dshHome:'/private/persistent-dsh',brokerSocket:'/run/study-broker/agent.sock',gateway:{baseURL:'http://127.0.0.1:12345/v1',accessToken:'a'.repeat(64)}}),/brokered Luna/i);
+  } finally {session.stop();}
+});

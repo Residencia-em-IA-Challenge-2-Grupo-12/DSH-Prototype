@@ -9,12 +9,14 @@ import { createStudyBrokerClient } from './foundation/study-broker.mjs';
 
 // A single-user synthetic demo: no credentials or raw SDK event payloads reach the browser.
 export class StudySession {
-  constructor(student, { launch=spawn, gateway, brokerSocket, brokerProbe=socketPath=>createStudyBrokerClient({socketPath}).ping() }={}) {
+  constructor(student, { launch=spawn, gateway, brokerSocket, dshHome, brokerProbe=socketPath=>createStudyBrokerClient({socketPath}).ping() }={}) {
     this.student=assertStudent(student); this.launch=launch; this.sessionId='study-'+randomUUID();
     this.route=gateway===undefined?null:createGatewayRoute(gateway);
     if(brokerSocket!==undefined&&(typeof brokerSocket!=='string'||!path.isAbsolute(brokerSocket)||path.normalize(brokerSocket)!==brokerSocket||brokerSocket.includes('\0')||Buffer.byteLength(brokerSocket)>100))throw new Error('A valid broker socket path is required');
+    if(dshHome!==undefined&&(typeof dshHome!=='string'||!path.isAbsolute(dshHome)||path.normalize(dshHome)!==dshHome||dshHome.includes('\0')))throw new Error('A valid trusted DSH profile path is required');
+    if(dshHome!==undefined&&(!brokerSocket||gateway!==undefined))throw new Error('A persistent DSH profile requires the brokered Luna route');
     if(typeof brokerProbe!=='function')throw new Error('A broker readiness probe is required');
-    this.brokerSocket=brokerSocket;this.brokerProbe=brokerProbe;
+    this.brokerSocket=brokerSocket;this.dshHome=dshHome;this.brokerProbe=brokerProbe;
     this.messages=[]; this.question=null; this.busy=false; this.error=null;
     this.requests=new Map(); this.nextId=1; this.child=null; this.starting=null; this.closed=false;
   }
@@ -44,7 +46,7 @@ export class StudySession {
     // The native addon otherwise copies itself into /tmp and tries to execute
     // there; loading the read-only installed binary works with noexec tmpfs.
     if(isolated)env.NARB_DISABLE_NATIVE_CACHE='1';
-    Object.assign(env,{DSH_HOME:path.join(runtimeDir(),'dsh'),DSH_PERMISSION_MODE:'read-only'},this.route?.env||{});
+    Object.assign(env,{DSH_HOME:this.dshHome||path.join(runtimeDir(),'dsh'),DSH_PERMISSION_MODE:'read-only'},this.route?.env||{});
     let policyDirectory;
     if(this.brokerSocket){
       env.STUDY_BROKER_SOCKET=this.brokerSocket;
