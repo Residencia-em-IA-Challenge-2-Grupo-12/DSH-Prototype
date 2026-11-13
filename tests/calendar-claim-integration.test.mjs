@@ -81,9 +81,9 @@ test('an absent event after a lost response does not permit a reset before late 
 test('an interrupted writer leaves its sent action claimed across restart', {timeout:10000}, async()=>{
   const ready=join(runtimeDir(),'write-started.json');
   const code=`import {ROOT,readJSON,resetScenario,draft,applyApproved} from ${JSON.stringify(new URL('../src/core.mjs',import.meta.url).href)};
-    import {writeFile} from 'node:fs/promises';
+    import {writeFile,rename} from 'node:fs/promises';
     const calendar={async reset(s){this.items=structuredClone((await readJSON(ROOT+'/fixtures/calendars/'+s+'.json')).events);},
-      async events(){return structuredClone(this.items);},async create(_s,e){await writeFile(process.argv[1],JSON.stringify(e));await new Promise(()=>setInterval(()=>{},1000));},async remove(){}};
+      async events(){return structuredClone(this.items);},async create(_s,e){await writeFile(process.argv[1]+'.tmp',JSON.stringify(e));await rename(process.argv[1]+'.tmp',process.argv[1]);await new Promise(()=>setInterval(()=>{},1000));},async remove(){}};
     await resetScenario(calendar,'ana');const plan=await draft(calendar,'ana',{weeks:1,hours:1});await applyApproved(calendar,'ana',plan.id,'near');`;
   const child=spawn(process.execPath,['--input-type=module','-e',code,ready],{env:process.env,stdio:'ignore'});
   const exited=new Promise((resolve,reject)=>{child.once('error',reject);child.once('exit',(code,signal)=>resolve({code,signal}));});
