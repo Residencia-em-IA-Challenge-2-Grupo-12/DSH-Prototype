@@ -18,8 +18,16 @@ Use focused issues and feature branches. Keep fixtures synthetic; never commit c
 4. Keep merge, foundation selection, guidance admission and real-data authorization as distinct review gates. A reviewable artifact does not authorize its adoption. A merge does not by itself complete an epic or select an implementation.
 5. Before closure or supersession, map unique code, tests, fixtures, docs, results and CI to retained destinations or an explicitly accepted disposition. Keep source refs and links until that map is reviewed.
 
+## Classification and active work
+
+Use one primary `area:` label and a work type (`bug`, `enhancement`, `documentation`, `kind:epic` or `kind:experiment`); select an outcome milestone without inventing a date. Use the existing organization Priority field rather than creating a duplicate: High for the current path, Medium for next scoped work, Low for later work; reserve Urgent for exceptional blockers. Ready/active leaf work needs an accountable person and verified prerequisites; In review needs an inspectable artifact and a stated review question. Keep deferred work Backlog and tracking epics separate from daily leaf-task execution. Use `needs:decision` only when a concrete artifact/question is ready for a human decision.
+
 ## Completion and verification
 
 A coding slice is handed off only when its issue, PR and Project state have been verified by readback, or the exact synchronization blocker and next action are recorded. Re-run checks affected by changed behavior, configuration or base; a documentation or label-only change does not require unrelated model or test runs. Report the exact head/base for checks and distinguish offline, scripted-browser, live-model and human observations.
 
 Issue and PR templates collect only the short context needed to start and review work. Keep this procedure here instead of copying its full checklist into every template. Keep intermediate commits reviewable, and leave incomplete delivery in draft. PR #8 and later foundation choices retain their explicit decision gates.
+
+## Read-only organization check
+
+Run `node scripts/audit-project-organization.mjs` with Node and authenticated `gh`, or use `--snapshot PATH` for a captured JSON/directory. This is an optional maintainer tool, not an application runtime dependency. It reads GitHub and emits review warnings; it never updates the board. Warnings use structural/wording heuristics and cannot establish implementation quality, evidence truth, workflow configuration or merge readiness. Private Project access is required for live checks; record unavailable sources explicitly. No scheduled workflow or broader token grant is introduced by this check.

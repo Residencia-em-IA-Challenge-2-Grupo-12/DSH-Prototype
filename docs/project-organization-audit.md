@@ -4,6 +4,8 @@
 
 The recent pass improved sequencing, but left classification, ownership, view configuration, automation semantics and handoff maintenance incomplete. The Project should answer **what to work on, why, what is settled, what is blocked, what evidence exists and what happens next** without requiring this chat.
 
+The user subsequently authorized the bounded cleanup. See [applied changes and verified exceptions](project-organization-cleanup.md); the findings below remain the pre-change snapshot.
+
 ## What was inspected
 
 All 19 issues, all 24 draft PR descriptions/metadata, all 23 Project items, native issue hierarchy/dependencies, all six saved views and their fields/filters/sorts, field values, labels, milestones, repository entry points, contribution/templates/workflow guidance and relevant roadmap/status documents. Two GPT-6 Luna subagents independently read issue organization and agent guidance. Native relationships were checked separately because their absence from `gh project item-list` is not evidence that they do not exist.

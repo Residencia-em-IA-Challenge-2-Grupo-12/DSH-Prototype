@@ -81,13 +81,13 @@ async function snapshotFromPath(snapshotPath) {
 }
 
 async function ghJson(args) {
-  const { stdout } = await execFileAsync('gh', args, { maxBuffer: 32 * 1024 * 1024 });
+  const { stdout } = await execFileAsync('gh', args, { maxBuffer: 32 * 1024 * 1024, timeout: 60_000 });
   return JSON.parse(stdout);
 }
 
 async function liveData({ repo, owner, project }) {
-  const viewQuery = `query($owner: String!, $number: Int!) { organization(login: $owner) { projectV2(number: $number) { views(first: 50) { nodes { name filter groupByFields { name } } } fields(first: 50) { nodes { ... on ProjectV2SingleSelectField { name isIssueField options { name } } } } } } }`;
-  const linkedQuery = `query($owner: String!, $name: String!) { repository(owner: $owner, name: $name) { issues(first: 100, states: OPEN) { nodes { number timelineItems(first: 100, itemTypes: [CROSS_REFERENCED_EVENT]) { nodes { ... on CrossReferencedEvent { source { ... on PullRequest { number url state } } } } } } } } }`;
+  const viewQuery = `query($owner: String!, $number: Int!) { organization(login: $owner) { projectV2(number: $number) { views(first: 50) { nodes { name filter groupByFields(first: 20) { nodes { ... on ProjectV2FieldCommon { name } } } } } fields(first: 50) { nodes { ... on ProjectV2SingleSelectField { name isIssueField options { name } } } } } } }`;
+  const linkedQuery = `query($owner: String!, $name: String!) { repository(owner: $owner, name: $name) { issues(first: 100, states: OPEN) { nodes { number parent { number } subIssues(first: 100) { nodes { number } } timelineItems(first: 100, itemTypes: [CROSS_REFERENCED_EVENT]) { nodes { ... on CrossReferencedEvent { source { ... on PullRequest { number url state } } } } } } } } }`;
   const [issues, pullRequests, itemsDoc, viewsDoc, linkedDoc] = await Promise.all([
     ghJson(['issue', 'list', '--repo', repo, '--state', 'open', '--limit', '1000', '--json', 'number,title,body,labels,assignees,url']),
     ghJson(['pr', 'list', '--repo', repo, '--state', 'open', '--limit', '1000', '--json', 'number,title,body,labels,assignees,url,isDraft']),
@@ -101,10 +101,11 @@ async function liveData({ repo, owner, project }) {
   return normalizeData({
     issues, pullRequests, items: projectItems, views: projectViews,
     fields: projectData?.fields?.nodes,
+    relations: linkedDoc?.data?.repository?.issues?.nodes?.reduce((out, issue) => { out[`n${issue.number}`] = issue; return out; }, {}),
     linkedPrByIssue: linkedDoc?.data?.repository?.issues?.nodes?.reduce((out, issue) => {
       out[issue.number] = (issue.timelineItems?.nodes ?? []).map((event) => event.source).filter((source) => source?.number);
       return out;
-    }, undefined),
+    }, {}),
     viewDataAvailable: Array.isArray(projectViews),
   });
 }
