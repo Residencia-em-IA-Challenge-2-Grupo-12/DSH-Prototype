@@ -41,6 +41,14 @@ const stateStore=new Proxy({}, {get(_target,key){
   if(!stores.has(directory))stores.set(directory,createStateStore(directory));
   return stores.get(directory)[key];
 }});
+export async function disposeSyntheticRuntime(directory) {
+  if(typeof directory!=='string'||!path.isAbsolute(directory)||path.normalize(directory)!==directory||directory===path.parse(directory).root)throw new Error('A valid synthetic runtime is required');
+  const key=path.resolve(directory),store=stores.get(key);
+  if(!store)return false;
+  await store.close();
+  if(stores.get(key)===store)stores.delete(key);
+  return true;
+}
 export async function loadState(student) { return stateStore.load(assertStudent(student)); }
 export async function saveState(student, state) { return stateStore.save(assertStudent(student),state); }
 export async function getRecoveryClaim() { return stateStore.getCalendarClaim(); }

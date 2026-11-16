@@ -3,7 +3,7 @@ import {constants,promises as fs} from 'node:fs';
 import path from 'node:path';
 import {promisify} from 'node:util';
 import {createHash,randomUUID} from 'node:crypto';
-import {ROOT,initializeScenario,withSyntheticRuntime} from '../core.mjs';
+import {ROOT,disposeSyntheticRuntime,initializeScenario,withSyntheticRuntime} from '../core.mjs';
 import {createStateStore} from '../state-store.mjs';
 import {startCalendarpitRun,inspectCalendarpitRun} from './calendarpit-runner.mjs';
 import {authorizeSyntheticCalendar} from './synthetic-calendar-auth.mjs';
@@ -86,7 +86,7 @@ export function createSyntheticRunDriver({root,lease,agentImage,tokenFile,gatewa
       await trace.append('configuration',{student:run.student,fixtureSha256:createHash('sha256').update(fixtureText).digest('hex'),agentImage,route:'gateway',usage:'unknown'});
       const simulator=await startCalendarpitRun({fixture,redirectUri,runId:run.id,runDirectory:directory,runDocker});current.simulator=simulator;
       const accessToken=await authorizeSyntheticCalendar({run:simulator,student:run.student,redirectUri});
-      const store=createStateStore(directory);
+      const store=createStateStore(directory);current.store=store;
       const calendar=createClaimedCalendar({origin:simulator.origin,accessToken,getClaim:()=>store.getCalendarClaim()});current.calendar=calendar;
       await withSyntheticRuntime(directory,()=>initializeScenario(calendar,run.student));
       const service=createTrustedStudyService({student:run.student,calendar,runtimeDirectory:directory,trace});current.service=service;
@@ -106,22 +106,24 @@ export function createSyntheticRunDriver({root,lease,agentImage,tokenFile,gatewa
       const owned=current?.id===run.id?current:null;
       if(owned&&!owned.quiesced)throw new Error('Synthetic run has not been drained');
       if(owned?.trace&&!owned.trace.healthy())throw new Error('Synthetic experiment evidence could not be persisted');
-      const store=createStateStore(directory);
-      const stateFile=await fs.lstat(path.join(directory,'state.sqlite'));
-      if(!stateFile.isFile())throw new Error('Synthetic run state is unavailable');
-      const snapshot=owned?.service?await owned.service.snapshotForArchive():await store.snapshotForArchive(run.student);
-      let events=null;
+      const store=owned?.store??createStateStore(directory);
       try {
-        let calendar=owned?.calendar;
-        if(!calendar){
-          const simulator=await inspectCalendarpitRun({runId:run.id,student:run.student,runDirectory:directory,runDocker});
-          const accessToken=await authorizeSyntheticCalendar({run:simulator,student:run.student,redirectUri});
-          calendar=createClaimedCalendar({origin:simulator.origin,accessToken,getClaim:()=>store.getCalendarClaim()});
-        }
-        events=await calendar.events(run.student);
-      } catch { /* An unavailable observation stays explicitly unknown. */ }
-      return archiveSyntheticRun({directory:path.join(root,'archives'),run,snapshot,
-        observation:events?{availability:'available',events}:{availability:'unavailable',events:null}});
+        const stateFile=await fs.lstat(path.join(directory,'state.sqlite'));
+        if(!stateFile.isFile())throw new Error('Synthetic run state is unavailable');
+        const snapshot=owned?.service?await owned.service.snapshotForArchive():await store.snapshotForArchive(run.student);
+        let events=null;
+        try {
+          let calendar=owned?.calendar;
+          if(!calendar){
+            const simulator=await inspectCalendarpitRun({runId:run.id,student:run.student,runDirectory:directory,runDocker});
+            const accessToken=await authorizeSyntheticCalendar({run:simulator,student:run.student,redirectUri});
+            calendar=createClaimedCalendar({origin:simulator.origin,accessToken,getClaim:()=>store.getCalendarClaim()});
+          }
+          events=await calendar.events(run.student);
+        } catch { /* An unavailable observation stays explicitly unknown. */ }
+        return await archiveSyntheticRun({directory:path.join(root,'archives'),run,snapshot,
+          observation:events?{availability:'available',events}:{availability:'unavailable',events:null}});
+      } finally {if(!owned)await store.close();}
     },
     async stopSimulator(run){
       lease.assertHeld();await manifest(run);
@@ -133,6 +135,9 @@ export function createSyntheticRunDriver({root,lease,agentImage,tokenFile,gatewa
       const resources=await Promise.all([inspectDockerAgent({runId:run.id,lease,runDocker}),inspectDockerCalendar({runId:run.id,lease,runDocker}),
         inspectDockerNetwork({runId:run.id,kind:'agent',lease,runDocker}),inspectDockerNetwork({runId:run.id,kind:'calendar',lease,runDocker})]);
       if(resources.some(resource=>resource.state!=='absent'))return false;
+      const owned=current?.id===run.id?current:null;
+      await owned?.store?.close();
+      await disposeSyntheticRuntime(runDirectory(run));
       if(current?.id===run.id)current=null;
       return true;
     },

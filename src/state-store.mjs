@@ -5,16 +5,20 @@ import {DatabaseSync} from 'node:sqlite';
 import path from 'node:path';
 
 export function createStateStore(directory) {
-  let opening;
-  const database=()=>opening??=(async()=>{
-    await fs.mkdir(directory,{recursive:true,mode:0o700});
-    const db=new DatabaseSync(path.join(directory,'state.sqlite'));
-    try {
-      db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS student_state (student TEXT PRIMARY KEY, body TEXT NOT NULL); CREATE TABLE IF NOT EXISTS calendar_claim (singleton INTEGER PRIMARY KEY CHECK(singleton=1), body TEXT NOT NULL); CREATE TABLE IF NOT EXISTS calendar_claim_history (id TEXT PRIMARY KEY, body TEXT NOT NULL);');
-      await fs.chmod(path.join(directory,'state.sqlite'),0o600);
-      return db;
-    } catch(error) {db.close();throw error;}
-  })().catch(error=>{opening=undefined;throw error;});
+  let opening,opened,closed=false;
+  const database=()=>{
+    if(closed)throw new Error('State store is closed');
+    return opening??=(async()=>{
+      await fs.mkdir(directory,{recursive:true,mode:0o700});
+      const db=new DatabaseSync(path.join(directory,'state.sqlite'));
+      try {
+        db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS student_state (student TEXT PRIMARY KEY, body TEXT NOT NULL); CREATE TABLE IF NOT EXISTS calendar_claim (singleton INTEGER PRIMARY KEY CHECK(singleton=1), body TEXT NOT NULL); CREATE TABLE IF NOT EXISTS calendar_claim_history (id TEXT PRIMARY KEY, body TEXT NOT NULL);');
+        await fs.chmod(path.join(directory,'state.sqlite'),0o600);
+        opened=db;
+        return db;
+      } catch(error) {db.close();throw error;}
+    })().catch(error=>{opening=undefined;throw error;});
+  };
   const transaction=(db,fn)=>{
     db.exec('BEGIN IMMEDIATE');
     try {const value=fn();db.exec('COMMIT');return value;}
@@ -144,7 +148,13 @@ export function createStateStore(directory) {
       db.prepare('DELETE FROM calendar_claim WHERE singleton=1').run();
     });
   }
+  async function close() {
+    if(closed)return;
+    closed=true;
+    if(opening){try{await opening;}catch{return;}}
+    if(opened){opened.close();opened=undefined;}
+  }
   return {load,save,create,update,getCalendarClaim,snapshotForArchive,acquireCalendarClaim,appendCalendarClaimStep,
     completeCalendarClaim:(id,options={})=>finishCalendarClaim(id,options,false),
-    cancelCalendarClaim:(id,options={})=>finishCalendarClaim(id,options,true)};
+    cancelCalendarClaim:(id,options={})=>finishCalendarClaim(id,options,true),close};
 }
