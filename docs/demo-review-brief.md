@@ -1,5 +1,7 @@
 # Demonstration review brief
 
+**Later evidence, 16 November:** see [the bounded readiness review](review/readiness-2026-11-16.md) for the local Luna browser attempt, UI correction and current limits. The dated observations below remain historical.
+
 Updated 13 November 2026. Scripted browser evidence is pinned at `934b0fb`; newer Luna API attempts retain source hashes in the linked review extract. GitHub PR inventory was refreshed before the later implementation commits. Read time: about five minutes for the English brief; Portuguese summary at the end. This document requests no merge or architecture selection.
 
 ## What needs your decision now?

@@ -6,6 +6,8 @@
 
 This README describes the runnable **draft branch**. The current `main` branch is a documentation scaffold and does not contain the runnable `package.json` workflow shown here. Check out the intended draft branch before using these commands; do not infer that its code is already integrated into `main`. The current handoff is tracked by [#9 baseline readiness](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/9), [#40 browser walkthrough and bilingual package](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/40), and [#41 lossless integration review](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/41). The scripted browser flow is evidence of integration only; the actual Luna browser walkthrough and recording remain outstanding. These gates do not authorize a merge or select a foundation. See the [current work sequence](docs/project-work-sequence.md).
 
+Current local Luna browser route: [verified launch and approval instructions](docs/host-luna-preview.md). The managed carrier and the host fallback have different guarantees; see [16 November readiness](docs/review/readiness-2026-11-16.md).
+
 Study Atlas explores a collaborative study assistant using DeepSeek Harness (DSH), two synthetic student workspaces and a local Calendarpit calendar. The companion interface drafts near-term and future study blocks, reviews them separately, records optional feedback, compares checkpoint snapshots and displays a routine summary.
 
 The sample planner is deterministic. DSH can call the MCP tools and add an explanation when a model is configured; a live model run is **not** the same as the deterministic test. No real Google account or real user documents are needed.

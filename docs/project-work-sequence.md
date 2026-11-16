@@ -1,5 +1,7 @@
 # Project work sequence
 
+**Later evidence, 16 November:** see [the bounded readiness review](review/readiness-2026-11-16.md) for the local Luna browser attempt, UI correction and current limits. The dated observations below remain historical.
+
 Verified 13 November 2026. Issue/Project organization only: no PR was merged, closed, retargeted or rewritten. The existing six views and 19 fields were preserved; existing labels/status options were reused. No owners, due dates or new field options were invented.
 
 ## Current and later work

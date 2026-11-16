@@ -1,5 +1,7 @@
 # Managed companion integration
 
+**Later evidence, 16 November:** see [the bounded readiness review](review/readiness-2026-11-16.md) for the local Luna browser attempt, UI correction and current limits. The dated observations below remain historical.
+
 The focused companion now has a local web entry point, a separate trusted controller entry point and private Unix-socket RPC. The web process receives only fixed lifecycle/conversation/review operations; it does not receive Docker access. The page is an experimental bilingual carrier with run controls, conversation/questions, observed calendar and separately reviewed proposal sections. It is not a finished UI or a verified live Luna route.
 
 The controller needs trusted configuration: absolute `STUDY_RUN_ROOT`, immutable `STUDY_AGENT_IMAGE`, exact `STUDY_GATEWAY_CONTAINER_ID` and private `STUDY_GATEWAY_TOKEN_FILE`. Run it with `node src/managed-controller.mjs`. Its control socket is `<STUDY_RUN_ROOT>/control/controller.sock` and must never be mounted in the agent. The controller currently uses the existing Docker gateway driver, whose only implemented model route is DeepSeek; real gateway calls remain disabled until pricing/egress/accounting are verified. Use a controlled synthetic fake gateway for infrastructure tests. Do not infer Luna readiness from this entry point.

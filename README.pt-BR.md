@@ -6,6 +6,8 @@
 
 Este README descreve o **branch de rascunho executável**. O branch `main` atual é um esqueleto de documentação e não contém o `package.json` executável mostrado aqui. Use o branch de rascunho pretendido antes destes comandos; não presuma que o código já foi integrado a `main`. A entrega atual está acompanhada por [#9 prontidão da base](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/9), [#40 percurso no navegador e pacote bilíngue](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/40) e [#41 revisão de integração sem perda](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/41). O percurso roteirizado no navegador comprova a integração, mas o percurso real com Luna no navegador e a gravação ainda estão pendentes. Esses gates não autorizam merge nem escolhem uma base de implementação. Veja a [sequência atual de trabalho](docs/project-work-sequence.md) (em inglês).
 
+Rota Luna local no navegador: [inicialização e aprovação explícita](docs/host-luna-preview.md). A rota gerenciada e o fallback no host têm garantias diferentes; veja [a revisão de 16 de novembro](docs/review/readiness-2026-11-16.md).
+
 O Study Atlas explora um assistente colaborativo usando DeepSeek Harness (DSH), dois espaços de trabalho sintéticos e um calendário local Calendarpit. A interface complementar propõe blocos de estudo, permite aprová-los separadamente, registra feedback opcional e apresenta um resumo da rotina.
 
 O planejador de exemplo é determinístico. O DSH pode usar as ferramentas MCP e acrescentar uma interpretação quando um modelo estiver configurado. Nenhuma conta real do Google ou arquivo pessoal é necessária.
