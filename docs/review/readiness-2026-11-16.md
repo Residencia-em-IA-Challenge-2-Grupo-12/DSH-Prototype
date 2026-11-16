@@ -36,7 +36,7 @@ Commit `548d048` adds idempotent store close, exact runtime-cache eviction and d
 | Disposable managed batch | 20 fresh runs passed: ten Ana and ten Bruno. Each used real Calendarpit, SQLite, broker and separate approval with an authored fake upstream, then verified retirement. The immutable rebuilt image is recorded. This batch predates the final UI/prompt wording correction and does not establish live-model behavior. |
 | Host HTTP integration | Two passing real-simulator tests: scripted question → proposal → Monday correction → stale-approval rejection → near-only write → archive/retirement; and pre-service startup failure → truthful archive → verified cleanup → new run. No subscription/model is used by these tests. |
 | Actual browser interaction | One user-operated Luna attempt, described below. It is incomplete as a calendar-write walkthrough. |
-| Visual browser/recording | Browser-control connector unavailable. Local HTML/module/CSS assets load and DOM/model tests pass, but visual correctness of the revised UI needs human confirmation. No recording was fabricated. |
+| Visual browser/recording | Browser-control connector unavailable. Local HTML/module/CSS assets load and DOM/model tests pass, and the facilitator subsequently reported “Calendar visible; layout is clearer.” This is limited human feedback, not a full visual/accessibility audit. No recording was fabricated. |
 
 The 20-run test image is immutable and separate from the older `study-dsh-agent:synthetic` tag. Rebuilding an image and passing scripted infrastructure tests does not establish host subscription isolation or a final Docker deployment.
 
@@ -70,7 +70,7 @@ The view consumes observed provider-API data and proposal revisions. Calendarpit
 | Repeated isolated runs and tested approval/write boundaries | Met by deterministic tests at recorded configurations. |
 | Luna browser context, question, proposal and Monday revision | Observed in one actual user attempt; usability flags retained. |
 | One real Luna browser run with explicit near-only approval and observed writes | Unmet. The first run had no approval attempt. |
-| Revised visual layout / approval handoff | Implemented and DOM/data tested; human visual confirmation pending. |
+| Revised visual layout / approval handoff | Implemented and DOM/data tested; facilitator confirmed calendar visible and layout/approval handoff clearer. Full widget/accessibility parity remains unverified. |
 | Representative recording or honestly labeled screenshot replay | Unmet; connector capture unavailable. |
 | Final bilingual presentation/offline package | Unmet. Checklist/persona/scorecard drafts are supporting material, not the final package. |
 | Complete Docker stack / automated interrupted-lifecycle recovery | Not established; retain disclosed exceptions and a scoped acceptance disposition. |
@@ -95,4 +95,4 @@ A rodada corrigiu vazamento de conexões SQLite, conectou o fallback Luna à int
 
 Na tentativa humana, houve pergunta, resposta e revisão para liberar a segunda-feira, mas nenhuma aprovação de calendário: a confirmação foi enviada apenas na conversa. O arquivo contém zero tentativas de escrita e ambos os grupos pendentes. Isso expôs uma falha de clareza da interface, não uma falha comprovada de escrita no provedor.
 
-A interface foi ajustada com calendário semanal proporcional, prévias distintas, botões de aprovação explícitos e estáveis, texto formatado com segurança e atividade técnica recolhida. Ainda faltam confirmação visual, uma tentativa Luna com aprovação explícita próxima/aplicação observada, captura/gravação e o pacote final. Não houve merge nem escolha de fundamentos. A sequência de integração acima é proposta para revisão; #8 continua exigindo decisão explícita.
+A interface foi ajustada com calendário semanal proporcional, prévias distintas, botões de aprovação explícitos e estáveis, texto formatado com segurança e atividade técnica recolhida. A pessoa facilitadora confirmou o calendário visível e o layout mais claro. Ainda faltam uma tentativa Luna com aprovação explícita próxima/aplicação observada, captura/gravação e o pacote final. Não houve merge nem escolha de fundamentos. A sequência de integração acima é proposta para revisão; #8 continua exigindo decisão explícita.

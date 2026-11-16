@@ -90,5 +90,16 @@
     "Initial restricted-shell tests could not exercise local IPC; invocation with required permissions passed.",
     "First preview default path exceeded Unix socket length; default now uses a stable short private /tmp root.",
     "Startup-failure test initially compared against an overwritten expected ID; test fixed and both real-simulator regressions passed."
-  ]
+  ],
+  "humanVisualReview": {
+    "localDate": "2026-11-16",
+    "reported": "Calendar visible; layout is clearer",
+    "scope": "Limited facilitator confirmation of calendar visibility and layout/approval handoff",
+    "notEstablished": [
+      "completed near-only live approval/write",
+      "pick-one/multi-select widget parity",
+      "comprehensive accessibility",
+      "screen recording"
+    ]
+  }
 }
