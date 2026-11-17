@@ -141,8 +141,14 @@
   "replayChecks": {
     "fiveStepLogicAndENPT": "passed Node VM check, local image paths exist",
     "actualBrowserRender": "verified English/Portuguese, image loaded",
-    "actualBrowserNavigation": "not verified; click/keyboard automation had no observed effect after earlier browser control timeout; human phone check requested",
+    "actualBrowserNavigation": "Facilitator confirmed on 17 November 2026 that Next advances from 1/5 to 2/5 on a phone. Earlier click/keyboard automation had no observed effect after browser control timeout; preserve this distinct tooling observation.",
     "httpAssets": "byte-matched served HTML/images/JSON; fixed whitelist, remote POST405 and API404 verified from host",
-    "secondDevice": "not yet observed"
+    "secondDevice": {
+      "source": "user report in this conversation",
+      "date": "2026-11-17",
+      "device": "phone",
+      "observation": "Next advances 1/5 to 2/5",
+      "scope": "navigation only; not all five steps, bilingual parity, accessibility or live-agent UX"
+    }
   }
 }
