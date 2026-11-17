@@ -21,6 +21,7 @@ The web process receives a private fixed-operation controller socket, not Docker
 
 1. Confirm the header says **Host Luna fallback**; start Bruno. Starting creates fictional state/workspace/calendar but makes no model call.
 2. Ask for context inspection, a useful question, the coming week and a six-week outlook. Answer from [Bruno's facts/unknowns](onboarding/bruno-persona.md).
+   Structured questions support one choice, several choices and typed answers; use **Send answer / Enviar resposta**, or dismiss explicitly. Changing EN/pt-BR preserves a draft, but reloading the page may lose an unsent answer. See [the question contract](question-widget-contract.md).
 3. Review the proposal and weekly overlay; request **“Keep Monday, 2 November 2026 free.”** The simulation date stays 2 November regardless of the host date.
 4. Review the corrected allocations. If acceptable, click **Approve coming week / Aprovar próxima semana**. A reply in chat—including “yes”—does not approve. Leave **Approve future blocks / Aprovar blocos futuros** untouched.
 5. Confirm Coming week is applied and the observed calendar includes those additions; future remains pending. Preserve errors and ask for inspection before retrying unknown writes.
@@ -35,3 +36,9 @@ Each run has a private SQLite state/workspace, `experiments/<attempt>/trace.json
 See [the current review](review/readiness-2026-11-16.md) for test layers, actual user feedback, remaining capture/package gaps and merge gates. The local preview is temporary; after shutdown/reboot it must be deliberately started again.
 
 **Português:** use a pasta do perfil já autenticado, sem copiar credenciais. Abra o endereço local na máquina do facilitador; outra máquina não acessa essa prévia por localhost. Inicie Bruno, converse com os fatos fictícios, peça a correção e use o botão **Aprovar próxima semana**; responder “sim” no chat não altera o calendário. O futuro permanece pendente. Confira o resultado real e arquive ao terminar. Se houver estado desconhecido ou recuperação bloqueada, preserve as evidências e chame a manutenção; não apague estado para forçar uma nova execução.
+
+## Simulator unavailable / Simulador indisponível
+
+A real idle run was OOM-killed at the configured 512 MiB limit; [17 November evidence](review/question-widgets-2026-11-17.md) records the observation. The cause of memory growth and a suitable long-session configuration remain unverified. Start an exercise shortly before use; this is not a reliability guarantee. If the calendar becomes unavailable, do not approve or restart its in-memory simulator as if events were preserved. Preserve the run, use trusted end/archive when safe, and start a fresh fixture only after verified retirement. New runs require new review and approvals.
+
+**Português:** uma execução real perdeu o simulador por falta de memória no limite configurado. A correção e a estabilidade em sessões longas ainda não foram verificadas. Se o calendário ficar indisponível, preserve as evidências e encerre/arquive pelo controle confiável quando possível. Não reinicie o simulador em memória como se os eventos tivessem sido preservados. Uma nova execução exige nova revisão e aprovação.
