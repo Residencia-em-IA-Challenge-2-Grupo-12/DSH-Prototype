@@ -157,3 +157,27 @@ test('structured question controls send native selections or custom answers, sur
     assert.equal(cancelCalls,1);assert.deepEqual(frames.at(-1).result,{cancelled:true});assert.equal(approvalCalls,0);
   }finally{session.stop();delete globalThis.document;delete globalThis.fetch;delete globalThis.setInterval;delete globalThis.confirm;}
 });
+
+test('empty or non-JSON preview responses explain local access and uncertain mutations without retrying',async()=>{
+  for(const [status,body,language] of [[405,'','en'],[200,'','pt'],[502,'<html>Proxy error</html>','en'],[403,JSON.stringify({error:'Local access required'}),'pt'],['network','','en']]){
+    const document=new Document();globalThis.document=document;
+    for(const [id,value] of [['language',language],['student','bruno']])document.add(id,value);
+    for(const id of ['mode','start','retire','refresh','send','chat-title','calendar-title','proposal-title','approval-note','run','run-warning','notice','messages','question','calendar','proposal','chat','text'])document.add(id);
+    let writes=0;globalThis.setInterval=()=>1;globalThis.confirm=()=>true;
+    globalThis.fetch=async(url,options={})=>{
+      if(options.method==='POST'){writes++;if(status==='network')throw Error('Internal proxy detail');return new Response(body,{status});}
+      return new Response(JSON.stringify({run:null,available:false,runtime:'host-luna-fallback'}),{headers:{'content-type':'application/json'}});
+    };
+    try{
+      await import(`../public/managed.js?preview-error=${status}-${language}-${Date.now()}`);
+      await document.getElementById('start').onclick();
+      const notice=document.getElementById('notice').textContent;
+      assert.match(notice,status===403?/A solicitação falhou/:language==='pt'?/Não foi possível confirmar/:/Could not confirm/);
+      assert.match(notice,language==='pt'?/máquina do facilitador/:/facilitator computer/);
+      if(status!=='network')assert.match(notice,new RegExp('HTTP '+status));
+      assert.doesNotMatch(notice,/Unexpected|Proxy error|Internal proxy detail|<html>/);
+      assert.equal(writes,1,'a malformed response must not automatically replay a mutation');
+      assert.equal(document.getElementById('send').disabled,true,'no active run cannot send chat');
+    }finally{delete globalThis.document;delete globalThis.fetch;delete globalThis.setInterval;delete globalThis.confirm;}
+  }
+});

@@ -15,7 +15,7 @@ Use the existing authenticated profile directory; never copy its credential file
 
 Open **http://127.0.0.1:4176/** on the facilitator machine. The default private lifecycle root is `/tmp/study-luna-<uid>` to fit Unix socket limits; `STUDY_RUN_ROOT` may select another short absolute private path. Reuse that root for restart inspection. Do not choose a new root to evade an unresolved run. It is a temporary development location, not a backup policy; retain important sanitized evidence deliberately before machine cleanup/reboot.
 
-The web process receives a private fixed-operation controller socket, not Docker authority or the credential profile. Controls remain bound to loopback with exact origin/Host checks. No LAN/Tailscale control link is exposed. Another device's localhost is not this machine. Persistent service installation or remote control is outside this helper.
+The web process receives a private fixed-operation controller socket, not Docker authority or the credential profile. Controls remain bound to loopback with exact origin/Host checks. No LAN/Tailscale control link is exposed. Another device's localhost is not this machine. Open this address in a direct browser on the development computer, not a phone/embedded preview: forwarded pages can load while API control requests fail. The interface explains invalid/empty responses without replaying uncertain mutations; this is not remote-control support. Persistent service installation or remote control is outside this helper.
 
 ## Exercise / Exercício
 

@@ -4,6 +4,8 @@ const words={
   en:{
     mode:'Managed experimental interface · synthetic data only · scripted/API gateway route; Luna not connected',
     hostMode:'Host Luna fallback · GPT-6 Luna · synthetic data only · DSH/controller on host, Calendarpit in Docker; restart recovery is limited',
+    localAccess:'Open the live controls directly in a browser on the facilitator computer at http://127.0.0.1:4176/. Phone or embedded previews are not supported for control.',
+    invalidResponse:'The preview or server returned an empty or invalid response',unconfirmed:'Could not confirm the operation. Refresh and inspect the run before retrying; changes may have occurred.',connectionError:'Could not reach the local service.',requestFailed:'Request failed',
     start:'Start selected scenario',retire:'End and archive run',refresh:'Refresh',send:'Send',chat:'Plan together',
     calendar:'Your week · calendar and proposal',proposal:'Review proposal',near:'Coming week',future:'Future tentative blocks',
     approveNear:'Approve coming week',approveFuture:'Approve future blocks',applying:'Applying…',
@@ -17,6 +19,8 @@ const words={
   pt:{
     mode:'Interface gerenciada experimental · apenas dados sintéticos · rota de gateway; Luna ainda não conectada',
     hostMode:'Fallback Luna no host · GPT-6 Luna · apenas dados sintéticos · DSH/controlador no host, Calendarpit no Docker; recuperação após reinício é limitada',
+    localAccess:'Abra os controles diretamente em um navegador na máquina do facilitador em http://127.0.0.1:4176/. Prévias no celular ou incorporadas não permitem controlar a execução.',
+    invalidResponse:'A prévia ou o servidor retornou uma resposta vazia ou inválida',unconfirmed:'Não foi possível confirmar a operação. Atualize e confira a execução antes de tentar novamente; pode ter ocorrido uma alteração.',connectionError:'Não foi possível acessar o serviço local.',requestFailed:'A solicitação falhou',
     start:'Iniciar cenário selecionado',retire:'Encerrar e arquivar',refresh:'Atualizar',send:'Enviar',chat:'Planejar em conjunto',
     calendar:'Sua semana · calendário e proposta',proposal:'Revisar proposta',near:'Próxima semana',future:'Blocos futuros provisórios',
     approveNear:'Aprovar próxima semana',approveFuture:'Aprovar blocos futuros',applying:'Aplicando…',
@@ -37,8 +41,17 @@ const t=key=>words[$('language').value][key];
 function node(tag,text){const element=document.createElement(tag);element.textContent=text;return element;}
 async function api(route,data){
   const method=data?'POST':'GET',query=data?'':'?'+new URLSearchParams(run?{runId:run.id}:{});
-  const response=await fetch('/api/'+route+query,{method,...(data?{headers:{'content-type':'application/json'},body:JSON.stringify({runId:run?.id,...data})}:{})});
-  const body=await response.json();if(!response.ok)throw Error(body.error);return body;
+  let response;
+  try{response=await fetch('/api/'+route+query,{method,...(data?{headers:{'content-type':'application/json'},body:JSON.stringify({runId:run?.id,...data})}:{})});}
+  catch{throw Error(`${data?t('unconfirmed')+' ':''}${t('connectionError')} ${t('localAccess')}`);}
+  const invalid=()=>Error(`${data?t('unconfirmed')+' ':''}${t('invalidResponse')} (HTTP ${response.status||'unknown'}). ${t('localAccess')}`);
+  let body;try{body=await response.json();}catch{throw invalid();}
+  if(!body||typeof body!=='object'||Array.isArray(body))throw invalid();
+  if(!response.ok){
+    if(response.status===401||response.status===403)throw Error(`${t('requestFailed')} (HTTP ${response.status}). ${t('localAccess')}`);
+    throw Error(typeof body.error==='string'?body.error:t('requestFailed'));
+  }
+  return body;
 }
 function showNotice(message){$('notice').textContent=message||'';}
 async function action(fn,success){
@@ -47,7 +60,7 @@ async function action(fn,success){
 }
 function labels(){
   document.documentElement.lang=$('language').value==='pt'?'pt-BR':'en';
-  for(const [id,key] of [['mode','mode'],['start','start'],['retire','retire'],['refresh','refresh'],['send','send'],['chat-title','chat'],['calendar-title','calendar'],['proposal-title','proposal'],['message-label','messageLabel']])if($(id))$(id).textContent=t(key);
+  for(const [id,key] of [['mode','mode'],['access-note','localAccess'],['start','start'],['retire','retire'],['refresh','refresh'],['send','send'],['chat-title','chat'],['calendar-title','calendar'],['proposal-title','proposal'],['message-label','messageLabel']])if($(id))$(id).textContent=t(key);
   $('mode').textContent=t(runtime==='host-luna-fallback'?'hostMode':'mode');
   if($('approval-note'))$('approval-note').textContent=t('approvalNote');
 }
