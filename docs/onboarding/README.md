@@ -18,7 +18,7 @@ From the repository with installed project dependencies, run:
 npm run build:onboarding
 ```
 
-Outputs: `.runtime/onboarding-package/` and `.runtime/study-atlas-onboarding.zip`. The builder uses Node and the pinned fflate 0.8.3 dev dependency already present in the DSH dependency tree; no additional host archive binary is required. It checks language structure, timing, local links/images and ZIP hash round-trip. Run these maintainer build steps in the prepared development environment. Opening the resulting HTML package only requires a browser.
+Outputs: `.runtime/onboarding-package/` and `.runtime/study-atlas-onboarding.zip`. The builder uses Node and the pinned fflate 0.8.3 dev dependency already present in the DSH dependency tree; no additional host archive binary is required. It checks language structure, timing, local links/images and ZIP hash round-trip. The offline CI workflow also runs this build, so structural drift fails the check; semantic translation and visual quality still require review. Run these maintainer build steps in the prepared development environment. Opening the resulting HTML package only requires a browser.
 
 Edit [shared content](presentation/content.json), [client](presentation/app.js), [style](presentation/style.css) and the bilingual Markdown guides. Rebuild, visually inspect both languages and phone layouts, and update `verifiedOn` only after reviewing the current evidence and issue/PR state. Link sources and distinguish actual/model/scripted/human observations. Keep all private runtime/profile data outside the curated list. Refresh the live-head snapshot before any Git operation; the deck is a dated explanation, not a replacement for the Project.
 
