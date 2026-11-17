@@ -1,6 +1,6 @@
 # Bruno scenario / Cenário Bruno
 
-**Draft · 13 November 2026.** Fictional persona for the planned group walkthrough. This is a facilitator aid, not evidence of a completed live Luna run. Use with the [checklist](facilitator-checklist.md) and [scorecard](scorecard.md).
+**Verified scenario reference · 17 November 2026.** Fictional persona for the group walkthrough. The separate [actual agent-operated browser result](../review/luna-browser-walkthrough-2026-11-17.md) records a completed near-only write; this sheet remains an aid, not an observation or a human UX score. Use with the [checklist](facilitator-checklist.md) and [scorecard](scorecard.md).
 
 ## English
 

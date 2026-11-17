@@ -1,0 +1,772 @@
+{
+  "schemaVersion": 1,
+  "verifiedOn": "2026-11-17",
+  "applicationEvidenceHead": "734658b648e0f20f8d2793f9d265cb010bcd3077",
+  "archiveUIHead": "a920bc6d03da6233e6239e2007410fb05bad101b",
+  "slides": [
+    {
+      "id": "purpose",
+      "minutes": 1,
+      "en": {
+        "title": "A calendar-centered study assistant",
+        "lead": "A team introduction and a guided synthetic exercise",
+        "points": [
+          "For adult students balancing academic work with employment and personal commitments.",
+          "The assistant uses selected workspace context to discuss a plan. Calendar changes require review."
+        ],
+        "notes": "The group goal today is to understand and evaluate the existing prototype. Product architecture and production readiness remain open decisions."
+      },
+      "pt": {
+        "title": "Um assistente de estudos centrado no calendário",
+        "lead": "Introdução ao projeto e exercício sintético guiado",
+        "points": [
+          "Para estudantes adultos que conciliam estudos, trabalho e compromissos pessoais.",
+          "O assistente usa contexto selecionado para discutir um plano. Alterações no calendário exigem revisão."
+        ],
+        "notes": "O objetivo do grupo é entender e avaliar o protótipo existente. Arquitetura definitiva e prontidão para produção continuam em discussão."
+      }
+    },
+    {
+      "id": "bruno",
+      "minutes": 1.5,
+      "en": {
+        "title": "Bruno’s week already has commitments",
+        "lead": "A fictional employed college student with two December deadlines",
+        "table": [
+          [
+            "Context",
+            "Authored fixture"
+          ],
+          [
+            "Work",
+            "40 hours, Monday to Friday"
+          ],
+          [
+            "Classes",
+            "Tuesday and Thursday evenings, Saturday morning"
+          ],
+          [
+            "Other commitments",
+            "Weekday lunch/travel, Friday activity, one family exception"
+          ],
+          [
+            "Study target",
+            "5 hours/week, up to two 1h sessions/day, 15-minute breaks"
+          ],
+          [
+            "Deadlines",
+            "Algoritmos exam and Banco de Dados project on 14 December 2026"
+          ]
+        ],
+        "notes": "The simulated date is Monday 2 November 2026, America/Sao_Paulo. Mastery, remaining effort and fatigue are unknown. The group must not invent them. See the included persona for exact windows and prepared answers."
+      },
+      "pt": {
+        "title": "A semana de Bruno já tem compromissos",
+        "lead": "Um universitário fictício que trabalha e tem dois prazos em dezembro",
+        "table": [
+          [
+            "Contexto",
+            "Fato do cenário"
+          ],
+          [
+            "Trabalho",
+            "40 horas, de segunda a sexta"
+          ],
+          [
+            "Aulas",
+            "Terça e quinta à noite, sábado pela manhã"
+          ],
+          [
+            "Outros compromissos",
+            "Almoço/deslocamento, atividade na sexta e uma exceção familiar"
+          ],
+          [
+            "Meta de estudo",
+            "5h/semana, até duas sessões de 1h/dia, intervalos de 15 minutos"
+          ],
+          [
+            "Prazos",
+            "Prova de Algoritmos e projeto de Banco de Dados em 14/12/2026"
+          ]
+        ],
+        "notes": "A data simulada é segunda-feira, 2/11/2026, no fuso America/Sao_Paulo. Domínio das matérias, esforço restante e cansaço são desconhecidos. Não inventar esses fatos. A persona incluída informa janelas e respostas preparadas."
+      },
+      "links": [
+        {
+          "label": {
+            "en": "Bruno persona",
+            "pt": "Persona Bruno"
+          },
+          "href": "bruno-persona.md"
+        }
+      ]
+    },
+    {
+      "id": "collaboration",
+      "minutes": 1.5,
+      "en": {
+        "title": "The collaborative loop",
+        "lead": "Discussion changes the proposal before approval",
+        "steps": [
+          "Read selected materials and existing commitments",
+          "Ask a consequential missing question",
+          "Propose a detailed week and a lighter future outlook",
+          "Incorporate a correction",
+          "Approve near and future sections separately",
+          "Optionally check in and adapt"
+        ],
+        "notes": "These steps express the product direction. The demonstrated slice covers the first five with a synthetic simulator. Optional feedback and richer checkpoint adaptation exist in earlier prototype tools/tests but are not a complete managed-browser workflow."
+      },
+      "pt": {
+        "title": "O ciclo colaborativo",
+        "lead": "A conversa modifica a proposta antes da aprovação",
+        "steps": [
+          "Ler materiais selecionados e compromissos existentes",
+          "Perguntar sobre uma informação ausente que faça diferença",
+          "Propor uma semana detalhada e uma perspectiva futura",
+          "Incorporar uma correção",
+          "Aprovar próximo e futuro separadamente",
+          "Opcionalmente acompanhar e adaptar"
+        ],
+        "notes": "Estas etapas expressam a direção do produto. A demonstração cobre as primeiras cinco com um simulador sintético. Feedback e adaptação em checkpoints aparecem em ferramentas/testes anteriores, mas não formam um fluxo completo no navegador gerenciado."
+      }
+    },
+    {
+      "id": "questions",
+      "minutes": 1,
+      "en": {
+        "title": "A question is a clarification",
+        "lead": "The real Luna run asked for course priority",
+        "points": [
+          "Pick one, pick several, type another answer or dismiss.",
+          "This run exercised one radio choice and preserved it during language switching.",
+          "A chat reply such as “yes” does not approve the calendar."
+        ],
+        "notes": "The other answer modes have offline protocol/DOM coverage, not live observation in this run. The assistant also confirmed known target/windows, which is partly redundant. Its question text stayed Portuguese while interface labels changed."
+      },
+      "pt": {
+        "title": "Uma pergunta esclarece o contexto",
+        "lead": "A execução real de Luna perguntou a prioridade das matérias",
+        "points": [
+          "Escolher uma opção, várias, digitar outra resposta ou dispensar.",
+          "Esta execução usou uma opção e preservou a seleção na troca de idioma.",
+          "Responder “sim” no chat não aprova o calendário."
+        ],
+        "notes": "Os outros modos têm testes offline de protocolo/DOM, não observação ao vivo nesta execução. O assistente também confirmou meta/janelas já conhecidas, em parte redundante. O texto da pergunta continuou em português enquanto os rótulos da interface mudaram."
+      },
+      "image": {
+        "source": "docs/evidence/luna-browser-2026-11-17/question.jpg",
+        "file": "question.jpg",
+        "alt": {
+          "en": "Actual Portuguese question with selected no-priority radio and weekly calendar",
+          "pt": "Pergunta real em português com opção sem prioridade selecionada e calendário semanal"
+        }
+      }
+    },
+    {
+      "id": "calendar",
+      "minutes": 1.5,
+      "en": {
+        "title": "The calendar separates observation from proposal",
+        "lead": "A preview can change without changing the simulator",
+        "points": [
+          "Existing commitments and proposed additions have different visual styles.",
+          "The Monday correction means no new study on 2 November. Existing work stays.",
+          "Review the revised week and future outlook before using approval controls."
+        ],
+        "notes": "The proportional week view consumes provider observations plus proposal data. It is our view over Calendarpit, not an embedded Google Calendar. Drag/resize and a production Google connector are not implemented."
+      },
+      "pt": {
+        "title": "O calendário separa observação de proposta",
+        "lead": "A prévia pode mudar sem alterar o simulador",
+        "points": [
+          "Compromissos existentes e adições propostas têm estilos diferentes.",
+          "A correção deixa 2/11 sem novo estudo. O trabalho existente permanece.",
+          "Revisar semana e futuro antes de usar os controles de aprovação."
+        ],
+        "notes": "A visão semanal proporcional usa observações da API e dados da proposta. É nossa visualização sobre Calendarpit, não Google Calendar incorporado. Arrastar/redimensionar e um conector Google de produção não estão implementados."
+      },
+      "image": {
+        "source": "docs/evidence/luna-browser-2026-11-17/corrected-proposal.jpg",
+        "file": "corrected-proposal.jpg",
+        "alt": {
+          "en": "Actual revised study proposal before approval",
+          "pt": "Proposta de estudo revisada antes da aprovação"
+        }
+      }
+    },
+    {
+      "id": "responsibilities",
+      "minutes": 1.5,
+      "en": {
+        "title": "Luna, the planner and the write service",
+        "lead": "Each component owns a different decision",
+        "table": [
+          [
+            "Component",
+            "Current role"
+          ],
+          [
+            "Luna through DSH",
+            "Read context, ask, select supported parameters and explain revisions"
+          ],
+          [
+            "Deterministic heuristic",
+            "Allocate blocks from windows, hours, exclusions, course focus and deadlines"
+          ],
+          [
+            "Trusted state/calendar service",
+            "Validate identity and approval, recheck state, record intended/actual writes"
+          ],
+          [
+            "Facilitator",
+            "Judge plausibility and explicitly approve a reviewed section"
+          ]
+        ],
+        "notes": "The LLM influences inputs and explanations, but it does not freely optimize every part of the schedule. Existing tools cannot represent a soft workday/weekend load preference or an explicit horizon-balance objective. Stronger critique, alternatives and solver comparison remain later work."
+      },
+      "pt": {
+        "title": "Luna, o planejador e o serviço de escrita",
+        "lead": "Cada componente responde por uma decisão diferente",
+        "table": [
+          [
+            "Componente",
+            "Papel atual"
+          ],
+          [
+            "Luna pelo DSH",
+            "Ler contexto, perguntar, escolher parâmetros suportados e explicar revisões"
+          ],
+          [
+            "Heurística determinística",
+            "Alocar blocos por janelas, horas, exclusões, foco e prazos"
+          ],
+          [
+            "Serviço confiável de estado/calendário",
+            "Validar identidade/aprovação, conferir estado e registrar escritas"
+          ],
+          [
+            "Facilitador",
+            "Julgar plausibilidade e aprovar explicitamente uma seção revisada"
+          ]
+        ],
+        "notes": "O LLM influencia entradas e explicações, mas não otimiza livremente todos os aspectos da agenda. As ferramentas atuais não representam preferência flexível de carga entre dias úteis/fim de semana ou objetivo explícito de equilíbrio no horizonte. Crítica mais rica, alternativas e comparação com solver são trabalhos posteriores."
+      }
+    },
+    {
+      "id": "runtime",
+      "minutes": 1.5,
+      "en": {
+        "title": "The runtime used in the real walkthrough",
+        "lead": "An explicitly authorized host fallback",
+        "code": "Local browser\n    Companion web process\n        Private controller RPC\n            Per-run SQLite and trusted approval service\n            Focused read-only workspace/calendar tools\n            Host DSH and existing Luna subscription profile\n            Disposable Calendarpit container",
+        "points": [
+          "The agent does not receive Docker administration or calendar approval tools.",
+          "General Bash and native host-access tools remain disabled."
+        ],
+        "notes": "Docker is the target for development/deployment. The tested managed agent route uses containers and scripted infrastructure checks. This live subscription demonstration runs DSH/controller on the host and only Calendarpit in Docker. It is not full Docker-agent isolation."
+      },
+      "pt": {
+        "title": "O ambiente usado no walkthrough real",
+        "lead": "Um fallback no host explicitamente autorizado",
+        "code": "Navegador local\n    Processo web do companion\n        RPC privado do controlador\n            SQLite por execução e aprovação confiável\n            Ferramentas restritas de leitura/contexto\n            DSH no host e perfil Luna já autenticado\n            Contêiner descartável Calendarpit",
+        "points": [
+          "O agente não recebe administração Docker nem ferramentas de aprovação.",
+          "Bash geral e acesso nativo ao host permanecem desativados."
+        ],
+        "notes": "Docker é o alvo de desenvolvimento/deploy. A rota gerenciada do agente usa contêineres e testes de infraestrutura com respostas roteirizadas. Esta demonstração de assinatura roda DSH/controlador no host e só Calendarpit no Docker. Não comprova isolamento completo do agente em Docker."
+      }
+    },
+    {
+      "id": "state",
+      "minutes": 1.5,
+      "en": {
+        "title": "Implemented, experimental and planned",
+        "lead": "The demonstration is a bounded product slice",
+        "table": [
+          [
+            "Area",
+            "Current state"
+          ],
+          [
+            "Bruno browser loop",
+            "Real Luna questioning, revision and near-only write observed"
+          ],
+          [
+            "Ana/four-week and managed Docker route",
+            "Fixtures and scripted/offline evidence, not this live walkthrough"
+          ],
+          [
+            "Native DSH calendar panel",
+            "Read-only experiment, full workflow comparison pending"
+          ],
+          [
+            "Feedback, checkpoints and richer reporting",
+            "Earlier tools/tests exist, managed UI completion remains"
+          ],
+          [
+            "Real calendars and workspace changes",
+            "Separate readiness decisions, not authorized in this phase"
+          ],
+          [
+            "Planner, interface and embeddings",
+            "Comparisons preserved, final selections pending"
+          ]
+        ],
+        "notes": "The workspace in this walkthrough is preselected synthetic context, not an unrestricted user file browser. The current managed agent has read-only workspace tools. Browser/application operation remains a later fallback capability."
+      },
+      "pt": {
+        "title": "Implementado, experimental e planejado",
+        "lead": "A demonstração cobre uma parte delimitada do produto",
+        "table": [
+          [
+            "Área",
+            "Estado atual"
+          ],
+          [
+            "Fluxo Bruno no navegador",
+            "Pergunta, revisão e escrita próxima com Luna real observadas"
+          ],
+          [
+            "Ana/quatro semanas e rota Docker gerenciada",
+            "Cenários e testes roteirizados/offline, não este walkthrough ao vivo"
+          ],
+          [
+            "Painel nativo DSH",
+            "Experimento somente leitura, comparação completa pendente"
+          ],
+          [
+            "Feedback, checkpoints e relatórios ricos",
+            "Ferramentas/testes anteriores existem, falta completar a UI gerenciada"
+          ],
+          [
+            "Calendários reais e alterações em arquivos",
+            "Decisões de prontidão separadas, fora desta fase"
+          ],
+          [
+            "Planejador, interface e embeddings",
+            "Comparações preservadas, escolhas finais pendentes"
+          ]
+        ],
+        "notes": "O workspace aqui é contexto sintético pré-selecionado, não um explorador irrestrito de arquivos do usuário. As ferramentas atuais do agente leem o workspace. Operação de aplicações pelo navegador continua como capacidade futura de fallback."
+      }
+    },
+    {
+      "id": "result",
+      "minutes": 1.5,
+      "en": {
+        "title": "Five reviewed events reached the simulator",
+        "lead": "Independent observations confirm the near-only write",
+        "table": [
+          [
+            "Check",
+            "Observed result"
+          ],
+          [
+            "Near additions",
+            "Exactly the five reviewed event IDs"
+          ],
+          [
+            "Existing calendar",
+            "All 146 prior event records unchanged"
+          ],
+          [
+            "Future proposals",
+            "25 blocks pending, none created"
+          ],
+          [
+            "Constraints",
+            "No conflicts or Monday study additions, daily limits/breaks respected"
+          ],
+          [
+            "Write uncertainty",
+            "No unresolved claim"
+          ]
+        ],
+        "notes": "Codex operated actual browser controls with prepared fictional answers. This is one synthetic subscription attempt, not human UX research, a model-quality ranking or evidence of improved well-being. The live run preceded later UI wording/label fixes."
+      },
+      "pt": {
+        "title": "Cinco eventos revisados chegaram ao simulador",
+        "lead": "Observações independentes confirmam a escrita somente próxima",
+        "table": [
+          [
+            "Verificação",
+            "Resultado observado"
+          ],
+          [
+            "Adições próximas",
+            "Exatamente os cinco IDs revisados"
+          ],
+          [
+            "Calendário existente",
+            "Os 146 registros anteriores preservados"
+          ],
+          [
+            "Propostas futuras",
+            "25 blocos pendentes, nenhum criado"
+          ],
+          [
+            "Restrições",
+            "Sem conflitos ou estudo novo na segunda, limites/intervalos respeitados"
+          ],
+          [
+            "Incerteza de escrita",
+            "Nenhuma reivindicação não resolvida"
+          ]
+        ],
+        "notes": "O Codex operou controles reais com respostas fictícias preparadas. É uma tentativa sintética com assinatura, não pesquisa de UX com humanos, ranking de modelos ou evidência de melhora de bem-estar. A execução antecedeu correções posteriores de rótulo/explicação."
+      },
+      "image": {
+        "source": "docs/evidence/luna-browser-2026-11-17/applied-en.jpg",
+        "file": "applied-en.jpg",
+        "alt": {
+          "en": "Actual Coming week applied and Future tentative blocks pending",
+          "pt": "Estado real: próxima semana aplicada e blocos futuros pendentes"
+        }
+      }
+    },
+    {
+      "id": "replay",
+      "minutes": 4,
+      "en": {
+        "title": "The real example, with its imperfections",
+        "lead": "Five annotated captures with English and Portuguese captions",
+        "points": [
+          "Open the included replay before the group operates the live system.",
+          "Prepared answers and observed failures are disclosed.",
+          "The replay is a sequence of actual screenshots. No continuous video was captured."
+        ],
+        "notes": "Allow about four minutes. The facilitator confirmed phone Next navigation from 1/5 to 2/5. This is a limited device check, not complete all-step, accessibility or human-workflow review. Do not score scripted infrastructure as live agent behavior."
+      },
+      "pt": {
+        "title": "O exemplo real, com suas imperfeições",
+        "lead": "Cinco capturas anotadas com legendas em inglês e português",
+        "points": [
+          "Abrir o replay incluído antes de o grupo operar o sistema ao vivo.",
+          "Respostas preparadas e falhas observadas estão identificadas.",
+          "O replay contém capturas reais. Não houve gravação contínua."
+        ],
+        "notes": "Reservar cerca de quatro minutos. O facilitador confirmou Next de 1/5 para 2/5 no celular. É uma verificação limitada, não revisão completa de etapas, acessibilidade ou fluxo humano. Não avaliar infraestrutura roteirizada como comportamento de agente ao vivo."
+      },
+      "links": [
+        {
+          "label": {
+            "en": "Open actual screenshot replay",
+            "pt": "Abrir replay de capturas reais"
+          },
+          "href": "evidence/replay.html"
+        }
+      ]
+    },
+    {
+      "id": "quality",
+      "minutes": 1.5,
+      "en": {
+        "title": "Conflict-free still needs a quality review",
+        "lead": "The narration overstated course balance",
+        "table": [
+          [
+            "Allocation",
+            "Algoritmos",
+            "Banco de Dados"
+          ],
+          [
+            "Initial week",
+            "4h",
+            "1h"
+          ],
+          [
+            "Initial six weeks",
+            "20h",
+            "10h"
+          ],
+          [
+            "Revised week",
+            "3h",
+            "2h"
+          ],
+          [
+            "Revised six weeks",
+            "19h",
+            "11h"
+          ]
+        ],
+        "points": [
+          "No stated priority justified the horizon skew.",
+          "The desired soft balance and workday/weekend choice are not implemented planner inputs."
+        ],
+        "notes": "The user agreed to roughly equal horizon time as a soft default when deadlines and unknown needs match. Issue #42 holds a bounded paired experiment after baseline readiness. A prompt alone does not implement a planner objective. The later authored study-method prototype is separate."
+      },
+      "pt": {
+        "title": "Ausência de conflito ainda exige avaliar qualidade",
+        "lead": "A explicação exagerou o equilíbrio entre matérias",
+        "table": [
+          [
+            "Alocação",
+            "Algoritmos",
+            "Banco de Dados"
+          ],
+          [
+            "Semana inicial",
+            "4h",
+            "1h"
+          ],
+          [
+            "Seis semanas iniciais",
+            "20h",
+            "10h"
+          ],
+          [
+            "Semana revisada",
+            "3h",
+            "2h"
+          ],
+          [
+            "Seis semanas revisadas",
+            "19h",
+            "11h"
+          ]
+        ],
+        "points": [
+          "Nenhuma prioridade informada justificava o desequilíbrio no horizonte.",
+          "Equilíbrio flexível e escolha de carga entre dias úteis/fim de semana ainda não são entradas do planejador."
+        ],
+        "notes": "Ficou acordado tempo aproximadamente igual no horizonte como padrão flexível quando prazos e necessidades desconhecidas são equivalentes. A issue #42 guarda um experimento pequeno após a prontidão da base. Um prompt não implementa um objetivo do planejador. O futuro protótipo de métodos de estudo é separado."
+      },
+      "links": [
+        {
+          "label": {
+            "en": "Issue42: scoped scheduling experiment",
+            "pt": "Issue42: experimento de agenda delimitado"
+          },
+          "href": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/42"
+        }
+      ]
+    },
+    {
+      "id": "archive",
+      "minutes": 1.5,
+      "en": {
+        "title": "Ending a run preserves its evidence",
+        "lead": "The page now asks for a run-specific confirmation",
+        "points": [
+          "Keep run open cancels the request without retirement.",
+          "Confirm archives, stops verified writers and retires managed resources.",
+          "The new browser check passed cancellation, Portuguese confirmation and cleanup without any model call."
+        ],
+        "notes": "The earlier native-confirmation click timed out in automation. A later archive-only reproduction actually retired successfully despite the timeout. This distinguishes browser feedback from backend cleanup. The page confirmation adds explicit identity and duplicate/stale fencing. Unknown ownership or uncertain writes may still block recovery."
+      },
+      "pt": {
+        "title": "Encerrar preserva as evidências da execução",
+        "lead": "A página agora pede confirmação da execução específica",
+        "points": [
+          "Manter execução aberta cancela sem encerrar.",
+          "Confirmar arquiva, encerra escritores verificados e retira os recursos gerenciados.",
+          "O teste real no navegador passou cancelamento, confirmação em português e limpeza sem chamar modelo."
+        ],
+        "notes": "O clique antigo com confirmação nativa esgotou o tempo da automação. Uma reprodução posterior sem modelo encerrou de fato apesar do timeout. Isso separa feedback do navegador de limpeza no backend. A confirmação na página explicita identidade e bloqueia duplicação/estado antigo. Propriedade desconhecida ou escrita incerta ainda pode bloquear recuperação."
+      },
+      "image": {
+        "source": "docs/evidence/archive-ui-2026-11-17/confirmation-pt.jpg",
+        "file": "confirmation-pt.jpg",
+        "alt": {
+          "en": "Actual Portuguese page-level confirmation naming the synthetic run",
+          "pt": "Confirmação real em português identificando a execução sintética"
+        }
+      }
+    },
+    {
+      "id": "operations",
+      "minutes": 1.5,
+      "en": {
+        "title": "Facilitator setup and known limits",
+        "lead": "One local machine controls the first group exercise",
+        "table": [
+          [
+            "Requirement",
+            "Reason today"
+          ],
+          [
+            "Docker and Compose tooling",
+            "Disposable simulator and managed infrastructure experiments"
+          ],
+          [
+            "Host Node24 and installed dependencies",
+            "Authorized live Luna companion/DSH/controller fallback"
+          ],
+          [
+            "Poppler / pdftotext",
+            "Trusted PDF extraction on the host for this fallback"
+          ],
+          [
+            "Existing local subscription profile",
+            "Persistent login outside disposable runs and evidence"
+          ],
+          [
+            "Browser on development computer",
+            "Controls require localhost and exact origin"
+          ],
+          [
+            "Phone/Tailscale",
+            "Read-only presentation/calendar/replay, no chat or approval"
+          ]
+        ],
+        "notes": "The full live stack is not Docker-only yet. API-oriented reproducibility and supported user-installation paths remain later work. A long idle simulator run was OOM-killed at 512MiB after about 61minutes. Start a fresh exercise shortly before use, preserve failures and do not claim that this is a memory fix. Unknown restart/writer states remain blocked. No silent provider fallback is authorized. PDF reads use the trusted service’s bounded pdftotext invocation, not general agent Bash. The current agent image does not need this tool because the broker’s trusted reader performs extraction."
+      },
+      "pt": {
+        "title": "Preparação do facilitador e limites conhecidos",
+        "lead": "Uma máquina local controla o primeiro exercício do grupo",
+        "table": [
+          [
+            "Requisito",
+            "Motivo atual"
+          ],
+          [
+            "Docker e ferramentas Compose",
+            "Simulador descartável e experimentos de infraestrutura gerenciada"
+          ],
+          [
+            "Node24 e dependências no host",
+            "Fallback autorizado de companion/DSH/controlador com Luna"
+          ],
+          [
+            "Poppler / pdftotext",
+            "Extração confiável de PDF no host neste fallback"
+          ],
+          [
+            "Perfil de assinatura local existente",
+            "Login persistente fora de execuções descartáveis/evidências"
+          ],
+          [
+            "Navegador no computador de desenvolvimento",
+            "Controles exigem localhost e origem exata"
+          ],
+          [
+            "Celular/Tailscale",
+            "Apresentação/calendário/replay somente leitura, sem chat/aprovação"
+          ]
+        ],
+        "notes": "O fluxo completo ao vivo ainda não roda só em Docker. Reprodutibilidade por API e instalação para usuários são trabalhos posteriores. Uma execução longa do simulador excedeu 512MiB após cerca de 61minutos. Iniciar o exercício pouco antes do uso não corrige memória. Preservar falhas. Reinício/escritores desconhecidos continuam bloqueados. Não há fallback silencioso de provedor autorizado. A leitura de PDF usa a chamada delimitada a pdftotext pelo serviço confiável, não Bash geral do agente. O leitor confiável do broker realiza a extração."
+      },
+      "links": [
+        {
+          "label": {
+            "en": "Self-sufficient facilitator checklist",
+            "pt": "Checklist autossuficiente do facilitador"
+          },
+          "href": "facilitator-checklist.md"
+        }
+      ]
+    },
+    {
+      "id": "exercise",
+      "minutes": 1.5,
+      "en": {
+        "title": "The group operates the next session",
+        "lead": "A guided task first, then separately paced exploration",
+        "steps": [
+          "Start a fresh Bruno fixture and use the persona facts",
+          "Answer the assistant and note redundancy or useful choices",
+          "Review the proposal and request the Monday correction",
+          "Approve near-term only if the revision is acceptable",
+          "Verify observed events and future pending, then archive"
+        ],
+        "notes": "Use five ratings 0–2 or Not observed: useful questions, context/assumptions, feasibility, correction and approval clarity. Record concrete evidence and technical failures separately. The briefing is 20–30minutes; hands-on has its own timing. If Luna fails, record it and use only clearly labeled deterministic exercises. Keep unknown persona facts unknown."
+      },
+      "pt": {
+        "title": "O grupo opera a próxima sessão",
+        "lead": "Tarefa guiada primeiro, exploração em ritmo próprio depois",
+        "steps": [
+          "Iniciar Bruno limpo e usar os fatos da persona",
+          "Responder e anotar redundâncias ou escolhas úteis",
+          "Revisar a proposta e pedir a correção de segunda",
+          "Aprovar somente o próximo se a revisão for aceitável",
+          "Conferir eventos observados e futuro pendente, depois arquivar"
+        ],
+        "notes": "Usar cinco critérios com 0–2 ou Não observado: perguntas, contexto/suposições, viabilidade, correção e clareza da aprovação. Registrar evidências e falhas técnicas separadamente. A apresentação tem 20–30minutos e a prática tem tempo próprio. Se Luna falhar, registrar e usar apenas exercícios determinísticos identificados. Manter fatos ausentes desconhecidos."
+      },
+      "links": [
+        {
+          "label": {
+            "en": "Reusable local scorecard",
+            "pt": "Ficha local reutilizável"
+          },
+          "href": "scorecard.md"
+        },
+        {
+          "label": {
+            "en": "Bruno facts and unknowns",
+            "pt": "Fatos e desconhecidos de Bruno"
+          },
+          "href": "bruno-persona.md"
+        }
+      ]
+    },
+    {
+      "id": "git",
+      "minutes": 1.5,
+      "en": {
+        "title": "A reviewed integration path",
+        "lead": "Twenty-four drafts preserve different experiments",
+        "code": "main\n  #8 experimental baseline\n    #37 recovery/state\n      #38 lifecycle/provider/broker\n        #39 browser and onboarding\n\nProposed integration review: #39 into #38, then #37, then #8\nSeparate explicit decision: #8 into main",
+        "points": [
+          "Keep all 20 other experiment PRs and source branches for later comparisons.",
+          "Review the resulting parent diff and affected checks after every authorized integration."
+        ],
+        "notes": "This is a proposal, not permission to execute Git operations. No closure, retarget, rewrite or merge is implied. Retaining source artifacts avoids lossy consolidation without claiming equivalent tests. The actual parent branches are documented in the full preservation/readiness report. PR #8 remains draft until the user decides."
+      },
+      "pt": {
+        "title": "Um caminho de integração revisado",
+        "lead": "Vinte e quatro drafts preservam experimentos diferentes",
+        "code": "main\n  #8 base experimental\n    #37 recuperação/estado\n      #38 ciclo de vida/provedor/broker\n        #39 navegador e onboarding\n\nRevisão proposta: #39 no #38, depois #37 e #8\nDecisão explícita separada: #8 no main",
+        "points": [
+          "Preservar os outros 20 PRs e suas branches para comparações posteriores.",
+          "Revisar o diff do pai e testes afetados após cada integração autorizada."
+        ],
+        "notes": "É uma proposta, não autorização para operações Git. Não implica encerrar, alterar base, reescrever ou mesclar. Preservar os artefatos evita perda sem afirmar equivalência dos testes. As branches-pai estão no relatório completo. O PR #8 continua draft até decisão do usuário."
+      },
+      "links": [
+        {
+          "label": {
+            "en": "Issue41: lossless integration review",
+            "pt": "Issue41: revisão de integração sem perda"
+          },
+          "href": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/41"
+        },
+        {
+          "label": {
+            "en": "Current PR map",
+            "pt": "Mapa atual dos PRs"
+          },
+          "href": "references/pr-consolidation-proposal.md"
+        }
+      ]
+    },
+    {
+      "id": "next",
+      "minutes": 1,
+      "en": {
+        "title": "The decisions after this exercise",
+        "lead": "Group findings inform the next bounded change",
+        "points": [
+          "Review usability and schedule quality against actual evidence.",
+          "Decide the experimental baseline disposition after the readiness report.",
+          "Choose the next interface, planner or embedding comparison from observed needs.",
+          "Keep model comparison, richer study methods, secure remote control and real-data readiness on their explicit tracks."
+        ],
+        "notes": "The later retrieval study remains planned as 36primary episodes and must be reassessed before execution. The bounded Luna/DeepSeek comparison is separate, with authorized routes and an approximate shared $5 target. No provider or foundation is selected by this briefing. Synthetic success does not prove real-provider recovery, universal sandbox security or improved student well-being."
+      },
+      "pt": {
+        "title": "As decisões depois deste exercício",
+        "lead": "O que o grupo observar orienta a próxima mudança delimitada",
+        "points": [
+          "Revisar usabilidade e qualidade com evidências reais.",
+          "Decidir o destino da base experimental após o relatório de prontidão.",
+          "Escolher a próxima comparação de interface, planejador ou embeddings a partir dos problemas observados.",
+          "Manter comparação de modelos, métodos de estudo, controle remoto seguro e dados reais em suas etapas explícitas."
+        ],
+        "notes": "O estudo de recuperação de contexto continua planejado com 36episódios principais, a reavaliar antes da execução. A comparação Luna/DeepSeek é separada, com rotas autorizadas e meta aproximada compartilhada de US$5. Esta apresentação não seleciona provedor ou fundamento. Sucesso sintético não comprova recuperação em provedor real, segurança universal de sandbox ou melhora do bem-estar."
+      }
+    }
+  ]
+}

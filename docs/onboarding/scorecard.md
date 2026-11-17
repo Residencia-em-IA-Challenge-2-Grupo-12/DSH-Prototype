@@ -1,6 +1,6 @@
 # Group walkthrough scorecard / Ficha de avaliação do grupo
 
-**Draft · 13 November 2026.** Copy this local document per session. This is a lightweight human review, not a validated scientific scale. Keep deterministic test results and model-generated evaluations separate. Use the [persona](bruno-persona.md) and [checklist](facilitator-checklist.md).
+**Reusable session sheet · 17 November 2026.** Copy this local document per session. This is a lightweight human review, not a validated scientific scale. Keep deterministic test results and model-generated evaluations separate. Use the [persona](bruno-persona.md) and [checklist](facilitator-checklist.md).
 
 Agreed review expectations: [horizon balance and consequential load questions](schedule-review-decisions.md). When needs are unknown and deadlines match, inspect total course allocation across the horizon, not just one week's equality. Balance is a soft default; inspect reasons for exceptions. Load preferences are provisional for the current horizon and rechecked when needed. Check whether a relevant workday/weekend choice was discussed and actually represented in the proposed plan; mark unsupported behavior explicitly.
 

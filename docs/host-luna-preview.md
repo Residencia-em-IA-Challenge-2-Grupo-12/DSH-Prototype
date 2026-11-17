@@ -25,7 +25,7 @@ The web process receives a private fixed-operation controller socket, not Docker
 3. Review the proposal and weekly overlay; request **“Keep Monday, 2 November 2026 free.”** The simulation date stays 2 November regardless of the host date.
 4. Review the corrected allocations. If acceptable, click **Approve coming week / Aprovar próxima semana**. A reply in chat—including “yes”—does not approve. Leave **Approve future blocks / Aprovar blocos futuros** untouched.
 5. Confirm Coming week is applied and the observed calendar includes those additions; future remains pending. Preserve errors and ask for inspection before retrying unknown writes.
-6. Fill the [scorecard](onboarding/scorecard.md). End/archive through the run control. Ordinary replacement is permitted only after evidence archival and verified retirement. SIGINT/SIGTERM also attempts retirement and reports a block if it cannot be verified.
+6. Fill the [scorecard](onboarding/scorecard.md). End/archive through the run control, review the selected run ID, and choose **Confirm end and archive / Confirmar encerramento e arquivar**; **Keep run open / Manter execução aberta** cancels. The separate page-level archive test is recorded in [current readiness](review/onboarding-readiness-2026-11-17.md). Ordinary replacement is permitted only after evidence archival and verified retirement. SIGINT/SIGTERM also attempts retirement and reports a block if it cannot be verified.
 
 A known same-process pre-service startup failure can now archive available state and an unavailable observation, then verify cleanup. A restarted controller does **not** guess old host-writer identity; interrupted/unknown states can remain blocked. Preserve the run and involve the maintainer. Never delete claims, lifecycle databases, sockets or named resources merely to permit another run. In-place calendar reconciliation and complete automated restart recovery are not provided.
 
@@ -33,7 +33,7 @@ A known same-process pre-service startup failure can now archive available state
 
 Each run has a private SQLite state/workspace, `experiments/<attempt>/trace.jsonl` and a conservative recovery archive on retirement. Credentials and the synthetic authorization seed are not part of the experiment export. Trace conversation comes from bounded SDK snapshots and may omit/truncate events; usage can be unknown. Do not describe authored-response tests as live Luna behavior.
 
-See [the current review](review/readiness-2026-11-16.md) for test layers, actual user feedback, remaining capture/package gaps and merge gates. The local preview is temporary; after shutdown/reboot it must be deliberately started again.
+See [the current review](review/onboarding-readiness-2026-11-17.md) for test layers, actual user feedback, remaining capture/package gaps and merge gates. The local preview is temporary; after shutdown/reboot it must be deliberately started again.
 
 **Português:** use a pasta do perfil já autenticado, sem copiar credenciais. Abra o endereço local na máquina do facilitador; outra máquina não acessa essa prévia por localhost. Inicie Bruno, converse com os fatos fictícios, peça a correção e use o botão **Aprovar próxima semana**; responder “sim” no chat não altera o calendário. O futuro permanece pendente. Confira o resultado real e arquive ao terminar. Se houver estado desconhecido ou recuperação bloqueada, preserve as evidências e chame a manutenção; não apague estado para forçar uma nova execução.
 
