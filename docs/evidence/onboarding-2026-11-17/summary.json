@@ -28,12 +28,13 @@
     "navigation": "Previous/Next/all16-slide reading view and language switch observed",
     "independentVisualReview": "subagent reviewed all32 desktop captures, six phone samples and follow-up fixes; material table/readability issues corrected",
     "zipRoundTrip": "fflate and independent Python reader verified CRC/hash entries",
-    "repeatBuild": "identical ZIP SHA256 from unchanged inputs"
+    "repeatBuild": "identical ZIP SHA256 from unchanged inputs",
+    "coverVerificationFooter": "visible in actual browser: bottom712px within720px viewport"
   },
   "package": {
     "files": 39,
     "zipBytes": 1186466,
-    "sha256": "c87e635f9f5b72719d41087bb2fbdc133625646c184fa3c82c101331baad16dd",
+    "sha256": "d050e986ea9be8fdfa3c37c2e7b90e3aacc1c8286e773b87666649ecacf2de42",
     "credentials": "curated source/docs/evidence only; no profile, environment or private runtime archive"
   },
   "preview": {
