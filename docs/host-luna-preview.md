@@ -1,6 +1,6 @@
 # Local Luna browser preview / Prévia local Luna
 
-Verified commands and infrastructure: 16 November 2026. Experimental, synthetic Bruno only. This is the authorized **host fallback**, not the managed Docker-agent route: DSH and the trusted controller run on the host; Calendarpit runs in a disposable pinned container. General Bash/native host-access tools stay disabled in the agent. The actual eight-tool catalog probe passed.
+Verified commands and infrastructure: 16 November 2026; real agent-operated browser write: [17 November evidence](review/luna-browser-walkthrough-2026-11-17.md). Experimental, synthetic Bruno only. This is the authorized **host fallback**, not the managed Docker-agent route: DSH and the trusted controller run on the host; Calendarpit runs in a disposable pinned container. General Bash/native host-access tools stay disabled in the agent. The actual eight-tool catalog probe passed.
 
 ## Start / Iniciar
 

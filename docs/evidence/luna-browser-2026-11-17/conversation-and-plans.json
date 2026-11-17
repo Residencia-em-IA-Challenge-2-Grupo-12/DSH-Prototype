@@ -1,0 +1,1672 @@
+{
+  "schemaVersion": 1,
+  "runId": "6b1f6bb9-6fe9-44eb-b257-4ea7d3ca2417",
+  "conversation": [
+    {
+      "sequence": 2,
+      "recordedAt": "2026-11-17T18:35:57.042Z",
+      "kind": "message",
+      "data": {
+        "role": "user",
+        "text": "Help Bruno plan for his December 14, 2026 deadlines. Read the selected course materials, preferences and calendar. Explain assumptions and ask a consequential missing question before proposing the coming week and a six-week outlook. Treat facts absent from the fictional persona as unknown."
+      }
+    },
+    {
+      "sequence": 7,
+      "recordedAt": "2026-11-17T18:36:01.722Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "c76e4710-9c04-4e04-a66a-3252e1c67c22",
+        "text": "mcp__study__list_synthetic_files",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 8,
+      "recordedAt": "2026-11-17T18:36:01.735Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "9b89a2ef-af43-4d55-8722-6f45593f3d27",
+        "text": "mcp__study__list_calendar",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 13,
+      "recordedAt": "2026-11-17T18:36:03.716Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "25c9fa64-52c5-481e-9e48-f7ebb1cde919",
+        "text": "mcp__study__list_synthetic_files",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 14,
+      "recordedAt": "2026-11-17T18:36:03.718Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "b08df3f4-b95c-4607-a4a0-39a7882dd6ff",
+        "text": "mcp__study__list_synthetic_files",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 25,
+      "recordedAt": "2026-11-17T18:36:09.726Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "106e9b9a-cf7f-4927-ad0f-7296d6f182f8",
+        "text": "mcp__study__read_synthetic_file",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 26,
+      "recordedAt": "2026-11-17T18:36:09.739Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "8ced47be-d8cd-4dd3-a743-4a67830b0d65",
+        "text": "mcp__study__read_synthetic_file",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 27,
+      "recordedAt": "2026-11-17T18:36:09.741Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "69dcfd9e-6248-4815-873f-4d1035ef405a",
+        "text": "mcp__study__read_synthetic_file",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 28,
+      "recordedAt": "2026-11-17T18:36:09.742Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "985610a7-7fe1-4254-88f1-cce966bdef89",
+        "text": "mcp__study__read_synthetic_file",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 29,
+      "recordedAt": "2026-11-17T18:36:09.744Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "1d842671-0249-47bf-978c-1afd58a1f3f7",
+        "text": "mcp__study__read_synthetic_file",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 30,
+      "recordedAt": "2026-11-17T18:36:17.721Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "244b5451-90da-44ce-af66-31474631057a",
+        "text": "ask_user_question",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 31,
+      "recordedAt": "2026-11-17T18:36:17.734Z",
+      "kind": "question",
+      "data": {
+        "phase": "observed",
+        "question": {
+          "requestId": "4f756b1c-e501-42fb-a02d-420cbb55e08c",
+          "questions": [
+            {
+              "id": "confirm-plan",
+              "question": "Antes de montar a proposta: as janelas registradas (seg/qua 19:00–21:15, sáb 14:00–16:15 e dom 10:00–12:15) e a meta de 5 h/semana ainda servem? E, para decidir a divisão do tempo até 14/12, qual curso deve receber prioridade, se houver?",
+              "header": "Confirmar plano",
+              "options": [
+                {
+                  "label": "Sim; sem prioridade, dividir entre os dois (Recommended)",
+                  "description": "Mantém as janelas e a meta e distribui estudo entre Algoritmos e Banco de Dados."
+                },
+                {
+                  "label": "Sim; priorizar Algoritmos",
+                  "description": "Mantém horários e meta; concentra cerca de dois terços dos blocos em Algoritmos quando viável."
+                },
+                {
+                  "label": "Sim; priorizar Banco de Dados",
+                  "description": "Mantém horários e meta; concentra cerca de dois terços dos blocos em Banco de Dados quando viável."
+                },
+                {
+                  "label": "Quero alterar janela/meta",
+                  "description": "Informe no campo de resposta quais janelas e/ou meta deseja revisar."
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sequence": 32,
+      "recordedAt": "2026-11-17T18:37:14.464Z",
+      "kind": "question",
+      "data": {
+        "phase": "answer",
+        "requestId": "4f756b1c-e501-42fb-a02d-420cbb55e08c",
+        "answers": [
+          {
+            "id": "confirm-plan",
+            "selected": [
+              "Sim; sem prioridade, dividir entre os dois (Recommended)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 35,
+      "recordedAt": "2026-11-17T18:37:25.714Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "4bc5dc7b-5f08-49aa-ab37-51fd902facf6",
+        "text": "mcp__study__draft_study_plan",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 36,
+      "recordedAt": "2026-11-17T18:37:35.721Z",
+      "kind": "message",
+      "data": {
+        "role": "assistant",
+        "id": "20c4f8d2-ddee-40d1-ae68-b4c73e37eacc",
+        "text": "Preparei uma proposta revisável para **2 de novembro a 13 de dezembro de 2026**, cobrindo seis semanas até os prazos de **14 de dezembro**. A distribuição ficou equilibrada entre os dois cursos, conforme sua escolha.\n\n**Próxima semana (2–8 nov.) — 5 h**\n- **Seg., 2 nov.:** Algoritmos, 19:00–20:00 e 20:15–21:15  \n- **Qua., 4 nov.:** Algoritmos, 19:00–20:00  \n- **Sáb., 7 nov.:** Banco de Dados, 14:00–15:00  \n- **Dom., 8 nov.:** Algoritmos, 10:00–11:00  \n\n**Visão de seis semanas:** a proposta distribui 5 horas por semana, sem déficit semanal indicado. O plano intercala os cursos e observa o intervalo mínimo de 15 minutos entre as duas sessões de segunda-feira. Uma ressalva: as cinco horas de **2 de novembro** dependem de disponibilidade ainda hoje; se essa janela já não servir, podemos revisar a proposta.\n\nUsei as preferências e rotina semanais, as ementas dos cursos e o calendário sintético. O calendário mostra trabalho durante a semana, aulas à noite e outros compromissos; não movi nada. A preferência registra janelas de estudo como possibilidades, então confirmei com você que elas e a meta de cinco horas continuam adequadas. A ementa recomenda revisão espaçada e recuperação ativa; tratei isso como orientação de método, não como conteúdo detalhado para cada bloco. O documento de contexto também menciona um compromisso familiar na quarta à noite da segunda semana, então excluí **11 de novembro** dos blocos propostos.\n\nA proposta **não foi aprovada nem aplicada**. Revise-a na prévia: use **Approve coming week** para os blocos da semana que vem e, separadamente, **Approve future blocks** para os blocos futuros. Se algo precisar mudar, diga o que prefere e posso regenerar a proposta.",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 37,
+      "recordedAt": "2026-11-17T18:37:56.741Z",
+      "kind": "message",
+      "data": {
+        "role": "user",
+        "text": "Keep Monday, 2 November 2026 free: add no study blocks that day, and preserve all existing commitments. Please revise the proposal and explain what changes. This message is a correction, not calendar approval."
+      }
+    },
+    {
+      "sequence": 40,
+      "recordedAt": "2026-11-17T18:37:59.718Z",
+      "kind": "message",
+      "data": {
+        "role": "activity",
+        "id": "e1c31fcc-6c1f-48f8-9efd-9b43543154e4",
+        "text": "mcp__study__draft_study_plan",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 41,
+      "recordedAt": "2026-11-17T18:38:05.721Z",
+      "kind": "message",
+      "data": {
+        "role": "assistant",
+        "id": "794b2858-836f-4ce4-98d5-05aec1a15426",
+        "text": "Revised the proposal with **Monday, 2 November kept free**. No study blocks are proposed that day, and existing commitments are preserved.\n\nFor the coming week, the two Monday study blocks moved to **Wednesday, 4 November** and **Saturday, 7 November**. The week still totals **5 hours**:\n- Wed., 4 Nov.: Algoritmos, 19:00–20:00 and 20:15–21:15\n- Sat., 7 Nov.: Banco de Dados, 14:00–15:00 and 15:15–16:15\n- Sun., 8 Nov.: Algoritmos, 10:00–11:00\n\nThe six-week outlook remains at **5 proposed hours per week**, with no indicated shortfall. The existing exclusion for **Wednesday, 11 November** remains in place. This is a revised proposal only—not calendar approval or a calendar change. Review it using **Approve coming week** below the weekly calendar; future blocks have their own **Approve future blocks** button.",
+        "source": "bounded_sdk_snapshot"
+      }
+    },
+    {
+      "sequence": 42,
+      "recordedAt": "2026-11-17T18:39:12.738Z",
+      "kind": "decision",
+      "data": {
+        "operation": "approve_plan",
+        "planId": "199b4fad-bea0-46c3-81ff-743bfdcf587c",
+        "section": "near"
+      }
+    },
+    {
+      "sequence": 43,
+      "recordedAt": "2026-11-17T18:39:14.295Z",
+      "kind": "write",
+      "data": {
+        "operation": "approve_plan",
+        "planId": "199b4fad-bea0-46c3-81ff-743bfdcf587c",
+        "section": "near",
+        "result": {
+          "written": [
+            "11bf1dffa14e48d4b01ec699595d92cf",
+            "235270cfdbef4fd8884e6ed787a54293",
+            "ae948706f12c4d31bf9368c37c68541c",
+            "60dfbd039f1e4e4787ee757e0a3678a9",
+            "833710f916e847afb553ff3eb382d406"
+          ],
+          "removed": [],
+          "section": "near"
+        }
+      }
+    }
+  ],
+  "proposals": [
+    {
+      "id": "7bdcf7d8-d7c6-4bfc-82a7-fc03e1f66690",
+      "student": "bruno",
+      "createdAt": "2026-11-17T18:37:25.689Z",
+      "fixedToday": "2026-11-02",
+      "sources": [
+        {
+          "name": "Banco de Dados",
+          "deadline": "2026-12-14T18:00:00-03:00",
+          "source": "courses/banco-dados.md"
+        },
+        {
+          "name": "Algoritmos",
+          "deadline": "2026-12-14T09:00:00-03:00",
+          "source": "courses/algoritmos.md"
+        }
+      ],
+      "assumptions": [
+        "Study blocks are suggestions; ask before writing.",
+        "Hours are goals, not evidence of actual study.",
+        "Study windows are stated possibilities; confirm they still suit the student."
+      ],
+      "outlook": [
+        {
+          "week": 1,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 2,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 3,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 4,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 5,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 6,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        }
+      ],
+      "near": [
+        {
+          "id": "d477bbfb90964304a42b32bac451ccb0",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-02T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-02T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "27324de4b7384d53a73dcee477a0a503",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-04T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-04T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "37c79da5b908441eae6dd03103e55e81",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-07T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-07T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "c1b792cbce3b4310bfcd50bc535065a3",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-08T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-08T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "6f4bb5eb3c24473b81d122b617aa6df6",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-02T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-02T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        }
+      ],
+      "future": [
+        {
+          "id": "099899f6985a490c8e419f848fafa644",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-09T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-09T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "49f6ea8666fe4ca898dccb0cff933a2e",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-14T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-14T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "3530eeaeef0d4c87b73dda076add83d0",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-15T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-15T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "5e3ba02584874df492a6c5b44260f13c",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-09T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-09T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "6c9a957ba89f4386b8451c1c7affcdbd",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-14T15:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-14T16:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "bc36f639fb984020b12c0c06d6e67ac0",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-16T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-16T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "908a84fab4a84cd7b370965fd9bfbf22",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-18T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-18T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "bb4227313eb344bf85fa6ebfb690da0c",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-21T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-21T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "c198ee8712a94a308e62758a52a8a696",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-22T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-22T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "e80c8c0643294ab984fb5dede6892951",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-16T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-16T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "80c1d33e6b9a48419b1557ca3e97c6fe",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-23T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-23T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "a7ef0c37c70e467ea9d2c5f61f0fe21d",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-25T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-25T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "49c764dcf4b3417385e9d42e8d23b0ce",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-28T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-28T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "5bb029e57fc244a1b3884d5368d1fbbe",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-29T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-29T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "c5de3d561b2b4e6ba48930ad87a3194c",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-23T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-23T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "190f7c1128174a219940f8db29bf85fa",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-30T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-30T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "ef04d7af0e02465e9163d98a399d4d57",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-02T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-02T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "d5ed693e31934f5eb0bcdbbb23e8ab84",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-12-05T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-05T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "25f178890b1548e7996c1b77caeeb5b8",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-06T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-06T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "98e8556a1f59499087be192992d334cf",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-30T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-30T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "e275b874dbf4490896af51adabe471ea",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-07T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-07T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "78847a766f59467d87c516b40321904a",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-09T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-09T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "daee87acc09a4a5e9a93397ce6b82986",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-12T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-12T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "9e5c5b7a42694974a4a0aaf0c4eb9b6f",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-13T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-13T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "3d39f2e4dc46442e981afa6542826bf6",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-07T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-07T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        }
+      ],
+      "remove": {
+        "near": [],
+        "future": []
+      },
+      "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+      "status": {
+        "near": "pending",
+        "future": "pending"
+      }
+    },
+    {
+      "id": "199b4fad-bea0-46c3-81ff-743bfdcf587c",
+      "student": "bruno",
+      "createdAt": "2026-11-17T18:37:59.249Z",
+      "fixedToday": "2026-11-02",
+      "sources": [
+        {
+          "name": "Banco de Dados",
+          "deadline": "2026-12-14T18:00:00-03:00",
+          "source": "courses/banco-dados.md"
+        },
+        {
+          "name": "Algoritmos",
+          "deadline": "2026-12-14T09:00:00-03:00",
+          "source": "courses/algoritmos.md"
+        }
+      ],
+      "assumptions": [
+        "Study blocks are suggestions; ask before writing.",
+        "Hours are goals, not evidence of actual study.",
+        "Study windows are stated possibilities; confirm they still suit the student."
+      ],
+      "outlook": [
+        {
+          "week": 1,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 2,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 3,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 4,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 5,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 6,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        }
+      ],
+      "near": [
+        {
+          "id": "11bf1dffa14e48d4b01ec699595d92cf",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-04T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-04T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "235270cfdbef4fd8884e6ed787a54293",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-07T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-07T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "ae948706f12c4d31bf9368c37c68541c",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-08T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-08T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "60dfbd039f1e4e4787ee757e0a3678a9",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-04T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-04T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "833710f916e847afb553ff3eb382d406",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-07T15:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-07T16:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        }
+      ],
+      "future": [
+        {
+          "id": "ff1e3dd294f048e1993846390f61bc0a",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-09T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-09T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "f43ebd421b214ec58032ff1f3f0e637c",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-14T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-14T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "b16624b31c664f7aa7edd6acd948d7cf",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-15T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-15T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "e5b9ecd727014a2eabca6a6ddfc864fc",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-09T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-09T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "7fde955ed512400ab9e92c5b8af22683",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-14T15:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-14T16:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "d4d17ba4ca2c465f937ada02dec67aa1",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-16T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-16T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "de4d9f50c085459f9ff6da1253e80515",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-18T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-18T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "281513dc5fab4a96ae03b25b73f491ab",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-21T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-21T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "0b39d661f1e74bc6a8e7d6820f248128",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-22T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-22T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "0572a85ce00b4ddeb96eef71913b04cd",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-16T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-16T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "5fe11d80f90444e8aaee7a5152455f22",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-23T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-23T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "e4ced07921a144d490d7d7dc228e8154",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-25T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-25T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "bc2522b9c35b4bb89ea4e4a36ce1b95b",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-28T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-28T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "95a84e4a02b343308342c8ab9e69985a",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-29T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-29T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "5a66f9605c824c73a02ed7f95ff49701",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-23T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-23T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "3d0bb9a97a4c46f2826f96d2b117d9b1",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-30T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-30T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "fb5d485266434d4387fa26bb99766771",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-02T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-02T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "0fb98b711ed34c6b9cbd6ad932f77201",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-12-05T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-05T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "97a1f4fdb95246f5ad50059291c78026",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-06T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-06T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "f1ed6cd03843499980b69db1149555a6",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-30T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-30T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "42a6512134024964adaa256df8226798",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-07T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-07T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "5d328cbc18a34cb38ffb2624800021f6",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-09T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-09T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "53b9ee4ef91543e38635ffd86dc05f32",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-12T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-12T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "c06fab307db342a8b7e896a926eed98b",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-13T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-13T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "4b34517756d54b5b8c7988ea2a82c6cc",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-12-07T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-12-07T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "tentative",
+          "description": "Study planning demo. Tentative; review at the next checkpoint. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        }
+      ],
+      "remove": {
+        "near": [],
+        "future": []
+      },
+      "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+      "status": {
+        "near": "pending",
+        "future": "pending"
+      }
+    }
+  ]
+}
