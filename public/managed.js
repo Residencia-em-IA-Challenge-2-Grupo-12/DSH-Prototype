@@ -14,7 +14,7 @@ const words={
     archived:'Run archived.',refreshed:'View refreshed.',none:'No active run',
     blocked:'Recorded run is blocked or needs inspection. Preserve its evidence before replacement.',
     unknown:'Calendar unavailable; its current contents are unknown.',
-    confirm:'End this synthetic run and archive its evidence?',pending:'pending',applied:'applied',rejected:'rejected',applyingStatus:'applying'
+    confirmArchive:'Confirm end and archive',keepRun:'Keep run open',retiring:'Archiving and verifying retirement…',runChanged:'The selected run changed. Review the current run before ending it.',confirm:'End this synthetic run and archive its evidence?',pending:'pending',applied:'applied',rejected:'rejected',applyingStatus:'applying'
   },
   pt:{
     mode:'Interface gerenciada experimental · apenas dados sintéticos · rota de gateway; Luna ainda não conectada',
@@ -29,12 +29,12 @@ const words={
     archived:'Execução arquivada.',refreshed:'Visualização atualizada.',none:'Nenhuma execução ativa',
     blocked:'Execução bloqueada ou pendente de inspeção. Preserve as evidências antes de substituí-la.',
     unknown:'Calendário indisponível; seu conteúdo atual é desconhecido.',
-    confirm:'Encerrar a execução sintética e arquivar as evidências?',pending:'pendente',applied:'aplicado',rejected:'rejeitado',applyingStatus:'aplicando'
+    confirmArchive:'Confirmar encerramento e arquivar',keepRun:'Manter execução aberta',retiring:'Arquivando e verificando encerramento…',runChanged:'A execução selecionada mudou. Revise a execução atual antes de encerrá-la.',confirm:'Encerrar a execução sintética e arquivar as evidências?',pending:'pendente',applied:'aplicado',rejected:'rejeitado',applyingStatus:'aplicando'
   }
 };
 const $=id=>document.getElementById(id);
 let run=null,available=false,busy=false,questionKey='',messagesKey='',calendarKey='',proposalKey='',lastState=null,runtime='managed-gateway';
-let calendarView=null;
+let calendarView=null,retireReview=null,retirePending=false;
 let questionIdentity='',questionEpoch=0,questionPending=false,questionControls=[],questionSubmit=null,questionCancel=null,questionError=null;
 const approvalBusy=new Set(),approvalCompleted=new Set();
 const t=key=>words[$('language').value][key];
@@ -63,6 +63,25 @@ function labels(){
   for(const [id,key] of [['mode','mode'],['access-note','localAccess'],['start','start'],['retire','retire'],['refresh','refresh'],['send','send'],['chat-title','chat'],['calendar-title','calendar'],['proposal-title','proposal'],['message-label','messageLabel']])if($(id))$(id).textContent=t(key);
   $('mode').textContent=t(runtime==='host-luna-fallback'?'hostMode':'mode');
   if($('approval-note'))$('approval-note').textContent=t('approvalNote');
+  renderRetireReview();
+}
+function renderRetireReview(){
+  const panel=$('retire-confirm');if(!panel)return;
+  panel.setAttribute('aria-label',t('confirm'));panel.replaceChildren();panel.hidden=!retireReview;if(!retireReview)return;
+  const review=retireReview;
+  panel.append(node('h3',t('confirm')),node('p',`${review.student} · ${review.id}`));
+  const confirmButton=node('button',t(retirePending?'retiring':'confirmArchive')),cancelButton=node('button',t('keepRun'));
+  confirmButton.type=cancelButton.type='button';confirmButton.disabled=cancelButton.disabled=retirePending;
+  cancelButton.onclick=()=>{if(retirePending)return;retireReview=null;renderRetireReview();$('retire').focus();};
+  confirmButton.onclick=async()=>{
+    if(retirePending)return;
+    if(!run||run.id!==review.id||retireReview?.id!==review.id){retireReview=null;renderRetireReview();showNotice(t('runChanged'));return;}
+    retirePending=true;renderRetireReview();$('retire').disabled=true;
+    try{await api('run/retire',{runId:review.id});retireReview=null;run=null;await refresh();showNotice(t('archived'));}
+    catch(error){showNotice(error.message);try{await refresh();}catch{}}
+    finally{retirePending=false;renderRetireReview();$('retire').disabled=!run||retirePending;}
+  };
+  panel.append(confirmButton,cancelButton);return confirmButton;
 }
 function canApprove(state,plan,section){
   const changes=(plan[section]?.length||0)+(plan.remove?.[section]?.length||0)>0;
@@ -200,8 +219,9 @@ function clearUnavailable(){
 }
 async function refresh(){
   const status=await api('run');run=status.run;available=status.available;runtime=status.runtime||'managed-gateway';labels();
+  if(retireReview&&retireReview.id!==run?.id&&!retirePending){retireReview=null;renderRetireReview();}
   $('run').textContent=run?`${run.student} · ${run.id} · ${run.phase}`:t('none');
-  $('start').disabled=!!run;$('retire').disabled=!run;$('student').disabled=!!run||runtime==='host-luna-fallback';$('send').disabled=!available||busy;
+  $('start').disabled=!!run;$('retire').disabled=!run||retirePending;$('student').disabled=!!run||runtime==='host-luna-fallback';$('send').disabled=!available||busy;
   $('run-warning').textContent=run&&!available?t('blocked'):'';
   if(!available){clearUnavailable();return;}
   const [chat,state]=await Promise.all([api('chat/state'),api('status')]);busy=chat.busy;$('send').disabled=busy;
@@ -213,6 +233,6 @@ async function refresh(){
 $('language').onchange=()=>{labels();action(refresh);};
 $('refresh').onclick=()=>action(refresh,t('refreshed'));
 $('start').onclick=()=>action(async()=>{await api('run/start',{student:$('student').value});await refresh();},t('started'));
-$('retire').onclick=()=>{const runId=run?.id;if(confirm(t('confirm')))action(async()=>{await api('run/retire',{runId});run=null;await refresh();},t('archived'));};
+$('retire').onclick=()=>{if(!run||retirePending)return;retireReview={id:run.id,student:run.student};renderRetireReview()?.focus();};
 $('chat').onsubmit=event=>{event.preventDefault();const text=$('text').value;action(async()=>{await api('chat/send',{text});$('text').value='';await refresh();},t('sent'));};
 labels();await action(refresh);let polling=false;setInterval(async()=>{if(polling)return;polling=true;try{await refresh();}catch(error){showNotice(error.message);}finally{polling=false;}},2000);

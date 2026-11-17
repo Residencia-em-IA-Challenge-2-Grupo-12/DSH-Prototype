@@ -183,3 +183,32 @@ test('empty or non-JSON preview responses explain local access and uncertain mut
     }finally{delete globalThis.document;delete globalThis.fetch;delete globalThis.setInterval;delete globalThis.confirm;}
   }
 });
+
+test('archival uses explicit run-bound page confirmation, supports cancel/localization and fences duplicate or stale confirmation',async()=>{
+  const document=new Document();globalThis.document=document;
+  for(const [id,value] of [['language','en'],['student','bruno']])document.add(id,value);
+  for(const id of ['mode','start','retire','refresh','send','chat-title','calendar-title','proposal-title','approval-note','run','run-warning','notice','messages','question','calendar','proposal','chat','text','retire-confirm'])document.add(id);
+  let current={id:'archive-run-1',student:'bruno',phase:'active'},poll,nativePrompts=0,retireCalls=0,selectedRun,finish=deferred();
+  globalThis.confirm=()=>{nativePrompts++;throw Error('Native browser confirmation is unavailable');};
+  globalThis.setInterval=callback=>{poll=callback;return 1;};
+  globalThis.fetch=async(url,options={})=>{
+    const route=new URL(url,'http://localhost').pathname;
+    if(route==='/api/run')return response({run:current,available:!!current});
+    if(route==='/api/status')return response({state:{plan:null},recovery:null,calendar:{availability:'available'},events:[]});
+    if(route==='/api/chat/state')return response({busy:false,messages:[],question:null});
+    if(route==='/api/run/retire'){retireCalls++;selectedRun=JSON.parse(options.body).runId;await finish.promise;current=null;return response({archiveId:selectedRun});}
+    throw Error('Unexpected route '+route);
+  };
+  const panel=document.getElementById('retire-confirm'),buttons=()=>descendants(panel,n=>n.tagName==='BUTTON');
+  try{
+    await import(`../public/managed.js?archive-test=${Date.now()}`);
+    await document.getElementById('retire').onclick();assert.equal(nativePrompts,0);assert.match(panel.textContent,/archive-run-1/);assert.equal(retireCalls,0);
+    buttons().find(b=>b.textContent==='Keep run open').onclick();assert.equal(panel.children.length,0);assert.equal(retireCalls,0);
+    document.getElementById('retire').onclick();const stale=buttons().find(b=>b.textContent==='Confirm end and archive');
+    current={id:'archive-run-2',student:'bruno',phase:'active'};await poll();await stale.onclick();assert.equal(retireCalls,0,'old confirmation cannot retire a new run');
+    document.getElementById('retire').onclick();document.getElementById('language').value='pt';await poll();
+    const confirmButton=buttons().find(b=>b.textContent==='Confirmar encerramento e arquivar');assert(confirmButton);assert.match(panel.textContent,/archive-run-2/);
+    const pending=confirmButton.onclick();assert.equal(retireCalls,1);assert(buttons().every(b=>b.disabled));await confirmButton.onclick();assert.equal(retireCalls,1);
+    finish.resolve();await pending;assert.equal(selectedRun,'archive-run-2');assert.equal(panel.children.length,0);assert.match(document.getElementById('notice').textContent,/Execução arquivada/);assert.equal(nativePrompts,0);
+  }finally{delete globalThis.document;delete globalThis.fetch;delete globalThis.setInterval;delete globalThis.confirm;}
+});
