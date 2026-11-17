@@ -8,7 +8,7 @@ const words={
     calendar:'Your week · calendar and proposal',proposal:'Review proposal',near:'Coming week',future:'Future tentative blocks',
     approveNear:'Approve coming week',approveFuture:'Approve future blocks',applying:'Applying…',
     approvalNote:'Chat messages do not apply calendar changes. Review each section and use its separate approval button.',
-    messageLabel:'Your message',showChanges:'Show proposed changes',blocks:'blocks',hours:'study hours',noEvents:'Start a synthetic run to inspect its calendar.',working:'The agent is working…',waiting:'Your answer is needed. The execution timer is paused while you answer.',ready:'Ready for your next message.',approved:'Approved changes applied.',answer:'Send answer',sent:'Message sent.',answered:'Answer sent.',started:'Synthetic run started.',
+    messageLabel:'Your message',showChanges:'Show proposed changes',blocks:'blocks',hours:'study hours',noEvents:'Start a synthetic run to inspect its calendar.',working:'The agent is working…',waiting:'Your answer is needed. The execution timer is paused while you answer.',ready:'Ready for your next message.',typeInstead:'Type a different answer',otherAnswer:'Other answer (optional for multiple selection)',typedAnswer:'Your answer',dismissQuestion:'Dismiss question',questionDismissed:'Question dismissed. Calendar changes were not approved.',answerRequired:'Choose an option or type an answer for every question.',answerTooLong:'Keep each typed answer within 2000 characters.',approved:'Approved changes applied.',answer:'Send answer',sent:'Message sent.',answered:'Answer sent. Calendar approval remains separate.',started:'Synthetic run started.',
     archived:'Run archived.',refreshed:'View refreshed.',none:'No active run',
     blocked:'Recorded run is blocked or needs inspection. Preserve its evidence before replacement.',
     unknown:'Calendar unavailable; its current contents are unknown.',
@@ -21,7 +21,7 @@ const words={
     calendar:'Sua semana · calendário e proposta',proposal:'Revisar proposta',near:'Próxima semana',future:'Blocos futuros provisórios',
     approveNear:'Aprovar próxima semana',approveFuture:'Aprovar blocos futuros',applying:'Aplicando…',
     approvalNote:'Mensagens no chat não alteram o calendário. Revise cada seção e use o botão de aprovação correspondente.',
-    messageLabel:'Sua mensagem',showChanges:'Mostrar alterações propostas',blocks:'blocos',hours:'horas de estudo',noEvents:'Inicie uma execução sintética para visualizar o calendário.',working:'O agente está trabalhando…',waiting:'Sua resposta é necessária. O tempo de execução fica pausado enquanto você responde.',ready:'Pronto para sua próxima mensagem.',approved:'Alterações aprovadas e aplicadas.',answer:'Enviar resposta',sent:'Mensagem enviada.',answered:'Resposta enviada.',started:'Execução sintética iniciada.',
+    messageLabel:'Sua mensagem',showChanges:'Mostrar alterações propostas',blocks:'blocos',hours:'horas de estudo',noEvents:'Inicie uma execução sintética para visualizar o calendário.',working:'O agente está trabalhando…',waiting:'Sua resposta é necessária. O tempo de execução fica pausado enquanto você responde.',ready:'Pronto para sua próxima mensagem.',typeInstead:'Digitar outra resposta',otherAnswer:'Outra resposta (opcional na seleção múltipla)',typedAnswer:'Sua resposta',dismissQuestion:'Dispensar pergunta',questionDismissed:'Pergunta dispensada. Nenhuma alteração no calendário foi aprovada.',answerRequired:'Escolha uma opção ou digite uma resposta para cada pergunta.',answerTooLong:'Use até 2000 caracteres em cada resposta digitada.',approved:'Alterações aprovadas e aplicadas.',answer:'Enviar resposta',sent:'Mensagem enviada.',answered:'Resposta enviada. A aprovação do calendário continua separada.',started:'Execução sintética iniciada.',
     archived:'Execução arquivada.',refreshed:'Visualização atualizada.',none:'Nenhuma execução ativa',
     blocked:'Execução bloqueada ou pendente de inspeção. Preserve as evidências antes de substituí-la.',
     unknown:'Calendário indisponível; seu conteúdo atual é desconhecido.',
@@ -31,6 +31,7 @@ const words={
 const $=id=>document.getElementById(id);
 let run=null,available=false,busy=false,questionKey='',messagesKey='',calendarKey='',proposalKey='',lastState=null,runtime='managed-gateway';
 let calendarView=null;
+let questionIdentity='',questionEpoch=0,questionPending=false,questionControls=[],questionSubmit=null,questionCancel=null,questionError=null;
 const approvalBusy=new Set(),approvalCompleted=new Set();
 const t=key=>words[$('language').value][key];
 function node(tag,text){const element=document.createElement(tag);element.textContent=text;return element;}
@@ -59,21 +60,80 @@ function renderMessages(messages){
   const key=JSON.stringify([run?.id,$('language').value,messages]);if(key===messagesKey)return;
   messagesKey=key;const out=$('messages'),nearBottom=out.scrollHeight-out.scrollTop-out.clientHeight<80;renderConversation(out,messages,$('language').value);if(nearBottom)out.scrollTop=out.scrollHeight;
 }
+function questionDraft(){
+  return new Map(questionControls.map(control=>[control.id,{
+    selected:control.options.filter(option=>option.input.checked).map(option=>option.label),
+    custom:control.text.value,customMode:control.other?.checked??true
+  }]));
+}
+function setQuestionPending(value){
+  questionPending=value;
+  for(const control of questionControls)control.field.disabled=value;
+  if(questionSubmit)questionSubmit.disabled=value;
+  if(questionCancel)questionCancel.disabled=value;
+}
 function renderQuestion(question){
-  const key=JSON.stringify([run?.id,$('language').value,question]);if(key===questionKey)return;
-  questionKey=key;$('question').replaceChildren();if(!question)return;
-  const form=node('form',''),inputs=[];
-  for(const item of question.questions){
-    form.append(node('p',item.question));
-    if(item.options?.length)form.append(node('small',item.options.map(option=>option.label).join(' · ')));
-    const input=node('textarea','');input.required=true;form.append(input);inputs.push({id:item.id,input});
-  }
-  const button=node('button',t('answer'));form.append(button);
-  form.onsubmit=event=>{event.preventDefault();action(async()=>{
-    await api('chat/answer',{requestId:question.requestId,answers:inputs.map(({id,input})=>({id,selected:[],custom:input.value}))});
-    await refresh();
-  },t('answered'));};
-  $('question').append(form);
+  const identity=question?JSON.stringify([run?.id,question.requestId]):'';
+  const key=JSON.stringify([identity,$('language').value,question]);if(key===questionKey)return;
+  const draft=identity===questionIdentity?questionDraft():new Map();
+  if(identity!==questionIdentity){questionEpoch++;questionPending=false;}
+  questionIdentity=identity;questionKey=key;questionControls=[];$('question').replaceChildren();
+  if(!question){questionSubmit=questionCancel=questionError=null;return;}
+  const epoch=questionEpoch,form=node('form','');form.className='question-form';
+  questionError=node('p','');questionError.id=`question-error-${epoch}`;questionError.setAttribute('role','alert');
+  question.questions.forEach((item,index)=>{
+    const field=node('fieldset',''),legend=node('legend',item.question);field.append(legend);
+    if(item.detail)field.append(node('p',item.detail));
+    const prior=draft.get(item.id),control={id:item.id,field,options:[],other:null,text:null,multi:!!item.multiSelect};
+    const name=`question-${epoch}-${index}`;
+    const choose=selected=>{for(const option of control.options)option.input.checked=option.input===selected;if(control.other)control.other.checked=control.other===selected;};
+    for(const [optionIndex,option] of (item.options||[]).entries()){
+      const label=node('label',''),input=node('input','');label.className='question-option';
+      input.type=item.multiSelect?'checkbox':'radio';input.name=name;input.id=`${name}-${optionIndex}`;input.value=option.label;
+      input.checked=!!prior?.selected.includes(option.label)&&(!prior.customMode||!!item.multiSelect);
+      if(!item.multiSelect)input.onchange=()=>{if(input.checked)choose(input);};
+      label.append(input,node('span',option.label+(option.description?' — '+option.description:'')));field.append(label);
+      control.options.push({label:option.label,input});
+    }
+    const customLabel=node('label',t(control.multi?'otherAnswer':'typedAnswer'));customLabel.className='question-custom';
+    const input=node('textarea','');input.id=`${name}-custom`;input.name=`${name}-custom`;input.maxLength=2000;input.value=prior?.custom||'';
+    if(control.options.length&&!item.multiSelect){
+      const label=node('label',''),other=node('input','');label.className='question-option';other.type='radio';other.name=name;other.value='__custom__';other.checked=!!prior?.customMode;
+      other.onchange=()=>{if(other.checked)choose(other);};control.other=other;
+      label.append(other,node('span',t('typeInstead')));field.append(label);
+      input.oninput=()=>choose(other);input.onfocus=()=>choose(other);
+    }
+    control.text=input;customLabel.append(input);field.append(customLabel);form.append(field);questionControls.push(control);
+  });
+  questionSubmit=node('button',t('answer'));questionSubmit.type='submit';
+  questionCancel=node('button',t('dismissQuestion'));questionCancel.type='button';
+  form.append(questionError,questionSubmit,questionCancel);
+  form.onsubmit=async event=>{
+    event.preventDefault();if(epoch!==questionEpoch||!form.isConnected||questionPending)return;
+    const answers=[];
+    for(const control of questionControls){
+      const useCustom=!control.options.length||control.multi||control.other.checked;
+      const selected=useCustom&&!control.multi?[]:control.options.filter(option=>option.input.checked).map(option=>option.label);
+      const custom=useCustom?control.text.value.trim():'';
+      if((!selected.length&&!custom)||custom.length>2000){
+        questionError.textContent=t(custom.length>2000?'answerTooLong':'answerRequired');
+        (useCustom?control.text:control.options[0]?.input||control.text).focus();return;
+      }
+      answers.push({id:control.id,selected,...(custom?{custom}:{})});
+    }
+    questionError.textContent='';setQuestionPending(true);
+    try{await api('chat/answer',{requestId:question.requestId,answers});showNotice(t('answered'));await refresh();}
+    catch(error){if(epoch===questionEpoch){questionError.textContent=error.message;showNotice(error.message);}try{await refresh();}catch{}}
+    finally{if(epoch===questionEpoch)setQuestionPending(false);}
+  };
+  questionCancel.onclick=async()=>{
+    if(epoch!==questionEpoch||!form.isConnected||questionPending)return;
+    setQuestionPending(true);
+    try{await api('chat/cancel-question',{requestId:question.requestId});showNotice(t('questionDismissed'));await refresh();}
+    catch(error){if(epoch===questionEpoch){questionError.textContent=error.message;showNotice(error.message);}try{await refresh();}catch{}}
+    finally{if(epoch===questionEpoch)setQuestionPending(false);}
+  };
+  $('question').append(form);setQuestionPending(questionPending);
 }
 function renderCalendar(state){
   const key=JSON.stringify([run?.id,$('language').value,state.events,state.calendar?.availability,state.state?.plan]);if(key===calendarKey)return;
@@ -124,7 +184,7 @@ function renderProposal(state){
 }
 function clearUnavailable(){
   for(const id of ['messages','question','calendar','proposal'])if($(id).children.length)$(id).replaceChildren();
-  messagesKey=questionKey=calendarKey=proposalKey='';lastState=null;calendarView=null;$('calendar').append(node('p',t('noEvents')));
+  messagesKey=questionKey=calendarKey=proposalKey='';questionIdentity='';questionEpoch++;questionPending=false;questionControls=[];lastState=null;calendarView=null;$('calendar').append(node('p',t('noEvents')));
 }
 async function refresh(){
   const status=await api('run');run=status.run;available=status.available;runtime=status.runtime||'managed-gateway';labels();
