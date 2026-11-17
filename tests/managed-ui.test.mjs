@@ -80,6 +80,8 @@ test('polling preserves proposal controls, approval is explicit and single-fligh
     assert.equal(requestSection,'near');
     nearWrite.resolve();await pending;
     assert.equal(document.getElementById('notice').textContent,'Approved changes applied.');
+    assert.notEqual(proposals.children[0].children.at(-1).textContent,'Applying…','a completed approval must clear pending text on replacement controls');
+    assert.equal(proposals.children[0].children.at(-1).disabled,true,'applied sections cannot be approved twice');
 
     const rejected=buttonWithLabel(proposals,'Approve future blocks');
     const failure=rejected.onclick();

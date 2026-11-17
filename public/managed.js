@@ -186,10 +186,9 @@ function renderProposal(state){
         showNotice(message);
       } finally {
         approvalBusy.delete(approvalKey);
-        if(approve.isConnected){
-          approve.textContent=t(section==='near'?'approveNear':'approveFuture');
-          approve.disabled=!lastState?.state?.plan||lastState.state.plan.id!==plan.id||!canApprove(lastState,lastState.state.plan,section);
-        }
+        // refresh() may have replaced this button while the operation was pending.
+        // Render the current section after clearing the pending key, not the detached control.
+        if(lastState){proposalKey='';renderProposal(lastState);}
       }
     };
     box.append(approve);$('proposal').append(box);
