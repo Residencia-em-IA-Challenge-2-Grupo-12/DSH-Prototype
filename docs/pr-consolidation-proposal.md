@@ -2,7 +2,15 @@
 
 **Inspected 13 November 2026. Proposal only.** No PR was merged, retargeted or closed and no source branch was rewritten or deleted by this review. A fresh GitHub CLI inspection reports 24 open draft PRs and successful reported checks at inspection. Checks reflect each existing base, not the future integrated stack. The earlier [head inventory](evidence/pr-inventory-2026-11-12.md) remains historical evidence; #38 has since advanced to `38da40034632` and contains 113 changed files relative to #37. The browser child is now #39, inspected at `934b0fb19ddf`; its scripted browser evidence does not establish a live Luna walkthrough.
 
-## Current dependency map
+## Current integration cut â€” 17 November 2026
+
+This cut proposes only the backbone review/integration order **#39 into #38, #38 into #37, #37 into #8**, with a separate explicit #8-to-main decision. All 20 other PRs and source branches remain open and unchanged. **No experimental PR is proposed for supersession, closure or retargeting in this cut.** Earlier possible-consolidation language below describes future questions, not pending operations.
+
+The [retained-artifact manifest](evidence/consolidation-2026-11-17/retained-experiments.json) maps every nonbackbone PR's own-delta path to its original immutable head/merge-base and blob IDs, including tests, fixtures, CI and documentation. The [live-head snapshot](evidence/consolidation-2026-11-17/pr-heads.json) records 24 drafts with successful reported checks at inspection. #39 was then 8447712 and subsequently adds the separately tested archive-page fix a920bc6 plus package/report work. Consult the live PR before any operation. Retention is not equivalence, adoption or approval of future removal.
+
+The actual Luna browser near-only write is now verified. The separate archive-page test passed cancel/confirm/retirement with 159 offline checks and no model call. Human workflow scoring, long-session memory stability and complete host-writer restart recovery remain separate limitations. See [updated readiness](review/onboarding-readiness-2026-11-17.md).
+
+## Historical dependency map
 
 Solid arrows mean the current PR base relationship, not a merge recommendation. Dotted arrows below are proposed future work.
 
@@ -34,8 +42,8 @@ Each PR below links to its original evidence. A destination marked â€œcandidateâ
 | [#8](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/8) / main | Keep the bounded experimental baseline. Review readiness and the resulting integrated diff before the user's explicit merge decision. Head `6bce31c1ab13`. |
 | [#37](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/37) / #8 | Review recovery and state coordination independently, including migration, uncertain writes and unavailable-calendar UI. Its unresolved-run limitations remain acceptance items, not proof of a finished workflow. Head `bad383e8721b`. |
 | [#38](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/38) / #37 | Freeze infrastructure scope; review provider/claim, lifecycle/retirement, broker/agent, evidence and model-routing units at pinned heads. Prefer a focused browser integration child; do not mechanically rewrite this dependency-heavy PR just because it is large. |
-| [#39](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/39) / #38 | Focused companion/controller RPC, runtime-policy preparation, review guidance and scripted browser evidence. Keep draft pending the actual Luna route/tool audit, live workflow and remaining delivery checks. Do not import the broader comparison stacks to finish the demonstration. |
-| [#16](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/16) / #8 | Candidate consolidation with #23. Preserve dedicated replay unit/integration tests; do not close on converter-code equality. |
+| [#39](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/39) / #38 | Focused companion/controller RPC, runtime-policy preparation, review guidance and scripted browser evidence. Keep draft for current delivery/integration review; the later actual Luna browser loop and archive-page test are recorded above, with remaining limitations explicit. Do not import the broader comparison stacks to finish the demonstration. |
+| [#16](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/16) / #8 | Retain at source in this cut. A later #23 comparison must preserve dedicated replay tests; converter equality alone cannot justify closure. |
 | [#18](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/18) / #8 | #38 carries an evolved runner and isolation tests. Preserve original lifecycle documentation and compare every original acceptance case before proposing supersession. |
 | [#21](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/21) / #18 | #38 carries the API client and unit tests with evolved integration tests. Preserve OAuth, paging, ETag and management/provider boundary evidence before proposing supersession. |
 | [#23](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/23) / #21 | Retain portable fixture/replay lineage and fresh-approval semantics; this broader experiment contract is not replaced by #38's conservative recovery archive. Reconcile #16's tests. |
@@ -47,7 +55,7 @@ Each PR below links to its original evidence. A destination marked â€œcandidateâ
 | [#31](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/31) / #24 | Retain read-only DSH bridge and denial/descriptor evidence; compare with #34 rather than equating their responsibilities. |
 | [#33](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/33) / #30 | Keep custom-interface experiment and same-data comparison artifacts. It does not select the final interface. |
 | [#34](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/34) / #24 | Keep native-panel experiment and checks. Complete questions, revision, approval, recovery and localization comparison before selection. |
-| [#19](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/19) / #8 | Candidate consolidation with #35, preserving toy-solver cases and CI discovery differences; no planner selection implied. |
+| [#19](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/19) / #8 | Retain at source in this cut. A later #35 comparison must preserve toy-solver cases and CI discovery differences; no planner choice or supersession is proposed. |
 | [#25](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/25) / #8 | Retain bilingual realistic personas, source/generation inputs and fixture validation. Large generated data diffs require reproducibility and source review. |
 | [#35](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/35) / #25 | Retain fixture-based solver comparison, transition sensitivity and recorded results. Reconcile #19 instead of losing earlier test discovery. |
 | [#20](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/20) / #8 | Keep embedding screen scaffold and resource-cap evidence. Smoke checks do not select one of the four candidates. |

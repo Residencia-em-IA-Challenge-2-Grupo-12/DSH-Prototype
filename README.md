@@ -2,11 +2,11 @@
 
 **English · [Português](README.pt-BR.md)**
 
-> **Experimental draft; not yet a reliable demonstration.** Calendar-write recovery remains incomplete, including after a process crash or delayed provider response. Use only disposable synthetic data. See [recovery status](docs/recovery-work-in-progress.md). GPT-6 Luna remains the default route. One bounded comparison is separately authorized for `deepseek/deepseek-v4.1-flash-1017` through the official DeepSeek provider on OpenRouter, with fallback disabled and a shared approximate $5 target for setup, agent and evaluator calls. That paid route is currently disabled pending verified pricing, egress and accounting; it is not a model default. See [model setup](docs/models.md) for the routing boundary.
+> **Experimental draft with bounded live evidence.** Calendar-write recovery remains incomplete, including after a process crash or delayed provider response. Use only disposable synthetic data. See [recovery status](docs/recovery-work-in-progress.md). GPT-6 Luna remains the default route. One bounded comparison is separately authorized for `deepseek/deepseek-v4.1-flash-1017` through the official DeepSeek provider on OpenRouter, with fallback disabled and a shared approximate $5 target for setup, agent and evaluator calls. That paid route is currently disabled pending verified pricing, egress and accounting; it is not a model default. See [model setup](docs/models.md) for the routing boundary.
 
-This README describes the runnable **draft branch**. The current `main` branch is a documentation scaffold and does not contain the runnable `package.json` workflow shown here. Check out the intended draft branch before using these commands; do not infer that its code is already integrated into `main`. The current handoff is tracked by [#9 baseline readiness](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/9), [#40 browser walkthrough and bilingual package](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/40), and [#41 lossless integration review](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/41). The scripted browser flow is evidence of integration only; the actual Luna browser walkthrough and recording remain outstanding. These gates do not authorize a merge or select a foundation. See the [current work sequence](docs/project-work-sequence.md).
+This README describes the runnable **draft branch**. The current `main` branch is a documentation scaffold and does not contain the runnable `package.json` workflow shown here. Check out the intended draft branch before using these commands; do not infer that its code is already integrated into `main`. The current handoff is tracked by [#9 baseline readiness](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/9), [#40 browser walkthrough and bilingual package](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/40), and [#41 lossless integration review](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/41). The real agent-operated Luna browser near-only write and separate archive-page test are verified. A bilingual briefing and actual-screenshot replay are ready for review; human workflow assessment remains pending. Continuous video was not captured. These gates do not authorize a merge or select a foundation. See the [current work sequence](docs/project-work-sequence.md).
 
-Current local Luna browser route: [verified launch and approval instructions](docs/host-luna-preview.md). The managed carrier and the host fallback have different guarantees; see [16 November readiness](docs/review/readiness-2026-11-16.md).
+Current local Luna browser route: [verified launch and approval instructions](docs/host-luna-preview.md). The managed carrier and the host fallback have different guarantees; see [current readiness](docs/review/onboarding-readiness-2026-11-17.md).
 
 Study Atlas explores a collaborative study assistant using DeepSeek Harness (DSH), two synthetic student workspaces and a local Calendarpit calendar. The companion interface drafts near-term and future study blocks, reviews them separately, records optional feedback, compares checkpoint snapshots and displays a routine summary.
 
@@ -18,7 +18,14 @@ The sample planner is deterministic. DSH can call the MCP tools and add an expla
 - The pinned DSH release requires Node 24.9 or later. The npm install supplies a project-local Node 24 binary; it does not replace your system Node.
 - A model provider/API key or compatible self-hosted endpoint is optional for the offline preview and tests.
 
-## Start
+## Current group demonstration
+
+Use the [bilingual onboarding package/build guide](docs/onboarding/README.md) and [self-sufficient facilitator checklist](docs/onboarding/facilitator-checklist.md). The current interactive demonstration is `http://127.0.0.1:4176/` on the facilitator computer, using the explicitly labeled host Luna fallback. It has one disposable authoritative run, Google-compatible simulator access with synthetic OAuth and separate near/future review. The [readiness report](docs/review/onboarding-readiness-2026-11-17.md) states what was actually tested and what remains incomplete.
+
+## Legacy prototype start
+
+The following port 4174 management-API workflow is retained for historical/prototype features such as feedback/report forms. It is a separate entry point, not the current disposable group walkthrough; do not use its reset/admin operations to manipulate a managed run.
+
 
 ```bash
 npm install
@@ -40,7 +47,7 @@ Use the local URL printed by DSH, select a model provider and a synthetic worksp
 
 See [model setup](docs/models.md) before configuring a subscription, API provider or self-hosted endpoint. No model request is made during the offline tests.
 
-## Walkthrough
+## Legacy prototype walkthrough
 
 1. Pick Ana or Bruno and **Reset scenario**. Browse the synthetic workspace and read a syllabus.
 2. In **Collaborate**, ask the agent to plan, answer its questions and request revisions; the calendar and proposal update alongside the conversation. Alternatively, create a deterministic proposal in **Study plan**. Nothing is written to the calendar at this stage.
@@ -54,7 +61,7 @@ Fixtures use a fixed simulated date, 2026-11-02, and the São Paulo time zone. A
 
 Ana's first week includes 20 hours of part-time work and 9 hours of classes. Bruno's includes 40 hours of work and 9 hours of classes; their study windows are different. Both fixtures contain six weeks of explicit fictional events and a second-week exception. These are illustrative routines, not claims about an average or a healthy workload. The planner uses the stated study windows and pauses between blocks; without stated windows it reports a shortfall rather than treating a blank calendar as free time. Study-window changes and real calendar recurrence remain future work.
 
-## Checks
+## Checks and legacy integration
 
 ```bash
 npm test
@@ -63,7 +70,7 @@ npm run test:integration  # Calendarpit must already be running; resets Ana's sy
 
 The offline tests cover three independent checkpoint scenarios, approval and stale-state checks, user edits, partial failures, feedback, report calculations, MCP discovery and translation-key parity. The integration test exercises the actual Calendarpit management API. It does not establish Google OAuth or real-provider compatibility.
 
-## Boundaries and limitations
+## Legacy prototype boundaries and shared limits
 
 - Calendarpit is a **preview** that simulates a subset of Google Calendar. This prototype uses its local management endpoints rather than the authenticated Google-compatible API. Real OAuth, email invitations and Google-specific edge cases remain untested.
 - The calendar and shared runtime are single-user demonstration resources; switching student resets the simulator. Do not connect real accounts or put private files in the fixtures.

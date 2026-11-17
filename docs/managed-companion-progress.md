@@ -1,5 +1,7 @@
 # Managed companion integration
 
+**Current evidence, 17 November:** the [actual Luna browser write](review/luna-browser-walkthrough-2026-11-17.md), [verified archive-page check and onboarding readiness](review/onboarding-readiness-2026-11-17.md) supersede delivery-status statements below. The live host fallback and scripted managed Docker route remain different. Earlier dated text is historical.
+
 **Later evidence, 16 November:** see [the bounded readiness review](review/readiness-2026-11-16.md) for the local Luna browser attempt, UI correction and current limits. The dated observations below remain historical.
 
 The focused companion now has a local web entry point, a separate trusted controller entry point and private Unix-socket RPC. The web process receives only fixed lifecycle/conversation/review operations; it does not receive Docker access. The page is an experimental bilingual carrier with run controls, conversation/questions, observed calendar and separately reviewed proposal sections. It is not a finished UI or a verified live Luna route.

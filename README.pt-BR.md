@@ -4,15 +4,22 @@
 
 > **Rascunho experimental; ainda não é uma demonstração confiável.** A recuperação de alterações no calendário continua incompleta, inclusive após falha do processo ou resposta atrasada do provedor. Use somente dados sintéticos descartáveis. Veja [o estado da recuperação](docs/recovery-work-in-progress.md) (em inglês). GPT-6 Luna continua sendo a rota padrão. Uma comparação limitada foi autorizada separadamente para `deepseek/deepseek-v4.1-flash-1017` pelo provedor oficial DeepSeek no OpenRouter, com fallback desativado e meta compartilhada aproximada de US$ 5 para configuração, agente e avaliador. Essa rota paga está desativada até que preço, saída de rede e contabilização sejam verificados; ela não é o modelo padrão. Consulte [a configuração de modelos](docs/models.pt-BR.md) para os limites da rota.
 
-Este README descreve o **branch de rascunho executável**. O branch `main` atual é um esqueleto de documentação e não contém o `package.json` executável mostrado aqui. Use o branch de rascunho pretendido antes destes comandos; não presuma que o código já foi integrado a `main`. A entrega atual está acompanhada por [#9 prontidão da base](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/9), [#40 percurso no navegador e pacote bilíngue](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/40) e [#41 revisão de integração sem perda](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/41). O percurso roteirizado no navegador comprova a integração, mas o percurso real com Luna no navegador e a gravação ainda estão pendentes. Esses gates não autorizam merge nem escolhem uma base de implementação. Veja a [sequência atual de trabalho](docs/project-work-sequence.md) (em inglês).
+Este README descreve o **branch de rascunho executável**. O branch `main` atual é um esqueleto de documentação e não contém o `package.json` executável mostrado aqui. Use o branch de rascunho pretendido antes destes comandos; não presuma que o código já foi integrado a `main`. A entrega atual está acompanhada por [#9 prontidão da base](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/9), [#40 percurso no navegador e pacote bilíngue](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/40) e [#41 revisão de integração sem perda](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/41). O percurso real operado pelo agente no navegador verificou a escrita somente próxima; outro teste verificou arquivamento pela página. A apresentação bilíngue e o replay real estão prontos para revisão. Avaliação humana completa permanece pendente; não houve vídeo contínuo. Esses gates não autorizam merge nem escolhem uma base de implementação. Veja a [sequência atual de trabalho](docs/project-work-sequence.md) (em inglês).
 
-Rota Luna local no navegador: [inicialização e aprovação explícita](docs/host-luna-preview.md). A rota gerenciada e o fallback no host têm garantias diferentes; veja [a revisão de 16 de novembro](docs/review/readiness-2026-11-16.md).
+Rota Luna local no navegador: [inicialização e aprovação explícita](docs/host-luna-preview.md). A rota gerenciada e o fallback no host têm garantias diferentes; veja [a prontidão atual](docs/review/onboarding-readiness-2026-11-17.md).
 
 O Study Atlas explora um assistente colaborativo usando DeepSeek Harness (DSH), dois espaços de trabalho sintéticos e um calendário local Calendarpit. A interface complementar propõe blocos de estudo, permite aprová-los separadamente, registra feedback opcional e apresenta um resumo da rotina.
 
 O planejador de exemplo é determinístico. O DSH pode usar as ferramentas MCP e acrescentar uma interpretação quando um modelo estiver configurado. Nenhuma conta real do Google ou arquivo pessoal é necessária.
 
-## Pré-requisitos e execução
+## Demonstração atual do grupo
+
+Usar [o pacote/guia de geração bilíngue](docs/onboarding/README.md) e [o checklist autossuficiente](docs/onboarding/facilitator-checklist.md). A demonstração interativa atual fica em `http://127.0.0.1:4176/` no computador do facilitador, com o fallback Luna no host identificado. Ela usa uma execução descartável autoritativa, API compatível com Google e OAuth sintético, além de revisão próxima/futura separada. O [relatório atual](docs/review/onboarding-readiness-2026-11-17.md) registra testes e limites.
+
+## Execução do protótipo legado
+
+O fluxo abaixo na porta 4174 e API administrativa preserva recursos anteriores, como formulários de feedback/relatórios. É outra entrada; não usar seu reset/administração para alterar uma execução gerenciada.
+
 
 Instale Docker, Docker Compose, Node.js/npm e `pdftotext` (Poppler). O pacote instala um Node 24 local ao projeto para o DSH.
 
@@ -28,7 +35,7 @@ Em outro terminal, execute `npm run dsh:study`, abra a URL local apresentada, co
 
 Para conversar na aba **Colaborar**, conclua primeiro a autenticação Codex indicada em [modelos](docs/models.pt-BR.md) e instale o plugin também no perfil SDK com `npm run install:codex-plugin:sdk`. Abra `http://localhost:4174` ou `http://127.0.0.1:4174` no computador de desenvolvimento: o controle do modelo não aceita conexões da LAN ou do Tailscale enquanto a prévia não tiver autenticação. GPT-6 Luna é a rota padrão. A rota limitada de comparação com DeepSeek não está habilitada neste caminho executável. As conversas ficam em memória e não são retomadas após reiniciar o servidor.
 
-## Roteiro
+## Roteiro legado
 
 1. Escolha Ana ou Bruno e reinicie o cenário. Explore os arquivos e leia uma ementa.
 2. Crie e revise a proposta. Nenhum evento é alterado antes da aprovação.
@@ -38,7 +45,7 @@ Para conversar na aba **Colaborar**, conclua primeiro a autenticação Codex ind
 
 O dia simulado é 02/11/2026, no fuso de São Paulo. Horas agendadas não comprovam realização.
 
-## Verificação e limites
+## Verificação legada e limites compartilhados
 
 Execute `npm test` para os testes determinísticos e `npm run test:integration` para testar o Calendarpit em execução. O teste de integração reinicia o calendário sintético de Ana.
 
