@@ -115,6 +115,7 @@ test('structured question controls send native selections or custom answers, sur
   const document=new Document();globalThis.document=document;
   for(const [id,value] of [['language','en'],['student','bruno']])document.add(id,value);
   for(const id of ['mode','start','retire','refresh','send','chat-title','calendar-title','proposal-title','approval-note','run','run-warning','notice','messages','question','calendar','proposal','chat','text'])document.add(id);
+  const shortcut=document.add('nav-chat');
   const frames=[],session=new StudySession('bruno');session.child={stdin:{destroyed:false,write:line=>frames.push(JSON.parse(line))},kill(){}};session.busy=true;
   const ask=(requestId,questions)=>session.receive({id:'rpc-'+requestId,method:'user-question/ask',params:{requestId,questions}});
   const choices=[{label:'Algoritmos',description:'Graphs exam'},{label:'Banco de Dados',description:'Modeling project'}];
@@ -134,13 +135,14 @@ test('structured question controls send native selections or custom answers, sur
   const root=document.getElementById('question'),all=predicate=>descendants(root,predicate),form=()=>root.children[0];
   try{
     await import(`../public/managed.js?question-test=${Date.now()}`);
+    assert.equal(shortcut.href,'#question');assert.equal(shortcut.textContent,'Answer question');
     let radios=all(n=>n.tagName==='INPUT'&&n.type==='radio'),checks=all(n=>n.tagName==='INPUT'&&n.type==='checkbox'),typed=all(n=>n.tagName==='TEXTAREA');
     assert.equal(radios.length,3,'single-select includes its two choices and explicit custom mode');assert.equal(checks.length,2);assert.equal(all(n=>n.tagName==='FIELDSET').length,3);
     assert.match(root.textContent,/Graphs exam/,'option descriptions remain visible');
     await form().onsubmit({preventDefault(){}});assert.equal(answerCalls,0,'blank answers do not cross the API');assert.equal(document.activeElement,radios[0]);
     radios[0].checked=true;radios[0].onchange();checks[0].checked=true;checks[1].checked=true;typed[1].value='Paper also';typed[2].value='Mastery is unspecified';
     const oldForm=form();await poll();assert.equal(form(),oldForm);assert.equal(typed[2].value,'Mastery is unspecified');
-    document.getElementById('language').value='pt';await poll();assert.match(root.textContent,/Enviar resposta/);
+    document.getElementById('language').value='pt';await poll();assert.match(root.textContent,/Enviar resposta/);assert.equal(shortcut.textContent,'Responder pergunta');
     typed=all(n=>n.tagName==='TEXTAREA');assert.equal(typed[2].value,'Mastery is unspecified','language changes preserve the draft');assert.equal(all(n=>n.type==='checkbox').filter(n=>n.checked).length,2);
     const sending=form().onsubmit({preventDefault(){}});assert.equal(answerCalls,1);assert(all(n=>n.tagName==='BUTTON').every(n=>n.disabled));
     await form().onsubmit({preventDefault(){}});assert.equal(answerCalls,1,'pending answers are single-flight');

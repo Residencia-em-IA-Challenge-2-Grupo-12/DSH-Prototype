@@ -5,3 +5,32 @@
 .question-form fieldset{min-width:0;margin:0 0 16px;padding:12px;border:1px solid var(--line);border-radius:8px}.question-form legend{font-weight:600;padding:0 4px}.question-option{display:flex;align-items:flex-start;gap:8px;margin:8px 0;cursor:pointer}.question-option input{flex:none;margin:5px 0 0;accent-color:var(--green)}.question-option input:focus-visible{outline:3px solid #75a1de;outline-offset:2px}.question-custom{display:block;font-size:13px;margin-top:12px}.question-custom textarea{display:block;margin-top:6px}.question-form button{margin:4px 8px 0 0}.question-form [role=alert]{color:#843c23;margin-bottom:8px}.question-form [role=alert]:empty{display:none}
 
 #retire-confirm:not([hidden]){margin-top:16px;padding:16px;border:1px solid #b99c78;border-radius:10px;background:#fff5e8}#retire-confirm p{overflow-wrap:anywhere;font-size:14px}#retire-confirm button{margin:4px 8px 0 0}
+
+.workspace-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  padding: .45rem 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.workspace-nav a {
+  padding: .4rem .65rem;
+  color: var(--green);
+  font-weight: 600;
+  text-underline-offset: .2em;
+}
+.workspace-nav a:focus-visible { outline: 3px solid #75a1de; }
+.layout { grid-template-areas: "chat week"; }
+.calendar-panel { grid-area: week; min-width: 0; }
+.chat-panel { grid-area: chat; top: 3.75rem; min-width: 0; }
+.layout h2[id], #question { scroll-margin-top: 4rem; }
+#review { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.calendar-scroll { max-height: min(60vh, 620px); }
+@media (max-width: 900px) {
+  .layout { grid-template-areas: "week" "chat"; }
+  .workspace-nav a { font-size: .9rem; }
+}

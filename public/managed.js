@@ -2,7 +2,7 @@ import {mountCalendarWeek} from './calendar-week.js';
 import {renderConversation} from './chat-message.js';
 const words={
   en:{
-    mode:'Managed experimental interface · synthetic data only · scripted/API gateway route; Luna not connected',
+    weekLink:'Week',chatLink:'Conversation',questionLink:'Answer question',mode:'Managed experimental interface · synthetic data only · scripted/API gateway route; Luna not connected',
     hostMode:'Host Luna fallback · GPT-6 Luna · synthetic data only · DSH/controller on host, Calendarpit in Docker; restart recovery is limited',
     localAccess:'Open the live controls directly in a browser on the facilitator computer at http://127.0.0.1:4176/. Phone or embedded previews are not supported for control.',
     invalidResponse:'The preview or server returned an empty or invalid response',unconfirmed:'Could not confirm the operation. Refresh and inspect the run before retrying; changes may have occurred.',connectionError:'Could not reach the local service.',requestFailed:'Request failed',
@@ -18,7 +18,7 @@ const words={
     confirmArchive:'Confirm end and archive',keepRun:'Keep run open',retiring:'Archiving and verifying retirement…',runChanged:'The selected run changed. Review the current run before ending it.',confirm:'End this synthetic run and archive its evidence?',pending:'pending',applied:'applied',rejected:'rejected',applyingStatus:'applying'
   },
   pt:{
-    mode:'Interface gerenciada experimental · apenas dados sintéticos · rota de gateway; Luna ainda não conectada',
+    weekLink:'Semana',chatLink:'Conversa',questionLink:'Responder pergunta',mode:'Interface gerenciada experimental · apenas dados sintéticos · rota de gateway; Luna ainda não conectada',
     hostMode:'Fallback Luna no host · GPT-6 Luna · apenas dados sintéticos · DSH/controlador no host, Calendarpit no Docker; recuperação após reinício é limitada',
     localAccess:'Abra os controles diretamente em um navegador na máquina do facilitador em http://127.0.0.1:4176/. Prévias no celular ou incorporadas não permitem controlar a execução.',
     invalidResponse:'A prévia ou o servidor retornou uma resposta vazia ou inválida',unconfirmed:'Não foi possível confirmar a operação. Atualize e confira a execução antes de tentar novamente; pode ter ocorrido uma alteração.',connectionError:'Não foi possível acessar o serviço local.',requestFailed:'A solicitação falhou',
@@ -63,7 +63,7 @@ async function action(fn,success){
 }
 function labels(){
   document.documentElement.lang=$('language').value==='pt'?'pt-BR':'en';
-  for(const [id,key] of [['mode','mode'],['access-note','localAccess'],['start','start'],['retire','retire'],['refresh','refresh'],['send','send'],['chat-title','chat'],['calendar-title','calendar'],['proposal-title','proposal'],['message-label','messageLabel']])if($(id))$(id).textContent=t(key);
+  for(const [id,key] of [['mode','mode'],['access-note','localAccess'],['start','start'],['retire','retire'],['refresh','refresh'],['send','send'],['chat-title','chat'],['calendar-title','calendar'],['proposal-title','proposal'],['message-label','messageLabel'],['nav-calendar','weekLink'],['nav-review','proposal']])if($(id))$(id).textContent=t(key);
   $('mode').textContent=t(runtime==='host-luna-fallback'?'hostMode':'mode');
   if($('approval-note'))$('approval-note').textContent=t('approvalNote');
   renderRetireReview();
@@ -110,7 +110,15 @@ function setQuestionPending(value){
   if(questionSubmit)questionSubmit.disabled=value;
   if(questionCancel)questionCancel.disabled=value;
 }
+function chatShortcut(question){
+  const link=$('nav-chat');
+  if(link){
+    link.href=question?'#question':'#chat-title';
+    link.textContent=t(question?'questionLink':'chatLink');
+  }
+}
 function renderQuestion(question){
+  chatShortcut(question);
   const identity=question?JSON.stringify([run?.id,question.requestId]):'';
   const key=JSON.stringify([identity,$('language').value,question]);if(key===questionKey)return;
   const draft=identity===questionIdentity?questionDraft():new Map();
@@ -228,6 +236,7 @@ function renderProposal(state){
   }
 }
 function clearUnavailable(){
+  chatShortcut(null);
   for(const id of ['messages','question','calendar','proposal'])if($(id).children.length)$(id).replaceChildren();
   messagesKey=questionKey=calendarKey=proposalKey='';questionIdentity='';questionEpoch++;questionPending=false;questionControls=[];lastState=null;calendarView=null;$('calendar').append(node('p',t('noEvents')));
 }
