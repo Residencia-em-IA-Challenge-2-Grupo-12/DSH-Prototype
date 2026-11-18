@@ -1,3 +1,5 @@
+import {BrokerTransportError} from './study-broker.mjs';
+
 // Browser adapter only. The trusted lifecycle/API is injected; no Docker
 // command, provider origin or credential path is accepted from the browser.
 export function createManagedHttpHandler({api,origin}={}){
@@ -33,6 +35,13 @@ export function createManagedHttpHandler({api,origin}={}){
         if(!args||Array.isArray(args)||typeof args!=='object')throw Error('Invalid request');
       }
       return reply(res,200,await route(args));
-    }catch(error){return reply(res,400,{error:error.message});}
+    }catch(error){
+      if(error instanceof BrokerTransportError){
+        const detail={error:'Could not confirm the controller response'};
+        if(req.method==='POST')detail.outcome='unconfirmed';
+        return reply(res,502,detail);
+      }
+      return reply(res,400,{error:error.message});
+    }
   };
 }

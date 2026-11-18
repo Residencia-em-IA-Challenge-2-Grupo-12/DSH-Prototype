@@ -14,6 +14,7 @@ const words={
     archived:'Run archived.',refreshed:'View refreshed.',none:'No active run',
     blocked:'Recorded run is blocked or needs inspection. Preserve its evidence before replacement.',
     unknown:'Calendar unavailable; its current contents are unknown.',
+    recovery:'Calendar changes need recovery inspection. Approval is disabled; preserve the run and contact a maintainer before retrying.',
     confirmArchive:'Confirm end and archive',keepRun:'Keep run open',retiring:'Archiving and verifying retirement…',runChanged:'The selected run changed. Review the current run before ending it.',confirm:'End this synthetic run and archive its evidence?',pending:'pending',applied:'applied',rejected:'rejected',applyingStatus:'applying'
   },
   pt:{
@@ -29,25 +30,27 @@ const words={
     archived:'Execução arquivada.',refreshed:'Visualização atualizada.',none:'Nenhuma execução ativa',
     blocked:'Execução bloqueada ou pendente de inspeção. Preserve as evidências antes de substituí-la.',
     unknown:'Calendário indisponível; seu conteúdo atual é desconhecido.',
+    recovery:'As alterações no calendário precisam de inspeção de recuperação. A aprovação está desativada; preserve a execução e contate um responsável pela manutenção antes de tentar novamente.',
     confirmArchive:'Confirmar encerramento e arquivar',keepRun:'Manter execução aberta',retiring:'Arquivando e verificando encerramento…',runChanged:'A execução selecionada mudou. Revise a execução atual antes de encerrá-la.',confirm:'Encerrar a execução sintética e arquivar as evidências?',pending:'pendente',applied:'aplicado',rejected:'rejeitado',applyingStatus:'aplicando'
   }
 };
 const $=id=>document.getElementById(id);
 let run=null,available=false,busy=false,questionKey='',messagesKey='',calendarKey='',proposalKey='',lastState=null,runtime='managed-gateway';
-let calendarView=null,retireReview=null,retirePending=false;
+let calendarView=null,retireReview=null,retirePending=false,retireReviewKey='',retireConfirmButton=null;
 let questionIdentity='',questionEpoch=0,questionPending=false,questionControls=[],questionSubmit=null,questionCancel=null,questionError=null;
-const approvalBusy=new Set(),approvalCompleted=new Set();
+const approvalBusy=new Set(),approvalCompleted=new Set(),approvalReviewRequired=new Set();
 const t=key=>words[$('language').value][key];
 function node(tag,text){const element=document.createElement(tag);element.textContent=text;return element;}
 async function api(route,data){
   const method=data?'POST':'GET',query=data?'':'?'+new URLSearchParams(run?{runId:run.id}:{});
   let response;
   try{response=await fetch('/api/'+route+query,{method,...(data?{headers:{'content-type':'application/json'},body:JSON.stringify({runId:run?.id,...data})}:{})});}
-  catch{throw Error(`${data?t('unconfirmed')+' ':''}${t('connectionError')} ${t('localAccess')}`);}
-  const invalid=()=>Error(`${data?t('unconfirmed')+' ':''}${t('invalidResponse')} (HTTP ${response.status||'unknown'}). ${t('localAccess')}`);
+  catch{throw Object.assign(Error(`${data?t('unconfirmed')+' ':''}${t('connectionError')} ${t('localAccess')}`),{unconfirmed:!!data});}
+  const invalid=()=>Object.assign(Error(`${data?t('unconfirmed')+' ':''}${t('invalidResponse')} (HTTP ${response.status||'unknown'}). ${t('localAccess')}`),{unconfirmed:!!data});
   let body;try{body=await response.json();}catch{throw invalid();}
   if(!body||typeof body!=='object'||Array.isArray(body))throw invalid();
   if(!response.ok){
+    if(data&&body.outcome==='unconfirmed')throw Object.assign(Error(t('unconfirmed')),{unconfirmed:true});
     if(response.status===401||response.status===403)throw Error(`${t('requestFailed')} (HTTP ${response.status}). ${t('localAccess')}`);
     throw Error(typeof body.error==='string'?body.error:t('requestFailed'));
   }
@@ -67,6 +70,9 @@ function labels(){
 }
 function renderRetireReview(){
   const panel=$('retire-confirm');if(!panel)return;
+  const key=JSON.stringify([retireReview,retirePending,$('language').value]);
+  if(key===retireReviewKey)return retireConfirmButton;
+  retireReviewKey=key;retireConfirmButton=null;
   panel.setAttribute('aria-label',t('confirm'));panel.replaceChildren();panel.hidden=!retireReview;if(!retireReview)return;
   const review=retireReview;
   panel.append(node('h3',t('confirm')),node('p',`${review.student} · ${review.id}`));
@@ -81,12 +87,12 @@ function renderRetireReview(){
     catch(error){showNotice(error.message);try{await refresh();}catch{}}
     finally{retirePending=false;renderRetireReview();$('retire').disabled=!run||retirePending;}
   };
-  panel.append(confirmButton,cancelButton);return confirmButton;
+  panel.append(confirmButton,cancelButton);retireConfirmButton=confirmButton;return confirmButton;
 }
 function canApprove(state,plan,section){
   const changes=(plan[section]?.length||0)+(plan.remove?.[section]?.length||0)>0;
   return available&&plan.status?.[section]==='pending'&&!state.recovery&&state.calendar?.availability==='available'&&changes&&
-    !approvalBusy.has(`${plan.id}:${section}`)&&!approvalCompleted.has(`${plan.id}:${section}`);
+    !approvalBusy.has(`${plan.id}:${section}`)&&!approvalCompleted.has(`${plan.id}:${section}`)&&!approvalReviewRequired.has(`${plan.id}:${section}`);
 }
 function renderMessages(messages){
   const key=JSON.stringify([run?.id,$('language').value,messages]);if(key===messagesKey)return;
@@ -200,9 +206,12 @@ function renderProposal(state){
         await api('approve',{planId:plan.id,section});approvalCompleted.add(approvalKey);
         await refresh();showNotice(t('approved'));
       } catch(error) {
-        const message=error.message;
-        try {await refresh();} catch {}
-        showNotice(message);
+        // Even a fresh pending snapshot can predate a controller write that
+        // continued after its response was lost. Require a different proposal.
+        if(error.unconfirmed)approvalReviewRequired.add(approvalKey);
+        try {await refresh();}
+        catch {approvalReviewRequired.add(approvalKey);}
+        showNotice(error.message);
       } finally {
         approvalBusy.delete(approvalKey);
         // refresh() may have replaced this button while the operation was pending.
@@ -211,6 +220,11 @@ function renderProposal(state){
       }
     };
     box.append(approve);$('proposal').append(box);
+    if(status==='pending'&&approvalReviewRequired.has(approvalKey)){
+      box.append(node('p',$('language').value==='pt'
+        ? 'Confira o calendário e revise uma nova proposta antes de aprovar esta seção.'
+        : 'Inspect the calendar and review a new proposal before approving this section.'));
+    }
   }
 }
 function clearUnavailable(){
@@ -226,6 +240,7 @@ async function refresh(){
   if(!available){clearUnavailable();return;}
   const [chat,state]=await Promise.all([api('chat/state'),api('status')]);busy=chat.busy;$('send').disabled=busy;
   lastState=state;
+  $('run-warning').textContent=state.recovery?t('recovery'):'';
   if($('chat-progress'))$('chat-progress').textContent=t(chat.question?'waiting':busy?'working':'ready');
   renderMessages(chat.messages);renderQuestion(chat.question);renderCalendar(state);renderProposal(state);
   if(chat.error)showNotice(chat.error);

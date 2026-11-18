@@ -184,6 +184,39 @@ test('empty or non-JSON preview responses explain local access and uncertain mut
   }
 });
 
+test('unchanged polls preserve archive confirmation focus and recovery guidance persists across reload and language changes',async()=>{
+  const document=new Document();globalThis.document=document;
+  for(const [id,value] of [['language','en'],['student','bruno']])document.add(id,value);
+  for(const id of ['mode','start','retire','refresh','send','chat-title','calendar-title','proposal-title','approval-note','run','run-warning','notice','messages','question','calendar','proposal','chat','text','retire-confirm'])document.add(id);
+  let poll,recovery={reason:'uncertain'};
+  const plan={id:'proposal-recovery',status:{near:'pending',future:'pending'},near:[{id:'one',summary:'Study'}],future:[],remove:{near:[],future:[]}};
+  globalThis.setInterval=callback=>{poll=callback;return 1;};
+  globalThis.fetch=async url=>{
+    const route=new URL(url,'http://localhost').pathname;
+    if(route==='/api/run')return response({run:{id:'run-recovery',student:'bruno',phase:'active'},available:true});
+    if(route==='/api/status')return response({state:{plan},recovery,calendar:{availability:'available'},events:[]});
+    if(route==='/api/chat/state')return response({busy:false,messages:[],question:null});
+    throw Error('Unexpected route '+route);
+  };
+  try{
+    await import(`../public/managed.js?recovery-focus=${Date.now()}`);
+    const warning=document.getElementById('run-warning');
+    assert.match(warning.textContent,/Approval is disabled.*contact a maintainer/);
+    assert.equal(buttonWithLabel(document.getElementById('proposal'),'Approve coming week').disabled,true);
+    document.getElementById('retire').onclick();
+    const panel=document.getElementById('retire-confirm'),confirm=descendants(panel,n=>n.tagName==='BUTTON')[0];
+    assert.equal(document.activeElement,confirm);
+    await poll();
+    assert.equal(descendants(panel,n=>n.tagName==='BUTTON')[0],confirm);
+    assert.equal(document.activeElement,confirm);
+    assert.match(warning.textContent,/Approval is disabled/);
+    document.getElementById('language').value='pt';await poll();
+    assert.match(warning.textContent,/aprovação está desativada.*manutenção/);
+    assert.notEqual(descendants(panel,n=>n.tagName==='BUTTON')[0],confirm,'language changes update the confirmation');
+    recovery=null;await poll();assert.equal(warning.textContent,'');
+  }finally{delete globalThis.document;delete globalThis.fetch;delete globalThis.setInterval;}
+});
+
 test('archival uses explicit run-bound page confirmation, supports cancel/localization and fences duplicate or stale confirmation',async()=>{
   const document=new Document();globalThis.document=document;
   for(const [id,value] of [['language','en'],['student','bruno']])document.add(id,value);
@@ -211,4 +244,52 @@ test('archival uses explicit run-bound page confirmation, supports cancel/locali
     const pending=confirmButton.onclick();assert.equal(retireCalls,1);assert(buttons().every(b=>b.disabled));await confirmButton.onclick();assert.equal(retireCalls,1);
     finish.resolve();await pending;assert.equal(selectedRun,'archive-run-2');assert.equal(panel.children.length,0);assert.match(document.getElementById('notice').textContent,/Execução arquivada/);assert.equal(nativePrompts,0);
   }finally{delete globalThis.document;delete globalThis.fetch;delete globalThis.setInterval;delete globalThis.confirm;}
+});
+
+test('an unconfirmed approval stays disabled after failed readback and a pending poll',async()=>{
+  const document=new Document();
+  for(const [id,value] of [['language','en'],['student','bruno']])document.add(id,value);
+  for(const id of ['mode','start','retire','refresh','send','chat-title','calendar-title','proposal-title','approval-note','run','run-warning','notice','messages','question','calendar','proposal','chat','text'])document.add(id);
+  globalThis.document=document;
+  let poll,approvalCalls=0,readUnavailable=false,planId='plan-before-timeout';
+  globalThis.setInterval=callback=>{poll=callback;return 1;};
+  globalThis.fetch=async url=>{
+    switch(new URL(url,'http://localhost').pathname){
+      case '/api/run':
+        return response({run:{id:'run-1',student:'bruno',phase:'active'},available:true});
+      case '/api/chat/state':
+        return response({busy:false,messages:[]});
+      case '/api/status':
+        if(readUnavailable)throw Error('Readback unavailable');
+        return response({
+          state:{plan:{id:planId,status:{near:'pending'},near:[{id:'study',summary:'Study'}]}},
+          calendar:{availability:'available'},events:[]
+        });
+      case '/api/approve':
+        approvalCalls++;
+        readUnavailable=true;
+        return {...response({error:'Could not confirm the controller response',outcome:'unconfirmed'},false),status:502};
+      default:
+        throw Error(`Unexpected route ${url}`);
+    }
+  };
+  try {
+    await import(`../public/managed.js?unknown-approval-test=${Date.now()}`);
+    const proposals=document.getElementById('proposal');
+    const near=()=>buttonWithLabel(proposals,'Approve coming week');
+    await near().onclick();
+    assert.equal(approvalCalls,1);
+    assert.match(document.getElementById('notice').textContent,/Could not confirm|could not be confirmed/i);
+    assert.equal(near().disabled,true);
+    await near().onclick();
+    assert.equal(approvalCalls,1,'the cached pending proposal cannot trigger a retry');
+    readUnavailable=false;
+    await poll();
+    assert.equal(near().disabled,true,'a pending snapshot does not establish the write failed');
+    planId='fresh-proposal';
+    await poll();
+    assert.equal(near().disabled,false,'the newly reviewed proposal is eligible');
+  } finally {
+    delete globalThis.document;delete globalThis.fetch;delete globalThis.setInterval;
+  }
 });
