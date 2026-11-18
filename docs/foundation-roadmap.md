@@ -2,6 +2,8 @@
 
 The agreed product is a calendar-centered assistant for adult students. This phase uses synthetic calendars, workspaces and personas. GPT-6 Luna remains the default model. A later, bounded comparison also authorizes `deepseek/deepseek-v4.1-flash-1017` through OpenRouter's official DeepSeek provider, with fallback disabled and setup, agent and evaluator calls sharing the approximate $5 locally tracked target. Other generative models and paid-provider fallback are not authorized; local embedding models are separate dependencies.
 
+For delivery evidence and remaining limits, start with the [baseline readiness report](review/onboarding-readiness-2026-11-17.md). [Issue #9](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/9) owns the current baseline decision.
+
 ## Delivery checkpoints
 
 The [current Project work sequence](project-work-sequence.md) separates demonstration delivery and lossless integration review from later scheduling/activity experiments. The new study-method exploration follows a stable experimental baseline; it does not require every open experimental PR to merge. PR #8 still requires the user's explicit decision.
@@ -13,9 +15,9 @@ The [current Project work sequence](project-work-sequence.md) separates demonstr
 
 ## Baseline versus target
 
-The original #8 companion uses the earlier shared Calendarpit management API and JSON state; child PRs are not already integrated into it. Recovery #37 adds SQLite-backed state/durable claims; #38 adds isolated simulator/provider/broker/agent lifecycle. The thin #39 companion now reaches that managed path through private controller RPC and passed a scripted browser loop. Two real Luna API loops also passed on the explicitly labeled host fallback with a fresh Google-compatible Calendarpit each time. Those are supporting evidence, not a verified human Luna browser walkthrough, recording or fully containerized subscription route. See [current companion status](managed-companion-progress.md) and [live API review](onboarding/luna-schedule-review.md).
+The original #8 companion uses the shared simulator management API and JSON state. The proposed stack adds durable write claims (#37), disposable runs and brokered provider access (#38), and a browser interface through private controller RPC (#39). The live subscription fallback runs DSH and the controller on the facilitator host with Calendarpit in Docker. The managed Docker-agent route has separate scripted evidence.
 
-The actual subscription-loaded probe verifies the agent-local eight-tool catalog, broker readiness and configured model-route guard. Current local offline evidence is 150 passing checks. Host-clock injection is disabled only in the synthetic profile; evidence keeps real timestamps. Remaining work includes browser/Luna verification, packaging/recording, truthful facilitator recovery and integrated readiness review. The agent influences limited planner inputs; evidence-informed critique, rich alternatives and method/context personalization remain unimplemented. All current work remains synthetic-only with local facilitator controls; these checks are not production isolation or real-provider guarantees.
+The current heuristic accepts a limited set of agent-selected parameters. Evidence-informed critique, richer alternatives and study-method personalization are later planning work. Use the readiness report for dated walkthroughs, package verification and open recovery limitations.
 
 The target uses a transactional SQLite-backed domain service, isolated Calendarpit instances with the Google-compatible API, replayable checkpoints, Docker workers without credentials or Docker socket, and a proportional calendar. Recheck proposal context, evidence and calendar versions before separately approved writes. Retain actual state after partial failures. A review of an inference or question response is never calendar approval.
 
