@@ -1,5 +1,5 @@
 import {spawn} from 'node:child_process';
-import {mkdir} from 'node:fs/promises';
+import {mkdtemp,rmdir} from 'node:fs/promises';
 import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {ROOT} from '../src/core.mjs';
@@ -12,12 +12,14 @@ const root=process.env.STUDY_RUN_ROOT||path.join(tmpdir(),`study-luna-${process.
 const dshHome=process.env.STUDY_LUNA_DSH_HOME,port=Number(process.env.PORT||4176);
 if(Buffer.byteLength(path.join(root,'runs','00000000-0000-4000-8000-000000000000','ipc/agent.sock'))>100)throw Error('Choose a shorter STUDY_RUN_ROOT for Unix socket limits');
 if(!Number.isInteger(port)||port<1||port>65535)throw Error('Invalid local port');
-let driver,web,rpc;
+let driver,web,rpc,ipc;
 const manager=await createExclusiveRunManager({root,driverFactory:({lease})=>{
   driver=createHostLunaDriver({root,lease,dshHome});return driver;
 }});
 try{
-  const ipc=path.join(root,'control');await mkdir(ipc,{recursive:true,mode:0o700});
+  // An old web process must never reconnect to a replacement controller.
+  // The lease and run registry still use the original persistent root.
+  ipc=await mkdtemp(path.join(root,'control-'));
   const socketPath=path.join(ipc,'controller.sock');
   const operations=createManagedStudyApi({manager,driver});
   const api={...operations,
@@ -34,7 +36,7 @@ try{
     if(stopping)return;stopping=true;web.kill('SIGTERM');
     try{const run=await manager.current();if(run)await manager.retire({expectedRunId:run.id});}
     catch{process.stderr.write('Retirement blocked: preserve the recorded run and resources for facilitator inspection.\n');process.exitCode=1;}
-    try{await rpc.close();await manager.close();}catch{process.exitCode=1;}
+    try{await rpc.close();await rmdir(ipc);await manager.close();}catch{process.exitCode=1;}
   }
   for(const signal of ['SIGINT','SIGTERM'])process.once(signal,()=>stop());
-}catch(error){web?.kill('SIGTERM');await rpc?.close();await manager.close();throw error;}
+}catch(error){web?.kill('SIGTERM');await rpc?.close();if(ipc)await rmdir(ipc);await manager.close();throw error;}
