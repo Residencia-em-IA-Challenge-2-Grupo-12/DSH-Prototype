@@ -290,6 +290,7 @@ export async function draft(calendar, student, options={}, {requireStaged=false}
     const context=state.planningContext;
     if(context?.pending)throw new Error('The operator must review the pending planning context revision');
     const profile=context?reviewedPlannerProfile(student,context,FIXED_TODAY):baseline;
+    if(context&&options.hours!==undefined&&options.hours!==profile.targetHours)throw new Error('Review a new planning context to change the confirmed hours');
     const unseen=diffSnapshots(state.lastSnapshot,events);
     state.protectedIds=[...new Set([...(state.protectedIds||[]),...unseen.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
     const plan=makePlan(profile, events, {...options,...(context?{hours:profile.targetHours}:{}),protectedIds:state.protectedIds||[]});

@@ -54,7 +54,8 @@ test('cold-start planner uses confirmed cited facts and retains an operator answ
   const context=await call(reopened,'read_planning_context');
   assert.deepEqual(context.confirmed.operatorReplies,replies);
   assert.equal(context.confirmed.id,pending.id);
-  const plan=await call(reopened,'draft_study_plan',{hours:19,weeks:3});
+  await assert.rejects(()=>call(reopened,'draft_study_plan',{hours:19}),/change the confirmed hours/);
+  const plan=await call(reopened,'draft_study_plan',{weeks:3});
   assert.equal(plan.planningContextRevisionId,pending.id);
   assert.equal(plan.near.length,5);
   assert.equal(plan.future.length,0);

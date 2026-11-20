@@ -134,7 +134,7 @@ try {
   openSession();
   terminal=createInterface({input:process.stdin,terminal:process.stdin.isTTY});
   const lines=terminal[Symbol.asyncIterator]();
-  console.log('Fictional exercise. Send a message, :show context and plan, :confirm <revision ID>, :new session, or :quit.');
+  console.log('Fictional exercise. Send a message, :show context and plan, :confirm <revision ID>, :new (new session), or :quit.');
   while(true) {
     const answer=await takeLine(lines,'\nOperator > ');
     if(answer===undefined || answer.trim()===':quit')break;
@@ -167,7 +167,7 @@ try {
   result.plan=state.plan;
   assert.deepEqual(await calendar.events(student),before,'Calendar changed during the review-only exercise');
   result.calendarUnchanged=true;
-  result.completed=true;
+  result.completed=Boolean(result.plan);
 } catch(error) {
   result.failure=error.message;
   process.exitCode=1;
