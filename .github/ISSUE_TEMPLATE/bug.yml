@@ -18,3 +18,9 @@ body:
     id: environment
     attributes:
       label: Environment and sanitized logs
+      description: Include the relevant version/configuration and sanitized evidence; never include credentials or real personal/calendar data.
+  - type: textarea
+    id: next
+    attributes:
+      label: Evidence and next action
+      description: Link the current reproduction/evidence and state the next action, blockers, and accountable owner or ownership gap.

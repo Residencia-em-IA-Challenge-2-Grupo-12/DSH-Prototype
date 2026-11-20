@@ -1,0 +1,956 @@
+[
+  {
+    "baseRefName": "feat/disposable-study-runs",
+    "headRefName": "feat/managed-browser-integration",
+    "headRefOid": "8447712cdbd815f2a556317cffdb7fa53aa4931b",
+    "isDraft": true,
+    "number": 39,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-17T21:14:19Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/44177350925/job/134372137927",
+        "name": "test",
+        "startedAt": "2026-11-17T21:12:27Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-17T21:13:45Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/44177339662/job/134372100218",
+        "name": "test",
+        "startedAt": "2026-11-17T21:12:23Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "WIP: connect managed study workflow and organize review",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/39"
+  },
+  {
+    "baseRefName": "fix/baseline-recovery",
+    "headRefName": "feat/disposable-study-runs",
+    "headRefOid": "38da40034632dba1fc613c7d7c2ab8d79c075021",
+    "isDraft": true,
+    "number": 38,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-13T01:13:34Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/43343081051/job/131615836600",
+        "name": "test",
+        "startedAt": "2026-11-13T01:12:07Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-13T01:13:15Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/43343071463/job/131615805518",
+        "name": "test",
+        "startedAt": "2026-11-13T01:12:04Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "WIP: isolate synthetic study runs and provider access",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/38"
+  },
+  {
+    "baseRefName": "feat/study-planning-demo",
+    "headRefName": "fix/baseline-recovery",
+    "headRefOid": "bad383e8721b50b4bd053d0157b5df029ea051b8",
+    "isDraft": true,
+    "number": 37,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-11T13:35:37Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/43030353979/job/130555488641",
+        "name": "test",
+        "startedAt": "2026-11-11T13:34:34Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-11T13:35:21Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/43030344476/job/130555456896",
+        "name": "test",
+        "startedAt": "2026-11-11T13:34:29Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "WIP: preserve synthetic state and prepare calendar recovery",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/37"
+  },
+  {
+    "baseRefName": "feat/realistic-bilingual-personas",
+    "headRefName": "feat/fixture-solver-comparison",
+    "headRefOid": "b506d165cd888d9647278530c900667c57a62633",
+    "isDraft": true,
+    "number": 35,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:28:54Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42406336154/job/128504740493",
+        "name": "test",
+        "startedAt": "2026-11-07T19:27:59Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:28:44Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42406332686/job/128504729073",
+        "name": "test",
+        "startedAt": "2026-11-07T19:27:56Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:28:10Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42406336147/job/128504740395",
+        "name": "test",
+        "startedAt": "2026-11-07T19:27:59Z",
+        "status": "COMPLETED",
+        "workflowName": "Persona fixtures"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:28:01Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42406332701/job/128504729064",
+        "name": "test",
+        "startedAt": "2026-11-07T19:27:56Z",
+        "status": "COMPLETED",
+        "workflowName": "Persona fixtures"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:28:17Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42406336162/job/128504740593",
+        "name": "test",
+        "startedAt": "2026-11-07T19:27:59Z",
+        "status": "COMPLETED",
+        "workflowName": "Solver experiment"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:28:14Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42406332739/job/128504729338",
+        "name": "test",
+        "startedAt": "2026-11-07T19:27:56Z",
+        "status": "COMPLETED",
+        "workflowName": "Solver experiment"
+      }
+    ],
+    "title": "Compare solvers against synthetic persona calendars",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/35"
+  },
+  {
+    "baseRefName": "feat/domain-service-api",
+    "headRefName": "feat/dsh-native-panel",
+    "headRefOid": "ad8c020106825996c7393fc68a74552710adbbea",
+    "isDraft": true,
+    "number": 34,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:39:16Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42407204633/job/128507360983",
+        "name": "test",
+        "startedAt": "2026-11-07T19:38:35Z",
+        "status": "COMPLETED",
+        "workflowName": "DSH native panel checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:39:14Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42407200787/job/128507348634",
+        "name": "test",
+        "startedAt": "2026-11-07T19:38:32Z",
+        "status": "COMPLETED",
+        "workflowName": "DSH native panel checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:39:42Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42407204650/job/128507360861",
+        "name": "test",
+        "startedAt": "2026-11-07T19:38:35Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:39:25Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42407200821/job/128507348724",
+        "name": "test",
+        "startedAt": "2026-11-07T19:38:32Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Prototype native DSH calendar panel carrier",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/34"
+  },
+  {
+    "baseRefName": "feat/shared-consumer-spike",
+    "headRefName": "feat/custom-shell-comparison",
+    "headRefOid": "bc321a40173f88d9621abaebc6b3bde454c8e324",
+    "isDraft": true,
+    "number": 33,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:39:47Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42407223623/job/128507420042",
+        "name": "test",
+        "startedAt": "2026-11-07T19:38:50Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:39:41Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42407219947/job/128507408771",
+        "name": "test",
+        "startedAt": "2026-11-07T19:38:47Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:39:27Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42407223616/job/128507420030",
+        "name": "compare",
+        "startedAt": "2026-11-07T19:38:51Z",
+        "status": "COMPLETED",
+        "workflowName": "Synthetic same-data shell comparison"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T19:39:28Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42407219564/job/128507407265",
+        "name": "compare",
+        "startedAt": "2026-11-07T19:38:47Z",
+        "status": "COMPLETED",
+        "workflowName": "Synthetic same-data shell comparison"
+      }
+    ],
+    "title": "Sketch custom synthetic calendar review shell",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/33"
+  },
+  {
+    "baseRefName": "feat/study-planning-demo",
+    "headRefName": "feat/evidence-admission-dossiers",
+    "headRefOid": "874907ba02cc3105553a94d65655977499e5a051",
+    "isDraft": true,
+    "number": 32,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:34Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42380022238/job/128425479712",
+        "name": "test",
+        "startedAt": "2026-11-07T14:06:29Z",
+        "status": "COMPLETED",
+        "workflowName": "Evidence candidate checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:17Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379999513/job/128425411229",
+        "name": "test",
+        "startedAt": "2026-11-07T14:06:11Z",
+        "status": "COMPLETED",
+        "workflowName": "Evidence candidate checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:07:23Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42380022304/job/128425479999",
+        "name": "test",
+        "startedAt": "2026-11-07T14:06:29Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:07:06Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379999526/job/128425411269",
+        "name": "test",
+        "startedAt": "2026-11-07T14:06:12Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Prepare inactive evidence admission dossiers",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/32"
+  },
+  {
+    "baseRefName": "feat/domain-service-api",
+    "headRefName": "feat/dsh-domain-read-bridge",
+    "headRefOid": "df54567bbcc9e9c29f33f5992e43742d11ee59b2",
+    "isDraft": true,
+    "number": 31,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T07:01:12Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42349396684/job/128334102272",
+        "name": "test",
+        "startedAt": "2026-11-07T07:00:16Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T07:01:02Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42349372462/job/128334040720",
+        "name": "test",
+        "startedAt": "2026-11-07T07:00:00Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Prototype read-only DSH domain bridge",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/31"
+  },
+  {
+    "baseRefName": "feat/calendar-domain-bridge",
+    "headRefName": "feat/shared-consumer-spike",
+    "headRefOid": "bbd28fa9609d496f2e718661598f27353f25ff92",
+    "isDraft": true,
+    "number": 30,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T06:58:14Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42349201001/job/128333508103",
+        "name": "test",
+        "startedAt": "2026-11-07T06:57:18Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T06:58:04Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42349184351/job/128333456045",
+        "name": "test",
+        "startedAt": "2026-11-07T06:57:02Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Connect synthetic context proposal and review",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/30"
+  },
+  {
+    "baseRefName": "feat/domain-service-api",
+    "headRefName": "feat/domain-service-container",
+    "headRefOid": "2a3cf7e9ef8eb99866e4b711b3b5f59e1039503f",
+    "isDraft": true,
+    "number": 29,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T06:54:37Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42348952479/job/128332750372",
+        "name": "test",
+        "startedAt": "2026-11-07T06:53:34Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T06:54:08Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42348934729/job/128332695097",
+        "name": "test",
+        "startedAt": "2026-11-07T06:53:18Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Package synthetic domain service in Docker",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/29"
+  },
+  {
+    "baseRefName": "feat/study-planning-demo",
+    "headRefName": "feat/synthetic-worker-spike",
+    "headRefOid": "f8aeea2a2ccfabb3e0efecd4c9a4539b9ae8d2d3",
+    "isDraft": true,
+    "number": 28,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-09T02:29:36Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42551145908/job/128946793943",
+        "name": "test",
+        "startedAt": "2026-11-09T02:28:40Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-09T02:29:39Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42551140911/job/128946778220",
+        "name": "test",
+        "startedAt": "2026-11-09T02:28:37Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-09T02:28:52Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42551145883/job/128946793799",
+        "name": "test",
+        "startedAt": "2026-11-09T02:28:40Z",
+        "status": "COMPLETED",
+        "workflowName": "Synthetic worker checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-09T02:28:53Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42551140912/job/128946778280",
+        "name": "test",
+        "startedAt": "2026-11-09T02:28:37Z",
+        "status": "COMPLETED",
+        "workflowName": "Synthetic worker checks"
+      }
+    ],
+    "title": "Prototype disposable synthetic Bash worker",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/28"
+  },
+  {
+    "baseRefName": "feat/calendar-experiment-bundle",
+    "headRefName": "feat/calendar-domain-bridge",
+    "headRefOid": "095f5693ca7d16f9a1367d2d0d46da53a24c140e",
+    "isDraft": true,
+    "number": 27,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:46:31Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42325767080/job/128260567859",
+        "name": "test",
+        "startedAt": "2026-11-07T01:45:40Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:46:21Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42325729974/job/128260451667",
+        "name": "test",
+        "startedAt": "2026-11-07T01:45:16Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Prototype approved synthetic calendar creation",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/27"
+  },
+  {
+    "baseRefName": "feat/embedding-screen-smoke",
+    "headRefName": "feat/bilingual-retrieval-challenge",
+    "headRefOid": "da6fdc7f1fe95afc7c10581ea9656272cadf8000",
+    "isDraft": true,
+    "number": 26,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:05:50Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379961012/job/128425290360",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:45Z",
+        "status": "COMPLETED",
+        "workflowName": "Embedding smoke checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:42Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379961010/job/128425290221",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:56Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:30Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379957101/job/128425277209",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:38Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:00Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379961032/job/128425290092",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:53Z",
+        "status": "COMPLETED",
+        "workflowName": "Retrieval challenge checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:05:44Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379957175/job/128425277661",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:38Z",
+        "status": "COMPLETED",
+        "workflowName": "Retrieval challenge checks"
+      }
+    ],
+    "title": "Add bilingual synthetic retrieval challenge",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/26"
+  },
+  {
+    "baseRefName": "feat/study-planning-demo",
+    "headRefName": "feat/realistic-bilingual-personas",
+    "headRefOid": "8e792920c09c49f395eb707a66bac2d6bf0d8c89",
+    "isDraft": true,
+    "number": 25,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:29Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379957481/job/128425278670",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:39Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:21Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379952543/job/128425262363",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:34Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:05:45Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379957287/job/128425278424",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:38Z",
+        "status": "COMPLETED",
+        "workflowName": "Persona fixtures"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:05:46Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379952631/job/128425263634",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:35Z",
+        "status": "COMPLETED",
+        "workflowName": "Persona fixtures"
+      }
+    ],
+    "title": "Add realistic bilingual synthetic personas",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/25"
+  },
+  {
+    "baseRefName": "feat/domain-store-spike",
+    "headRefName": "feat/domain-service-api",
+    "headRefOid": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+    "isDraft": true,
+    "number": 24,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:18:31Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42323271241/job/128252584819",
+        "name": "test",
+        "startedAt": "2026-11-07T01:17:43Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:18:33Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42323248159/job/128252508657",
+        "name": "test",
+        "startedAt": "2026-11-07T01:17:28Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Expose local transactional domain service",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/24"
+  },
+  {
+    "baseRefName": "feat/calendarpit-provider-api",
+    "headRefName": "feat/calendar-experiment-bundle",
+    "headRefOid": "6f2e128f08dea9051567ef346bc61e932e393b65",
+    "isDraft": true,
+    "number": 23,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:17:44Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42323206305/job/128252368918",
+        "name": "test",
+        "startedAt": "2026-11-07T01:16:59Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:17:43Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42323182289/job/128252290706",
+        "name": "test",
+        "startedAt": "2026-11-07T01:16:43Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Connect synthetic calendar checkpoint replay",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/23"
+  },
+  {
+    "baseRefName": "feat/study-planning-demo",
+    "headRefName": "feat/dsh-sidebar-spike",
+    "headRefOid": "516b3157a11b8820da732ecf42c871479d31e564",
+    "isDraft": true,
+    "number": 22,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:20:41Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42323459104/job/128253186510",
+        "name": "test",
+        "startedAt": "2026-11-07T01:19:45Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:20:31Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42323454772/job/128253172438",
+        "name": "test",
+        "startedAt": "2026-11-07T01:19:42Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Explore native DSH calendar sidebar registration",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/22"
+  },
+  {
+    "baseRefName": "feat/calendarpit-run-lifecycle",
+    "headRefName": "feat/calendarpit-provider-api",
+    "headRefOid": "8c2e808f02128db611ac88a97982881d940d0508",
+    "isDraft": true,
+    "number": 21,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:13:23Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42322798492/job/128251064233",
+        "name": "test",
+        "startedAt": "2026-11-07T01:12:44Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:13:27Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42322775495/job/128250984226",
+        "name": "test",
+        "startedAt": "2026-11-07T01:12:27Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Prototype synthetic provider calendar API",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/21"
+  },
+  {
+    "baseRefName": "feat/study-planning-demo",
+    "headRefName": "feat/embedding-screen-smoke",
+    "headRefOid": "bea47e8cc63cd164942c30ea1a9d2abacb67e720",
+    "isDraft": true,
+    "number": 20,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:05:51Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379959995/job/128425286887",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:46Z",
+        "status": "COMPLETED",
+        "workflowName": "Embedding smoke checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:05:44Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379955156/job/128425270816",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:37Z",
+        "status": "COMPLETED",
+        "workflowName": "Embedding smoke checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:34Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379960003/job/128425287185",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:52Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:34Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379955044/job/128425270428",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:37Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Add offline bilingual embedding screening scaffold",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/20"
+  },
+  {
+    "baseRefName": "feat/study-planning-demo",
+    "headRefName": "feat/solver-comparison-spike",
+    "headRefOid": "6df7a5faef616de6b8f2522f62650daf65c0f950",
+    "isDraft": true,
+    "number": 19,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:21Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379956516/job/128425275450",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:38Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:06:28Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379950711/job/128425257574",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:34Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:05:54Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379956589/job/128425275713",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:38Z",
+        "status": "COMPLETED",
+        "workflowName": "Solver experiment"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T14:05:50Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42379950766/job/128425257581",
+        "name": "test",
+        "startedAt": "2026-11-07T14:05:34Z",
+        "status": "COMPLETED",
+        "workflowName": "Solver experiment"
+      }
+    ],
+    "title": "Compare heuristic and constraint solver on synthetic cases",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/19"
+  },
+  {
+    "baseRefName": "feat/study-planning-demo",
+    "headRefName": "feat/calendarpit-run-lifecycle",
+    "headRefOid": "f4e641d35cb07a635012999aa4d5c130851a20b3",
+    "isDraft": true,
+    "number": 18,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:07:06Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42322168836/job/128249033404",
+        "name": "test",
+        "startedAt": "2026-11-07T01:06:12Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:06:41Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42322142827/job/128248947770",
+        "name": "test",
+        "startedAt": "2026-11-07T01:05:56Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Prototype isolated synthetic calendar runs",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/18"
+  },
+  {
+    "baseRefName": "feat/study-planning-demo",
+    "headRefName": "feat/domain-store-spike",
+    "headRefOid": "c267240521724a8d7d0420047e57a5b84da15bec",
+    "isDraft": true,
+    "number": 17,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:05:22Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42321996721/job/128248476306",
+        "name": "test",
+        "startedAt": "2026-11-07T01:04:30Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:05:01Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42321970790/job/128248387154",
+        "name": "test",
+        "startedAt": "2026-11-07T01:04:12Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Prototype transactional proposal history",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/17"
+  },
+  {
+    "baseRefName": "feat/study-planning-demo",
+    "headRefName": "feat/calendar-checkpoint-replay",
+    "headRefOid": "6b909a561d4cbef0ad07c25c1e26cc5f0e24ade4",
+    "isDraft": true,
+    "number": 16,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:03:46Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42321840499/job/128247972491",
+        "name": "test",
+        "startedAt": "2026-11-07T01:02:53Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:03:17Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42321810929/job/128247875373",
+        "name": "test",
+        "startedAt": "2026-11-07T01:02:34Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Add portable synthetic calendar checkpoint replay",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/16"
+  },
+  {
+    "baseRefName": "main",
+    "headRefName": "feat/study-planning-demo",
+    "headRefOid": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+    "isDraft": true,
+    "number": 8,
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:01:58Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42321660272/job/128247391152",
+        "name": "test",
+        "startedAt": "2026-11-07T01:01:03Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-07T01:01:58Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/actions/runs/42321658231/job/128247385400",
+        "name": "test",
+        "startedAt": "2026-11-07T01:01:02Z",
+        "status": "COMPLETED",
+        "workflowName": "Offline checks"
+      }
+    ],
+    "title": "Build synthetic collaborative study-planning demo",
+    "url": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/8"
+  }
+]

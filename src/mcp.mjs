@@ -1,17 +1,10 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { z } from 'zod';
-import { Calendarpit, FIXED_TODAY, listWorkspace, readWorkspace, draft, report, checkpoint, saveNarrative } from './core.mjs';
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
+import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
+import {Calendarpit} from './core.mjs';
+import {createStudyBoundary} from './foundation/study-boundary.mjs';
+import {registerStudyTools} from './mcp-tools.mjs';
 
+// Legacy local baseline only. Disposable runs must use mcp-broker.mjs.
 const server=new McpServer({name:'synthetic-study-demo',version:'0.1.0'});
-const student=z.enum(['ana','bruno']);
-const ok=(data)=>({content:[{type:'text',text:JSON.stringify(data,null,2)}]});
-const safe=(fn)=>async args=>{try{return ok(await fn(args));}catch(e){return {isError:true,content:[{type:'text',text:e.message}]};}};
-server.registerTool('list_synthetic_files',{description:'List files within a selected synthetic student workspace.',inputSchema:{student,path:z.string().optional()}},safe(a=>listWorkspace(a.student,a.path||'')));
-server.registerTool('read_synthetic_file',{description:'Read a text or PDF syllabus or preference file from the selected synthetic workspace.',inputSchema:{student,path:z.string()}},safe(a=>readWorkspace(a.student,a.path)));
-server.registerTool('list_calendar',{description:'Read the synthetic calendar. Simulation today is 2026-11-02 in America/Sao_Paulo; interpret dates relative to that date, not the host clock. No real accounts are connected.',inputSchema:{student}},safe(async a=>({simulationToday:FIXED_TODAY,timezone:'America/Sao_Paulo',events:await new Calendarpit().events(a.student)})));
-server.registerTool('draft_study_plan',{description:'Create or revise a reviewable study plan without writing calendar events. Hours must be whole numbers and blocks are one hour. Use avoidDates for specific dates the user wants free and preferredPeriod for a morning, afternoon, or evening preference; other stated windows can be used as a fallback. Use focusCourse only when the user chooses a course to prioritize; the heuristic reserves two out of three candidate blocks for that course when feasible, and the horizon remains capped at the nearest deadline. Study blocks are limited to the student’s stated windows, daily limit and study break; an empty calendar does not imply availability. In this simulation today is 2026-11-02, not the host date. The human must approve each section in the companion UI.',inputSchema:{student,weeks:z.number().int().min(1).max(16).optional(),hours:z.number().int().min(0).max(20).optional(),avoidDates:z.array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)).max(112).optional(),preferredPeriod:z.enum(['morning','afternoon','evening']).optional(),focusCourse:z.string().max(200).optional()}},safe(a=>draft(new Calendarpit(),a.student,{weeks:a.weeks,hours:a.hours,avoidDates:a.avoidDates,preferredPeriod:a.preferredPeriod,focusCourse:a.focusCourse})));
-server.registerTool('inspect_checkpoint',{description:'Compare the current synthetic calendar with the last saved snapshot; preserve user edits.',inputSchema:{student,reason:z.string().optional()}},safe(a=>checkpoint(new Calendarpit(),a.student,a.reason||'')));
-server.registerTool('routine_report',{description:'Calculate routine metrics from the synthetic calendar and optional user feedback; scheduled time is not evidence of completion.',inputSchema:{student}},safe(a=>report(new Calendarpit(),a.student)));
-server.registerTool('save_report_interpretation',{description:'Save your source-grounded, non-diagnostic explanation of routine_report metrics. State uncertainty and never infer completion from scheduled time.',inputSchema:{student,narrative:z.string().max(12000)}},safe(a=>saveNarrative(a.student,a.narrative)));
+registerStudyTools(server,(method,args)=>createStudyBoundary({student:args.student,calendar:new Calendarpit(),requireStaged:false}).call(method,args));
 await server.connect(new StdioServerTransport());

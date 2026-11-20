@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,9 +9,14 @@ import { createStateStore } from './state-store.mjs';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const FIXED_TODAY = '2026-11-02';
-// The optional override is intended for disposable synthetic runs. Every
-// process that shares a simulator must use the same local runtime directory.
-export function runtimeDir() { return path.resolve(process.env.STUDY_ATLAS_RUNTIME_DIR || path.join(ROOT,'.runtime')); }
+const runtimeContext=new AsyncLocalStorage();
+// Trusted services may bind operations to a per-run runtime without changing
+// process-wide environment; the legacy baseline keeps its existing override.
+export function runtimeDir() { return path.resolve(runtimeContext.getStore()||process.env.STUDY_ATLAS_RUNTIME_DIR||path.join(ROOT,'.runtime')); }
+export function withSyntheticRuntime(directory,operation){
+  if(typeof directory!=='string'||!path.isAbsolute(directory)||path.normalize(directory)!==directory||directory===path.parse(directory).root||typeof operation!=='function')throw new Error('A valid synthetic runtime and operation are required');
+  return runtimeContext.run(directory,operation);
+}
 const STUDENTS = ['ana', 'bruno'];
 const writeLocks = new Set();
 async function withWriteLock(student, fn) {
@@ -35,16 +41,32 @@ const stateStore=new Proxy({}, {get(_target,key){
   if(!stores.has(directory))stores.set(directory,createStateStore(directory));
   return stores.get(directory)[key];
 }});
+export async function disposeSyntheticRuntime(directory) {
+  if(typeof directory!=='string'||!path.isAbsolute(directory)||path.normalize(directory)!==directory||directory===path.parse(directory).root)throw new Error('A valid synthetic runtime is required');
+  const key=path.resolve(directory),store=stores.get(key);
+  if(!store)return false;
+  await store.close();
+  if(stores.get(key)===store)stores.delete(key);
+  return true;
+}
 export async function loadState(student) { return stateStore.load(assertStudent(student)); }
 export async function saveState(student, state) { return stateStore.save(assertStudent(student),state); }
 export async function getRecoveryClaim() { return stateStore.getCalendarClaim(); }
-async function workspaceRoot(student) {
+export async function snapshotForArchive(student) { return stateStore.snapshotForArchive(assertStudent(student)); }
+async function workspaceRoot(student,requireStaged=false) {
   assertStudent(student);
   const staged=path.join(runtimeDir(),'workspaces',student);
+  if(requireStaged){
+    for(const directory of [path.dirname(staged),staged]){
+      const entry=await fs.lstat(directory);
+      if(!entry.isDirectory())throw new Error('Synthetic run workspace is unavailable');
+    }
+    return staged;
+  }
   try { await fs.access(staged); return staged; } catch { return path.join(ROOT,'fixtures/students',student); }
 }
-export async function getStudent(student) {
-  const root=await workspaceRoot(student);
+export async function getStudent(student,{requireStaged=false}={}) {
+  const root=await workspaceRoot(student,requireStaged);
   const data=await readJSON(path.join(root, 'courses.json'));
   for(const course of data.courses) {
     const text=await fs.readFile(await checkedPath(root,course.source),'utf8');
@@ -57,8 +79,8 @@ export async function getStudent(student) {
   }
   return data;
 }
-export async function listWorkspace(student, relative = '') {
-  const root = await workspaceRoot(student);
+export async function listWorkspace(student, relative = '',{requireStaged=false}={}) {
+  const root = await workspaceRoot(student,requireStaged);
   const target = await checkedPath(root, relative);
   const entries = await fs.readdir(target, { withFileTypes: true });
   return entries.filter(e => !e.isSymbolicLink()).map(e => ({ name: e.name, type: e.isDirectory() ? 'directory' : 'file' }));
@@ -69,8 +91,8 @@ async function checkedPath(root, relative) {
   if (candidate !== resolvedRoot && !candidate.startsWith(resolvedRoot + path.sep)) throw new Error('Path is outside synthetic workspace');
   return candidate;
 }
-export async function readWorkspace(student, relative) {
-  const root = await workspaceRoot(student);
+export async function readWorkspace(student, relative,{requireStaged=false}={}) {
+  const root = await workspaceRoot(student,requireStaged);
   const p = await checkedPath(root, relative);
   const ext=path.extname(p).toLowerCase();
   if (!['.md', '.json', '.txt', '.pdf'].includes(ext)) throw new Error('Unsupported synthetic file type');
@@ -113,7 +135,8 @@ export function significant(e) {
 }
 export function snapshot(events) { return events.map(significant).sort((a,b) => a.id.localeCompare(b.id)); }
 export function digest(events) { return createHash('sha256').update(JSON.stringify(snapshot(events))).digest('hex'); }
-const millis = (item, key) => Date.parse(item[key]?.dateTime || item[key]?.date);
+// The simulator uses fixed São Paulo time; all-day dates start at local midnight.
+const millis = (item, key) => Date.parse(item[key]?.dateTime || (item[key]?.date && item[key].date + 'T00:00:00-03:00'));
 const overlaps = (a,b) => millis(a,'start') < millis(b,'end') && millis(b,'start') < millis(a,'end');
 function localTime(date) { return date.toISOString().replace('Z','').slice(0,19) + '-03:00'; }
 
@@ -178,6 +201,24 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
     remove:{near:replaceable.filter(e=>millis(e,'start')<Date.parse('2026-11-09T00:00:00-03:00')).map(significant),future:replaceable.filter(e=>millis(e,'start')>=Date.parse('2026-11-09T00:00:00-03:00')).map(significant)},
     baseHash:digest(events), status:{near:'pending',future:'pending'} };
 }
+// Initializes an already-seeded, fresh synthetic run. It does not invoke the
+// simulator's administrative reset endpoint or overwrite an existing run.
+export async function initializeScenario(calendar,student) {
+  assertStudent(student);
+  try {await loadState(student);throw new Error('Synthetic scenario already initialized');}
+  catch(error){if(error.code!=='ENOENT')throw error;}
+  const events=await calendar.events(student);
+  const expected=(await readJSON(path.join(ROOT,'fixtures/calendars',student+'.json'))).events;
+  if(digest(events)!==digest(expected))throw new Error('Observed calendar does not match the synthetic fixture');
+  const staged=path.join(runtimeDir(),'workspaces',student);
+  await fs.mkdir(path.dirname(staged),{recursive:true});
+  try {await fs.mkdir(staged);} catch(error){if(error.code==='EEXIST')throw new Error('Synthetic workspace already initialized');throw error;}
+  await fs.cp(path.join(ROOT,'fixtures/students',student),staged,{recursive:true,force:false,errorOnExist:true});
+  const feedback=(await readJSON(path.join(ROOT,'fixtures/feedback',student+'.json'))).map(validateFeedback);
+  const state={student,feedback,history:[],plan:null,lastSnapshot:snapshot(events),annotations:{},protectedIds:[]};
+  await stateStore.create(student,state);
+  return state;
+}
 export async function resetScenario(calendar, student) {
   assertStudent(student);
   const id=randomUUID(),actionId='reset:'+student;
@@ -202,8 +243,8 @@ export async function resetScenario(calendar, student) {
     throw new Error('RESET UNRESOLVED: synthetic simulator or workspace may have changed; do not retry blindly. '+error.message);
   }
 }
-export async function draft(calendar, student, options={}) {
-  const events=await calendar.events(student), profile=await getStudent(student);
+export async function draft(calendar, student, options={}, {requireStaged=false}={}) {
+  const events=await calendar.events(student), profile=await getStudent(student,{requireStaged});
   return stateStore.update(assertStudent(student),state=>{
     const unseen=diffSnapshots(state.lastSnapshot,events);
     state.protectedIds=[...new Set([...(state.protectedIds||[]),...unseen.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];

@@ -5,16 +5,20 @@ import {DatabaseSync} from 'node:sqlite';
 import path from 'node:path';
 
 export function createStateStore(directory) {
-  let opening;
-  const database=()=>opening??=(async()=>{
-    await fs.mkdir(directory,{recursive:true,mode:0o700});
-    const db=new DatabaseSync(path.join(directory,'state.sqlite'));
-    try {
-      db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS student_state (student TEXT PRIMARY KEY, body TEXT NOT NULL); CREATE TABLE IF NOT EXISTS calendar_claim (singleton INTEGER PRIMARY KEY CHECK(singleton=1), body TEXT NOT NULL); CREATE TABLE IF NOT EXISTS calendar_claim_history (id TEXT PRIMARY KEY, body TEXT NOT NULL);');
-      await fs.chmod(path.join(directory,'state.sqlite'),0o600);
-      return db;
-    } catch(error) {db.close();throw error;}
-  })().catch(error=>{opening=undefined;throw error;});
+  let opening,opened,closed=false;
+  const database=()=>{
+    if(closed)throw new Error('State store is closed');
+    return opening??=(async()=>{
+      await fs.mkdir(directory,{recursive:true,mode:0o700});
+      const db=new DatabaseSync(path.join(directory,'state.sqlite'));
+      try {
+        db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS student_state (student TEXT PRIMARY KEY, body TEXT NOT NULL); CREATE TABLE IF NOT EXISTS calendar_claim (singleton INTEGER PRIMARY KEY CHECK(singleton=1), body TEXT NOT NULL); CREATE TABLE IF NOT EXISTS calendar_claim_history (id TEXT PRIMARY KEY, body TEXT NOT NULL);');
+        await fs.chmod(path.join(directory,'state.sqlite'),0o600);
+        opened=db;
+        return db;
+      } catch(error) {db.close();throw error;}
+    })().catch(error=>{opening=undefined;throw error;});
+  };
   const transaction=(db,fn)=>{
     db.exec('BEGIN IMMEDIATE');
     try {const value=fn();db.exec('COMMIT');return value;}
@@ -39,6 +43,16 @@ export function createStateStore(directory) {
     const db=await database();const body=JSON.stringify(state);
     transaction(db,()=>{assertIdle(db);db.prepare('INSERT INTO student_state (student,body) VALUES (?,?) ON CONFLICT(student) DO UPDATE SET body=excluded.body').run(student,body);});
   }
+  async function create(student,state) {
+    try {await load(student);throw new Error('Synthetic scenario already initialized');}
+    catch(error){if(error.code!=='ENOENT')throw error;}
+    const db=await database();
+    transaction(db,()=>{
+      assertIdle(db);
+      if(row(db,student))throw new Error('Synthetic scenario already initialized');
+      db.prepare('INSERT INTO student_state(student,body) VALUES(?,?)').run(student,JSON.stringify(state));
+    });
+  }
   async function update(student,change,{requiresIdle=false}={}) {
     await load(student); // Also imports a legacy synthetic state if needed.
     const db=await database();
@@ -58,6 +72,20 @@ export function createStateStore(directory) {
     const db=await database();
     const current=db.prepare('SELECT body FROM calendar_claim WHERE singleton=1').get();
     return current?JSON.parse(current.body):null;
+  }
+  // Trusted archival code uses a single transaction so state and claims are
+  // captured at one database point. This does not retire writers or sanitize
+  // free text; callers must do both before archiving.
+  async function snapshotForArchive(student) {
+    if(typeof student!=='string'||!student)throw new Error('Archive student is required');
+    const db=await database();
+    return transaction(db,()=>{
+      const current=row(db,student),active=db.prepare('SELECT body FROM calendar_claim WHERE singleton=1').get();
+      const claim=active?JSON.parse(active.body):null;
+      if(claim&&claim.student!==student)throw new Error('An unresolved claim belongs to another student');
+      const claimHistory=db.prepare('SELECT body FROM calendar_claim_history ORDER BY rowid').all().map(item=>JSON.parse(item.body)).filter(item=>item.student===student);
+      return {schemaVersion:1,state:current?JSON.parse(current.body):null,claim,claimHistory};
+    });
   }
   async function acquireCalendarClaim(intent,{student,change}={}) {
     if(!intent || typeof intent.id!=='string' || !intent.id || typeof intent.student!=='string' || !Array.isArray(intent.actions))throw new Error('Invalid calendar claim');
@@ -120,7 +148,13 @@ export function createStateStore(directory) {
       db.prepare('DELETE FROM calendar_claim WHERE singleton=1').run();
     });
   }
-  return {load,save,update,getCalendarClaim,acquireCalendarClaim,appendCalendarClaimStep,
+  async function close() {
+    if(closed)return;
+    closed=true;
+    if(opening){try{await opening;}catch{return;}}
+    if(opened){opened.close();opened=undefined;}
+  }
+  return {load,save,create,update,getCalendarClaim,snapshotForArchive,acquireCalendarClaim,appendCalendarClaimStep,
     completeCalendarClaim:(id,options={})=>finishCalendarClaim(id,options,false),
-    cancelCalendarClaim:(id,options={})=>finishCalendarClaim(id,options,true)};
+    cancelCalendarClaim:(id,options={})=>finishCalendarClaim(id,options,true),close};
 }

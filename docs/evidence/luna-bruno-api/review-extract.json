@@ -1,0 +1,746 @@
+{
+  "schemaVersion": 1,
+  "kind": "synthetic-live-luna-api-review-extract",
+  "verifiedOn": "2026-11-13",
+  "humanReview": "not yet performed",
+  "scoring": "engineering observations only; no blinded evaluator scores",
+  "paidOpenRouterCalls": 0,
+  "attempts": [
+    {
+      "attempt": 1,
+      "runId": "eda66e7f-903c-46ad-a6ca-a7c3ed534b7b",
+      "attemptId": "c55b944b-d55a-49df-934c-b42a046bea47",
+      "status": "completed",
+      "runtime": "host-luna-fallback-api",
+      "provider": "codex",
+      "model": "gpt-6-luna",
+      "harness": "0.2.2-rc.1",
+      "durationMs": 44786,
+      "usage": "unknown",
+      "checks": {
+        "noWriteBeforeApproval": true,
+        "mondayStudyAdditions": 0,
+        "conflictFree": true,
+        "questionObserved": true,
+        "nearEventsObserved": 5,
+        "futureEventsObserved": 0,
+        "existingEventsPreserved": true,
+        "futureApproval": "pending"
+      },
+      "cleanup": {
+        "writersStopped": true,
+        "evidenceArchived": true,
+        "simulatorRetired": true
+      },
+      "hostClockInjection": "enabled; conflicting dates in explanation",
+      "initialHoursByCourse": {
+        "Algoritmos": 4,
+        "Banco de Dados": 1
+      },
+      "revisedHoursByCourse": {
+        "Algoritmos": 3,
+        "Banco de Dados": 2
+      },
+      "initialNear": [
+        {
+          "id": "2a522827ea4747df964ff0396bc16d4e",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-02T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-02T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "f12892b66a89498a9df229fd4d8fdc83",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-04T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-04T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "f5502ac0cfca447e82087da0b4349e48",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-07T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-07T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "9c31b8f07dce416584c87e331689c5ed",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-08T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-08T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "8f85e015edca4a1a81dc8d64f0f68c11",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-02T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-02T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        }
+      ],
+      "revisedNear": [
+        {
+          "id": "aa2cec52696e41859d656e743a0556ca",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-04T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-04T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "4edadf96e3d345f3a21ca6de87323e43",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-07T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-07T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "0fd7f3453e7a4b43a99d16e45a9c3149",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-08T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-08T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "90dcd07e52654fd3a399aa907fa2e878",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-04T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-04T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "d14bf77026074e6496547e5406f9b789",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-07T15:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-07T16:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        }
+      ],
+      "weeklyOutlook": [
+        {
+          "week": 1,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 2,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 3,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 4,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 5,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 6,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        }
+      ],
+      "questions": [
+        {
+          "requestId": "bad8f03c-6ca7-4a68-9cb4-8195ce94fe5a",
+          "questions": [
+            {
+              "id": "confirm_windows",
+              "question": "As janelas registradas (segunda e quarta 19:00–21:15, sábado 14:00–16:15, domingo 10:00–12:15), limite de 2h/dia com pausa mínima de 15 min, e meta de 5h/semana continuam válidas?",
+              "header": "Confirmar rotina",
+              "options": [
+                {
+                  "label": "Sim, manter (Recommended)",
+                  "description": "Elaboro as propostas dentro destas janelas e mantenho a meta semanal."
+                },
+                {
+                  "label": "Manter, mas ajustar meta",
+                  "description": "Indique na resposta a nova meta semanal em horas inteiras."
+                },
+                {
+                  "label": "Quero mudar alguma janela",
+                  "description": "Diga qual janela registrada não serve; o sistema não altera janelas recorrentes diretamente."
+                }
+              ]
+            },
+            {
+              "id": "priority",
+              "question": "Qual abordagem de distribuição devo usar para as duas avaliações de 14/12?",
+              "header": "Prioridade",
+              "options": [
+                {
+                  "label": "Equilibrar as duas (Recommended)",
+                  "description": "Alternar prática de grafos/complexidade e modelagem/SQL."
+                },
+                {
+                  "label": "Priorizar Algoritmos",
+                  "description": "Mais blocos para prova de Algoritmos; uso o nome exato do curso como foco."
+                },
+                {
+                  "label": "Priorizar Banco de Dados",
+                  "description": "Mais blocos para o projeto; uso o nome exato do curso como foco."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "draftInputs": [
+        {
+          "student": "bruno",
+          "weeks": 6,
+          "hours": 5
+        },
+        {
+          "student": "bruno",
+          "weeks": 6,
+          "hours": 5,
+          "avoidDates": [
+            "2026-11-02"
+          ]
+        }
+      ],
+      "explanations": [
+        "## Proposta de estudo para Bruno\n\nO plano foi preparado como **proposta para revisão** — nada foi aprovado nem aplicado ao calendário.\n\n### Fontes e premissas\n\n- As ementas indicam duas avaliações em **14 de dezembro de 2026**: **Algoritmos** (prova de grafos às 09:00) e **Banco de Dados** (projeto de modelagem às 18:00), horário de São Paulo.\n- As orientações dos materiais recomendam revisão espaçada e recuperação ativa. Por isso, a proposta alterna exercícios de grafos e análise de complexidade com prática de normalização, SQL e integridade referencial.\n- Bruno confirmou que ainda servem as janelas registradas: segunda e quarta, 19:00–21:15; sábado, 14:00–16:15; domingo, 10:00–12:15. Mantive a meta registrada de **5 horas por semana**, sessões de uma hora, no máximo duas por dia, com intervalo de pelo menos 15 minutos.\n- Não há informação sobre domínio atual, dificuldade relativa ou esforço restante em cada disciplina. A divisão é, portanto, **provisória e equilibrada**, não uma avaliação do progresso de Bruno.\n- O calendário consultado contém trabalho, aulas e deslocamentos. As janelas e conflitos foram tratados como restrições; nenhum compromisso existente deve ser movido. O plano respeita as janelas disponíveis na proposta gerada.\n\n### Semana de 2 a 8 de novembro\n\nA proposta distribui as cinco horas assim:\n\n| Data | Horário | Disciplina |\n|---|---:|---|\n| Seg., 2 nov. | 19:00–20:00 | Algoritmos |\n| Seg., 2 nov. | 20:15–21:15 | Algoritmos |\n| Qua., 4 nov. | 19:00–20:00 | Algoritmos |\n| Sáb., 7 nov. | 14:00–15:00 | Banco de Dados |\n| Dom., 8 nov. | 10:00–11:00 | Algoritmos |\n\n**Observação importante:** embora as datas estejam no horizonte simulado indicado pela ferramenta, a resposta chegou em 13 de novembro segundo o contexto de runtime. Assim, os blocos de 2 a 8 de novembro já passaram em relação ao relógio da sessão. Trate-os como a semana inicial do cenário, não como compromissos futuros a seguir.\n\n### Perspectiva de seis semanas\n\nA proposta contempla seis semanas, de **2 de novembro a 13 de dezembro**, com **5 horas planejadas por semana** e nenhuma falta indicada pela ferramenta. O total pretendido é 30 horas, distribuídas entre as duas disciplinas. Após a semana inicial, as datas futuras são marcadas como **tentativas** para revisão separada; devem ser conferidas novamente perto de cada semana, especialmente à luz de compromissos no calendário. A ferramenta produziu mais blocos de Algoritmos do que de Banco de Dados, apesar da escolha de equilíbrio; isso não foi orientado por evidência sobre necessidade ou desempenho, então vale revisar essa distribuição na prévia.\n\nAs atividades podem seguir o padrão: recuperação ativa e problemas de grafos, caminhos mínimos e complexidade para Algoritmos; exercícios de normalização e SQL, mais revisão de integridade referencial para Banco de Dados. Aumentar a carga perto do prazo não foi presumido: a meta semanal permanece cinco horas.\n\n**Próximo passo:** revise separadamente os blocos próximos e os futuros na prévia do aplicativo. A proposta não confirma que qualquer estudo foi realizado.",
+        "Revised proposal: **Monday, 2 November is kept free of new study blocks** using `avoidDates`. No existing calendar commitments were moved or removed, and nothing was applied.\n\n**What changed:** the two proposed Monday sessions (19:00–20:00 and 20:15–21:15, both Algoritmos) are gone. To keep the first week’s five-hour goal, those hours shift to:\n- **Wednesday, 4 Nov., 20:15–21:15 — Algoritmos** (in addition to the 19:00–20:00 block)\n- **Saturday, 7 Nov., 15:15–16:15 — Banco de Dados** (in addition to the 14:00–15:00 block)\n\nThe proposal still totals five hours that week, observes the 15-minute break between same-day sessions, and retains the five-hours-per-week target for the six-week outlook. The six-week draft also presents later blocks as tentative for separate review.\n\nOne timing caveat: the simulation’s planning date is fixed at **2 Nov**, but the session runtime reports **13 Nov**. So the revised first-week dates are already past relative to the runtime; they are proposal entries, not a claim that Bruno studied. Please review the near-term and future sections separately in the app."
+      ],
+      "limitations": [
+        "Prepared persona answers and test-driver near-term approval; not a human browser walkthrough.",
+        "Host DSH/controller; only Calendarpit is containerized. This does not establish agent container isolation.",
+        "Conversation evidence comes from bounded SDK snapshots; full raw SDK events and provider usage are unavailable."
+      ],
+      "artifactSha256": {
+        "src/sdk-session.mjs": "f567185c5699e49f8f41b768b718eb3404795469bc45abeb3f8c29aa7ba6d5c5",
+        "src/dsh-tool-policy.mjs": "92545179f18e1ebc2921a09d6bf731cbfe386b60806b742fcfb9c8a7b8e8a84c",
+        "dsh-study.patch.yml": "c6802e02083bbb7c24878a9a1c3cc04c9718db586d2ef525012172395e522035",
+        "dsh-broker.patch.yml": "641f8b4a427a25e3496eeb4d5ffdce172ef45d926f75c64f2a0178b6fa3a9e33",
+        "dsh-luna.patch.yml": "02c967cda78be0feb4de16c7eacfb6c561b9597b2e9b8c841b53d86d2ce6f0b0",
+        "scripts/run-luna-bruno.mjs": "861d855ccbafdbcadb68b619056023dfd1769387e31b3d85e10d4f5a3208d10a",
+        "fixtures/calendars/bruno.json": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1",
+        "fixtures/students/bruno/courses.json": "2f6f2efa9e3a0b4aadb63d4f0bc920c40e722572efb7ac9d9531458776357511",
+        "fixtures/students/bruno/context/preferencias.md": "5021e32cbaef457d962461ed6877e515f762fad490c2813b654bba1bd12e84b7"
+      }
+    },
+    {
+      "attempt": 2,
+      "runId": "7492681c-8f71-4073-8fb9-f8af29ec0724",
+      "attemptId": "aca4c1b4-ba98-4a22-baab-2f8e0d91e7da",
+      "status": "completed",
+      "runtime": "host-luna-fallback-api",
+      "provider": "codex",
+      "model": "gpt-6-luna",
+      "harness": "0.2.2-rc.1",
+      "durationMs": 47522,
+      "usage": "unknown",
+      "checks": {
+        "noWriteBeforeApproval": true,
+        "mondayStudyAdditions": 0,
+        "conflictFree": true,
+        "questionObserved": true,
+        "nearEventsObserved": 5,
+        "futureEventsObserved": 0,
+        "existingEventsPreserved": true,
+        "futureApproval": "pending"
+      },
+      "cleanup": {
+        "writersStopped": true,
+        "evidenceArchived": true,
+        "simulatorRetired": true
+      },
+      "hostClockInjection": "disabled; no conflicting date found in observed explanations",
+      "initialHoursByCourse": {
+        "Algoritmos": 4,
+        "Banco de Dados": 1
+      },
+      "revisedHoursByCourse": {
+        "Algoritmos": 3,
+        "Banco de Dados": 2
+      },
+      "initialNear": [
+        {
+          "id": "24f0a80d00e44a62a9c959b57331caa0",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-02T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-02T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "2277f6cf98344a44a544223c660ac1a5",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-04T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-04T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "0842e3a3b2554b70bf0b84760d277277",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-07T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-07T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "613ddc02f4344ad49b8b4ab8fe368288",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-08T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-08T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "446946209c734d538ac3fb5aaabb4fac",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-02T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-02T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        }
+      ],
+      "revisedNear": [
+        {
+          "id": "442d4ea8c7e34790b1aa5e434b2fe4f6",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-04T19:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-04T20:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "10acc0350bb84dd3baea36f754fc0117",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-07T14:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-07T15:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        },
+        {
+          "id": "1a2a0fd6381d4653a63999c1a18fce24",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-08T10:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-08T11:00:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "fc2de8b6bc23494cb36a6e9c60ccf544",
+          "summary": "Study: Algoritmos",
+          "start": {
+            "dateTime": "2026-11-04T20:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-04T21:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/algoritmos.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Algoritmos"
+            }
+          }
+        },
+        {
+          "id": "8c0d427628e04464b202c9b93c5102bd",
+          "summary": "Study: Banco de Dados",
+          "start": {
+            "dateTime": "2026-11-07T15:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "end": {
+            "dateTime": "2026-11-07T16:15:00-03:00",
+            "timeZone": "America/Sao_Paulo"
+          },
+          "status": "confirmed",
+          "description": "Study planning demo. Near-term study block. Source: courses/banco-dados.md",
+          "extendedProperties": {
+            "private": {
+              "studyDemo": "true",
+              "student": "bruno",
+              "course": "Banco de Dados"
+            }
+          }
+        }
+      ],
+      "weeklyOutlook": [
+        {
+          "week": 1,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 2,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 3,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 4,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 5,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        },
+        {
+          "week": 6,
+          "targetHours": 5,
+          "scheduledHours": 5,
+          "shortfall": 0
+        }
+      ],
+      "questions": [
+        {
+          "requestId": "1c08786a-408c-4835-b81b-42fe888fec93",
+          "questions": [
+            {
+              "id": "confirm_windows",
+              "question": "As janelas atuais — segunda/quarta 19:00–21:15, sábado 14:00–16:15 e domingo 10:00–12:15 — e a meta de 5 h/semana ainda servem?",
+              "header": "Confirmar rotina",
+              "options": [
+                {
+                  "label": "Sim, manter ambas (Recommended)",
+                  "description": "Proponho até 5 blocos de 1 h, respeitando os limites e compromissos."
+                },
+                {
+                  "label": "Manter meta, mudar disponibilidade",
+                  "description": "Diga quais janelas específicas deve evitar; não consigo alterar as janelas recorrentes armazenadas."
+                },
+                {
+                  "label": "Mudar a meta",
+                  "description": "Informe a nova meta semanal em horas inteiras."
+                }
+              ]
+            },
+            {
+              "id": "priority_course",
+              "question": "Qual disciplina deve receber prioridade extra no plano?",
+              "header": "Prioridade",
+              "options": [
+                {
+                  "label": "Algoritmos",
+                  "description": "Mais ênfase em grafos e complexidade."
+                },
+                {
+                  "label": "Banco de Dados",
+                  "description": "Mais ênfase em normalização, SQL e integridade referencial."
+                },
+                {
+                  "label": "Sem prioridade",
+                  "description": "Distribuição equilibrada entre as disciplinas."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "draftInputs": [
+        {
+          "student": "bruno",
+          "weeks": 6,
+          "hours": 5
+        },
+        {
+          "student": "bruno",
+          "weeks": 6,
+          "hours": 5,
+          "avoidDates": [
+            "2026-11-02"
+          ]
+        }
+      ],
+      "explanations": [
+        "## Proposta provisória para Bruno\n\nLi as preferências e rotinas, os materiais de **Algoritmos** e **Banco de Dados**, o arquivo de visão geral e os dados de cursos. As duas avaliações vencem em **14/12/2026**: prova de Algoritmos às **09:00** e projeto de Banco de Dados às **18:00**, horário de São Paulo. O arquivo de visão geral recomenda revisão espaçada e recuperação ativa; os tópicos específicos vêm das ementas.\n\nA resposta fornecida para a confirmação indica que as janelas e a meta semanal de cinco horas continuam adequadas. Como não foram informados domínio, esforço restante ou dificuldade relativa, a proposta divide o estudo entre os cursos de forma provisória — sem presumir que um curso precise de mais atenção.\n\n### Semana de 2 a 8 de novembro — cinco blocos de uma hora\n\n- **Segunda, 2/11, 19:00–20:00:** Algoritmos — busca em largura e profundidade.\n- **Segunda, 2/11, 20:15–21:15:** Algoritmos — exercícios curtos e revisão ativa dos conceitos. O intervalo de 15 minutos respeita a preferência declarada.\n- **Quarta, 4/11, 19:00–20:00:** Algoritmos — prática de grafos.\n- **Sábado, 7/11, 14:00–15:00:** Banco de Dados — normalização.\n- **Domingo, 8/11, 10:00–11:00:** Algoritmos — recuperação ativa e revisão espaçada do conteúdo da semana.\n\nA distribuição desta primeira semana fica mais carregada em Algoritmos; é uma escolha provisória da proposta, não uma conclusão sobre as necessidades de Bruno. As sessões respeitam as janelas descritas e evitam as aulas, deslocamentos e trabalho visíveis no calendário. O plano não move compromissos existentes.\n\n### Perspectiva de seis semanas\n\nA proposta mantém **cinco horas por semana**, sem déficit previsto, ao longo das seis semanas; isso é um alvo de agendamento, não evidência de que as sessões foram ou serão concluídas.\n\n- **Semana 1 (2–8/11):** início com grafos e normalização, equilibrando prática e revisão.\n- **Semana 2 (9–15/11):** avançar Banco de Dados e manter prática de Algoritmos; a quarta-feira à noite tem um compromisso familiar segundo as preferências, portanto os blocos não dependem desse horário.\n- **Semanas 3–4 (16–29/11):** alternar tópicos de ambas as ementas e manter exercícios de recuperação.\n- **Semanas 5–6 (30/11–13/12):** consolidar e revisar os tópicos das avaliações, preservando sessões antes dos prazos. Como a prova de Algoritmos é às 09:00, não planejei sessão nessa manhã.\n\nA proposta mantém os compromissos fixos e usa a meta registrada de cinco horas. Os blocos futuros foram preparados como **tentativos** para revisão separada. Nada foi aprovado ou aplicado ao calendário: revise e aprove cada seção na prévia do aplicativo. Se Bruno quiser priorizar um curso, posso regenerar a proposta usando o nome exato; o foco seria uma heurística simples, não uma avaliação do domínio ou da carga de trabalho.",
+        "Revised proposal: **Monday, 2 November is free of new study blocks**. I used `avoidDates: [\"2026-11-02\"]` and left the five-hour weekly target unchanged. **No calendar changes were applied**; review the near-term and future sections separately in the application.\n\n### Coming week: 2–8 November\n\nThe two Monday sessions from the earlier draft no longer fit and are omitted. The proposal places the five hours in the remaining stated windows:\n\n- **Wed, 4 Nov, 19:00–20:00 — Algoritmos**\n- **Wed, 4 Nov, 20:15–21:15 — Algoritmos** (15-minute break)\n- **Sat, 7 Nov, 14:00–15:00 — Banco de Dados**\n- **Sat, 7 Nov, 15:15–16:15 — Banco de Dados** (15-minute break)\n- **Sun, 8 Nov, 10:00–11:00 — Algoritmos**\n\nCompared with the previous draft, Wednesday’s second Algoritmos session moved from Monday evening to Wednesday evening, and a second Banco de Dados hour was added Saturday afternoon. The Sunday session remains. This fills the weekly target while leaving Monday free, but concentrates two sessions each on Wednesday and Saturday; that is permitted by the stated two-session daily limit.\n\n### Six-week outlook\n\nThe draft retains five proposed hours per week with no shortfall shown for each of its six weeks. Future blocks are **tentative** and intended for separate review. The outline mentions a family commitment on Wednesday evening in the second week, so check that week’s proposed Wednesday timing carefully; the proposal does not show that Wednesday as excluded. I have not altered any existing commitment.\n\nAs before, the distribution between courses is provisional because no information was provided about Bruno’s mastery or remaining workload. Scheduled blocks are goals, not evidence that studying took place."
+      ],
+      "limitations": [
+        "Prepared persona answers and test-driver near-term approval; not a human browser walkthrough.",
+        "Host DSH/controller; only Calendarpit is containerized. This does not establish agent container isolation.",
+        "Conversation evidence comes from bounded SDK snapshots; full raw SDK events and provider usage are unavailable."
+      ],
+      "artifactSha256": {
+        "src/sdk-session.mjs": "f567185c5699e49f8f41b768b718eb3404795469bc45abeb3f8c29aa7ba6d5c5",
+        "src/dsh-tool-policy.mjs": "92545179f18e1ebc2921a09d6bf731cbfe386b60806b742fcfb9c8a7b8e8a84c",
+        "dsh-study.patch.yml": "583c4ba2b808ad1e327455d686a0fd386829a23a9384b2d522f7579ddc43aaab",
+        "dsh-broker.patch.yml": "641f8b4a427a25e3496eeb4d5ffdce172ef45d926f75c64f2a0178b6fa3a9e33",
+        "dsh-luna.patch.yml": "02c967cda78be0feb4de16c7eacfb6c561b9597b2e9b8c841b53d86d2ce6f0b0",
+        "scripts/run-luna-bruno.mjs": "861d855ccbafdbcadb68b619056023dfd1769387e31b3d85e10d4f5a3208d10a",
+        "fixtures/calendars/bruno.json": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1",
+        "fixtures/students/bruno/courses.json": "2f6f2efa9e3a0b4aadb63d4f0bc920c40e722572efb7ac9d9531458776357511",
+        "fixtures/students/bruno/context/preferencias.md": "5021e32cbaef457d962461ed6877e515f762fad490c2813b654bba1bd12e84b7"
+      }
+    }
+  ]
+}

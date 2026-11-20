@@ -1,0 +1,30 @@
+✖ polling preserves proposal controls, approval is explicit and single-flight, and outcomes stay visible (13.637122ms)
+✔ model prose renders basic formatting as text-safe DOM, with raw HTML and unsafe links inert (0.393713ms)
+✔ structured question controls send native selections or custom answers, survive polls/language changes and cancel separately (5.271186ms)
+✔ empty or non-JSON preview responses explain local access and uncertain mutations without retrying (7.418827ms)
+(node:8) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 55.796128
+
+✖ failing tests:
+
+test at tests/managed-ui.test.mjs:34:1
+✖ polling preserves proposal controls, approval is explicit and single-flight, and outcomes stay visible (13.637122ms)
+  AssertionError [ERR_ASSERTION]: a completed approval must clear pending text on replacement controls
+      at TestContext.<anonymous> (file:///home/david/Projects/Resid%C3%AAncia%20de%20IA/Challenge%202/DSH-Prototype-runs/tests/managed-ui.test.mjs:83:12)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Applying…',
+    expected: 'Applying…',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
