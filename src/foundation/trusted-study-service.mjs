@@ -1,16 +1,16 @@
-import {assertStudent,applyApproved,applyAnnotation,snapshotForArchive,withSyntheticRuntime,loadState,getRecoveryClaim,getStudent} from '../core.mjs';
+import {assertStudent,applyApproved,applyAnnotation,snapshotForArchive,withSyntheticRuntime,loadState,getRecoveryClaim,getStudent,readPlanningContext,confirmPlanningContext} from '../core.mjs';
 import {createStudyBoundary} from './study-boundary.mjs';
 import {createWriteGate} from './write-gate.mjs';
 
 // Trusted application side. Only its `agent` member may be exposed through
 // the broker; approval methods require a separate authenticated user action.
 // Draining covers operations in this process, not unknown external writers.
-export function createTrustedStudyService({student,calendar,runtimeDirectory,trace}={}){
+export function createTrustedStudyService({student,calendar,runtimeDirectory,trace,coldStart=false}={}){
   assertStudent(student);
   if(trace!==undefined&&typeof trace?.append!=='function')throw new Error('Invalid synthetic evidence trace');
   if(runtimeDirectory!==undefined)withSyntheticRuntime(runtimeDirectory,()=>{});
   const inRuntime=operation=>runtimeDirectory===undefined?operation():withSyntheticRuntime(runtimeDirectory,operation);
-  const boundary=createStudyBoundary({student,calendar}),gate=createWriteGate(),agentCalls=new Set();
+  const boundary=createStudyBoundary({student,calendar,coldStart}),gate=createWriteGate(),agentCalls=new Set();
   let retiring=false,drained=false;
   const agent={call(method,args){
     if(retiring)return Promise.reject(new Error('Synthetic run is retiring')); 
@@ -26,9 +26,13 @@ export function createTrustedStudyService({student,calendar,runtimeDirectory,tra
   }};
   return {
     agent,
+    ...(coldStart?{confirmPlanningContext:(id,replies)=>gate.run(async()=>{
+      if(trace)await trace.append('decision',{operation:'confirm_planning_context',revisionId:id,operatorReplies:replies});
+      return inRuntime(()=>confirmPlanningContext(student,id,replies));
+    })}:{}),
     status:()=>inRuntime(async()=>{
       const [state,recovery,courses,observation]=await Promise.all([
-        loadState(student),getRecoveryClaim(),getStudent(student,{requireStaged:true}),
+        loadState(student),getRecoveryClaim(),coldStart?readPlanningContext(student):getStudent(student,{requireStaged:true}),
         calendar.events(student).then(events=>({availability:'available',events})).catch(()=>({availability:'unavailable',events:null}))
       ]);
       return {state,recovery,courses,calendar:{availability:observation.availability},events:observation.events};

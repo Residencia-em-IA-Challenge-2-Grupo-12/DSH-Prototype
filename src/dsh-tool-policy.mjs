@@ -17,7 +17,12 @@ const allowed=new Set([
   'mcp__study__save_report_interpretation'
 ]);
 export function apply(ctx){
-  ctx.tools.guard(execution=>allowed.has(execution.name)?undefined:'This tool is not available in the synthetic study run.');
+  const activeTools=new Set(allowed);
+  if(process.env.STUDY_COLD_START==='1'&&process.env.STUDY_BROKER_SOCKET){
+    activeTools.add('mcp__study__read_planning_context');
+    activeTools.add('mcp__study__propose_planning_context');
+  }
+  ctx.tools.guard(execution=>activeTools.has(execution.name)?undefined:'This tool is not available in the synthetic study run.');
   if(process.env.STUDY_BROKER_SOCKET){
     const broker=createStudyBrokerClient({socketPath:process.env.STUDY_BROKER_SOCKET});
     const route=process.env.STUDY_GATEWAY_BASE_URL?
@@ -27,11 +32,11 @@ export function apply(ctx){
       return next();
     });
     ctx.on('agent/created',({agent})=>{
-      agent.ctx.tools.restrict({allow:[...allowed]});
+      agent.ctx.tools.restrict({allow:[...activeTools]});
     });
     ctx.on('agent/pre-step',async({agent},next)=>{
       const names=(agent?.ctx?.tools||ctx.tools).schemas(agent).map(item=>item.name);
-      if(names.length!==allowed.size||names.some(name=>!allowed.has(name)))throw new Error('Required synthetic study tools are unavailable');
+      if(names.length!==activeTools.size||names.some(name=>!activeTools.has(name)))throw new Error('Required synthetic study tools are unavailable');
       try {await broker.ping();}catch{throw new Error('Synthetic study broker is unavailable');}
       return next();
     });

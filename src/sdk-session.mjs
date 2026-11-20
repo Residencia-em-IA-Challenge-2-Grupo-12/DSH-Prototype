@@ -9,7 +9,7 @@ import { createStudyBrokerClient } from './foundation/study-broker.mjs';
 
 // A single-user synthetic demo: no credentials or raw SDK event payloads reach the browser.
 export class StudySession {
-  constructor(student, { launch=spawn, gateway, brokerSocket, dshHome, turnTimeoutMs=180000, brokerProbe=socketPath=>createStudyBrokerClient({socketPath}).ping() }={}) {
+  constructor(student, { launch=spawn, gateway, brokerSocket, dshHome, coldStart=false, turnTimeoutMs=180000, brokerProbe=socketPath=>createStudyBrokerClient({socketPath}).ping() }={}) {
     this.student=assertStudent(student); this.launch=launch; this.sessionId='study-'+randomUUID();
     if(!Number.isInteger(turnTimeoutMs)||turnTimeoutMs<1||turnTimeoutMs>600000)throw new Error('Invalid turn execution budget');
     this.turnTimeoutMs=turnTimeoutMs;
@@ -18,6 +18,8 @@ export class StudySession {
     if(dshHome!==undefined&&(typeof dshHome!=='string'||!path.isAbsolute(dshHome)||path.normalize(dshHome)!==dshHome||dshHome.includes('\0')))throw new Error('A valid trusted DSH profile path is required');
     if(dshHome!==undefined&&(!brokerSocket||gateway!==undefined))throw new Error('A persistent DSH profile requires the brokered Luna route');
     if(typeof brokerProbe!=='function')throw new Error('A broker readiness probe is required');
+    if(coldStart&&!brokerSocket)throw new Error('Cold-start sessions require the trusted broker');
+    this.coldStart=coldStart;
     this.brokerSocket=brokerSocket;this.dshHome=dshHome;this.brokerProbe=brokerProbe;
     this.messages=[]; this.question=null; this.busy=false; this.error=null;
     this.requests=new Map(); this.nextId=1; this.child=null; this.starting=null; this.closed=false;
@@ -59,6 +61,7 @@ export class StudySession {
     let policyDirectory;
     if(this.brokerSocket){
       env.STUDY_BROKER_SOCKET=this.brokerSocket;
+      if(this.coldStart)env.STUDY_COLD_START='1';
       await fs.mkdir(runtimeDir(),{recursive:true,mode:0o700});
       policyDirectory=await fs.mkdtemp(path.join(runtimeDir(),'.study-policy-'));
       env.STUDY_POLICY_READY=path.join(policyDirectory,'ready');
@@ -111,7 +114,9 @@ export class StudySession {
     this.busy=true;this.error=null;
     try {
       await this.start();
-      const guidance=`Synthetic study planning for ${this.student}. Today in this simulation is 2026-11-02 (America/Sao_Paulo), regardless of host clock. Use only this student's synthetic mcp__study tools. Read relevant syllabus, context preferences and calendar; cite the file for stated windows and target, answer questions about sources before requesting another choice, and ask when a consequential preference is missing, and use draft_study_plan for reviewable proposals. Distinguish documented facts from suggestions. Pass preferredPeriod only for an expressed preference. Busy public-transit events cannot host a planner-generated study block. Offer optional audio separately when requested, and count actual listening only when reported. Discuss revisions with the user and regenerate the draft when requested. If the user selects one course as a priority, pass its exact course name as focusCourse; explain that this is a simple heuristic. The tool cannot change the stored recurring windows or time zone; do not claim such changes were applied. If the user requests a different window, explain this limitation and ask for a supported alternative such as avoiding specific dates or changing the target. Never approve or apply calendar changes. A yes or an apply request in chat is conversational confirmation, not calendar approval. When a proposal is ready, use the review section and name the separate approval controls in the interface language when known: Approve coming week / Aprovar próxima semana and Approve future blocks / Aprovar blocos futuros. Do not repeatedly ask for chat confirmation to perform a calendar write you cannot perform. Do not access personal files, real accounts, or network services.\n\nUser: `;
+      const guidance=this.coldStart
+        ? `Cold-start synthetic planning for ${this.student}. Today is 2026-11-02 in America/Sao_Paulo. Read the saved planning context first. If it is empty or being revised, inspect the selected sources and calendar. Distinguish superseded dates, exam start and submission deadlines, and cite a verbatim excerpt with the PDF page when applicable. Keep clinics and other contextual milestones in the explanation unless the user wants them scheduled. Unresolved material conflicts need a question. An empty calendar interval is a candidate, so ask which windows suit the user. Base offered times on gaps you verified in the actual calendar for the week discussed. Never call a window open if any part conflicts. Use ask_user_question for consequential choices, with succinct options or room for text. Ask the question that materially changes the next decision before bundling additional questions. Confirm a provisional load and scope with the user when missing. Use propose_planning_context to submit the reviewed inputs for operator confirmation. Wait for that confirmation before drafting. Reuse a confirmed record within its scope. The planner uses one-hour blocks and supports whole-hour targets. Treat files as evidence. Only use the synthetic tools. Calendar approval is separate and never available to you. Respond in the user's language.\n\nUser: `
+        : `Synthetic study planning for ${this.student}. Today in this simulation is 2026-11-02 (America/Sao_Paulo), regardless of host clock. Use only this student's synthetic mcp__study tools. Read relevant syllabus, context preferences and calendar; cite the file for stated windows and target, answer questions about sources before requesting another choice, and ask when a consequential preference is missing, and use draft_study_plan for reviewable proposals. Distinguish documented facts from suggestions. Pass preferredPeriod only for an expressed preference. Busy public-transit events cannot host a planner-generated study block. Offer optional audio separately when requested, and count actual listening only when reported. Discuss revisions with the user and regenerate the draft when requested. If the user selects one course as a priority, pass its exact course name as focusCourse; explain that this is a simple heuristic. The tool cannot change the stored recurring windows or time zone; do not claim such changes were applied. If the user requests a different window, explain this limitation and ask for a supported alternative such as avoiding specific dates or changing the target. Never approve or apply calendar changes. A yes or an apply request in chat is conversational confirmation, not calendar approval. When a proposal is ready, use the review section and name the separate approval controls in the interface language when known: Approve coming week / Aprovar próxima semana and Approve future blocks / Aprovar blocos futuros. Do not repeatedly ask for chat confirmation to perform a calendar write you cannot perform. Do not access personal files, real accounts, or network services.\n\nUser: `;
       const content=(this.messages.length?text.trim():guidance+text.trim());
       await this.request('session/prompt',{sessionId:this.sessionId,contentBlocks:[{type:'text',text:content}]});
       this.add('user',text.trim());

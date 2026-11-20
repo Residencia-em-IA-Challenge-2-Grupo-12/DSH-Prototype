@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createStateStore } from './state-store.mjs';
+import {coldStartStudents,validatePlanningContext,reviewedPlannerProfile} from './cold-start-context.mjs';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const FIXED_TODAY = '2026-11-02';
@@ -158,8 +159,11 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
   const upcomingDeadlines = student.courses.map(c => Date.parse(c.deadline)).filter(deadline => deadline > today);
   const deadline = upcomingDeadlines.length ? Math.min(...upcomingDeadlines) : today;
   const maxWeeks = Math.max(1, Math.ceil((deadline - today) / (7 * 86400000)));
-  const count = Math.min(requested, maxWeeks, 16);
-  const horizonEnd=Date.parse(FIXED_TODAY+'T00:00:00-03:00')+count*7*86400000;
+  const scopedEnd=student.availabilityThrough
+    ? Date.parse(student.availabilityThrough+'T00:00:00-03:00')+86400000
+    : Infinity;
+  const count = Math.min(requested, maxWeeks, 16, Math.ceil((scopedEnd-today)/(7*86400000)));
+  const horizonEnd=Math.min(today+count*7*86400000,scopedEnd);
   const replaceable=events.filter(e => e.extendedProperties?.private?.studyDemo==='true' && e.extendedProperties?.private?.student===student.student && !protectedIds.includes(e.id) && millis(e,'start')>=Date.parse(FIXED_TODAY+'T00:00:00-03:00') && millis(e,'start')<horizonEnd);
   const replaceIds=new Set(replaceable.map(e=>e.id));
   const busy = events.filter(e => e.status !== 'cancelled' && e.transparency !== 'transparent' && !replaceIds.has(e.id)).map(clone);
@@ -169,7 +173,7 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
     const sorted = [...student.courses].sort((a,b) => Date.parse(a.deadline)-Date.parse(b.deadline));
     for(let d=0;d<7;d++){
       const day=new Date(start.getTime()+(w*7+d)*86400000),dayKey=day.toISOString().slice(0,10);
-      if(avoidDates.includes(dayKey))continue;
+      if(avoidDates.includes(dayKey)||(student.availabilityThrough&&dayKey>student.availabilityThrough))continue;
       for(const window of windows.filter(x=>x.weekday===day.getUTCDay()))for(let minute=parseTime(window.start);minute+60<=parseTime(window.end);minute+=15){
         const dt=new Date(day.getTime()+minute*60000),end=new Date(dt.getTime()+3600000),period=minute<720?'morning':minute<1080?'afternoon':'evening';
         candidates.push({d,dayKey,dt,period,start:{dateTime:localTime(dt),timeZone:student.timezone},end:{dateTime:localTime(end),timeZone:student.timezone}});
@@ -196,15 +200,16 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
     outlook.push({ week:w+1, targetHours:target, scheduledHours:placed, shortfall:Math.max(0,target-placed) });
   }
   return { id:randomUUID(), student:student.student, createdAt:new Date().toISOString(), fixedToday:FIXED_TODAY,
-    sources:student.courses, assumptions:['Study blocks are suggestions; ask before writing.','Hours are goals, not evidence of actual study.',windows.length?'Study windows are stated possibilities; confirm they still suit the student.':'No study availability supplied; empty calendar time is not assumed available.',...(focus?['Course focus: '+focus.name+'; other courses may still receive blocks.']:[])],
+    sources:student.courses, assumptions:['Study blocks are suggestions; ask before writing.','Hours are goals, not evidence of actual study.',windows.length?'Study windows are stated possibilities; confirm they still suit the student.':'No study availability supplied; empty calendar time is not assumed available.',...(student.availabilityThrough?['Confirmed availability applies through '+student.availabilityThrough+'.']:[]),...(focus?['Course focus: '+focus.name+'; other courses may still receive blocks.']:[])],
     outlook, near:blocks.filter(b=>b.status==='confirmed'), future:blocks.filter(b=>b.status==='tentative'),
     remove:{near:replaceable.filter(e=>millis(e,'start')<Date.parse('2026-11-09T00:00:00-03:00')).map(significant),future:replaceable.filter(e=>millis(e,'start')>=Date.parse('2026-11-09T00:00:00-03:00')).map(significant)},
     baseHash:digest(events), status:{near:'pending',future:'pending'} };
 }
 // Initializes an already-seeded, fresh synthetic run. It does not invoke the
 // simulator's administrative reset endpoint or overwrite an existing run.
-export async function initializeScenario(calendar,student) {
+export async function initializeScenario(calendar,student,{coldStart}={}) {
   assertStudent(student);
+  if(coldStart!==undefined&&(!Object.hasOwn(coldStartStudents,coldStart)||coldStartStudents[coldStart]!==student))throw new Error('Unknown cold-start case for this student');
   try {await loadState(student);throw new Error('Synthetic scenario already initialized');}
   catch(error){if(error.code!=='ENOENT')throw error;}
   const events=await calendar.events(student);
@@ -213,9 +218,10 @@ export async function initializeScenario(calendar,student) {
   const staged=path.join(runtimeDir(),'workspaces',student);
   await fs.mkdir(path.dirname(staged),{recursive:true});
   try {await fs.mkdir(staged);} catch(error){if(error.code==='EEXIST')throw new Error('Synthetic workspace already initialized');throw error;}
-  await fs.cp(path.join(ROOT,'fixtures/students',student),staged,{recursive:true,force:false,errorOnExist:true});
+  await fs.cp(coldStart===undefined?path.join(ROOT,'fixtures/students',student):path.join(ROOT,'fixtures/cold-start',coldStart),staged,{recursive:true,force:false,errorOnExist:true});
   const feedback=(await readJSON(path.join(ROOT,'fixtures/feedback',student+'.json'))).map(validateFeedback);
   const state={student,feedback,history:[],plan:null,lastSnapshot:snapshot(events),annotations:{},protectedIds:[]};
+  if(coldStart!==undefined)state.planningContext={caseId:coldStart,pending:null,confirmed:null};
   await stateStore.create(student,state);
   return state;
 }
@@ -243,12 +249,51 @@ export async function resetScenario(calendar, student) {
     throw new Error('RESET UNRESOLVED: synthetic simulator or workspace may have changed; do not retry blindly. '+error.message);
   }
 }
-export async function draft(calendar, student, options={}, {requireStaged=false}={}) {
-  const events=await calendar.events(student), profile=await getStudent(student,{requireStaged});
+export async function readPlanningContext(student) {
+  const context=(await loadState(student)).planningContext;
+  if(!context)throw new Error('Planning context review is available for cold-start exercises');
+  return context;
+}
+
+export async function proposePlanningContext(student,value) {
+  await readPlanningContext(student);
+  const record=await validatePlanningContext(value,
+    path=>readWorkspace(student,path,{requireStaged:true}),FIXED_TODAY);
+  const revision={id:randomUUID(),record};
+  return stateStore.update(student,state=>{
+    state.planningContext.pending=revision;
+    return revision;
+  },{requiresIdle:true});
+}
+
+// Only the operator-facing controller calls this. It is absent from the broker.
+export async function confirmPlanningContext(student,revisionId,operatorReplies) {
+  if(!Array.isArray(operatorReplies)||operatorReplies.length<1||operatorReplies.length>20||
+      operatorReplies.some(value=>typeof value!=='string'||!value.trim()||value.length>2000)){
+    throw new Error('Provide the original operator replies for review');
+  }
   return stateStore.update(assertStudent(student),state=>{
+    const context=state.planningContext;
+    if(!context?.pending||context.pending.id!==revisionId)throw new Error('Planning context revision changed; review again');
+    context.confirmed={...context.pending,operatorReplies:[...operatorReplies],confirmedAt:new Date().toISOString()};
+    context.pending=null;
+    state.plan=null;
+    state.history.push({type:'planning_context_confirmed',revisionId,at:context.confirmed.confirmedAt});
+    return context.confirmed;
+  },{requiresIdle:true});
+}
+
+export async function draft(calendar, student, options={}, {requireStaged=false}={}) {
+  const coldStart=(await loadState(student)).planningContext;
+  const events=await calendar.events(student), baseline=coldStart?null:await getStudent(student,{requireStaged});
+  return stateStore.update(assertStudent(student),state=>{
+    const context=state.planningContext;
+    if(context?.pending)throw new Error('The operator must review the pending planning context revision');
+    const profile=context?reviewedPlannerProfile(student,context,FIXED_TODAY):baseline;
     const unseen=diffSnapshots(state.lastSnapshot,events);
     state.protectedIds=[...new Set([...(state.protectedIds||[]),...unseen.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
-    const plan=makePlan(profile, events, {...options,protectedIds:state.protectedIds||[]});
+    const plan=makePlan(profile, events, {...options,...(context?{hours:profile.targetHours}:{}),protectedIds:state.protectedIds||[]});
+    if(context)plan.planningContextRevisionId=context.confirmed.id;
     state.plan=plan; state.history.push({type:'proposal',at:new Date().toISOString(),planId:plan.id,options});
     return plan;
   },{requiresIdle:true});
@@ -260,6 +305,7 @@ async function applyApprovedLocked(calendar, student, planId, section) {
   if (!['near','future'].includes(section)) throw new Error('Unknown approval section');
   const state=await loadState(student), plan=state.plan;
   if (!plan || plan.id!==planId || plan.status[section]!=='pending') throw new Error('Proposal not pending');
+  if(state.planningContext?.pending)throw new Error('STALE: review the pending planning context revision');
   const current=await calendar.events(student);
   if (digest(current)!==plan.baseHash) throw new Error('STALE: calendar changed; review a new proposal');
   const claimId=randomUUID();
@@ -268,6 +314,7 @@ async function applyApprovedLocked(calendar, student, planId, section) {
   await stateStore.acquireCalendarClaim({id:claimId,student,kind:'approval',proposalId:planId,section,proposal:plan,actions,
     decision:{kind:'approved',section,at:new Date().toISOString()},startedAt:new Date().toISOString()},
     {student,change:latest=>{
+      if(latest.planningContext?.pending)throw new Error('STALE: review the pending planning context revision');
       if(JSON.stringify(latest.plan)!==JSON.stringify(plan)||latest.plan?.status[section]!=='pending')throw new Error('Proposal not pending');
       latest.plan.status[section]='applying';
     }});
