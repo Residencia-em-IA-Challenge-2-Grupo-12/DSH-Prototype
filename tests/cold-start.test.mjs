@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {readFile,mkdir} from 'node:fs/promises';
+import path from 'node:path';
+import {createExperimentTrace} from '../src/foundation/experiment-trace.mjs';
 import test from 'node:test';
 import {initializeScenario,listWorkspace,readWorkspace,applyApproved,ROOT,runtimeDir} from '../src/core.mjs';
 import {createTrustedStudyService} from '../src/foundation/trusted-study-service.mjs';
@@ -21,7 +23,10 @@ async function exercise(student,caseId) {
   const events=()=>Promise.resolve(structuredClone(fixture.events));
   const calendar={events};
   await initializeScenario(calendar,student,{coldStart:caseId});
-  const open=()=>createTrustedStudyService({student,calendar,runtimeDirectory:runtimeDir(),coldStart:true});
+  const directory=path.join(runtimeDir(),'evidence');
+  await mkdir(directory,{mode:0o700});
+  const trace=await createExperimentTrace({directory,runId:'fixture-test',attemptId:caseId});
+  const open=()=>createTrustedStudyService({student,calendar,runtimeDirectory:runtimeDir(),coldStart:true,trace});
   return {open,calendar,original:fixture.events};
 }
 

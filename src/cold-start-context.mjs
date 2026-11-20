@@ -58,7 +58,8 @@ export function reviewedPlannerProfile(student, context, today) {
     maxDailyStudyHours:record.maxDailyStudyHours, studyBreakMinutes:record.studyBreakMinutes,
     courses:record.courses.map(course=>({
       name:course.name, deadline:`${course.date}T${course.time}:00-03:00`,
-      source:course.citation.path, evidence:course.citation, resolution:course.resolution,
+      source:course.citation.path, evidence:course.citation,
+      ...(course.resolution?{resolution:course.resolution}:{}),
     })),
   };
 }
