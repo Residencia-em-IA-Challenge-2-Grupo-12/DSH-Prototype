@@ -1,13 +1,22 @@
 import { createHash, randomUUID } from 'node:crypto';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { createStateStore } from './state-store.mjs';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const FIXED_TODAY = '2026-11-02';
-const RUNTIME = path.join(ROOT, '.runtime');
+const runtimeContext=new AsyncLocalStorage();
+// Trusted services may bind operations to a per-run runtime without changing
+// process-wide environment; the legacy baseline keeps its existing override.
+export function runtimeDir() { return path.resolve(runtimeContext.getStore()||process.env.STUDY_ATLAS_RUNTIME_DIR||path.join(ROOT,'.runtime')); }
+export function withSyntheticRuntime(directory,operation){
+  if(typeof directory!=='string'||!path.isAbsolute(directory)||path.normalize(directory)!==directory||directory===path.parse(directory).root||typeof operation!=='function')throw new Error('A valid synthetic runtime and operation are required');
+  return runtimeContext.run(directory,operation);
+}
 const STUDENTS = ['ana', 'bruno'];
 const writeLocks = new Set();
 async function withWriteLock(student, fn) {
@@ -25,16 +34,39 @@ export async function writeJSON(p, obj) {
   await fs.writeFile(tmp, json(obj), { mode: 0o600 });
   await fs.rename(tmp, p);
 }
-export function statePath(student) { return path.join(RUNTIME, assertStudent(student) + '.json'); }
-export async function loadState(student) { return readJSON(statePath(student)); }
-export async function saveState(student, state) { return writeJSON(statePath(student), state); }
-async function workspaceRoot(student) {
+export function statePath(student) { return path.join(runtimeDir(), assertStudent(student) + '.json'); }
+const stores=new Map();
+const stateStore=new Proxy({}, {get(_target,key){
+  const directory=runtimeDir();
+  if(!stores.has(directory))stores.set(directory,createStateStore(directory));
+  return stores.get(directory)[key];
+}});
+export async function disposeSyntheticRuntime(directory) {
+  if(typeof directory!=='string'||!path.isAbsolute(directory)||path.normalize(directory)!==directory||directory===path.parse(directory).root)throw new Error('A valid synthetic runtime is required');
+  const key=path.resolve(directory),store=stores.get(key);
+  if(!store)return false;
+  await store.close();
+  if(stores.get(key)===store)stores.delete(key);
+  return true;
+}
+export async function loadState(student) { return stateStore.load(assertStudent(student)); }
+export async function saveState(student, state) { return stateStore.save(assertStudent(student),state); }
+export async function getRecoveryClaim() { return stateStore.getCalendarClaim(); }
+export async function snapshotForArchive(student) { return stateStore.snapshotForArchive(assertStudent(student)); }
+async function workspaceRoot(student,requireStaged=false) {
   assertStudent(student);
-  const staged=path.join(RUNTIME,'workspaces',student);
+  const staged=path.join(runtimeDir(),'workspaces',student);
+  if(requireStaged){
+    for(const directory of [path.dirname(staged),staged]){
+      const entry=await fs.lstat(directory);
+      if(!entry.isDirectory())throw new Error('Synthetic run workspace is unavailable');
+    }
+    return staged;
+  }
   try { await fs.access(staged); return staged; } catch { return path.join(ROOT,'fixtures/students',student); }
 }
-export async function getStudent(student) {
-  const root=await workspaceRoot(student);
+export async function getStudent(student,{requireStaged=false}={}) {
+  const root=await workspaceRoot(student,requireStaged);
   const data=await readJSON(path.join(root, 'courses.json'));
   for(const course of data.courses) {
     const text=await fs.readFile(await checkedPath(root,course.source),'utf8');
@@ -47,8 +79,8 @@ export async function getStudent(student) {
   }
   return data;
 }
-export async function listWorkspace(student, relative = '') {
-  const root = await workspaceRoot(student);
+export async function listWorkspace(student, relative = '',{requireStaged=false}={}) {
+  const root = await workspaceRoot(student,requireStaged);
   const target = await checkedPath(root, relative);
   const entries = await fs.readdir(target, { withFileTypes: true });
   return entries.filter(e => !e.isSymbolicLink()).map(e => ({ name: e.name, type: e.isDirectory() ? 'directory' : 'file' }));
@@ -59,8 +91,8 @@ async function checkedPath(root, relative) {
   if (candidate !== resolvedRoot && !candidate.startsWith(resolvedRoot + path.sep)) throw new Error('Path is outside synthetic workspace');
   return candidate;
 }
-export async function readWorkspace(student, relative) {
-  const root = await workspaceRoot(student);
+export async function readWorkspace(student, relative,{requireStaged=false}={}) {
+  const root = await workspaceRoot(student,requireStaged);
   const p = await checkedPath(root, relative);
   const ext=path.extname(p).toLowerCase();
   if (!['.md', '.json', '.txt', '.pdf'].includes(ext)) throw new Error('Unsupported synthetic file type');
@@ -85,7 +117,7 @@ export class Calendarpit {
       body: body === undefined ? undefined : JSON.stringify(body)
     });
     const text = await res.text();
-    if (!res.ok) throw new Error('Calendarpit ' + res.status + ': ' + text);
+    if (!res.ok) {const error=new Error('Calendarpit ' + res.status + ': ' + text);error.status=res.status;throw error;}
     return text ? JSON.parse(text) : null;
   }
   async events(student) { return (await this.request('GET', '/calendars/' + assertStudent(student) + '-calendar/events')).items; }
@@ -103,7 +135,8 @@ export function significant(e) {
 }
 export function snapshot(events) { return events.map(significant).sort((a,b) => a.id.localeCompare(b.id)); }
 export function digest(events) { return createHash('sha256').update(JSON.stringify(snapshot(events))).digest('hex'); }
-const millis = (item, key) => Date.parse(item[key]?.dateTime || item[key]?.date);
+// The simulator uses fixed São Paulo time; all-day dates start at local midnight.
+const millis = (item, key) => Date.parse(item[key]?.dateTime || (item[key]?.date && item[key].date + 'T00:00:00-03:00'));
 const overlaps = (a,b) => millis(a,'start') < millis(b,'end') && millis(b,'start') < millis(a,'end');
 function localTime(date) { return date.toISOString().replace('Z','').slice(0,19) + '-03:00'; }
 
@@ -168,24 +201,57 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
     remove:{near:replaceable.filter(e=>millis(e,'start')<Date.parse('2026-11-09T00:00:00-03:00')).map(significant),future:replaceable.filter(e=>millis(e,'start')>=Date.parse('2026-11-09T00:00:00-03:00')).map(significant)},
     baseHash:digest(events), status:{near:'pending',future:'pending'} };
 }
-export async function resetScenario(calendar, student) {
-  assertStudent(student); await calendar.reset(student);
-  const staged=path.join(RUNTIME,'workspaces',student);
-  await fs.rm(staged,{recursive:true,force:true});
-  await fs.mkdir(path.dirname(staged),{recursive:true});
-  await fs.cp(path.join(ROOT,'fixtures/students',student),staged,{recursive:true});
+// Initializes an already-seeded, fresh synthetic run. It does not invoke the
+// simulator's administrative reset endpoint or overwrite an existing run.
+export async function initializeScenario(calendar,student) {
+  assertStudent(student);
+  try {await loadState(student);throw new Error('Synthetic scenario already initialized');}
+  catch(error){if(error.code!=='ENOENT')throw error;}
   const events=await calendar.events(student);
-  const feedback=(await readJSON(path.join(ROOT, 'fixtures/feedback', student+'.json'))).map(validateFeedback);
+  const expected=(await readJSON(path.join(ROOT,'fixtures/calendars',student+'.json'))).events;
+  if(digest(events)!==digest(expected))throw new Error('Observed calendar does not match the synthetic fixture');
+  const staged=path.join(runtimeDir(),'workspaces',student);
+  await fs.mkdir(path.dirname(staged),{recursive:true});
+  try {await fs.mkdir(staged);} catch(error){if(error.code==='EEXIST')throw new Error('Synthetic workspace already initialized');throw error;}
+  await fs.cp(path.join(ROOT,'fixtures/students',student),staged,{recursive:true,force:false,errorOnExist:true});
+  const feedback=(await readJSON(path.join(ROOT,'fixtures/feedback',student+'.json'))).map(validateFeedback);
   const state={student,feedback,history:[],plan:null,lastSnapshot:snapshot(events),annotations:{},protectedIds:[]};
-  await saveState(student,state); return state;
+  await stateStore.create(student,state);
+  return state;
 }
-export async function draft(calendar, student, options={}) {
-  const events=await calendar.events(student), state=await loadState(student);
-  const unseen=diffSnapshots(state.lastSnapshot,events);
-  state.protectedIds=[...new Set([...(state.protectedIds||[]),...unseen.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
-  const plan=makePlan(await getStudent(student), events, {...options,protectedIds:state.protectedIds||[]});
-  state.plan=plan; state.history.push({type:'proposal',at:new Date().toISOString(),planId:plan.id,options});
-  await saveState(student,state); return plan;
+export async function resetScenario(calendar, student) {
+  assertStudent(student);
+  const id=randomUUID(),actionId='reset:'+student;
+  await stateStore.acquireCalendarClaim({id,student,kind:'reset',actions:[{actionId}],startedAt:new Date().toISOString()});
+  try {
+    await stateStore.appendCalendarClaimStep(id,{actionId,status:'sent'});
+    await calendar.reset(student);
+    await stateStore.appendCalendarClaimStep(id,{actionId,status:'acknowledged'});
+    const staged=path.join(runtimeDir(),'workspaces',student);
+    await fs.rm(staged,{recursive:true,force:true});
+    await fs.mkdir(path.dirname(staged),{recursive:true});
+    await fs.cp(path.join(ROOT,'fixtures/students',student),staged,{recursive:true});
+    const events=await calendar.events(student);
+    const expected=(await readJSON(path.join(ROOT,'fixtures/calendars',student+'.json'))).events;
+    if(digest(events)!==digest(expected))throw new Error('Observed calendar does not match the reset fixture');
+    const feedback=(await readJSON(path.join(ROOT, 'fixtures/feedback', student+'.json'))).map(validateFeedback);
+    const state={student,feedback,history:[],plan:null,lastSnapshot:snapshot(events),annotations:{},protectedIds:[]};
+    await stateStore.appendCalendarClaimStep(id,{actionId,status:'confirmed'});
+    await stateStore.completeCalendarClaim(id,{student,replacement:state});
+    return state;
+  } catch(error) {
+    throw new Error('RESET UNRESOLVED: synthetic simulator or workspace may have changed; do not retry blindly. '+error.message);
+  }
+}
+export async function draft(calendar, student, options={}, {requireStaged=false}={}) {
+  const events=await calendar.events(student), profile=await getStudent(student,{requireStaged});
+  return stateStore.update(assertStudent(student),state=>{
+    const unseen=diffSnapshots(state.lastSnapshot,events);
+    state.protectedIds=[...new Set([...(state.protectedIds||[]),...unseen.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
+    const plan=makePlan(profile, events, {...options,protectedIds:state.protectedIds||[]});
+    state.plan=plan; state.history.push({type:'proposal',at:new Date().toISOString(),planId:plan.id,options});
+    return plan;
+  },{requiresIdle:true});
 }
 export async function applyApproved(calendar, student, planId, section) {
   return withWriteLock(student,()=>applyApprovedLocked(calendar,student,planId,section));
@@ -196,30 +262,75 @@ async function applyApprovedLocked(calendar, student, planId, section) {
   if (!plan || plan.id!==planId || plan.status[section]!=='pending') throw new Error('Proposal not pending');
   const current=await calendar.events(student);
   if (digest(current)!==plan.baseHash) throw new Error('STALE: calendar changed; review a new proposal');
+  const claimId=randomUUID();
+  const actions=[...(plan.remove?.[section]||[]).map(event=>({actionId:'remove:'+event.id,type:'remove',event})),
+    ...plan[section].map(event=>({actionId:'create:'+event.id,type:'create',event}))];
+  await stateStore.acquireCalendarClaim({id:claimId,student,kind:'approval',proposalId:planId,section,proposal:plan,actions,
+    decision:{kind:'approved',section,at:new Date().toISOString()},startedAt:new Date().toISOString()},
+    {student,change:latest=>{
+      if(JSON.stringify(latest.plan)!==JSON.stringify(plan)||latest.plan?.status[section]!=='pending')throw new Error('Proposal not pending');
+      latest.plan.status[section]='applying';
+    }});
   const written=[];
   const removed=[];
   let expected=plan.baseHash;
+  let expectedEvents=current;
+  let after,attempt=null,sent=false;
   try {
     for (const old of (plan.remove?.[section]||[])) {
       if(digest(await calendar.events(student))!==expected) throw new Error('Calendar changed during application');
-      await calendar.remove(student,old.id); removed.push(old.id); expected=digest(await calendar.events(student));
+      attempt={type:'remove',id:old.id};
+      const actionId='remove:'+old.id;
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'sent'});sent=true;
+      await calendar.remove(student,old.id); removed.push(old.id); attempt=null;
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'acknowledged'});
+      expectedEvents=expectedEvents.filter(event=>event.id!==old.id);
+      const observed=await calendar.events(student);
+      if(digest(observed)!==digest(expectedEvents))throw new Error('Calendar changed during application');
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'confirmed'});
+      expectedEvents=observed;expected=digest(observed);
     }
     for (const block of plan[section]) {
       if(digest(await calendar.events(student))!==expected) throw new Error('Calendar changed during application');
-      const result=await calendar.create(student,block); written.push(result.id);
-      expected=digest(await calendar.events(student));
+      attempt={type:'create',id:block.id};
+      const actionId='create:'+block.id;
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'sent'});sent=true;
+      const result=await calendar.create(student,block); written.push(result.id);attempt=null;
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'acknowledged',resultId:result.id});
+      expectedEvents=[...expectedEvents,result];
+      const observed=await calendar.events(student);
+      if(digest(observed)!==digest(expectedEvents))throw new Error('Calendar changed during application');
+      await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'confirmed'});
+      expectedEvents=observed;expected=digest(observed);
     }
-    plan.status[section]='applied';
+    after=await calendar.events(student);
+    if(digest(after)!==expected)throw new Error('Calendar changed during application');
   } catch (err) {
-    plan.status[section]='partial';
-    state.history.push({type:'partial-write',section,at:new Date().toISOString(),written,removed,error:String(err)});
-    state.lastSnapshot=snapshot(await calendar.events(student)); await saveState(student,state);
-    throw new Error('PARTIAL: created '+JSON.stringify(written)+'; removed '+JSON.stringify(removed)+'. Inspect calendar before retry. '+err.message);
+    if(!sent){
+      await stateStore.cancelCalendarClaim(claimId,{student,change:latest=>{
+        if(latest.plan?.id===planId&&latest.plan.status[section]==='applying')latest.plan.status[section]='pending';
+      }});
+      throw err;
+    }
+    let observed=null;
+    try {observed=await calendar.events(student);} catch { /* Preserve the last trusted snapshot. */ }
+    await stateStore.update(assertStudent(student),latest=>{
+      if(latest.plan?.id===planId)latest.plan.status[section]='partial';
+      if(observed){
+        const edited=diffSnapshots(latest.lastSnapshot,observed).filter(change=>change.before?.extendedProperties?.private?.studyDemo==='true'&&!removed.includes(change.id));
+        latest.protectedIds=[...new Set([...(latest.protectedIds||[]),...edited.map(change=>change.id)])];
+      }
+      latest.history.push({type:'partial-write',section,at:new Date().toISOString(),planId,written,removed,error:String(err),observation:observed?'available':'unavailable',...(observed?{observedSnapshot:snapshot(observed)}:{}),...(attempt?{unknownAction:attempt}:{})});
+    });
+    throw new Error('PARTIAL: created '+JSON.stringify(written)+'; removed '+JSON.stringify(removed)+(attempt?'; outcome unknown for '+JSON.stringify(attempt):'')+'. '+(observed?'Inspect calendar before retry.':'Calendar observation unavailable; inspect when available.')+' '+err.message);
   }
-  const after=await calendar.events(student);
-  plan.baseHash=digest(after); state.lastSnapshot=snapshot(after);
-  state.history.push({type:'approved',section,at:new Date().toISOString(),planId,written,removed});
-  await saveState(student,state); return {written,removed,section};
+  await stateStore.completeCalendarClaim(claimId,{student,change:latest=>{
+    if(latest.plan?.id!==planId||latest.plan.status[section]!=='applying')throw new Error('Approved proposal changed while applying');
+    latest.plan.status[section]='applied';latest.plan.baseHash=digest(after);
+    latest.lastSnapshot=snapshot(after);
+    latest.history.push({type:'approved',section,at:new Date().toISOString(),planId,written,removed});
+  }});
+  return {written,removed,section};
 }
 export function diffSnapshots(before, after) {
   const a=new Map(snapshot(before).map(e=>[e.id,e])), b=new Map(snapshot(after).map(e=>[e.id,e]));
@@ -230,11 +341,13 @@ export function diffSnapshots(before, after) {
   } return result;
 }
 export async function checkpoint(calendar, student, reason='') {
-  const state=await loadState(student), current=await calendar.events(student);
-  const changes=diffSnapshots(state.lastSnapshot,current);
-  state.protectedIds=[...new Set([...(state.protectedIds||[]),...changes.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
-  state.history.push({type:'checkpoint',at:new Date().toISOString(),reason,changes});
-  state.lastSnapshot=snapshot(current); await saveState(student,state); return {changes,reason};
+  const current=await calendar.events(student);
+  return stateStore.update(assertStudent(student),state=>{
+    const changes=diffSnapshots(state.lastSnapshot,current);
+    state.protectedIds=[...new Set([...(state.protectedIds||[]),...changes.filter(c=>c.before?.extendedProperties?.private?.studyDemo==='true').map(c=>c.id)])];
+    state.history.push({type:'checkpoint',at:new Date().toISOString(),reason,changes});
+    state.lastSnapshot=snapshot(current); return {changes,reason};
+  },{requiresIdle:true});
 }
 export function validateFeedback(input) {
   if (typeof input.eventId!=='string' || !input.eventId.trim()) throw new Error('eventId required');
@@ -247,33 +360,72 @@ export function validateFeedback(input) {
   return {eventId:input.eventId.trim(),completion:input.completion||'unknown',actualMinutes:input.actualMinutes==null?null:Number(input.actualMinutes),effort:input.effort==null?null:Number(input.effort),note:String(input.note||'').slice(0,2000),recordedAt};
 }
 export async function addFeedback(student, input) {
-  const state=await loadState(student), record=validateFeedback(input);
-  state.feedback.push(record); await saveState(student,state); return record;
+  const record=validateFeedback(input);
+  return stateStore.update(assertStudent(student),state=>{state.feedback.push(record);return record;});
 }
 export async function draftAnnotation(calendar,student,eventId,category) {
   if(!['study','classes','work','rest','physical','other','unknown'].includes(category)) throw new Error('Invalid category');
-  const state=await loadState(student),events=await calendar.events(student),event=events.find(e=>e.id===eventId);
+  const events=await calendar.events(student),event=events.find(e=>e.id===eventId);
   if(!event)throw new Error('Event not found');
   const start='[Study Atlas]',end='[/Study Atlas]',original=event.description||'';
   const pattern=/\n?\[Study Atlas\][\s\S]*?\[\/Study Atlas\]/g;
   const preserved=original.replace(pattern,'').trimEnd();
   const section=start+'\nCategory / Categoria: '+category+'\n'+end;
   const description=(preserved?preserved+'\n\n':'')+section;
-  state.pendingAnnotation={id:randomUUID(),eventId,category,baseHash:digest(events),before:significant(event),after:{description,
-    extendedProperties:{...(event.extendedProperties||{}),private:{...(event.extendedProperties?.private||{}),studyCategory:category}}}};
-  await saveState(student,state);return state.pendingAnnotation;
+  return stateStore.update(assertStudent(student),state=>{
+    state.pendingAnnotation={id:randomUUID(),eventId,category,baseHash:digest(events),before:significant(event),after:{description,
+      extendedProperties:{...(event.extendedProperties||{}),private:{...(event.extendedProperties?.private||{}),studyCategory:category}}}};
+    return state.pendingAnnotation;
+  },{requiresIdle:true});
 }
 export async function applyAnnotation(calendar,student,id) {
   return withWriteLock(student,()=>applyAnnotationLocked(calendar,student,id));
 }
 async function applyAnnotationLocked(calendar,student,id) {
   const state=await loadState(student),p=state.pendingAnnotation;
-  if(!p||p.id!==id)throw new Error('Annotation proposal not pending');
+  if(!p||p.id!==id||(p.status&&p.status!=='pending'))throw new Error('Annotation proposal not pending');
   const events=await calendar.events(student);if(digest(events)!==p.baseHash)throw new Error('STALE: calendar changed; review again');
-  await calendar.patch(student,p.eventId,p.after);
-  state.annotations[p.eventId]={category:p.category,source:'user-confirmed',at:new Date().toISOString()};
-  state.history.push({type:'annotation-approved',eventId:p.eventId,category:p.category,at:new Date().toISOString()});
-  state.pendingAnnotation=null;state.lastSnapshot=snapshot(await calendar.events(student));await saveState(student,state);
+  const claimId=randomUUID(),actionId='patch:'+p.eventId;
+  await stateStore.acquireCalendarClaim({id:claimId,student,kind:'annotation',proposalId:id,proposal:p,decision:{kind:'approved',at:new Date().toISOString()},
+    actions:[{actionId,type:'patch',eventId:p.eventId,before:p.before,after:p.after}],startedAt:new Date().toISOString()},
+    {student,change:latest=>{
+      if(JSON.stringify(latest.pendingAnnotation)!==JSON.stringify(p))throw new Error('Annotation proposal not pending');
+      latest.pendingAnnotation.status='applying';
+    }});
+  let acknowledged=false,after,sent=false;
+  try {
+    if(digest(await calendar.events(student))!==p.baseHash)throw new Error('STALE: calendar changed; review again');
+    await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'sent'});sent=true;
+    await calendar.patch(student,p.eventId,p.after);acknowledged=true;
+    await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'acknowledged'});
+    after=await calendar.events(student);
+    const expected=events.map(event=>event.id===p.eventId?{...event,...p.after}:event);
+    if(digest(after)!==digest(expected))throw new Error('Calendar changed during annotation');
+    await stateStore.appendCalendarClaimStep(claimId,{actionId,status:'confirmed'});
+  } catch(error) {
+    if(!sent){
+      await stateStore.cancelCalendarClaim(claimId,{student,change:latest=>{
+        if(latest.pendingAnnotation?.id===id)latest.pendingAnnotation=p;
+      }});
+      throw error;
+    }
+    let observed=null;try {observed=await calendar.events(student);} catch { /* Keep the last trusted snapshot. */ }
+    await stateStore.update(assertStudent(student),latest=>{
+      if(latest.pendingAnnotation?.id===id)latest.pendingAnnotation.status='partial';
+      if(observed){
+        const edited=diffSnapshots(latest.lastSnapshot,observed).filter(change=>change.before?.extendedProperties?.private?.studyDemo==='true');
+        latest.protectedIds=[...new Set([...(latest.protectedIds||[]),...edited.map(change=>change.id)])];
+      }
+      latest.history.push({type:'annotation-partial',proposalId:id,eventId:p.eventId,at:new Date().toISOString(),acknowledged,observation:observed?'available':'unavailable',...(observed?{observedSnapshot:snapshot(observed)}:{}),error:String(error)});
+    });
+    throw new Error('PARTIAL: annotation '+(acknowledged?'acknowledged; resulting calendar needs review':'outcome unknown')+'. '+error.message);
+  }
+  await stateStore.completeCalendarClaim(claimId,{student,change:latest=>{
+    if(latest.pendingAnnotation?.id!==id||latest.pendingAnnotation.status!=='applying')throw new Error('Annotation proposal changed while applying');
+    latest.annotations[p.eventId]={category:p.category,source:'user-confirmed',at:new Date().toISOString()};latest.pendingAnnotation=null;
+    latest.history.push({type:'annotation-approved',eventId:p.eventId,category:p.category,at:new Date().toISOString()});
+    latest.lastSnapshot=snapshot(after);
+  }});
   return {saved:true};
 }
 export function summarize(events, feedback, state) {
@@ -306,11 +458,11 @@ export function summarize(events, feedback, state) {
 export async function report(calendar, student) {
   const state=await loadState(student), events=await calendar.events(student);
   const metrics=summarize(events,state.feedback,state);
-  const out=path.join(RUNTIME,student+'-report.json'); await writeJSON(out,metrics);
+  const out=path.join(runtimeDir(),student+'-report.json'); await writeJSON(out,metrics);
   const markdown='# Synthetic routine report / Relatório sintético\n\nRecent week / Semana anterior: '+metrics.periods.recent.scheduledHours+'h scheduled; '+metrics.periods.recent.reportedMinutes+' minutes reported.\n\nComing week / Próxima semana: '+metrics.periods.upcoming.scheduledHours+'h scheduled.\n\nScheduled time is not proof of completion. / Tempo agendado não comprova realização.\n\n## Categories / Categorias\n\n'+Object.entries(metrics.categories).map(([k,v])=>'- '+k+': '+v+'h').join('\n')+'\n\n## Agent interpretation / Interpretação do agente\n\n'+(state.narrative||'Not yet provided by an agent. / Ainda não fornecida por um agente.')+'\n';
-  await fs.writeFile(path.join(RUNTIME,student+'-report.md'),markdown); return metrics;
+  await fs.writeFile(path.join(runtimeDir(),student+'-report.md'),markdown); return metrics;
 }
 export async function saveNarrative(student, narrative) {
   if (typeof narrative!=='string'||narrative.length>12000) throw new Error('Invalid narrative');
-  const state=await loadState(student); state.narrative=narrative; await saveState(student,state); return {saved:true};
+  return stateStore.update(assertStudent(student),state=>{state.narrative=narrative;return {saved:true};});
 }

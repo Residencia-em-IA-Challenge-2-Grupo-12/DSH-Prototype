@@ -1,0 +1,3 @@
+- insert:
+    - id: study-test-catalog-audit
+      name: './dsh-catalog-audit.mjs'

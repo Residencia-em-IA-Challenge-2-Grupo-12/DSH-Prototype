@@ -1,0 +1,30 @@
+(node:1147816) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ trusted lifecycle: ana run 1 archives before verified retirement (5655.523621ms)
+✔ trusted lifecycle: ana run 2 archives before verified retirement (6313.860039ms)
+✔ trusted lifecycle: ana run 3 archives before verified retirement (6321.125517ms)
+✔ trusted lifecycle: ana run 4 archives before verified retirement (5808.442336ms)
+✔ trusted lifecycle: ana run 5 archives before verified retirement (5911.197659ms)
+✔ trusted lifecycle: ana run 6 archives before verified retirement (5904.75664ms)
+✔ trusted lifecycle: ana run 7 archives before verified retirement (5919.369776ms)
+✔ trusted lifecycle: ana run 8 archives before verified retirement (5839.450461ms)
+✔ trusted lifecycle: ana run 9 archives before verified retirement (6156.657392ms)
+✔ trusted lifecycle: ana run 10 archives before verified retirement (5384.757157ms)
+✔ trusted lifecycle: bruno run 1 archives before verified retirement (5528.613426ms)
+✔ trusted lifecycle: bruno run 2 archives before verified retirement (5986.500418ms)
+✔ trusted lifecycle: bruno run 3 archives before verified retirement (6326.756291ms)
+✔ trusted lifecycle: bruno run 4 archives before verified retirement (6219.214116ms)
+✔ trusted lifecycle: bruno run 5 archives before verified retirement (6066.059736ms)
+✔ trusted lifecycle: bruno run 6 archives before verified retirement (6238.784382ms)
+✔ trusted lifecycle: bruno run 7 archives before verified retirement (5817.839359ms)
+✔ trusted lifecycle: bruno run 8 archives before verified retirement (5996.213172ms)
+✔ trusted lifecycle: bruno run 9 archives before verified retirement (6896.488394ms)
+✔ trusted lifecycle: bruno run 10 archives before verified retirement (5818.683057ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120192.311931

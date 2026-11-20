@@ -1,0 +1,1729 @@
+{
+  "schemaVersion": 1,
+  "inspectedOn": "2026-11-17",
+  "backbone": [
+    8,
+    37,
+    38,
+    39
+  ],
+  "mainHead": "c3f931edad55b916910c16a58eae9848df2367ec",
+  "retained": [
+    {
+      "pr": 16,
+      "headRef": "feat/calendar-checkpoint-replay",
+      "head": "6b909a561d4cbef0ad07c25c1e26cc5f0e24ade4",
+      "baseRef": "feat/study-planning-demo",
+      "baseHead": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "tree": "22a3a613fa41936631652717454b79b38398cfe0",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "src/calendar-replay.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c4aa27dcc4c7ccc49b68fc5f21438fd5bb649dce",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendar-replay.integration.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c7f88176646d74b554a42a6f0599a0a3aa0566ba",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendar-replay.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "e58b51dd77caa5cb26f483a6513235cbf46540e0",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 17,
+      "headRef": "feat/domain-store-spike",
+      "head": "c267240521724a8d7d0420047e57a5b84da15bec",
+      "baseRef": "feat/study-planning-demo",
+      "baseHead": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "tree": "ba61c1c40c663341459fa9c19e69f09774c90850",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "src/domain-store.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "457077d9b985d493a110df3c74f01ab24f953ab7",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/domain-store.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "5c44c3430f60cde80abf27a38ee1fb25c2174867",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 18,
+      "headRef": "feat/calendarpit-run-lifecycle",
+      "head": "f4e641d35cb07a635012999aa4d5c130851a20b3",
+      "baseRef": "feat/study-planning-demo",
+      "baseHead": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "tree": "53caab9163540bddd596a7b24d8fa0261c28a431",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "docs/calendarpit-run-lifecycle.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "438eb262c91d2d91f346e023585649cc25159d47",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/foundation/calendarpit-runner.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "ce12d8dcfbc482c859cfac8878ef1f594417cced",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendarpit-isolation.integration.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "93c28c80de3d90a1fa44d03bc02a76151d744e02",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/foundation-calendarpit.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "e862f0613d35edb22af3c2d30ba1588bd01ef292",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 19,
+      "headRef": "feat/solver-comparison-spike",
+      "head": "6df7a5faef616de6b8f2522f62650daf65c0f950",
+      "baseRef": "feat/study-planning-demo",
+      "baseHead": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "tree": "6a62156bf8986565b8f167bc6380f6286b5cd3e3",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": ".github/workflows/solver-experiment.yml",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c5f3166cbcf78498d7e9c9c23eeeede938bd8c82",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/solver-comparison.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "70be8100fe18a5b85bf25e640a65e23af46b05d3",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/solver_comparison.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "16b8549260b98087fd898c65ea30318a3d53c30b",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/test_solver_comparison.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "78a034a527e281748ea6f84153fbf9a6b3c2ae42",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 20,
+      "headRef": "feat/embedding-screen-smoke",
+      "head": "bea47e8cc63cd164942c30ea1a9d2abacb67e720",
+      "baseRef": "feat/study-planning-demo",
+      "baseHead": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "tree": "b12364ae227bff44d0be8aef70f48509623a11c9",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": ".github/workflows/embedding-smoke.yml",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "a1583d040433839efcf7106a5cc6442dd54810d0",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/.gitignore",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "0857eeec6146afcc66948d1f296408005112a233",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/README.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c4cf067bb2eeb21974b9300bc585b174b0fc6978",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/benchmark.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "42fdc342280ff5e435d799c28876bc2e1500378e",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/corpus.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "188da8d0142589363a7e6e72dd9bcac49cc72951",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/results/2026-11-06-smoke.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "d09421ee848ecaced7ada91bb5bd2c102e51d2d9",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/results/2026-11-06-smoke.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "debd0f3d190207199884a4c4992b458214256474",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/test_benchmark.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "499662ae102b584e24fd28c0b83f1e0a03059c5e",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 21,
+      "headRef": "feat/calendarpit-provider-api",
+      "head": "8c2e808f02128db611ac88a97982881d940d0508",
+      "baseRef": "feat/calendarpit-run-lifecycle",
+      "baseHead": "f4e641d35cb07a635012999aa4d5c130851a20b3",
+      "mergeBase": "f4e641d35cb07a635012999aa4d5c130851a20b3",
+      "tree": "a6cd7afb17519b1758b106637df74960007daa62",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "docs/calendarpit-api-spike.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "de117bba225d65004141cbcff6e5888351959a22",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/foundation/calendarpit-api.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "b105e6d978f431376901a13adfab96ab9438169b",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendarpit-api.integration.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "a80f16550bc64b2cd3d5c89bcfff9136f53f14b0",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendarpit-api.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "b0ed65cfa8c0183bf8e81c1f8343f88d5e34c45f",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 22,
+      "headRef": "feat/dsh-sidebar-spike",
+      "head": "516b3157a11b8820da732ecf42c871479d31e564",
+      "baseRef": "feat/study-planning-demo",
+      "baseHead": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "tree": "32b3c28acf5222c6b240511a4999a2c8737475c2",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "experiments/dsh-calendar-sidebar/README.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "a41b9945181258aae8c4f25e262e6e032feb2429",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-calendar-sidebar/calendar-host.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "7dd445c838fec4b8cbf29fa7698b5364c163d0d5",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-calendar-sidebar/client.js",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "cf674998794e537609547346fee9cb5dad158eac",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-calendar-sidebar/index.js",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c090e1fbf4786c1934a08863e4dcee5473980eb7",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-calendar-sidebar/package.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "9b243e6a4cf9d66f7b0aa3b01596572b080058bc",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/dsh-calendar-sidebar.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "fb26715a21f71e82c997d69d1a9d36ac7c8641b6",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/dsh-remote-gateway.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "875a38692ea5f6cff4f8953e4a5ece28851b4a0e",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 23,
+      "headRef": "feat/calendar-experiment-bundle",
+      "head": "6f2e128f08dea9051567ef346bc61e932e393b65",
+      "baseRef": "feat/calendarpit-provider-api",
+      "baseHead": "8c2e808f02128db611ac88a97982881d940d0508",
+      "mergeBase": "8c2e808f02128db611ac88a97982881d940d0508",
+      "tree": "c8d5897a2b3c4857d85ab06b75b73a942f0c17a7",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "docs/calendar-experiment-spike.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "f1eaf68c43ed5f386208e447566ca4f22e1c8803",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/calendar-replay.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c4aa27dcc4c7ccc49b68fc5f21438fd5bb649dce",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/foundation/calendar-experiment.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "a344c74534326d32da4a876461ab04a319b3d39a",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendar-experiment.integration.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "dfb31be0bd2def24bc8d51039bff4fa62d4e87f7",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendar-experiment.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "96883fcc49a5b6ed9055cca56edeaf9a20185878",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 24,
+      "headRef": "feat/domain-service-api",
+      "head": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "baseRef": "feat/domain-store-spike",
+      "baseHead": "c267240521724a8d7d0420047e57a5b84da15bec",
+      "mergeBase": "c267240521724a8d7d0420047e57a5b84da15bec",
+      "tree": "ccfbc7e119b4a28f1819f4e7cfb79026ded6b7f6",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "docs/domain-service-spike.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "8a572fa3159e3ab00f808f4e64e85eed0be4c8ef",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/domain-service.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "1bdb4235dfe713b30122b98a926e78eba617f6b5",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/domain-service.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "54f4313ed6852aa96b2ecb53e032f6b07181a3db",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 25,
+      "headRef": "feat/realistic-bilingual-personas",
+      "head": "8e792920c09c49f395eb707a66bac2d6bf0d8c89",
+      "baseRef": "feat/study-planning-demo",
+      "baseHead": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "tree": "dadf6feca75d0e03ca2cea45027479897a3b75c3",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": ".github/workflows/persona-fixtures.yml",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "b703c3be83435e66b6590205e80a551add24e920",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/README.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "d97c2489ea8fb1be34ca2c57e6d7713c5d011dab",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generate.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "f4ba4098db5b5a1e2b233eba4b6b73a8cec187b1",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/en/calendar.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "d2c4b21db98860a95200d67ce75d2ae98bee1979",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/en/scenario.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "2eaec2c0f27b5e46e4b79a3ce3e2df4cbecbc342",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/en/workspace/context/preferences.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "bfe19162a882d6156b530c01e566ed16cc0b4afd",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/en/workspace/courses/syllabus.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "68acfc351014b7c3b543ec94c96dcb7b4ed663a5",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/pt-BR/calendar.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "2f7868632df97d3d07c9bc60eadcbaa7f119ed5f",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/pt-BR/scenario.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "9baac15bbf632c0df4b8b24202b3a0d67bcd4a41",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/pt-BR/workspace/context/preferences.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "4851896d22f3bdebbb834b71ee8b60eaacc58bc8",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/pt-BR/workspace/courses/syllabus.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "f25502e5f869ee627f8167aeaf26caabb23d85fa",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/en/calendar.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "b75e3a5e27b4dd167367c59d0ca970f28133daed",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/en/scenario.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "7dec378ef3d1a8e2ada0d701c3e3d606bfb14c99",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/en/workspace/context/preferences.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "172a6406867e8a0a785f7a36e0474c6b8594d6bf",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/en/workspace/courses/syllabus.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c3feeee696203ad1a47f845d35868db93bca100d",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/pt-BR/calendar.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "368d0c2d841ed22a44bfa08fb6cbac7bf3597a47",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/pt-BR/scenario.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "9d69cab4b57ea7b84f512ffac0b241b379b5d4d1",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/pt-BR/workspace/context/preferences.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "3dc6f12e5d824df59f69bec6c20021a6eaf18a76",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/pt-BR/workspace/courses/syllabus.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "bab150d51c492cf9a47db7c9c1497bd18a71d943",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/en/calendar.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "6e6fd2a9ed25078f7360fc6d49c6790a1ae26195",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/en/scenario.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "cfe6e814bbf0cb390bdfd137a855a24fef0628bf",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/en/workspace/context/preferences.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "a219c0cd0c74d9912cd3265967a25304c675d9e7",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/en/workspace/courses/syllabus.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "90f2457c81213d13733fd7ea85d113ff466e3e5f",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/pt-BR/calendar.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "86aa4bd0e40c3f13436106144d83ae2ab61771eb",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/pt-BR/scenario.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "6603f6f34a990b36c4fb73963e72bbe9492e7eb6",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/pt-BR/workspace/context/preferences.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "e2d7ff101aac6784e1197637547c34272308d9a7",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/pt-BR/workspace/courses/syllabus.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "12174df9ac3414c6f658a8363f53bf8eb8a447f8",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "fixtures/personas-v1/test_personas.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "170591e6089e62e349c3ecc12a26f1abdab00995",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 26,
+      "headRef": "feat/bilingual-retrieval-challenge",
+      "head": "da6fdc7f1fe95afc7c10581ea9656272cadf8000",
+      "baseRef": "feat/embedding-screen-smoke",
+      "baseHead": "bea47e8cc63cd164942c30ea1a9d2abacb67e720",
+      "mergeBase": "fc7c2fbe50187f089e1cdef54eb41e98f0a4a754",
+      "tree": "8df5a017774f1f7ac5ba3012db068c93b6bff368",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": ".github/workflows/retrieval-challenge.yml",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "8a36524cb42c939a3c622c834ac150eff023621d",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/README.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "871cd2113b1c90be2f8539834b89cdc22318ffb5",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/RUNNER.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "8cf707aeb1411e37e860e665cbdcdc859433fecb",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/evaluate.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "7f73622e8160ce0575bc2e7db2b7633ff9a216fe",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/generate_dataset.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "0cd2b67cde64bca26b072e720eeb67cfed7f3ba1",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/heldout.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "20c5ed1821ff267d91fb422586d24af5c2ac9189",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/results/2026-11-07-exploratory.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "832c49396af02b8218db482af4fcce9f3fa7e937",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/run_models.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "1304c8f4455224500f87cded5595f7e99e4564d9",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/test_evaluate.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c5e1edc459a6ec23afa8a56aeaf5a71e19542e0b",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/test_runner.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "297cc638a0a4125d4c1dae1338ac545cf9a95241",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 27,
+      "headRef": "feat/calendar-domain-bridge",
+      "head": "095f5693ca7d16f9a1367d2d0d46da53a24c140e",
+      "baseRef": "feat/calendar-experiment-bundle",
+      "baseHead": "6f2e128f08dea9051567ef346bc61e932e393b65",
+      "mergeBase": "6f2e128f08dea9051567ef346bc61e932e393b65",
+      "tree": "60ebf505a6330cca71f05316d8feaa7465aa9cc4",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "docs/calendar-domain-bridge-spike.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "641462d001cb9c46514b7f6a68f9125c0fecc286",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/domain-service.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "90733cff3207ca4323de930253f0de834d7dbd10",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/domain-store.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "6f9e63e398b3649f9bccad5dbcb59ddd9e1961a7",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/foundation/calendar-approved-create.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "454d8c8fcb9412e13f92d325384fd35684bf2bca",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/foundation/calendar-domain-observer.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "f376566891d3f42d12fd05bce11ee9a974860b6d",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/foundation/domain-http-observer-client.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c5eb251788f0ae143044c234567638bf56920739",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendar-approved-create.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "be4aabc3c64963f49d51321c8347b8af22a02b9c",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendar-domain-observer.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "b1bde40f6638374caacacee27ca2ab12c6671631",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendar-experiment.integration.mjs",
+          "status": "M",
+          "oldBlob": "dfb31be0bd2def24bc8d51039bff4fa62d4e87f7",
+          "newBlob": "ad4e69dc60ba47c3c65fbb3799a0a22fd3c67804",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/domain-claim-rejection.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "97248c6f1ce7383615a5e1b4fdfaa005124bcda6",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/domain-service.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "54f4313ed6852aa96b2ecb53e032f6b07181a3db",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/domain-store.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "5c44c3430f60cde80abf27a38ee1fb25c2174867",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 28,
+      "headRef": "feat/synthetic-worker-spike",
+      "head": "f8aeea2a2ccfabb3e0efecd4c9a4539b9ae8d2d3",
+      "baseRef": "feat/study-planning-demo",
+      "baseHead": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "tree": "b0d97745f4780b4bcca765d61da760111c3879e4",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": ".github/workflows/synthetic-worker.yml",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "21c7f259537b4bfc6c152a3f30b0abd721c6b267",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/synthetic-worker/README.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "bdade7d098bbf7a7a6bb2345be2835f4f5705aea",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/synthetic-worker/bounded-process.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "4feb00b0690e43818efa14438d6dedaf9b346d76",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/synthetic-worker/bounded-process.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "5c2270b246a207f95c91fb15d6ae360a01a467f6",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/synthetic-worker/sdk-probe/README.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "a42c56824dee3ee25b0e857f89906cf8cc3be62e",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/synthetic-worker/sdk-probe/launch.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c734245d1f3716ea7983b071aee2a0c49537253d",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/synthetic-worker/sdk-probe/plugin.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "da9843a03391cb1799dd43d8cf521e3c9b4df9e5",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/synthetic-worker/worker.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "0e5f2f1f41c8c971c3c7a7f65a39f220d246b6f0",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/synthetic-worker/worker.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "275cfefd6ad93a86a842fe16b21e61f1013cec16",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 29,
+      "headRef": "feat/domain-service-container",
+      "head": "2a3cf7e9ef8eb99866e4b711b3b5f59e1039503f",
+      "baseRef": "feat/domain-service-api",
+      "baseHead": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "mergeBase": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "tree": "d9afe168dd7420a157565cf0964ecf320e8c3991",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "compose.domain.yaml",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "831d0f49677f31b0dd04532e1b2b32112b5ef8fe",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "docs/domain-container-spike.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "a474939dd068aee163a865ad71ef1e72a0262b6b",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "scripts/test-domain-container.sh",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "5493ee55f9b492b0b1c110eb61b8ecfa3058e904",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/Dockerfile.domain",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "b720d80196ec5f7166ce30b61d7c236556315d0e",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 30,
+      "headRef": "feat/shared-consumer-spike",
+      "head": "bbd28fa9609d496f2e718661598f27353f25ff92",
+      "baseRef": "feat/calendar-domain-bridge",
+      "baseHead": "095f5693ca7d16f9a1367d2d0d46da53a24c140e",
+      "mergeBase": "095f5693ca7d16f9a1367d2d0d46da53a24c140e",
+      "tree": "b8ae3d2268d4075fd2ead4530f86397c78574a8a",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "docs/consumer-spike.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c9c6afe305bc8bd9398bd297414545640b656a97",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "scripts/consumer-spike.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "29a0cc767b7194c3e436be42da75f413f27d41d9",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/foundation/sdk-app-consumer.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "caae3ce8aab340b83d7c5381e4c6b09430399bce",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/calendar-experiment.integration.mjs",
+          "status": "M",
+          "oldBlob": "ad4e69dc60ba47c3c65fbb3799a0a22fd3c67804",
+          "newBlob": "15380c4b85b76ed3b9200d126e8fee6d29db4618",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/sdk-app-consumer.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "ae6cd742c475eb4d90ddbe85e54f399701aff4ad",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 31,
+      "headRef": "feat/dsh-domain-read-bridge",
+      "head": "df54567bbcc9e9c29f33f5992e43742d11ee59b2",
+      "baseRef": "feat/domain-service-api",
+      "baseHead": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "mergeBase": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "tree": "1d3bd3a169f2b13808c7872a6150a818572a0d6d",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": "docs/dsh-domain-bridge-spike.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "c52bd9fa017e0b9ef1b4036e316e3b6ddb9201fe",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/foundation/dsh-calendar-descriptor.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "6b5bf73ca1c74167ae56f8a9ecc7b99137d9e835",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "src/foundation/dsh-calendar-host.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "52ddbd0df6339de30c576613f2611b1e757952b8",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/dsh-domain-bridge.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "079cb4a7c95680a79ea9960091fa6c1f22cbb096",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/dsh-domain-strict-client.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "9f11dfaabcaff040a94eb837cbebb86361ffc0af",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 32,
+      "headRef": "feat/evidence-admission-dossiers",
+      "head": "874907ba02cc3105553a94d65655977499e5a051",
+      "baseRef": "feat/study-planning-demo",
+      "baseHead": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "tree": "d6574e3b30809a1bd6db071fdc33ebfe95d246e1",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": ".github/workflows/evidence-candidates.yml",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "ca58f1cb0f75de8e5f5d806c023ec73dee70f9b3",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "research/evidence-candidates/README.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "72868162fbba736726ec1cdea3370a82826f6487",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "research/evidence-candidates/build.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "117914fd8244387f0612ce77319fadc32c13efde",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "research/evidence-candidates/candidates.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "bebd7396e5c603a62b04c0e6da4116ee6ae01dbb",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "research/evidence-candidates/dossiers.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "2db48cf51944983693fe7c53bd8a9d06b5b419d6",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "research/evidence-candidates/test_dossiers.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "92dfcd3f619790da522617d511f3e763061dfe85",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 33,
+      "headRef": "feat/custom-shell-comparison",
+      "head": "bc321a40173f88d9621abaebc6b3bde454c8e324",
+      "baseRef": "feat/shared-consumer-spike",
+      "baseHead": "bbd28fa9609d496f2e718661598f27353f25ff92",
+      "mergeBase": "bbd28fa9609d496f2e718661598f27353f25ff92",
+      "tree": "9d92e747f90ce87c659a08548e48825d098a862f",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "compare",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "compare",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": ".github/workflows/shell-comparison.yml",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "3926c7d69247494523bd4836a3163b3661056a6f",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/sdk-ui/README.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "1548383ee43af63a4b596d68e796f6ae6cf71ec9",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/sdk-ui/app.js",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "78148ba8e439c6c86802039ed83fa2f52683649e",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/sdk-ui/compare-index.html",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "a3318baa3ec726410b0eb61c105ae5e3d65f1528",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/sdk-ui/domain-read-server.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "409257dc29429cca5a840f9a82c245ccd7e345f1",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/sdk-ui/domain-view.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "e46b84292c3bef18ac31c494ad825bce2d6c2d9d",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/sdk-ui/index.html",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "d709b87bb58faff94bc72d478df12fe0befb007b",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/sdk-ui/runtime.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "ad9992dd45ba88ee57d6f0a387104c1fca042dd6",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/sdk-ui/server.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "5b716f590cbe26d1a51b1e3901828c7d1f4dc175",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/sdk-ui/style.css",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "29606d31293f8dbf0c4e94fc328f4709441fbbc1",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/sdk-domain-view.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "a1337eb4b794b60e68d863bdd5a24628ef6d930c",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/sdk-native-shared-domain.integration.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "53b2cf45d4396ddd15c39ac3d34fb620f31e9618",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/sdk-ui-spike.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "6394f478d6525c934ee718e52f9e574de2e06ce8",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 34,
+      "headRef": "feat/dsh-native-panel",
+      "head": "ad8c020106825996c7393fc68a74552710adbbea",
+      "baseRef": "feat/domain-service-api",
+      "baseHead": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "mergeBase": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "tree": "b1bafca5f8b901a8387ada657d2b46da61a63e92",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": ".github/workflows/dsh-native-panel.yml",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "bf213dbd83c8b037294758ca933f773393f9fe28",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/.gitignore",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "e3dcf871e2165ebf49e354b5b56d40aaa039eed8",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/README.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "09d34540dd8e81d82c994bc581b305a7493221b4",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/build.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "1721452a55b1826bcd89bf4189d3e068a812421c",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/carrier-test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "1d048234a777e9f089a5dda9b58a5efaa5be724a",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/client-entry.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "5a631a95a3387d5acdc3918d7416dc1bbb525a6f",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/client-entry.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "d8695112fd10f1b5bd6a5f50cf7cccca69b855bc",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/host.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "54cfa4c8ef0043c38f16b0b0b62d9d3dbfae01a0",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/index.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "5930cf69d5a9efe89467b884516839e59192f7da",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/package.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "60110a52506a8db42027f629fb3b774fcc1b3fd7",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/panel-descriptor.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "97aac595f272ac07d86fe5d80c01c1a4e186000e",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/panel-registration.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "5c61d712583c02af2c7b0100d6962ba4e6190896",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/panel-view.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "d065e189511e984d77202906b804d7ad599928d0",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/panel-view.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "6f29a1fbcd74b557a248f5447091791abde74a57",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/process-cleanup.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "0fe8b575b194b3bb8a2759b8223e419c33d92f72",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/dsh-native-panel/process-cleanup.test.mjs",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "5493d133018602e129ee0e86da361fa82746dcc0",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    },
+    {
+      "pr": 35,
+      "headRef": "feat/fixture-solver-comparison",
+      "head": "b506d165cd888d9647278530c900667c57a62633",
+      "baseRef": "feat/realistic-bilingual-personas",
+      "baseHead": "8e792920c09c49f395eb707a66bac2d6bf0d8c89",
+      "mergeBase": "8e792920c09c49f395eb707a66bac2d6bf0d8c89",
+      "tree": "04cbdf6c82fab3c2ff724d8667e25f20c40345e7",
+      "draft": true,
+      "reportedChecks": [
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        },
+        {
+          "name": "test",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS"
+        }
+      ],
+      "disposition": "retain original PR and source branch; no closure, retarget or supersession proposed in this cut",
+      "files": [
+        {
+          "path": ".github/workflows/solver-experiment.yml",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "582c27e2d7f5b1255921e2b4b9189cbf29b830fd",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/fixture-solver-comparison.md",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "969c9290718ebdec62f483451cd3fe1e249cc82e",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/fixture_solver_comparison.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "04278abf340b1ba45d6cfebb3965aa15ee4a7f9a",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/results/2026-11-07-fixture-solver.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "252267153535f1c3c97118ada17b9c49dc2c5fce",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/results/2026-11-07-transition-sensitivity.json",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "8bc17270bed70bb16ebbca3424a054e8c9e92dbd",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/solver_comparison.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "16b8549260b98087fd898c65ea30318a3d53c30b",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "experiments/transition_sensitivity.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "662153e63cda245fb5e4375ae0408dbee2687eb2",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/test_fixture_solver_comparison.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "17d8db9d99b0c68d5b5903a892058b9ef0db28a5",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/test_solver_comparison.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "78a034a527e281748ea6f84153fbf9a6b3c2ae42",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        },
+        {
+          "path": "tests/test_transition_solver_comparison.py",
+          "status": "A",
+          "oldBlob": "0000000000000000000000000000000000000000",
+          "newBlob": "51ca86c70f2d09c0a1851d37dfc23a9d08bd273b",
+          "retention": "source head for present files; recorded merge-base for removed files"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No source ref, base or branch was changed.",
+    "Blob reachability preserves artifacts; it does not establish test/behavior equivalence.",
+    "New replacement/supersession proposals require a separate reviewed destination and acceptance mapping."
+  ]
+}

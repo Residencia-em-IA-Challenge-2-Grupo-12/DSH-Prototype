@@ -1,0 +1,13 @@
+✔ polling preserves proposal controls, approval is explicit and single-flight, and outcomes stay visible (15.91763ms)
+✔ model prose renders basic formatting as text-safe DOM, with raw HTML and unsafe links inert (0.379779ms)
+✔ structured question controls send native selections or custom answers, survive polls/language changes and cancel separately (6.259915ms)
+(node:9) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51.427926

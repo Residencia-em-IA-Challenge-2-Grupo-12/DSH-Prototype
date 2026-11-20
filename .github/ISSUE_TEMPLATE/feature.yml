@@ -19,4 +19,11 @@ body:
   - type: textarea
     id: dependencies
     attributes:
-      label: Dependencies and context
+      label: Context, dependencies, and decisions
+      description: Link the parent/blockers and source decision or spec. State what is settled versus still a proposal.
+  - type: textarea
+    id: next
+    attributes:
+      label: Evidence and next action
+      description: For ongoing work, link current evidence and name the next concrete action and accountable owner, or record the ownership gap.
+      placeholder: Evidence link; next action; owner or ownership gap.

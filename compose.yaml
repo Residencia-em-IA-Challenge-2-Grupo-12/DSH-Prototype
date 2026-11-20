@@ -8,3 +8,34 @@ services:
       CALENDARPIT_CONFIG: /fixtures/ana.json
     volumes:
       - ./fixtures/calendars:/fixtures:ro
+
+  # Experimental only: no external egress or verified pricing for paid requests.
+  model-gateway:
+    profiles: [model-gateway]
+    labels:
+      study.role: model-gateway
+    build:
+      context: .
+      dockerfile: Dockerfile.model-gateway
+    user: node
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp]
+    secrets: [openrouter_env, gateway_token]
+    volumes:
+      - model-budget:/var/lib/study-model-budget
+    networks: [gateway-isolated]
+
+secrets:
+  openrouter_env:
+    file: ${STUDY_OPENROUTER_ENV_FILE:-${HOME}/.config/study-atlas/openrouter.env}
+  gateway_token:
+    file: ${STUDY_GATEWAY_TOKEN_FILE:-./.gateway-control/gateway-token}
+
+volumes:
+  model-budget:
+
+networks:
+  gateway-isolated:
+    internal: true

@@ -1,7 +1,7 @@
 import http from 'node:http';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { ROOT, Calendarpit, assertStudent, resetScenario, loadState, getStudent, listWorkspace, readWorkspace, draft, applyApproved, checkpoint, addFeedback, report, draftAnnotation, applyAnnotation } from './core.mjs';
+import { ROOT, Calendarpit, assertStudent, resetScenario, loadState, getRecoveryClaim, getStudent, listWorkspace, readWorkspace, draft, applyApproved, checkpoint, addFeedback, report, draftAnnotation, applyAnnotation } from './core.mjs';
 import { StudySession } from './sdk-session.mjs';
 
 const calendar=new Calendarpit(), PORT=Number(process.env.PORT || 4174);
@@ -40,8 +40,13 @@ http.createServer(async(req,res)=>{
       else if(req.method==='POST' && url.pathname==='/api/chat/cancel-question') {sessionFor(student).cancelQuestion(args.requestId);result=sessionFor(student).snapshot();}
       else if(req.method==='POST' && url.pathname==='/api/chat/new') {if(sessions.get(student)?.busy)throw new Error('Wait for the agent to finish or dismiss its question before starting a new conversation');sessions.get(student)?.stop();sessions.delete(student);result=sessionFor(student).snapshot();}
       else if(req.method==='GET' && url.pathname==='/api/status') {
-        const [s,events,courses]=await Promise.all([loadState(student),calendar.events(student),getStudent(student)]);
-        result={state:s,events,courses};
+        const [s,recovery,observation,courses]=await Promise.all([
+          loadState(student).catch(error=>{if(error.code==='ENOENT')return null;throw error;}),
+          getRecoveryClaim(),
+          calendar.events(student).then(events=>({availability:'available',events})).catch(error=>({availability:error.status===404?'not_found':'unavailable',events:null})),
+          getStudent(student).catch(()=>null)
+        ]);
+        result={state:s,recovery,calendar:{availability:observation.availability},events:observation.events,courses};
       } else if(req.method==='GET' && url.pathname==='/api/workspace') result=await listWorkspace(student,args.path||'');
       else if(req.method==='GET' && url.pathname==='/api/file') result={content:await readWorkspace(student,args.path||'')};
       else if(req.method==='GET' && url.pathname==='/api/report') result=await report(calendar,student);

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Calendarpit,resetScenario,draft,applyApproved,checkpoint,report } from '../src/core.mjs';
+import { Calendarpit,resetScenario,draft,applyApproved,checkpoint,report,draftAnnotation,applyAnnotation } from '../src/core.mjs';
 
 test('Calendarpit synthetic fixture: reset, propose, approve, edit and reconcile',async()=>{
   const c=new Calendarpit(); await resetScenario(c,'ana');
@@ -18,4 +18,14 @@ test('Calendarpit synthetic fixture: reset, propose, approve, edit and reconcile
   assert((await c.events('ana')).some(x=>x.id===edited.id&&x.summary==='User edited study'));
   const metrics=await report(c,'ana');assert.equal(metrics.periods.recent.reportedMinutes,50);
   await resetScenario(c,'ana');assert.equal((await c.events('ana')).length,before.length);
+});
+
+test('Calendarpit synthetic annotation preserves the original description',async()=>{
+  const c=new Calendarpit();await resetScenario(c,'ana');
+  const original=(await c.events('ana')).find(event=>event.id==='ana-class');
+  const proposal=await draftAnnotation(c,'ana',original.id,'classes');
+  await applyAnnotation(c,'ana',proposal.id);
+  const updated=(await c.events('ana')).find(event=>event.id===original.id);
+  assert(updated.description.includes(original.description));
+  assert(updated.description.includes('[Study Atlas]'));
 });

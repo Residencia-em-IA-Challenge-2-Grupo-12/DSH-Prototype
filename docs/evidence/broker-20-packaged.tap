@@ -1,0 +1,132 @@
+TAP version 13
+# (node:342274) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ana run 1: isolated DSH drafts and separately approved Calendarpit changes
+ok 1 - ana run 1: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4459.138041
+  type: 'test'
+  ...
+# Subtest: ana run 2: isolated DSH drafts and separately approved Calendarpit changes
+ok 2 - ana run 2: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4486.796321
+  type: 'test'
+  ...
+# Subtest: ana run 3: isolated DSH drafts and separately approved Calendarpit changes
+ok 3 - ana run 3: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4523.241806
+  type: 'test'
+  ...
+# Subtest: ana run 4: isolated DSH drafts and separately approved Calendarpit changes
+ok 4 - ana run 4: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4560.942471
+  type: 'test'
+  ...
+# Subtest: ana run 5: isolated DSH drafts and separately approved Calendarpit changes
+ok 5 - ana run 5: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4322.567775
+  type: 'test'
+  ...
+# Subtest: ana run 6: isolated DSH drafts and separately approved Calendarpit changes
+ok 6 - ana run 6: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4450.420542
+  type: 'test'
+  ...
+# Subtest: ana run 7: isolated DSH drafts and separately approved Calendarpit changes
+ok 7 - ana run 7: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4371.316732
+  type: 'test'
+  ...
+# Subtest: ana run 8: isolated DSH drafts and separately approved Calendarpit changes
+ok 8 - ana run 8: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4473.319735
+  type: 'test'
+  ...
+# Subtest: ana run 9: isolated DSH drafts and separately approved Calendarpit changes
+ok 9 - ana run 9: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4480.196034
+  type: 'test'
+  ...
+# Subtest: ana run 10: isolated DSH drafts and separately approved Calendarpit changes
+ok 10 - ana run 10: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4461.896084
+  type: 'test'
+  ...
+# Subtest: bruno run 1: isolated DSH drafts and separately approved Calendarpit changes
+ok 11 - bruno run 1: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4564.287002
+  type: 'test'
+  ...
+# Subtest: bruno run 2: isolated DSH drafts and separately approved Calendarpit changes
+ok 12 - bruno run 2: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4248.982534
+  type: 'test'
+  ...
+# Subtest: bruno run 3: isolated DSH drafts and separately approved Calendarpit changes
+ok 13 - bruno run 3: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 5402.801583
+  type: 'test'
+  ...
+# Subtest: bruno run 4: isolated DSH drafts and separately approved Calendarpit changes
+ok 14 - bruno run 4: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 5271.537796
+  type: 'test'
+  ...
+# Subtest: bruno run 5: isolated DSH drafts and separately approved Calendarpit changes
+ok 15 - bruno run 5: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4500.882883
+  type: 'test'
+  ...
+# Subtest: bruno run 6: isolated DSH drafts and separately approved Calendarpit changes
+ok 16 - bruno run 6: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4467.411886
+  type: 'test'
+  ...
+# Subtest: bruno run 7: isolated DSH drafts and separately approved Calendarpit changes
+ok 17 - bruno run 7: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4505.088774
+  type: 'test'
+  ...
+# Subtest: bruno run 8: isolated DSH drafts and separately approved Calendarpit changes
+ok 18 - bruno run 8: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4638.331587
+  type: 'test'
+  ...
+# Subtest: bruno run 9: isolated DSH drafts and separately approved Calendarpit changes
+ok 19 - bruno run 9: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4554.178985
+  type: 'test'
+  ...
+# Subtest: bruno run 10: isolated DSH drafts and separately approved Calendarpit changes
+ok 20 - bruno run 10: isolated DSH drafts and separately approved Calendarpit changes
+  ---
+  duration_ms: 4492.190286
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 91316.9974

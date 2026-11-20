@@ -1,0 +1,53 @@
+[
+  {
+    "runId": "f84ebe6d-4730-45f5-b974-4592e15de57e",
+    "operator": "facilitator",
+    "firstRecord": "2026-11-18T12:51:22.203Z",
+    "lastRecord": "2026-11-18T13:48:03.735Z",
+    "model": "GPT-6 Luna",
+    "route": "host subscription fallback",
+    "usage": null,
+    "draftInputs": {
+      "student": "bruno",
+      "weeks": 6,
+      "hours": 5,
+      "preferredPeriod": "evening"
+    },
+    "beforeCount": 146,
+    "afterCount": 151,
+    "removedCount": 0,
+    "addedCount": 5,
+    "allAdditionsFromReviewedNear": true,
+    "nearIdsObserved": 5,
+    "futureIdsObserved": 0,
+    "sectionStatus": {
+      "near": "applied",
+      "future": "pending"
+    }
+  },
+  {
+    "runId": "e111a8aa-20ae-4045-9ab9-f2fe02e39d55",
+    "operator": "agent via local HTTP",
+    "firstRecord": "2026-11-18T14:02:31.313Z",
+    "lastRecord": "2026-11-18T14:03:04.489Z",
+    "model": "GPT-6 Luna",
+    "route": "host subscription fallback",
+    "usage": null,
+    "draftInputs": {
+      "student": "bruno",
+      "weeks": 1,
+      "hours": 5
+    },
+    "beforeCount": 146,
+    "afterCount": 146,
+    "removedCount": 0,
+    "addedCount": 0,
+    "allAdditionsFromReviewedNear": true,
+    "nearIdsObserved": 0,
+    "futureIdsObserved": 0,
+    "sectionStatus": {
+      "near": "pending",
+      "future": "pending"
+    }
+  }
+]

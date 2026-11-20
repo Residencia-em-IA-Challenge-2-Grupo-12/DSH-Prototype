@@ -1,0 +1,33 @@
+✔ polling preserves proposal controls, approval is explicit and single-flight, and outcomes stay visible (18.070897ms)
+✔ model prose renders basic formatting as text-safe DOM, with raw HTML and unsafe links inert (0.421902ms)
+✔ structured question controls send native selections or custom answers, survive polls/language changes and cancel separately (5.829758ms)
+✖ empty or non-JSON preview responses explain local access and uncertain mutations without retrying (3.727956ms)
+(node:8) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 55.898948
+
+✖ failing tests:
+
+test at tests/managed-ui.test.mjs:161:1
+✖ empty or non-JSON preview responses explain local access and uncertain mutations without retrying (3.727956ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Could not confirm/. Input:
+  
+  'Unexpected end of JSON input'
+  
+      at TestContext.<anonymous> (file:///home/david/Projects/Resid%C3%AAncia%20de%20IA/Challenge%202/DSH-Prototype-runs/tests/managed-ui.test.mjs:175:14)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Unexpected end of JSON input',
+    expected: /Could not confirm/,
+    operator: 'match',
+    diff: 'simple'
+  }
