@@ -1,0 +1,5 @@
+# Test-only image: exercise DSH's nonfatal optional-plugin activation failure.
+FROM study-dsh-agent:synthetic
+USER root
+RUN printf '%s\n' "export const name='study-tool-policy'; export const inject=['tools']; export function apply(){throw new Error('synthetic policy activation failure')}" > /app/src/dsh-tool-policy.mjs
+USER node

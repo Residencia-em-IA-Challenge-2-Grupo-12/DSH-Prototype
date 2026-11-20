@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "verifiedOn": "2026-11-17",
+  "sourceCommit": "a920bc6d03da6233e6239e2007410fb05bad101b",
+  "modelCalls": 0,
+  "nativeConfirmationRun": {
+    "runId": "fcaeb569-d51c-4bbf-81ea-4f368963f6f1",
+    "browser": "click timed out; no dialog exposed",
+    "actualOutcome": "archive and retirement completed despite browser timeout",
+    "archiveSha256": "31180a368eb3206c276b92007f43827e239439b40efb8f3a41bdcbb9e6a7a2fe",
+    "resourcesAbsent": true
+  },
+  "pageConfirmationRun": {
+    "runId": "9da1be7b-8e7a-4036-bc16-1e9af6684821",
+    "cancelKeepsRun": true,
+    "localizedReview": "Portuguese with selected run ID",
+    "browserConfirmOutcome": "No active run; Run archived",
+    "archiveSha256": "d4f4ec886be17719648c243233dd3f6e264f4e3f2d788ae52442c68b46d0c06a",
+    "events": 146,
+    "plan": null,
+    "resourcesAbsent": true
+  },
+  "offline": {
+    "passed": 159,
+    "failed": 0,
+    "command": "npm test",
+    "coverage": [
+      "cancel",
+      "run ID binding",
+      "stale confirmation",
+      "double confirmation",
+      "language switch",
+      "no native modal dependency"
+    ]
+  },
+  "limits": [
+    "Archive-only synthetic runs; no second Luna approved-write attempt.",
+    "No new automatic recovery or real-provider behavior.",
+    "Earlier timed-out UI outcome must not be described as failed backend retirement."
+  ]
+}

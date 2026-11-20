@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "verifiedOn": "2026-11-17",
+  "parentCommit": "8003e6b7aec7734155ea1dc6a694dc5580acf122",
+  "sourceHashes": {
+    "public/managed.js": "a4dd9165868778a8002c849e04862ea9a3db623337dc00f332e685e3dc3614ab",
+    "public/managed.html": "31e74e189057efd9c86610122edc18cc22bfbdcc99c01f22a1d5bb216f1ff224",
+    "tests/managed-ui.test.mjs": "a1aa5cae5cabf80b818d287cdbc6e104634d127d82b76a66131dbdba866c7c41"
+  },
+  "reportedContext": "User confirmed phone preview of localhost :4176, not read-only Tailscale :4178.",
+  "before": "Unexpected end of JSON input escaped from Response.json on empty response.",
+  "after": "Bilingual access/transport error; unknown mutation not replayed; raw HTML and proxy internals not displayed.",
+  "offline": {
+    "passed": 158,
+    "failed": 0,
+    "command": "npm test"
+  },
+  "regressionCases": [
+    "empty405",
+    "empty200",
+    "HTML502",
+    "validJSON403",
+    "fetch rejected"
+  ],
+  "httpObservations": {
+    "directLocalRun": {
+      "HTTP": 200,
+      "run": null
+    },
+    "wrongOriginMutation": {
+      "HTTP": 403,
+      "error": "Same-origin request required"
+    },
+    "localPatchedAssetsHTTP": 200,
+    "tailscaleReadOnlyHTTP": 200
+  },
+  "limits": [
+    "Exact phone-preview forwarding failure not observed server-side.",
+    "No claim of making embedded/mobile control supported.",
+    "No new model calls, calendar writes, run startup, remote authorization or merges.",
+    "Actual phone reload after patch not observed."
+  ]
+}

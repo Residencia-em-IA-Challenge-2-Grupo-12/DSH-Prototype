@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "verifiedOn": "2026-11-17",
+  "runId": "6b1f6bb9-6fe9-44eb-b257-4ea7d3ca2417",
+  "sourceHeadDuringRun": "734658b648e0f20f8d2793f9d265cb010bcd3077",
+  "followupFixCommit": "667dcbb56fc2348fd330646d63897cadc02dc4b1",
+  "configuration": {
+    "runtime": "host-luna-fallback",
+    "provider": "codex",
+    "model": "gpt-6-luna",
+    "harness": "0.2.2-rc.1",
+    "fixedDate": "2026-11-02",
+    "fixtureSha256": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1",
+    "usage": "unknown",
+    "calendarpitImage": "ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96"
+  },
+  "operator": "Codex using real browser controls and authored fictional answers; not a human UX review",
+  "traceCoverage": "bounded SDK snapshot messages plus trusted tool/decision/write boundaries; not a continuous video or full RPC log",
+  "traceCounts": {
+    "configuration": 1,
+    "message": 16,
+    "tool": 22,
+    "question": 2,
+    "decision": 1,
+    "write": 1
+  },
+  "preApproval": {
+    "runId": "6b1f6bb9-6fe9-44eb-b257-4ea7d3ca2417",
+    "calendarAvailable": true,
+    "existingCalendarUnchanged": true,
+    "conflicts": [],
+    "mondayAdditions": 0,
+    "maxSessionsPerDay": 2,
+    "shortBreakDays": [],
+    "nearHours": 5.0,
+    "nearCount": 5,
+    "futureCount": 25,
+    "nearAllocation": {
+      "Study: Algoritmos": 3,
+      "Study: Banco de Dados": 2
+    },
+    "horizonAllocation": {
+      "Study: Algoritmos": 19,
+      "Study: Banco de Dados": 11
+    },
+    "status": {
+      "near": "pending",
+      "future": "pending"
+    },
+    "recovery": false,
+    "historyTypes": [
+      "proposal",
+      "proposal"
+    ]
+  },
+  "postApproval": {
+    "calendarAvailability": "available",
+    "addedCount": 5,
+    "addedIds": [
+      "11bf1dffa14e48d4b01ec699595d92cf",
+      "235270cfdbef4fd8884e6ed787a54293",
+      "60dfbd039f1e4e4787ee757e0a3678a9",
+      "833710f916e847afb553ff3eb382d406",
+      "ae948706f12c4d31bf9368c37c68541c"
+    ],
+    "existingRemoved": [],
+    "existingChanged": [],
+    "nearExactlyObserved": true,
+    "futureCreated": [],
+    "status": {
+      "near": "applied",
+      "future": "pending"
+    },
+    "recovery": false,
+    "historyTypes": [
+      "proposal",
+      "proposal",
+      "approved"
+    ]
+  },
+  "retirement": {
+    "id": "6b1f6bb9-6fe9-44eb-b257-4ea7d3ca2417",
+    "archiveId": "6b1f6bb9-6fe9-44eb-b257-4ea7d3ca2417",
+    "archiveSha256": "94bbcc86966cefaa82bd8b31143d77afe538864bebd6b6ecc2551af85d21ddf8",
+    "discarded": false,
+    "browserArchive": "click timed out; dialog API returned no dialog and later DOM access timed out; server run still active",
+    "trustedHTTPArchive": "completed after preserved evidence, idle session and no uncertain claim",
+    "containerAbsent": true,
+    "networkAbsent": true,
+    "archiveObservation": "available",
+    "archiveEventCount": 151
+  },
+  "initialAllocation": {
+    "near": {
+      "Study: Algoritmos": 4,
+      "Study: Banco de Dados": 1
+    },
+    "horizon": {
+      "Study: Algoritmos": 20,
+      "Study: Banco de Dados": 10
+    }
+  },
+  "observedTiming": {
+    "firstPromptToQuestionSeconds": 20.692,
+    "firstPromptToWriteSeconds": 197.253,
+    "includes": "operator actions, polling and human-style answer time; not active model execution",
+    "activeModelDuration": null,
+    "usage": null
+  },
+  "questionWidget": {
+    "singleChoiceSubmitted": true,
+    "selectionRetainedOnLanguageChange": true,
+    "multiSelectLive": "not observed",
+    "typedAlternativeLive": "not observed",
+    "dismissalLive": "not observed"
+  },
+  "findings": [
+    "Initially described 4h/1h near and 20h/10h horizon as balanced despite no-priority session choice; revised horizon was 19h/11h. Stronger balancing remains #42.",
+    "Initial narration incorrectly referred to five hours on 2 November; actual date held two hours.",
+    "Model and calendar hint referred to buttons below the calendar; wording corrected after this run.",
+    "Applied status with stale Applying button until language change; reproduced and fixed after this run.",
+    "Agent text switched between Portuguese and English; interface language does not enforce model-output language.",
+    "Browser archival timed out; trusted HTTP retirement succeeded; browser archival remains unverified."
+  ],
+  "limits": [
+    "One prepared synthetic subscription attempt, not a reliability estimate or matched model comparison.",
+    "No human UX score or independent model-judge score.",
+    "No full Docker-agent isolation or real-calendar validation.",
+    "Simulator long-session OOM remains unresolved; this short run does not fix it.",
+    "No continuous recording capability exposed; screenshots are an annotated replay.",
+    "No new paid-provider requests."
+  ],
+  "artifactHashes": {
+    "question.jpg": "ebe2880c46a79d41e354ea88b2052138a109edd509bde81cffde7515b8dd8a09",
+    "first-proposal.jpg": "9a0818ab93789ec5dfadf999d0e4844ca9cad30bd23f456218c9501676e95318",
+    "corrected-proposal.jpg": "e7a87db66ea8afa5d52a33bf4144c0e9116d2a38ad64b3a3c11cbb7f69f9fcd5",
+    "applied-pt-before-label-fix.jpg": "35b1ea83c84478de90c66091ae2b45cc7f513b0eeb58375aaf1cf4d27abeb2d9",
+    "applied-pt.jpg": "01b684b7b9144209c740e8c623961dc49f1e7e89c72c6f4ae3572acbcd21222c",
+    "applied-en.jpg": "262fa2559f1ce567946026eaacc08c52e9b6fe5ab51aa04d22736d25c3f8c2e7"
+  },
+  "replayChecks": {
+    "fiveStepLogicAndENPT": "passed Node VM check, local image paths exist",
+    "actualBrowserRender": "verified English/Portuguese, image loaded",
+    "actualBrowserNavigation": "Facilitator confirmed on 17 November 2026 that Next advances from 1/5 to 2/5 on a phone. Earlier click/keyboard automation had no observed effect after browser control timeout; preserve this distinct tooling observation.",
+    "httpAssets": "byte-matched served HTML/images/JSON; fixed whitelist, remote POST405 and API404 verified from host",
+    "secondDevice": {
+      "source": "user report in this conversation",
+      "date": "2026-11-17",
+      "device": "phone",
+      "observation": "Next advances 1/5 to 2/5",
+      "scope": "navigation only; not all five steps, bilingual parity, accessibility or live-agent UX"
+    }
+  }
+}

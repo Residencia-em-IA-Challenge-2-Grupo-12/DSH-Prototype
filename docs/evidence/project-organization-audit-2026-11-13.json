@@ -1,0 +1,1373 @@
+{
+  "snapshotDate": "2026-11-13",
+  "implementationHeadAtAudit": "3b964a3",
+  "scope": "Read-only organizational metadata/documentation audit; no code/security/learning validation rerun",
+  "counts": {
+    "issues": 19,
+    "openDraftPrs": 24,
+    "projectItems": 23,
+    "unlabeledIssues": 14,
+    "unlabeledPrs": 24,
+    "assignedIssues": 0,
+    "assignedPrs": 0,
+    "milestones": 0,
+    "projectStatuses": {
+      "In progress": 19,
+      "Backlog": 4
+    },
+    "nativeParentEdges": 10,
+    "nativeBlockingEdges": 12,
+    "views": 6,
+    "fields": 19
+  },
+  "projectUrl": "https://github.com/orgs/Residencia-em-IA-Challenge-2-Grupo-12/projects/1",
+  "currentViews": [
+    {
+      "id": "PVTV_lADOFMUEN84Bqb-kzgMbjQs",
+      "name": "Prioritized backlog",
+      "number": 1,
+      "layout": "TABLE_LAYOUT",
+      "filter": null,
+      "fields": {
+        "nodes": [
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUk",
+            "name": "Title"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUo",
+            "name": "Assignees"
+          },
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozHUs",
+            "name": "Status"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHU0",
+            "name": "Linked pull requests"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHVM",
+            "name": "Sub-issues progress"
+          },
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozIes",
+            "name": "Size"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozIe0",
+            "name": "Estimate"
+          },
+          {
+            "id": "PVTIF_lADOFMUEN84Bqb-kzhozIe4",
+            "name": "Iteration"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozIfA",
+            "name": "Start date"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozIfE",
+            "name": "Target date"
+          }
+        ]
+      },
+      "groupByFields": {
+        "nodes": [
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozIeo",
+            "name": "Priority"
+          }
+        ]
+      },
+      "verticalGroupByFields": {
+        "nodes": []
+      }
+    },
+    {
+      "id": "PVTV_lADOFMUEN84Bqb-kzgMbjcs",
+      "name": "Status board",
+      "number": 2,
+      "layout": "BOARD_LAYOUT",
+      "filter": null,
+      "fields": {
+        "nodes": [
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUk",
+            "name": "Title"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUo",
+            "name": "Assignees"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUw",
+            "name": "Labels"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHU0",
+            "name": "Linked pull requests"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHVM",
+            "name": "Sub-issues progress"
+          },
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozIeo",
+            "name": "Priority"
+          },
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozIes",
+            "name": "Size"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozIe0",
+            "name": "Estimate"
+          },
+          {
+            "id": "PVTIF_lADOFMUEN84Bqb-kzhozIe4",
+            "name": "Iteration"
+          }
+        ]
+      },
+      "groupByFields": {
+        "nodes": []
+      },
+      "verticalGroupByFields": {
+        "nodes": [
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozHUs",
+            "name": "Status"
+          }
+        ]
+      }
+    },
+    {
+      "id": "PVTV_lADOFMUEN84Bqb-kzgMbjcw",
+      "name": "Roadmap",
+      "number": 3,
+      "layout": "ROADMAP_LAYOUT",
+      "filter": null,
+      "fields": {
+        "nodes": [
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUk",
+            "name": "Title"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUo",
+            "name": "Assignees"
+          },
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozHUs",
+            "name": "Status"
+          }
+        ]
+      },
+      "groupByFields": {
+        "nodes": []
+      },
+      "verticalGroupByFields": {
+        "nodes": []
+      }
+    },
+    {
+      "id": "PVTV_lADOFMUEN84Bqb-kzgMbjc0",
+      "name": "Bugs 🐛 ",
+      "number": 4,
+      "layout": "TABLE_LAYOUT",
+      "filter": null,
+      "fields": {
+        "nodes": [
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUk",
+            "name": "Title"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUo",
+            "name": "Assignees"
+          },
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozHUs",
+            "name": "Status"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHU0",
+            "name": "Linked pull requests"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHVM",
+            "name": "Sub-issues progress"
+          },
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozIes",
+            "name": "Size"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozIe0",
+            "name": "Estimate"
+          },
+          {
+            "id": "PVTIF_lADOFMUEN84Bqb-kzhozIe4",
+            "name": "Iteration"
+          }
+        ]
+      },
+      "groupByFields": {
+        "nodes": []
+      },
+      "verticalGroupByFields": {
+        "nodes": []
+      }
+    },
+    {
+      "id": "PVTV_lADOFMUEN84Bqb-kzgMbjc4",
+      "name": "In review",
+      "number": 5,
+      "layout": "TABLE_LAYOUT",
+      "filter": "status:\"In review\"",
+      "fields": {
+        "nodes": [
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUk",
+            "name": "Title"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUo",
+            "name": "Assignees"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHU0",
+            "name": "Linked pull requests"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHU8",
+            "name": "Repository"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHVE",
+            "name": "Reviewers"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHVM",
+            "name": "Sub-issues progress"
+          }
+        ]
+      },
+      "groupByFields": {
+        "nodes": []
+      },
+      "verticalGroupByFields": {
+        "nodes": []
+      }
+    },
+    {
+      "id": "PVTV_lADOFMUEN84Bqb-kzgMbjc8",
+      "name": "My items",
+      "number": 6,
+      "layout": "TABLE_LAYOUT",
+      "filter": "assignee:@me",
+      "fields": {
+        "nodes": [
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHUk",
+            "name": "Title"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHU0",
+            "name": "Linked pull requests"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozHVM",
+            "name": "Sub-issues progress"
+          },
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozIeo",
+            "name": "Priority"
+          },
+          {
+            "id": "PVTSSF_lADOFMUEN84Bqb-kzhozIes",
+            "name": "Size"
+          },
+          {
+            "id": "PVTF_lADOFMUEN84Bqb-kzhozIe0",
+            "name": "Estimate"
+          },
+          {
+            "id": "PVTIF_lADOFMUEN84Bqb-kzhozIe4",
+            "name": "Iteration"
+          }
+        ]
+      },
+      "groupByFields": {
+        "nodes": []
+      },
+      "verticalGroupByFields": {
+        "nodes": []
+      }
+    }
+  ],
+  "singleSelectFields": [
+    {
+      "id": "PVTSSF_lADOFMUEN84Bqb-kzhozHUs",
+      "name": "Status",
+      "options": [
+        {
+          "id": "f75ad846",
+          "name": "Backlog"
+        },
+        {
+          "id": "08afe404",
+          "name": "Ready"
+        },
+        {
+          "id": "47fc9ee4",
+          "name": "In progress"
+        },
+        {
+          "id": "4cc61d42",
+          "name": "In review"
+        },
+        {
+          "id": "98236657",
+          "name": "Done"
+        }
+      ]
+    },
+    {
+      "id": "PVTSSF_lADOFMUEN84Bqb-kzhozIeo",
+      "name": "Priority",
+      "options": []
+    },
+    {
+      "id": "PVTSSF_lADOFMUEN84Bqb-kzhozIes",
+      "name": "Size",
+      "options": [
+        {
+          "id": "eff732af",
+          "name": "XS"
+        },
+        {
+          "id": "9592a5a3",
+          "name": "S"
+        },
+        {
+          "id": "9728cbdc",
+          "name": "M"
+        },
+        {
+          "id": "c53df028",
+          "name": "L"
+        },
+        {
+          "id": "7b141a16",
+          "name": "XL"
+        }
+      ]
+    }
+  ],
+  "populatedCustomFields": [
+    "Status"
+  ],
+  "workflowSettings": [
+    {
+      "name": "Auto-close issue",
+      "enabled": true,
+      "observedPanel": "Auto-close issue\nOn\nEdit\nViewing mode. Click edit to make changes to this workflow.\nWhen the status is updated\nStatus: Done\nClose the issue"
+    },
+    {
+      "name": "Item closed",
+      "enabled": true,
+      "observedPanel": "Item closed\nOn\nEdit\nViewing mode. Click edit to make changes to this workflow.\nWhen an item is closed\nissue, pull request\nSet value\nStatus: Done"
+    },
+    {
+      "name": "Item added to project",
+      "enabled": true,
+      "observedPanel": "Item added to project\nOn\nEdit\nViewing mode. Click edit to make changes to this workflow.\nWhen an item is added to the project\nissue, pull request\nSet value\nStatus: Backlog"
+    },
+    {
+      "name": "Pull request linked to issue",
+      "enabled": true,
+      "observedPanel": "Pull request linked to issue\nOn\nEdit\nViewing mode. Click edit to make changes to this workflow.\nWhen a pull request is linked to an issue\nSet value\nStatus: In progress"
+    },
+    {
+      "name": "Pull request merged",
+      "enabled": true,
+      "observedPanel": "Pull request merged\nOn\nEdit\nViewing mode. Click edit to make changes to this workflow.\nWhen a pull request is merged\nSet value\nStatus: Done"
+    },
+    {
+      "name": "Auto-add sub-issues to project",
+      "enabled": true,
+      "observedPanel": "Auto-add sub-issues to project\nOn\nEdit\nViewing mode. Click edit to make changes to this workflow.\nWhen an item in the project has sub-issues\nAdd sub-issues to the project"
+    },
+    {
+      "name": "Auto-add to project",
+      "enabled": true,
+      "observedPanel": "Auto-add to project\nOn\nEdit\nViewing mode. Click edit to make changes to this workflow.\nWhen the filter matches a new or updated item\nFilters\nDSH-Prototype\nAdd the item to the project",
+      "filter": "is:issue is:open"
+    },
+    {
+      "name": "Auto-archive items",
+      "enabled": false,
+      "observedPanel": "Auto-archive items\nEdit\nViewing mode. Click edit to make changes to this workflow.\nFilter items\nFilters\n0\n (0)\n\nUsing the updated operator means that your workflow will run every 12 hours\n\nArchive item"
+    },
+    {
+      "name": "Code changes requested",
+      "enabled": false,
+      "observedPanel": "Code changes requested\nEdit\nViewing mode. Click edit to make changes to this workflow.\nWhen a pull request has a review requesting changes\nSet value\nStatus: Ready"
+    },
+    {
+      "name": "Code review approved",
+      "enabled": false,
+      "observedPanel": "Code review approved\nEdit\nViewing mode. Click edit to make changes to this workflow.\nWhen a pull request is approved\nSet value\nStatus: Ready"
+    },
+    {
+      "name": "Item reopened",
+      "enabled": false,
+      "observedPanel": "Item reopened\nEdit\nViewing mode. Click edit to make changes to this workflow.\nWhen an item is reopened\nissue, pull request\nSet value\nStatus: Ready"
+    }
+  ],
+  "nativeIssueRelationships": [
+    {
+      "number": 43,
+      "id": "I_kwDOVk3p-s8AAAABe-LhRg",
+      "parent": {
+        "number": 14
+      },
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": [
+          {
+            "number": 9
+          }
+        ]
+      },
+      "blocking": {
+        "nodes": []
+      }
+    },
+    {
+      "number": 42,
+      "id": "I_kwDOVk3p-s8AAAABe-LbpQ",
+      "parent": {
+        "number": 14
+      },
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": [
+          {
+            "number": 9
+          }
+        ]
+      },
+      "blocking": {
+        "nodes": []
+      }
+    },
+    {
+      "number": 41,
+      "id": "I_kwDOVk3p-s8AAAABe-LWHw",
+      "parent": {
+        "number": 9
+      },
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": []
+      }
+    },
+    {
+      "number": 40,
+      "id": "I_kwDOVk3p-s8AAAABe-LPtw",
+      "parent": {
+        "number": 9
+      },
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": []
+      }
+    },
+    {
+      "number": 36,
+      "id": "I_kwDOVk3p-s8AAAABdwd7jg",
+      "parent": null,
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": []
+      }
+    },
+    {
+      "number": 15,
+      "id": "I_kwDOVk3p-s8AAAABdLukWw",
+      "parent": null,
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": [
+          {
+            "number": 14
+          }
+        ]
+      },
+      "blocking": {
+        "nodes": []
+      }
+    },
+    {
+      "number": 14,
+      "id": "I_kwDOVk3p-s8AAAABdLuihA",
+      "parent": null,
+      "subIssues": {
+        "nodes": [
+          {
+            "number": 42
+          },
+          {
+            "number": 43
+          }
+        ]
+      },
+      "blockedBy": {
+        "nodes": [
+          {
+            "number": 13
+          }
+        ]
+      },
+      "blocking": {
+        "nodes": [
+          {
+            "number": 15
+          }
+        ]
+      }
+    },
+    {
+      "number": 13,
+      "id": "I_kwDOVk3p-s8AAAABdLug3A",
+      "parent": null,
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": [
+          {
+            "number": 12
+          },
+          {
+            "number": 11
+          },
+          {
+            "number": 10
+          }
+        ]
+      },
+      "blocking": {
+        "nodes": [
+          {
+            "number": 14
+          }
+        ]
+      }
+    },
+    {
+      "number": 12,
+      "id": "I_kwDOVk3p-s8AAAABdLudyA",
+      "parent": null,
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": [
+          {
+            "number": 13
+          }
+        ]
+      }
+    },
+    {
+      "number": 11,
+      "id": "I_kwDOVk3p-s8AAAABdLucCQ",
+      "parent": null,
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": [
+          {
+            "number": 13
+          }
+        ]
+      }
+    },
+    {
+      "number": 10,
+      "id": "I_kwDOVk3p-s8AAAABdLuaCA",
+      "parent": null,
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": [
+          {
+            "number": 13
+          }
+        ]
+      }
+    },
+    {
+      "number": 9,
+      "id": "I_kwDOVk3p-s8AAAABdLuXgA",
+      "parent": null,
+      "subIssues": {
+        "nodes": [
+          {
+            "number": 40
+          },
+          {
+            "number": 41
+          }
+        ]
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": [
+          {
+            "number": 43
+          },
+          {
+            "number": 42
+          }
+        ]
+      }
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOVk3p-s8AAAABc9z2WA",
+      "parent": {
+        "number": 1
+      },
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": []
+      }
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOVk3p-s8AAAABc9z0AA",
+      "parent": {
+        "number": 1
+      },
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": [
+          {
+            "number": 5
+          },
+          {
+            "number": 4
+          }
+        ]
+      },
+      "blocking": {
+        "nodes": []
+      }
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOVk3p-s8AAAABc9zxcA",
+      "parent": {
+        "number": 1
+      },
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": [
+          {
+            "number": 3
+          }
+        ]
+      },
+      "blocking": {
+        "nodes": [
+          {
+            "number": 6
+          }
+        ]
+      }
+    },
+    {
+      "number": 4,
+      "id": "I_kwDOVk3p-s8AAAABc9zvUw",
+      "parent": {
+        "number": 1
+      },
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": [
+          {
+            "number": 3
+          },
+          {
+            "number": 2
+          }
+        ]
+      },
+      "blocking": {
+        "nodes": [
+          {
+            "number": 6
+          }
+        ]
+      }
+    },
+    {
+      "number": 3,
+      "id": "I_kwDOVk3p-s8AAAABc9zscw",
+      "parent": {
+        "number": 1
+      },
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": [
+          {
+            "number": 5
+          },
+          {
+            "number": 4
+          }
+        ]
+      }
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOVk3p-s8AAAABc9zpRg",
+      "parent": {
+        "number": 1
+      },
+      "subIssues": {
+        "nodes": []
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": [
+          {
+            "number": 4
+          }
+        ]
+      }
+    },
+    {
+      "number": 1,
+      "id": "I_kwDOVk3p-s8AAAABc9zgbw",
+      "parent": null,
+      "subIssues": {
+        "nodes": [
+          {
+            "number": 2
+          },
+          {
+            "number": 3
+          },
+          {
+            "number": 4
+          },
+          {
+            "number": 5
+          },
+          {
+            "number": 6
+          },
+          {
+            "number": 7
+          }
+        ]
+      },
+      "blockedBy": {
+        "nodes": []
+      },
+      "blocking": {
+        "nodes": []
+      }
+    }
+  ],
+  "proposedIssueLabels": [
+    {
+      "number": 1,
+      "title": "Deliver collaborative study-planning demonstration",
+      "currentLabels": [],
+      "proposedLabels": [
+        "kind:epic",
+        "area:delivery"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 2,
+      "title": "Harness and calendar simulator integration",
+      "currentLabels": [],
+      "proposedLabels": [
+        "enhancement",
+        "area:calendar"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 3,
+      "title": "Synthetic bilingual study scenarios",
+      "currentLabels": [],
+      "proposedLabels": [
+        "enhancement",
+        "area:knowledge"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 4,
+      "title": "Reviewable planning and checkpoint reconciliation",
+      "currentLabels": [],
+      "proposedLabels": [
+        "enhancement",
+        "area:planning"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 5,
+      "title": "Activity feedback and routine reports",
+      "currentLabels": [],
+      "proposedLabels": [
+        "enhancement",
+        "area:evaluation"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 6,
+      "title": "Evaluation and quality assurance",
+      "currentLabels": [],
+      "proposedLabels": [
+        "enhancement",
+        "area:evaluation"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 7,
+      "title": "Developer documentation and reproducible setup",
+      "currentLabels": [],
+      "proposedLabels": [
+        "documentation",
+        "area:delivery"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 9,
+      "title": "Experimental baseline readiness for PR #8",
+      "currentLabels": [],
+      "proposedLabels": [
+        "kind:epic",
+        "area:delivery"
+      ],
+      "statusAction": "Preserve In progress for current delivery/review",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 10,
+      "title": "Shared transactional domain state and versioned proposals",
+      "currentLabels": [],
+      "proposedLabels": [
+        "kind:epic",
+        "area:runtime"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 11,
+      "title": "Isolated Calendarpit runs and replayable experiment bundles",
+      "currentLabels": [],
+      "proposedLabels": [
+        "kind:epic",
+        "area:calendar"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 12,
+      "title": "Docker execution isolation and restricted model routing",
+      "currentLabels": [],
+      "proposedLabels": [
+        "kind:epic",
+        "area:runtime"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 13,
+      "title": "Foundation comparisons: interface, planner and local embeddings",
+      "currentLabels": [],
+      "proposedLabels": [
+        "kind:epic",
+        "area:evaluation"
+      ],
+      "statusAction": "Review outcome/remaining scope before changing status",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 14,
+      "title": "Evidence-informed collaborative planning and checkpoints",
+      "currentLabels": [],
+      "proposedLabels": [
+        "kind:epic",
+        "area:planning"
+      ],
+      "statusAction": "Preserve Backlog",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 15,
+      "title": "Bilingual retrieval experiments and human-assisted evaluation",
+      "currentLabels": [],
+      "proposedLabels": [
+        "kind:epic",
+        "area:evaluation"
+      ],
+      "statusAction": "Preserve Backlog",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 36,
+      "title": "Handle uncertain calendar writes and preserve concurrent user edits",
+      "currentLabels": [
+        "bug"
+      ],
+      "proposedLabels": [
+        "bug",
+        "area:calendar"
+      ],
+      "statusAction": "Preserve In progress for current delivery/review",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 40,
+      "title": "Finish Luna browser walkthrough and bilingual group package",
+      "currentLabels": [
+        "documentation",
+        "enhancement"
+      ],
+      "proposedLabels": [
+        "enhancement",
+        "documentation",
+        "area:interaction"
+      ],
+      "statusAction": "Preserve In progress for current delivery/review",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 41,
+      "title": "Prepare lossless PR consolidation and baseline integration review",
+      "currentLabels": [
+        "documentation",
+        "question"
+      ],
+      "proposedLabels": [
+        "documentation",
+        "area:delivery"
+      ],
+      "statusAction": "Preserve In progress for current delivery/review",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 42,
+      "title": "Experiment with horizon balance and provisional study-load preferences",
+      "currentLabels": [
+        "enhancement"
+      ],
+      "proposedLabels": [
+        "enhancement",
+        "kind:experiment",
+        "area:planning"
+      ],
+      "statusAction": "Preserve Backlog",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    },
+    {
+      "number": 43,
+      "title": "Explore authored study activities and explicit context requirements",
+      "currentLabels": [
+        "enhancement",
+        "question"
+      ],
+      "proposedLabels": [
+        "enhancement",
+        "kind:experiment",
+        "area:planning"
+      ],
+      "statusAction": "Preserve Backlog",
+      "owner": "unassigned; obtain real maintainer ownership, especially for active leaf work"
+    }
+  ],
+  "proposedPrClassification": [
+    {
+      "number": 8,
+      "title": "Build synthetic collaborative study-planning demo",
+      "head": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "base": "main",
+      "currentlyOnProject": true,
+      "proposedLabels": [
+        "area:delivery",
+        "enhancement"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 16,
+      "title": "Add portable synthetic calendar checkpoint replay",
+      "head": "6b909a561d4cbef0ad07c25c1e26cc5f0e24ade4",
+      "base": "feat/study-planning-demo",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:calendar",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 17,
+      "title": "Prototype transactional proposal history",
+      "head": "c267240521724a8d7d0420047e57a5b84da15bec",
+      "base": "feat/study-planning-demo",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:runtime",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 18,
+      "title": "Prototype isolated synthetic calendar runs",
+      "head": "f4e641d35cb07a635012999aa4d5c130851a20b3",
+      "base": "feat/study-planning-demo",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:calendar",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 19,
+      "title": "Compare heuristic and constraint solver on synthetic cases",
+      "head": "6df7a5faef616de6b8f2522f62650daf65c0f950",
+      "base": "feat/study-planning-demo",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:planning",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 20,
+      "title": "Add offline bilingual embedding screening scaffold",
+      "head": "bea47e8cc63cd164942c30ea1a9d2abacb67e720",
+      "base": "feat/study-planning-demo",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:knowledge",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 21,
+      "title": "Prototype synthetic provider calendar API",
+      "head": "8c2e808f02128db611ac88a97982881d940d0508",
+      "base": "feat/calendarpit-run-lifecycle",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:calendar",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 22,
+      "title": "Explore native DSH calendar sidebar registration",
+      "head": "516b3157a11b8820da732ecf42c871479d31e564",
+      "base": "feat/study-planning-demo",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:interaction",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 23,
+      "title": "Connect synthetic calendar checkpoint replay",
+      "head": "6f2e128f08dea9051567ef346bc61e932e393b65",
+      "base": "feat/calendarpit-provider-api",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:calendar",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 24,
+      "title": "Expose local transactional domain service",
+      "head": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "base": "feat/domain-store-spike",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:runtime",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 25,
+      "title": "Add realistic bilingual synthetic personas",
+      "head": "8e792920c09c49f395eb707a66bac2d6bf0d8c89",
+      "base": "feat/study-planning-demo",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:knowledge",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 26,
+      "title": "Add bilingual synthetic retrieval challenge",
+      "head": "da6fdc7f1fe95afc7c10581ea9656272cadf8000",
+      "base": "feat/embedding-screen-smoke",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:knowledge",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 27,
+      "title": "Prototype approved synthetic calendar creation",
+      "head": "095f5693ca7d16f9a1367d2d0d46da53a24c140e",
+      "base": "feat/calendar-experiment-bundle",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:calendar",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 28,
+      "title": "Prototype disposable synthetic Bash worker",
+      "head": "f8aeea2a2ccfabb3e0efecd4c9a4539b9ae8d2d3",
+      "base": "feat/study-planning-demo",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:runtime",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 29,
+      "title": "Package synthetic domain service in Docker",
+      "head": "2a3cf7e9ef8eb99866e4b711b3b5f59e1039503f",
+      "base": "feat/domain-service-api",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:runtime",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 30,
+      "title": "Connect synthetic context proposal and review",
+      "head": "bbd28fa9609d496f2e718661598f27353f25ff92",
+      "base": "feat/calendar-domain-bridge",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:calendar",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 31,
+      "title": "Prototype read-only DSH domain bridge",
+      "head": "df54567bbcc9e9c29f33f5992e43742d11ee59b2",
+      "base": "feat/domain-service-api",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:interaction",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 32,
+      "title": "Prepare inactive evidence admission dossiers",
+      "head": "874907ba02cc3105553a94d65655977499e5a051",
+      "base": "feat/study-planning-demo",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:knowledge",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 33,
+      "title": "Sketch custom synthetic calendar review shell",
+      "head": "bc321a40173f88d9621abaebc6b3bde454c8e324",
+      "base": "feat/shared-consumer-spike",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:interaction",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 34,
+      "title": "Prototype native DSH calendar panel carrier",
+      "head": "ad8c020106825996c7393fc68a74552710adbbea",
+      "base": "feat/domain-service-api",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:interaction",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 35,
+      "title": "Compare solvers against synthetic persona calendars",
+      "head": "b506d165cd888d9647278530c900667c57a62633",
+      "base": "feat/realistic-bilingual-personas",
+      "currentlyOnProject": false,
+      "proposedLabels": [
+        "area:planning",
+        "kind:experiment"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 37,
+      "title": "WIP: preserve synthetic state and prepare calendar recovery",
+      "head": "bad383e8721b50b4bd053d0157b5df029ea051b8",
+      "base": "feat/study-planning-demo",
+      "currentlyOnProject": true,
+      "proposedLabels": [
+        "area:calendar",
+        "bug"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 38,
+      "title": "WIP: isolate synthetic study runs and provider access",
+      "head": "38da40034632dba1fc613c7d7c2ab8d79c075021",
+      "base": "fix/baseline-recovery",
+      "currentlyOnProject": true,
+      "proposedLabels": [
+        "area:runtime",
+        "enhancement"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    },
+    {
+      "number": 39,
+      "title": "WIP: connect managed study workflow and organize review",
+      "head": "3b964a32dc31bf17c99909ce750bba20a2adce04",
+      "base": "feat/disposable-study-runs",
+      "currentlyOnProject": true,
+      "proposedLabels": [
+        "area:interaction",
+        "enhancement"
+      ],
+      "disposition": "Keep draft; review/preserve own delta before any consolidation"
+    }
+  ],
+  "accessLimitations": [
+    "Branch protection and repository rulesets returned HTTP 403 with a GitHub plan-upgrade restriction; protection configuration could not be verified."
+  ],
+  "mergeSettings": {
+    "allowMergeCommit": true,
+    "allowSquashMerge": true,
+    "allowRebaseMerge": true,
+    "deleteBranchOnMerge": false
+  },
+  "proposalOnly": [
+    "No labels, statuses, owners, milestones, issue bodies, views, workflows or PR dispositions changed.",
+    "Proposed classifications need maintainer review; no automatic owner assignment or guessed dates."
+  ],
+  "boardMutations": 0,
+  "artifactChanges": "Audit proposal, structured snapshot/classification and observed screenshot only; no policy adopted."
+}

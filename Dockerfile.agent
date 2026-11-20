@@ -1,0 +1,11 @@
+# Experimental SDK agent image. The trusted run controller still supplies IPC,
+# lifecycle management and an explicit command; do not use for real data.
+FROM node:24.11.1-bookworm-slim@sha256:48abc13a19400ca3985071e287bd405a1d99306770eb81d61202fb6b65cf0b57
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+COPY src/core.mjs src/state-store.mjs src/sdk-session.mjs src/agent-control.mjs src/agent-stdio.mjs src/dsh-tool-policy.mjs src/mcp-tools.mjs src/mcp-broker.mjs ./src/
+COPY src/foundation/dsh-model-route.mjs src/foundation/openrouter-policy.mjs src/foundation/study-broker.mjs ./src/foundation/
+COPY dsh-study.patch.yml dsh-broker.patch.yml dsh-gateway.patch.yml ./
+USER node
+CMD ["node", "src/agent-stdio.mjs"]

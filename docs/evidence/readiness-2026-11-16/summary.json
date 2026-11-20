@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "verifiedLocalDate": "2026-11-16",
+  "timezone": "America/Sao_Paulo",
+  "pinnedReviewHeads": {
+    "8": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+    "37": "bad383e8721b50b4bd053d0157b5df029ea051b8",
+    "38": "38da40034632dba1fc613c7d7c2ab8d79c075021",
+    "39BeforeReadiness": "7785cb0e75a52a50ddd3eca1c2df7c772466a9dc"
+  },
+  "resourceFixCommit": "548d048",
+  "fileSha256": {
+    "src/state-store.mjs": "46a79e6d6c072bea2d73cc1d7d735e7774cbad60bda2ee771f9d135e4ee99938",
+    "src/core.mjs": "c5ec1a8c5bb0d0bc5a262e1e3ee28d7a7df310144c283c511af56aca3a085199",
+    "src/foundation/synthetic-run-driver.mjs": "cd5742d797d9fb3cb5a36f526225d20693b6234e42d927a523cf5ecd667be028",
+    "src/foundation/host-luna-driver.mjs": "c2aed6bd4b62e2cef38f8d5df1af5a57f6fcb330e73536b41892968352a22ad8",
+    "scripts/preview-luna-synthetic.mjs": "663c0a8cc43d45d48cc466aa90bb5212dd42956896fade7bb10ce097bf456006",
+    "public/managed.js": "e06824254764794c6f08db3b55e86d33a55aff79d5ffdcbb307e9bc9ed4af310",
+    "tests/host-luna-driver.integration.mjs": "625ad73e93e0c465abcfec5f877f70cdaff12f0b0f7b2b937a507c64a6d0d6c6",
+    "tests/runtime-store-disposal.test.mjs": "24d2369e6d203251ada118c3ce8ca0f9ab32f293630cde365c580871b51ebf71",
+    "public/managed.html": "99ee238ca3790faf33e3f056375ebf47aff837f73835e01b4a3beef3443b8fbe",
+    "public/managed.css": "2f7e9d9cd1f88fa4fba966af28213f9e322fb279036823f74c33ea5cd8c521a0",
+    "public/calendar-week.js": "797ce47ed67f8445aebc431f114d2a168df0a9c11ef4a9c70d6ff4fa3b5a4181",
+    "public/chat-message.js": "662672ee82fff24d37de7735aa97ef2c9fcd7fea5e7700a8c4add18e879529be",
+    "src/sdk-session.mjs": "e92bae79522e0d28a65629d8f61e651ee9d035d128b214e59fc1d77b2dfc5ec8",
+    "src/foundation/managed-web.mjs": "afc06b7a753c6f96daa3ef47408a45448b8ccfc3f463391e46ff5bdc5ca08b04",
+    "tests/managed-ui.test.mjs": "08f098703794fcd2a6852478705ab4786af7d871b2d6c9689990f47338abba41",
+    "tests/calendar-week.test.mjs": "e42cf4f5d2f19f457f7e9ee933564206c482247ea297787ee69b51116857906f"
+  },
+  "checks": {
+    "offline": {
+      "passed": 156,
+      "failed": 0,
+      "log": "offline.txt"
+    },
+    "subscriptionCatalog": {
+      "passed": 1,
+      "generativeRequests": 0,
+      "log": "subscription-catalog.txt"
+    },
+    "managedBatch": {
+      "passed": 20,
+      "failed": 0,
+      "perPersona": 10,
+      "responses": "authored fake upstream",
+      "log": "managed-20runs.txt",
+      "note": "Immutable rebuilt image includes disposal/tool-policy changes; this batch predates the later SDK approval-wording and UI fixes, which have separate offline/DOM checks."
+    },
+    "hostHttpIntegration": {
+      "passed": 2,
+      "responses": "authored session fixture; no subscription opened",
+      "realComponents": [
+        "Calendarpit",
+        "broker",
+        "SQLite",
+        "HTTP",
+        "approval",
+        "retirement"
+      ],
+      "log": "host-http-scripted.txt"
+    }
+  },
+  "browserControl": {
+    "available": false,
+    "reason": "Local browser access is unavailable for this chat",
+    "recording": "not captured"
+  },
+  "liveWalkthrough": {
+    "operator": "user",
+    "runtime": "host-luna-fallback",
+    "runId": "6699a42f-d56b-4af7-a6ec-ef0e06d93844",
+    "status": "archived without approval attempt; incomplete live-write walkthrough",
+    "extract": "luna-browser-attempt.json",
+    "humanClarification": "Replied in chat only; did not click approval control."
+  },
+  "usage": {
+    "paidOpenRouterCallsThisRound": 0,
+    "subscriptionUsage": "unknown"
+  },
+  "limitations": [
+    "No PR merge, retarget, closure or rewrite performed.",
+    "Model behavior is not established by scripted batch checks.",
+    "Host subscription/controller are not container-isolated.",
+    "Interrupted startup/retirement recovery remains blocked and needs a scoped disposition.",
+    "Initial restricted-shell offline invocation could not exercise local IPC; rerun with required local permissions passed."
+  ],
+  "managedAgentImage": "sha256:2c43aff0ffcfa7f523fbb263ffacfc43e45a74369c57a7cd6c096cb4e1e04d4b",
+  "hostFallbackCommit": "d2b93d6",
+  "developmentFailures": [
+    "Initial restricted-shell tests could not exercise local IPC; invocation with required permissions passed.",
+    "First preview default path exceeded Unix socket length; default now uses a stable short private /tmp root.",
+    "Startup-failure test initially compared against an overwritten expected ID; test fixed and both real-simulator regressions passed."
+  ],
+  "humanVisualReview": {
+    "localDate": "2026-11-16",
+    "reported": "Calendar visible; layout is clearer",
+    "scope": "Limited facilitator confirmation of calendar visibility and layout/approval handoff",
+    "notEstablished": [
+      "completed near-only live approval/write",
+      "pick-one/multi-select widget parity",
+      "comprehensive accessibility",
+      "screen recording"
+    ]
+  }
+}

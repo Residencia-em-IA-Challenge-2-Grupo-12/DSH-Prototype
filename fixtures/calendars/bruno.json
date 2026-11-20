@@ -1,0 +1,2803 @@
+{
+  "users": [
+    {
+      "id": "bruno",
+      "name": "Bruno",
+      "email": "bruno@example.test"
+    }
+  ],
+  "calendars": [
+    {
+      "id": "bruno-calendar",
+      "userId": "bruno",
+      "summary": "Study calendar",
+      "timeZone": "America/Sao_Paulo",
+      "primary": true
+    }
+  ],
+  "clients": [
+    {
+      "id": "study-demo",
+      "secret": "synthetic-only",
+      "redirectUris": [
+        "http://127.0.0.1:4175/callback"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "bruno-study-past",
+      "calendarId": "bruno-calendar",
+      "summary": "Estudo: revisão",
+      "description": "",
+      "start": {
+        "dateTime": "2026-10-30T10:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-10-30T11:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "study"
+        }
+      }
+    },
+    {
+      "id": "bruno-work",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-02T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-0-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-02T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-0-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-02T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-0-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-02T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-02T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-0-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-03T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-0-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-03T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-0-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-03T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-0-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-03T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "Aula existente: preservar esta descrição.",
+      "start": {
+        "dateTime": "2026-11-03T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-03T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-0-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-04T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-0-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-04T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-0-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-04T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-0-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-04T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-04T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-0-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-05T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-0-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-05T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-0-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-05T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-0-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-05T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-0-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-05T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-05T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-0-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-06T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-0-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-06T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-0-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-06T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-0-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-06T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-exercise",
+      "calendarId": "bruno-calendar",
+      "summary": "Atividade física",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-06T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-06T20:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-saturday-class-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula de sábado",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-07T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-07T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-1-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-09T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-1-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-09T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-1-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-09T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-1-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-09T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-09T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-1-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-10T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-1-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-10T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-1-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-10T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-1-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-10T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-1-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-10T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-10T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-1-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-11T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-1-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-11T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-1-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-11T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-1-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-11T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-later",
+      "calendarId": "bruno-calendar",
+      "summary": "Compromisso familiar",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-11T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-11T20:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-1-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-12T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-1-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-12T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-1-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-12T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-1-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-12T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-1-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-12T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-12T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-1-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-13T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-1-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-13T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-1-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-13T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-1-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-13T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-exercise-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Atividade física",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-13T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-13T20:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-saturday-class-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula de sábado",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-14T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-14T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-2-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-16T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-2-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-16T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-2-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-16T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-2-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-16T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-16T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-2-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-17T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-2-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-17T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-2-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-17T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-2-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-17T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-2-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-17T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-17T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-2-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-18T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-2-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-18T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-2-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-18T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-2-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-18T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-18T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-2-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-19T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-2-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-19T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-2-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-19T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-2-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-19T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-2-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-19T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-19T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-2-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-20T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-2-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-20T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-2-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-20T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-2-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-20T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-exercise-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Atividade física",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-20T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-20T20:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-saturday-class-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula de sábado",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-21T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-21T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-3-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-23T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-3-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-23T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-3-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-23T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-3-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-23T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-23T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-3-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-24T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-3-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-24T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-3-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-24T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-3-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-24T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-3-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-24T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-24T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-3-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-25T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-3-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-25T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-3-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-25T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-3-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-25T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-25T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-3-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-26T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-3-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-26T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-3-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-26T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-3-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-26T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-3-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-26T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-26T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-3-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-27T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-3-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-27T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-3-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-27T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-3-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-27T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-exercise-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Atividade física",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-27T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-27T20:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-saturday-class-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula de sábado",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-28T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-28T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-4-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-30T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-4-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-30T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-4-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-30T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-4-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-11-30T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-11-30T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-4-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-01T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-4-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-01T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-4-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-01T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-4-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-01T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-4-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-01T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-01T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-4-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-02T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-4-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-02T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-4-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-02T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-4-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-02T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-02T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-4-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-03T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-4-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-03T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-4-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-03T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-4-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-03T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-4-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-03T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-03T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-4-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-04T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-4-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-04T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-4-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-04T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-4-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-04T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-exercise-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Atividade física",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-04T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-04T20:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-saturday-class-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula de sábado",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-05T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-05T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-5-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-07T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-5-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-07T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-5-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-07T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-5-0",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-07T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-07T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-5-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-08T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-5-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-08T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-5-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-08T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-5-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-08T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-5-1",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-08T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-08T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-5-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-09T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-5-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-09T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-5-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-09T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-5-2",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-09T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-09T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-5-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-10T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-5-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-10T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-5-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-10T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-5-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-10T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-class-5-3",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula noturna",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-10T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-10T22:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-am-5-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-11T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-lunch-5-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Almoço",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-11T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-work-pm-5-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Trabalho",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-11T13:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "work"
+        }
+      }
+    },
+    {
+      "id": "bruno-commute-5-4",
+      "calendarId": "bruno-calendar",
+      "summary": "Deslocamento",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-11T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "travel"
+        }
+      }
+    },
+    {
+      "id": "bruno-exercise-5",
+      "calendarId": "bruno-calendar",
+      "summary": "Atividade física",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-11T19:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-11T20:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "personal"
+        }
+      }
+    },
+    {
+      "id": "bruno-saturday-class-5",
+      "calendarId": "bruno-calendar",
+      "summary": "Aula de sábado",
+      "description": "",
+      "start": {
+        "dateTime": "2026-12-12T09:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "end": {
+        "dateTime": "2026-12-12T12:00:00-03:00",
+        "timeZone": "America/Sao_Paulo"
+      },
+      "extendedProperties": {
+        "private": {
+          "fixtureKind": "class"
+        }
+      }
+    }
+  ]
+}

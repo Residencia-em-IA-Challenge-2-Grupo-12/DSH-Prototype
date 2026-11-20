@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Study Atlas · Synthetic demo</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/vendor/i18next.js"></script>
+</head>
+<body>
+  <header><div><span class="eyebrow" data-i18n="eyebrow"></span><h1>Study Atlas <span class="badge" data-i18n="demo"></span></h1></div>
+    <div class="header-actions"><label><span data-i18n="language"></span><select id="language"><option value="en">English</option><option value="pt-BR">Português (BR)</option></select></label>
+    <label><span data-i18n="student"></span><select id="student"><option value="ana">Ana</option><option value="bruno">Bruno</option></select></label>
+    <button id="reset" class="secondary" data-i18n="reset"></button></div>
+  </header>
+  <main>
+    <div class="notice"><strong data-i18n="synthetic"></strong> <span data-i18n="notice"></span></div>
+    <div id="alert" class="alert hidden" role="status"></div>
+    <div id="recovery-status" class="alert hidden" role="status" aria-live="polite"></div>
+    <section class="intro"><div><div class="eyebrow" data-i18n="fixedTime"></div><h2 data-i18n="introTitle"></h2><p data-i18n="introBody"></p></div>
+      <div class="date-card"><span data-i18n="today"></span><strong>02 NOV</strong><small>2026 · São Paulo</small></div>
+    </section>
+    <nav class="tabs" aria-label="Sections"><button class="tab active" data-tab="collaborate" data-i18n="collaborate"></button><button class="tab" data-tab="plan" data-i18n="planning"></button><button class="tab" data-tab="calendar" data-i18n="calendar"></button><button class="tab" data-tab="workspace" data-i18n="workspace"></button><button class="tab" data-tab="report" data-i18n="report"></button></nav>
+    <section id="collaborate" class="panel active"><div class="collab-grid">
+      <article class="card chat-card"><div class="section-label">GPT-6 Luna · DSH</div><h3 data-i18n="chatTitle"></h3><p data-i18n="chatDescription"></p>
+        <div id="chat-access" class="chat-access hidden" role="status"><strong data-i18n="chatAccessTitle"></strong><p data-i18n="chatAccessDescription"></p><a id="chat-local-link" href="http://localhost:4174/" data-i18n="chatAccessLink"></a></div><div id="chat-status" class="chat-status" aria-live="polite"></div><div id="chat-messages" class="chat-messages" aria-live="polite"></div><div id="chat-question"></div>
+        <form id="chat-form"><label><span data-i18n="chatMessage"></span><textarea name="text" rows="3" maxlength="8000" required data-i18n-placeholder="chatPlaceholder"></textarea></label><div class="chat-actions"><button id="chat-send" type="submit" data-i18n="chatSend"></button><button id="chat-new" type="button" class="secondary" data-i18n="chatNew"></button></div></form>
+      </article>
+      <div><article class="card"><h3 data-i18n="calendarTitle"></h3><div class="week-controls"><button id="collab-previous-week" class="secondary" data-i18n="previousWeek"></button><strong id="collab-week-label" aria-live="polite"></strong><button id="collab-next-week" class="secondary" data-i18n="nextWeek"></button></div><p class="calendar-legend"><span class="legend-existing" data-i18n="legendExisting"></span><span class="legend-proposed" data-i18n="legendProposed"></span><span class="legend-removal" data-i18n="legendRemoval"></span></p><div class="week-scroll"><div id="collab-week-view" class="week-view"></div></div><p data-i18n="overlayNote"></p></article>
+      <article class="card proposal-card"><h3 data-i18n="reviewTitle"></h3><p data-i18n="reviewDescription"></p><div id="collab-proposal"></div></article></div>
+    </div></section>
+    <section id="plan" class="panel"><div class="grid"><article class="card"><div class="section-label">01</div><h3 data-i18n="draftTitle"></h3><p data-i18n="draftDescription"></p>
+      <form id="draft-form"><label><span data-i18n="hours"></span><input name="hours" type="number" min="0" max="20" step="1" value="6" required></label>
+      <label><span data-i18n="weeks"></span><input name="weeks" type="number" min="1" max="16" value="4" required></label>
+      <button type="submit" data-i18n="makePlan"></button></form><small data-i18n="draftNote"></small></article>
+      <article class="card"><div class="section-label">02</div><h3 data-i18n="checkpointTitle"></h3><p data-i18n="checkpointDescription"></p>
+      <form id="checkpoint-form"><label><span data-i18n="checkpointReason"></span><textarea name="reason" rows="3" data-i18n-placeholder="checkpointPlaceholder"></textarea></label><button type="submit" class="secondary" data-i18n="inspect"></button></form><div id="checkpoint-result"></div></article></div>
+      <article class="card proposal-card"><div class="section-label">03</div><h3 data-i18n="reviewTitle"></h3><p data-i18n="reviewDescription"></p><div id="proposal"></div></article>
+    </section>
+    <section id="calendar" class="panel"><article class="card"><div class="card-heading"><div><div class="section-label" data-i18n="calendarLabel"></div><h3 data-i18n="calendarTitle"></h3></div><button id="refresh" class="secondary" data-i18n="refresh"></button></div><p data-i18n="calendarDescription"></p>
+      <div class="week-controls"><button id="previous-week" class="secondary" data-i18n="previousWeek"></button><strong id="week-label" aria-live="polite"></strong><button id="next-week" class="secondary" data-i18n="nextWeek"></button></div>
+      <p class="calendar-legend"><span class="legend-existing" data-i18n="legendExisting"></span><span class="legend-proposed" data-i18n="legendProposed"></span><span class="legend-removal" data-i18n="legendRemoval"></span></p>
+      <p data-i18n="overlayNote"></p><div class="week-scroll"><div id="week-view" class="week-view"></div></div>
+      <details><summary data-i18n="listView"></summary><div id="calendar-list"></div></details></article>
+      <article class="card proposal-card"><h3 data-i18n="classify"></h3><p data-i18n="classifyInfo"></p><form id="annotation-form"><label><span data-i18n="event"></span><select id="annotation-event" name="eventId"></select></label><label><span data-i18n="category"></span><select name="category"><option value="study" data-i18n="study"></option><option value="classes" data-i18n="classes"></option><option value="work" data-i18n="work"></option><option value="rest" data-i18n="rest"></option><option value="physical" data-i18n="physical"></option><option value="other" data-i18n="other"></option></select></label><button type="submit" data-i18n="reviewAnnotation"></button></form><div id="annotation-preview"></div></article>
+    </section>
+    <section id="workspace" class="panel"><div class="grid"><article class="card"><div class="section-label" data-i18n="workspaceLabel"></div><h3 data-i18n="browse"></h3><p data-i18n="browseDescription"></p><button id="up" class="secondary" data-i18n="up"></button><div id="path"></div><div id="files"></div></article><article class="card"><h3 data-i18n="preview"></h3><pre id="file-content" data-i18n="chooseFile"></pre></article></div></section>
+    <section id="report" class="panel"><div class="grid"><article class="card"><div class="section-label">01</div><h3 data-i18n="feedbackTitle"></h3><p data-i18n="feedbackDescription"></p><form id="feedback-form">
+      <label><span data-i18n="event"></span><select name="eventId" id="event-select"></select></label>
+      <label><span data-i18n="completion"></span><select name="completion"><option value="unknown" data-i18n="unknown"></option><option value="completed" data-i18n="completed"></option><option value="partial" data-i18n="partial"></option><option value="not_done" data-i18n="notDone"></option></select></label>
+      <div class="row"><label><span data-i18n="minutes"></span><input name="actualMinutes" type="number" min="0" max="1440"></label><label><span data-i18n="effort"></span><input name="effort" type="number" min="0" max="5"></label></div>
+      <label><span data-i18n="note"></span><textarea name="note" rows="3"></textarea></label><button type="submit" data-i18n="saveFeedback"></button></form></article>
+      <article class="card"><div class="section-label">02</div><h3 data-i18n="reportTitle"></h3><p data-i18n="reportDescription"></p><button id="generate-report" data-i18n="generate"></button><div id="metrics"></div></article></div></section>
+  </main><footer data-i18n="footer"></footer><script type="module" src="/app.js"></script>
+</body></html>

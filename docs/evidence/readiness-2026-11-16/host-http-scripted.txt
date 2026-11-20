@@ -1,0 +1,12 @@
+(node:217651) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ host fallback: real simulator and HTTP support question, correction, near-only approval and verified retirement (1846.79961ms)
+✔ host fallback archives a known pre-service startup failure before verified retirement (2645.496747ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4566.102701

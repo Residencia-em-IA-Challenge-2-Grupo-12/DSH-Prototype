@@ -1,0 +1,27 @@
+{
+  "name": "study-planning-demonstration",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 --import ./tests/isolate-runtime.mjs tests/*.test.mjs",
+    "test:integration": "node --test --test-concurrency=1 --import ./tests/isolate-runtime.mjs tests/calendarpit.integration.mjs",
+    "install:codex-plugin": "bash scripts/install-codex-plugin.sh",
+    "install:codex-plugin:sdk": "bash scripts/install-codex-plugin.sh sdk",
+    "probe:sdk": "python3 scripts/probe-sdk.py",
+    "start": "node src/server.mjs",
+    "dsh": "dsh web",
+    "dsh:study": "bash scripts/start-dsh.sh",
+    "build:onboarding": "node scripts/build-onboarding.mjs",
+    "preview:onboarding": "node scripts/serve-onboarding-preview.mjs"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh": "0.2.2-rc.1",
+    "@modelcontextprotocol/sdk": "1.27.1",
+    "i18next": "25.6.0"
+  },
+  "devDependencies": {
+    "node": "24.11.1",
+    "fflate": "0.8.3"
+  }
+}

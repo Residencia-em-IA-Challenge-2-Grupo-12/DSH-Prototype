@@ -1,0 +1,695 @@
+{
+  "schemaVersion": 1,
+  "runId": "6699a42f-d56b-4af7-a6ec-ef0e06d93844",
+  "kind": "actual user-operated Luna browser attempt; calendar approval not attempted",
+  "runtime": "host-luna-fallback",
+  "provider": "codex",
+  "model": "gpt-6-luna",
+  "harness": "0.2.2-rc.1",
+  "startedAt": "2026-11-16T14:44:31.662Z",
+  "archivedAt": "2026-11-16T14:53:48.011Z",
+  "timingNote": "Elapsed wall time includes human interaction; active model time and usage are unknown.",
+  "questionObserved": true,
+  "questionAnswered": true,
+  "drafts": 2,
+  "decisions": 0,
+  "writes": 0,
+  "finalPlan": {
+    "id": "03983e96-b530-4b59-99e9-2c83f0c650c0",
+    "status": {
+      "near": "pending",
+      "future": "pending"
+    },
+    "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+    "near": [
+      {
+        "id": "3dd88dd89df84843a7dd52ac033b934a",
+        "start": {
+          "dateTime": "2026-11-04T22:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-04T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "confirmed",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "d1784572e1e3cd56c0a4e21a06857b360d42ded2815ee376ea43a35f6c4ee5ae",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "c6a678552c854ac8a07822f859910fe6",
+        "start": {
+          "dateTime": "2026-11-07T17:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-07T18:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "confirmed",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "7b6dc1220a1d33bee8a19e6aa40ab490928b357a08ed68ff776de77e8b7ef8e1",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "b30f6900ee8f4e2391c1907944e91145",
+        "start": {
+          "dateTime": "2026-11-08T13:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-08T14:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "confirmed",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "d1784572e1e3cd56c0a4e21a06857b360d42ded2815ee376ea43a35f6c4ee5ae",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "53c88f66f68040828a0d1a3e86cf565c",
+        "start": {
+          "dateTime": "2026-11-04T23:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-05T00:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "confirmed",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "d1784572e1e3cd56c0a4e21a06857b360d42ded2815ee376ea43a35f6c4ee5ae",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "0a00dbe1ed6043ed8e9214334823f0b5",
+        "start": {
+          "dateTime": "2026-11-07T18:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-07T19:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "confirmed",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "7b6dc1220a1d33bee8a19e6aa40ab490928b357a08ed68ff776de77e8b7ef8e1",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      }
+    ],
+    "future": [
+      {
+        "id": "4bfac76ce479426380e8c143c1f90844",
+        "start": {
+          "dateTime": "2026-11-09T22:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-09T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "231c17a625440a0520749c528234a4faf27f6263b7e74ead57f969d916c47cfa",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "d4d195919bf145558c63184c03e15707",
+        "start": {
+          "dateTime": "2026-11-11T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-12T00:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "231c17a625440a0520749c528234a4faf27f6263b7e74ead57f969d916c47cfa",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "9276c7f83a994aaa9599f0293a69d563",
+        "start": {
+          "dateTime": "2026-11-14T17:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-14T18:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "e7158ea71dda462c9ccb03b0847acb9e",
+        "start": {
+          "dateTime": "2026-11-15T13:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-15T14:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "231c17a625440a0520749c528234a4faf27f6263b7e74ead57f969d916c47cfa",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "3034d32967714cc6818e9fc9000b7985",
+        "start": {
+          "dateTime": "2026-11-09T23:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-10T00:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "231c17a625440a0520749c528234a4faf27f6263b7e74ead57f969d916c47cfa",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "2114f5044534461aa7d091389a843d06",
+        "start": {
+          "dateTime": "2026-11-16T22:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-16T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "d43e16911f374cce8fc089dd389db02a",
+        "start": {
+          "dateTime": "2026-11-18T22:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-18T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "36e0ba3fd48d4491acacece4ed775068",
+        "start": {
+          "dateTime": "2026-11-21T17:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-21T18:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "231c17a625440a0520749c528234a4faf27f6263b7e74ead57f969d916c47cfa",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "204807537de64315aa810f07c6dff1de",
+        "start": {
+          "dateTime": "2026-11-22T13:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-22T14:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "7b9da50386ac43f7aacb282abd7fecb4",
+        "start": {
+          "dateTime": "2026-11-16T23:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-17T00:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "5e0fa734fa1f42ebb38fc45110c16be2",
+        "start": {
+          "dateTime": "2026-11-23T22:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-23T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "231c17a625440a0520749c528234a4faf27f6263b7e74ead57f969d916c47cfa",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "4defdfd4589e4772bd1323fa91fc56a5",
+        "start": {
+          "dateTime": "2026-11-25T22:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-25T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "231c17a625440a0520749c528234a4faf27f6263b7e74ead57f969d916c47cfa",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "d80de4d13ba94e0cb023c13c98fc0712",
+        "start": {
+          "dateTime": "2026-11-28T17:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-28T18:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "05ba645433274a31ba7ff2a95446f3ff",
+        "start": {
+          "dateTime": "2026-11-29T13:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-29T14:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "231c17a625440a0520749c528234a4faf27f6263b7e74ead57f969d916c47cfa",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "02d44cc3b0ef4caf8d06a3a58f6bc711",
+        "start": {
+          "dateTime": "2026-11-23T23:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-24T00:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "231c17a625440a0520749c528234a4faf27f6263b7e74ead57f969d916c47cfa",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "91cec4f5abad431f83c3a36e6985e146",
+        "start": {
+          "dateTime": "2026-11-30T22:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-11-30T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "5f8db7cb13294a388796f9dcaebb2ba2",
+        "start": {
+          "dateTime": "2026-12-02T22:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-12-02T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "c35de996ba034f21bf61833cafec73ee",
+        "start": {
+          "dateTime": "2026-12-05T17:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-12-05T18:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "e25824873f44bedae09f403f19069670cebd1bc790e39088a084d30ae32aa4ba",
+        "descriptionHash": "231c17a625440a0520749c528234a4faf27f6263b7e74ead57f969d916c47cfa",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "a87011aa192365e45b37cf29a2ed15b1aeb7cd3229ace7ffcaf3d1202d620256",
+        "demoOwned": true
+      },
+      {
+        "id": "dcdc0c3419d04da5aa8be3f21d2fb4c3",
+        "start": {
+          "dateTime": "2026-12-06T13:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-12-06T14:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "878686843cfc4478bedcf8c64a546e2e",
+        "start": {
+          "dateTime": "2026-11-30T23:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-12-01T00:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "ef6208e8ae2f43c794f768c4be363449",
+        "start": {
+          "dateTime": "2026-12-07T22:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-12-07T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "17da3021381343349e9000bd6352518a",
+        "start": {
+          "dateTime": "2026-12-09T22:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-12-09T23:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "21c418cf03054551b3163dee97511186",
+        "start": {
+          "dateTime": "2026-12-12T17:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-12-12T18:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "27baf75b7bd6404883ed8b675e3a194b",
+        "start": {
+          "dateTime": "2026-12-13T13:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-12-13T14:00:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      },
+      {
+        "id": "5e12887c31074f48a3f9adb387162f9b",
+        "start": {
+          "dateTime": "2026-12-07T23:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "end": {
+          "dateTime": "2026-12-08T00:15:00.000Z",
+          "timeZone": "America/Sao_Paulo"
+        },
+        "status": "tentative",
+        "transparency": null,
+        "summaryHash": "f81b7d0f3167033ef2c1d90752b30eb34de75a2e20ac4d6981f537b0526de231",
+        "descriptionHash": "3cd44fcc8d685adf5fd650de286d525627684f4f8b59775f264a5012b3c3a59b",
+        "locationHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "attendeesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "propertiesHash": "b537aeab73460a4e9adc1175793016b352dad349f57bfb6242b9e36da815721a",
+        "demoOwned": true
+      }
+    ],
+    "remove": {
+      "near": [],
+      "future": []
+    },
+    "outlook": [
+      {
+        "week": 1,
+        "targetHours": 5,
+        "scheduledHours": 5,
+        "shortfall": 0
+      },
+      {
+        "week": 2,
+        "targetHours": 5,
+        "scheduledHours": 5,
+        "shortfall": 0
+      },
+      {
+        "week": 3,
+        "targetHours": 5,
+        "scheduledHours": 5,
+        "shortfall": 0
+      },
+      {
+        "week": 4,
+        "targetHours": 5,
+        "scheduledHours": 5,
+        "shortfall": 0
+      },
+      {
+        "week": 5,
+        "targetHours": 5,
+        "scheduledHours": 5,
+        "shortfall": 0
+      },
+      {
+        "week": 6,
+        "targetHours": 5,
+        "scheduledHours": 5,
+        "shortfall": 0
+      }
+    ]
+  },
+  "checks": {
+    "nearPending": true,
+    "futurePending": true,
+    "noClaim": true,
+    "noClaimHistory": true,
+    "eventIdsPreserved": true,
+    "summariesAndDescriptionsPreserved": true,
+    "mondayAdditions": 0
+  },
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help me prepare for my December 14 2026 deadlines. Read my course materials, preferences and calendar. Ask a consequential missing question, then propose the coming week and a six-week outlook. Do not apply calendar changes yet"
+    },
+    {
+      "role": "assistant",
+      "text": "## Draft proposal — Bruno\n\nI’ve prepared a **reviewable six-week plan**, covering the coming week (**Nov 2–8**) through **Dec 13**. It is a proposal only; **no calendar changes have been applied**.\n\n- **Coming week:** five one-hour sessions, split across the stated windows:\n  - Mon, Nov 2, 19:00 and 20:15 — *Algoritmos*\n  - Wed, Nov 4, 19:00 — *Algoritmos*\n  - Sat, Nov 7, 14:00 — *Banco de Dados*\n  - Sun, Nov 8, 10:00 — *Algoritmos*\n- **Six-week outlook:** the draft targets **5 hours each week**, with no reported shortfall. It mixes the two courses; the proposal places two sessions per course in most weeks, with one extra session alternating. The final study blocks fall on Dec 12–13, immediately before the deadlines.\n\nThe plan draws on Bruno’s preferences and course materials: *Algoritmos* has a graphs exam on **Dec 14 at 09:00**, covering BFS/DFS, shortest paths, and complexity; *Banco de Dados* has a modeling project due **Dec 14 at 18:00**, covering normalization, SQL, and referential integrity. The source materials recommend spaced review and active recall; the algorithm syllabus also recommends retrieval practice.\n\nYou confirmed “Yes” to keeping the stated windows and five-hour target. The draft respects its calendar availability checks and the preference for a break between same-day sessions. The preferences file notes a family commitment on Wednesday evening in week two; this generated draft schedules that week’s Wednesday session at **20:00**, so please verify that it fits around the commitment. The scheduled hours are goals, not evidence that study occurred.\n\n**Please review the near-term and future sections separately in the application** and approve or request revisions there. If you’d like a course prioritized, tell me its exact course name; the course-priority option uses a simple heuristic to allocate more candidate blocks, not a guarantee. Sources read: [preferencias.md](context/preferencias.md), [algoritmos.md](courses/algoritmos.md), [banco-dados.md](courses/banco-dados.md), [course-outline.pdf](courses/course-outline.pdf), and [courses.json](courses.json)."
+    },
+    {
+      "role": "user",
+      "text": "yes"
+    },
+    {
+      "role": "assistant",
+      "text": "Thanks. The draft is ready for your review in the application; **I haven’t applied any calendar changes**. Please review the near-term and future sections separately, especially the Wednesday-evening session in week two against your family commitment."
+    },
+    {
+      "role": "user",
+      "text": "Keep Monday, 2 November 2026 free of new study blocks. Preserve existing commitments and revise the proposal."
+    },
+    {
+      "role": "assistant",
+      "text": "Revised proposal prepared with **Monday, Nov 2 kept free of new study blocks**. The revised coming-week draft has five one-hour sessions on **Wed Nov 4 (19:00 and 20:15), Sat Nov 7 (14:00 and 15:15), and Sun Nov 8 (10:00)**. The six-week outlook remains at **5 hours per week**, with no reported shortfall.\n\nThe change excludes Nov 2 while preserving existing commitments; no calendar changes were applied. Please review the near-term and future proposals separately in the application before approving."
+    },
+    {
+      "role": "user",
+      "text": "Ok, then apply it"
+    },
+    {
+      "role": "assistant",
+      "text": "I can’t apply the proposal for you. It remains pending for your review in the application, where you can approve the near-term and future sections separately. Existing commitments have not been changed."
+    }
+  ],
+  "humanFeedback": {
+    "reported": "Changes seemed not to apply; interface was unclear and calendar widget was missing.",
+    "clarified": "The facilitator replied in chat only; the separate approval button was not clicked.",
+    "disposition": "No backend apply attempt was observed. This exposed an approval-handoff usability failure; do not count as a completed calendar-write walkthrough."
+  },
+  "limitations": [
+    "No screen recording or browser automation capture: browser control unavailable in this chat.",
+    "Runtime/prompt/UI were the initial host-preview iteration before usability corrections; exact initial source hashes were not captured.",
+    "Conversation capture is a bounded SDK snapshot, not a full provider event log.",
+    "Subscription usage is unknown."
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "verifiedOn": "2026-11-17",
+  "sourceCommit": "39cfc810acae441d4c70eadd59d1a91a067b3697",
+  "baseCommit": "38da40034632dba1fc613c7d7c2ab8d79c075021",
+  "sourceHashes": {
+    "public/managed.js": "98b835d8141c555e634505fd748ae914ae4191dfdfd3cc22f0ce30b2cc333c3b",
+    "public/managed.css": "8db48dfb99206420f84a803dc96830886bcff4027721ab30ca167ce5c1ab7630",
+    "tests/managed-ui.test.mjs": "df86ae4bbcf06a4dd59a6bed3428e69910e10553fb75a922e8e4f86fabcbeeba",
+    "src/sdk-session.mjs": "e92bae79522e0d28a65629d8f61e651ee9d035d128b214e59fc1d77b2dfc5ec8"
+  },
+  "checks": {
+    "offline": {
+      "command": "npm test",
+      "passed": 157,
+      "failed": 0,
+      "log": "offline.txt"
+    },
+    "widgetRegression": {
+      "before": "single-select expected three radio controls, received zero",
+      "after": "real StudySession RPC assertions passed within offline suite",
+      "method": "dependency-free DOM facade; no real browser or generative request"
+    },
+    "preview": {
+      "local": "http://127.0.0.1:4176/",
+      "tailscaleReadOnly": "http://100.120.7.46:4178/",
+      "localAssetsMatchedSource": true,
+      "remoteMutationHTTP": 405,
+      "verifiedFrom": "development host; not a second-device test"
+    }
+  },
+  "retiredRun": {
+    "id": "d2ba3486-3a79-4b33-864c-f24adab60ea5",
+    "runtime": "host-luna-fallback",
+    "originalSourcePin": "not captured exactly; do not attribute this older attempt to the new widgets",
+    "simulator": {
+      "image": "ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96",
+      "configuredMemoryMiB": 512,
+      "OOMKilled": true,
+      "exitCode": 137,
+      "startedAt": "2026-11-16T18:00:44.116846679Z",
+      "finishedAt": "2026-11-16T19:02:06.712873537Z"
+    },
+    "beforeRetirement": {
+      "busy": false,
+      "calendarAvailability": "unavailable",
+      "near": "pending",
+      "future": "pending",
+      "claim": null,
+      "claimHistoryCount": 0,
+      "historyTypes": [
+        "proposal"
+      ]
+    },
+    "archiveSha256": "2e882c87fef7ab7e61c60341601bff0ea949fbaf18e63f35c1bda5dce55074a8",
+    "archiveAvailability": "unavailable",
+    "archiveEvents": null,
+    "discarded": false,
+    "containerAbsent": true,
+    "networkAbsent": true,
+    "activeRunAfterRetirement": null,
+    "privateEvidence": ".runtime/experiments/luna-browser-d2ba3486-3a79-4b33-864c-f24adab60ea5"
+  },
+  "limits": [
+    "No new live-model attempt or paid-provider call.",
+    "No actual-browser/accessibility verification of the new widgets.",
+    "No simulator memory fix or long-duration reliability claim.",
+    "No 20-run batch repeated: lifecycle/provider code and topology were unchanged.",
+    "No merges, foundation selections or real-data authorization."
+  ]
+}
