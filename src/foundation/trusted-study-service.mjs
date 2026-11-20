@@ -1,4 +1,4 @@
-import {assertStudent,applyApproved,applyAnnotation,snapshotForArchive,withSyntheticRuntime} from '../core.mjs';
+import {assertStudent,applyApproved,applyAnnotation,snapshotForArchive,withSyntheticRuntime,loadState,getRecoveryClaim,getStudent} from '../core.mjs';
 import {createStudyBoundary} from './study-boundary.mjs';
 import {createWriteGate} from './write-gate.mjs';
 
@@ -26,6 +26,13 @@ export function createTrustedStudyService({student,calendar,runtimeDirectory,tra
   }};
   return {
     agent,
+    status:()=>inRuntime(async()=>{
+      const [state,recovery,courses,observation]=await Promise.all([
+        loadState(student),getRecoveryClaim(),getStudent(student,{requireStaged:true}),
+        calendar.events(student).then(events=>({availability:'available',events})).catch(()=>({availability:'unavailable',events:null}))
+      ]);
+      return {state,recovery,courses,calendar:{availability:observation.availability},events:observation.events};
+    }),
     approvePlan:(planId,section)=>gate.run(async()=>{
       if(trace)await trace.append('decision',{operation:'approve_plan',planId,section});
       let result;try{result=await inRuntime(()=>applyApproved(calendar,student,planId,section));}

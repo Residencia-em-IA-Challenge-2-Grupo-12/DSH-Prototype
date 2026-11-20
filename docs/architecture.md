@@ -1,5 +1,15 @@
 # Architecture and fixtures
 
+## Current disposable demonstration — 17 November 2026
+
+The supported group route is localhost:4176 with a thin companion, private controller RPC, one authoritative SQLite state path per run and brokered synthetic tools. The current approved Luna fallback keeps DSH/controller on the host and Calendarpit in Docker; the separate managed Docker-agent route has scripted infrastructure evidence. Native host-access/general Bash remain disabled for the agent. PDF extraction is a bounded trusted `pdftotext` operation on the host, not a general execution tool.
+
+Normal calendar reads/writes use the Google-compatible provider API with generated synthetic authorization. Only trusted lifecycle code owns resource creation/retirement. Calendar approval is outside the agent tool catalog. Workspace context is a staged, agent-read-only synthetic tree. Proposals and future allocations remain previews until their separate trusted section approval. Known unknown/partial outcomes remain blocked rather than blindly retried. The [current readiness report](review/onboarding-readiness-2026-11-17.md) records actual browser/write/archive results and residual restart/memory limits.
+
+## Legacy prototype reference
+
+The following port 4174/shared-reset description predates the disposable route and is retained for its separate legacy feedback/report interface. It does not describe the managed calendar-access or run lifecycle. Legacy JSON import and historical examples are not independent writers for the new run service.
+
 ```text
 Companion UI -> local Node API -> DSH SDK process -> stdio MCP
                        |                            |

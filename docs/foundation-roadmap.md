@@ -2,16 +2,22 @@
 
 The agreed product is a calendar-centered assistant for adult students. This phase uses synthetic calendars, workspaces and personas. GPT-6 Luna remains the default model. A later, bounded comparison also authorizes `deepseek/deepseek-v4.1-flash-1017` through OpenRouter's official DeepSeek provider, with fallback disabled and setup, agent and evaluator calls sharing the approximate $5 locally tracked target. Other generative models and paid-provider fallback are not authorized; local embedding models are separate dependencies.
 
+For delivery evidence and remaining limits, start with the [baseline readiness report](review/onboarding-readiness-2026-11-17.md). [Issue #9](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/9) owns the current baseline decision.
+
 ## Delivery checkpoints
+
+The [current Project work sequence](project-work-sequence.md) separates demonstration delivery and lossless integration review from later scheduling/activity experiments. The new study-method exploration follows a stable experimental baseline; it does not require every open experimental PR to merge. PR #8 still requires the user's explicit decision.
 
 1. **Experimental baseline (PR #8):** correct known scheduler defects, document what exists, run offline CI and verify the synthetic conversation, revision and separately approved calendar write. Keep the PR draft pending a readiness and merge decision.
 2. **Foundation comparisons:** implement transactional shared state, isolated simulator runs and replay; compare native DSH and SDK interfaces, heuristic and constraint solvers, and four local embedding models. Present evidence and obtain selections before expanding the selected interface or planner.
 3. **Collaborative workflow:** implement evidence-informed agent planning, one bounded critique, reviewable alternatives, optional feedback and checkpoints, file diffs and sandboxed tools.
-4. **Evaluation:** six bilingual synthetic cases, two repeats, three retrieval approaches (36 primary episodes), supplemented by scripted personas, Luna fallback, evaluator reports and sampled human review.
+4. **Evaluation:** six bilingual synthetic cases, two repeats, three retrieval approaches (36 primary episodes), supplemented by scripted personas, authorized Luna fallback, evaluator reports and sampled human review. Reassess the suite before freezing/running and obtain a decision before changing its size. The separate preliminary/matched Luna–DeepSeek comparison and masked DeepSeek evaluator retain their authorized route, runtime-equivalence and shared cost boundaries.
 
 ## Baseline versus target
 
-The running companion has a UI, DSH question forwarding, a simple deterministic scheduler and separate review controls. It still uses the earlier shared Calendarpit management API and in-memory agent sessions; recovery work adds SQLite-backed state and durable claims on the stacked branch. The experimental managed lifecycle has isolated simulator instances, a broker and restricted agent container, but is not connected to the companion. Its scripted runs do not establish live-model behavior. See [current disposable-run progress](disposable-run-progress.md). The agent influences limited scheduler inputs; evidence-based critique and rich alternatives are not enforced. The current preview is unauthenticated and suitable only for fictional data.
+The original #8 companion uses the shared simulator management API and JSON state. The proposed stack adds durable write claims (#37), disposable runs and brokered provider access (#38), and a browser interface through private controller RPC (#39). The live subscription fallback runs DSH and the controller on the facilitator host with Calendarpit in Docker. The managed Docker-agent route has separate scripted evidence.
+
+The current heuristic accepts a limited set of agent-selected parameters. Evidence-informed critique, richer alternatives and study-method personalization are later planning work. Use the readiness report for dated walkthroughs, package verification and open recovery limitations.
 
 The target uses a transactional SQLite-backed domain service, isolated Calendarpit instances with the Google-compatible API, replayable checkpoints, Docker workers without credentials or Docker socket, and a proportional calendar. Recheck proposal context, evidence and calendar versions before separately approved writes. Retain actual state after partial failures. A review of an inference or question response is never calendar approval.
 

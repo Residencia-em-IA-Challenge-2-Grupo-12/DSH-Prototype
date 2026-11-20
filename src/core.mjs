@@ -41,6 +41,14 @@ const stateStore=new Proxy({}, {get(_target,key){
   if(!stores.has(directory))stores.set(directory,createStateStore(directory));
   return stores.get(directory)[key];
 }});
+export async function disposeSyntheticRuntime(directory) {
+  if(typeof directory!=='string'||!path.isAbsolute(directory)||path.normalize(directory)!==directory||directory===path.parse(directory).root)throw new Error('A valid synthetic runtime is required');
+  const key=path.resolve(directory),store=stores.get(key);
+  if(!store)return false;
+  await store.close();
+  if(stores.get(key)===store)stores.delete(key);
+  return true;
+}
 export async function loadState(student) { return stateStore.load(assertStudent(student)); }
 export async function saveState(student, state) { return stateStore.save(assertStudent(student),state); }
 export async function getRecoveryClaim() { return stateStore.getCalendarClaim(); }
@@ -127,7 +135,8 @@ export function significant(e) {
 }
 export function snapshot(events) { return events.map(significant).sort((a,b) => a.id.localeCompare(b.id)); }
 export function digest(events) { return createHash('sha256').update(JSON.stringify(snapshot(events))).digest('hex'); }
-const millis = (item, key) => Date.parse(item[key]?.dateTime || item[key]?.date);
+// The simulator uses fixed São Paulo time; all-day dates start at local midnight.
+const millis = (item, key) => Date.parse(item[key]?.dateTime || (item[key]?.date && item[key].date + 'T00:00:00-03:00'));
 const overlaps = (a,b) => millis(a,'start') < millis(b,'end') && millis(b,'start') < millis(a,'end');
 function localTime(date) { return date.toISOString().replace('Z','').slice(0,19) + '-03:00'; }
 

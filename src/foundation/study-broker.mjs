@@ -3,6 +3,7 @@ import {promises as fs} from 'node:fs';
 import path from 'node:path';
 
 const MAX_REQUEST=64_000,MAX_RESPONSE=2_000_000;
+export class BrokerTransportError extends Error {}
 function checkedSocketPath(value){
   if(typeof value!=='string'||!path.isAbsolute(value)||value.includes('\0')||Buffer.byteLength(value)>100)throw new Error('An absolute, short broker socket path is required');
   return value;
@@ -46,9 +47,18 @@ export function createStudyBrokerClient({socketPath}={}){
     const req=http.request({socketPath,path:'/call',method:'POST',headers:{'content-type':'application/json'},timeout:30000},res=>{
       const chunks=[];let size=0;
       res.on('data',chunk=>{size+=chunk.length;if(size>MAX_RESPONSE){res.destroy(new Error('Broker response too large'));return;}chunks.push(chunk);});
-      res.on('error',reject);
-      res.on('end',()=>{try{const data=JSON.parse(Buffer.concat(chunks).toString('utf8'));if(res.statusCode!==200)reject(new Error(data.error||'Broker request failed'));else resolve(data.result);}catch(error){reject(error);}});
+      res.on('error',error=>reject(new BrokerTransportError(error.message,{cause:error})));
+      res.on('end',()=>{
+        let data;
+        try{data=JSON.parse(Buffer.concat(chunks).toString('utf8'));}
+        catch(error){reject(new BrokerTransportError('Invalid broker response',{cause:error}));return;}
+        if(res.statusCode===200&&data&&Object.hasOwn(data,'result'))resolve(data.result);
+        else if(res.statusCode===400&&typeof data?.error==='string')reject(new Error(data.error));
+        else reject(new BrokerTransportError('Invalid broker response'));
+      });
     });
-    req.on('timeout',()=>req.destroy(new Error('Broker request timed out')));req.on('error',reject);req.end(payload);
+    req.on('timeout',()=>req.destroy(new Error('Broker request timed out')));
+    req.on('error',error=>reject(new BrokerTransportError(error.message,{cause:error})));
+    req.end(payload);
   });}};
 }

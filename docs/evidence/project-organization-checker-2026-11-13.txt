@@ -1,0 +1,6 @@
+Organization audit (read-only)
+{"issues":22,"pullRequests":24,"projectItems":46,"views":7}
+INFO Priority is an organization issue field; empty Project options do not establish missing organization choices.
+INFO Native hierarchy/dependency data was captured; this check preserves it and does not prescribe missing edges.
+
+0 warning(s), 2 note(s). Warnings require human review.

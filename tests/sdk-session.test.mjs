@@ -100,3 +100,23 @@ test('a trusted host fallback can use a persistent DSH profile without changing 
     assert.throws(()=>new StudySession('ana',{dshHome:'/private/persistent-dsh',brokerSocket:'/run/study-broker/agent.sock',gateway:{baseURL:'http://127.0.0.1:12345/v1',accessToken:'a'.repeat(64)}}),/brokered Luna/i);
   } finally {session.stop();}
 });
+
+test('human question time does not consume the turn execution budget',async()=>{
+  const fake=fakeHarness(),session=new StudySession('ana',{launch:()=>fake.child,turnTimeoutMs:50});
+  try {
+    await session.prompt('Help me plan');await new Promise(resolve=>setTimeout(resolve,150));
+    assert.equal(session.snapshot().busy,true);assert(session.snapshot().question);assert.equal(session.snapshot().error,null);
+    session.answer('request1',[{id:'hours',selected:['3 hours']}]);await flush();assert.equal(session.snapshot().busy,false);
+  } finally {session.stop();}
+});
+
+test('execution budget resumes after a pending question is dismissed externally',async()=>{
+  const fake=fakeHarness(),session=new StudySession('ana',{launch:()=>fake.child,turnTimeoutMs:30});
+  try {
+    await session.prompt('Help me plan');await new Promise(resolve=>setTimeout(resolve,60));
+    assert.equal(session.snapshot().busy,true);
+    session.receive({method:'user-question.cancelled',params:{requestId:'request1'}});
+    await new Promise(resolve=>setTimeout(resolve,80));
+    assert.equal(session.snapshot().busy,false);assert(session.snapshot().error);assert(fake.child.killed);
+  } finally {session.stop();}
+});

@@ -1,0 +1,15 @@
+
+> study-planning-demonstration@0.1.0 build:onboarding
+> node scripts/build-onboarding.mjs
+
+{
+  "directory": "/home/david/Projects/Residência de IA/Challenge 2/DSH-Prototype-runs/.runtime/onboarding-package",
+  "zip": "/home/david/Projects/Residência de IA/Challenge 2/DSH-Prototype-runs/.runtime/study-atlas-onboarding.zip",
+  "zipBytes": 1186466,
+  "files": 39,
+  "slides": 16,
+  "suggestedMinutes": 25,
+  "localLinks": "verified",
+  "languageStructure": "parity verified",
+  "zipRoundTrip": "all hashes match"
+}

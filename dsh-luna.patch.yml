@@ -1,0 +1,7 @@
+# The trusted persistent profile owns its existing login. Restrict provider
+# registration/pooling for this process without editing its saved settings.
+- id: llm-subscriptions
+  config:
+    providers: [codex]
+    pool:
+      enabled: false

@@ -1,0 +1,12 @@
+(node:175437) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"kind":"actual-plugin-catalog","names":["ask_user_question","mcp__study__draft_study_plan","mcp__study__inspect_checkpoint","mcp__study__list_calendar","mcp__study__list_synthetic_files","mcp__study__read_synthetic_file","mcp__study__routine_report","mcp__study__save_report_interpretation"],"model":{"provider":"codex","model":"gpt-6-luna"},"extraToolHidden":true,"generativeRequests":0}
+✔ the actual subscription plugin is restricted to the eight study tools without a model call (1878.932794ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1926.687061

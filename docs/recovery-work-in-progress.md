@@ -1,5 +1,7 @@
 # Baseline recovery work in progress
 
+**Current reading guide, 17 November 2026:** this document describes #37’s own recovery slice. Later child #38/#39 provide verified disposable retirement in known cases; [current readiness](review/onboarding-readiness-2026-11-17.md) distinguishes that evidence from still-blocked unknown writers, incomplete restart recovery and deferred in-place reconciliation. These child results are not already integrated in #37/#8.
+
 **Do not merge this intermediate branch as a completed recovery fix.** It is a synthetic-only development slice for issue #36, based on PR #8. It blocks several conflicting application operations after an ambiguous write and exposes their status, but cannot yet retire the affected run or resolve such a claim.
 
 The first slices add a local SQLite state store and transactional checkpoint, feedback, proposal draft, annotation draft, narrative, annotation-approval and study-plan approval updates. Legacy per-student synthetic JSON is imported on first read and left unchanged as a backup. Cross-process checkpoint/feedback, concurrent drafting and approval regressions and the legacy-import check pass. Failed study-plan and annotation applications preserve the last trusted snapshot and separately record any subsequent observation; the tested edit between batch actions is protected. The synthetic Calendarpit study-plan and annotation integration checks pass on an isolated instance. New claims also guard reset and survive a tested process interruption, but the additional boundaries below remain.

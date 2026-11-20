@@ -1,0 +1,26 @@
+✔ polling preserves proposal controls, approval is explicit and single-flight, and outcomes stay visible (32.949435ms)
+✔ model prose renders basic formatting as text-safe DOM, with raw HTML and unsafe links inert (0.370227ms)
+✔ structured question controls send native selections or custom answers, survive polls/language changes and cancel separately (8.599881ms)
+✔ empty or non-JSON preview responses explain local access and uncertain mutations without retrying (7.337411ms)
+✖ archival uses explicit run-bound page confirmation, supports cancel/localization and fences duplicate or stale confirmation (1.694211ms)
+(node:8) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 87.047444
+
+✖ failing tests:
+
+test at tests/managed-ui.test.mjs:187:1
+✖ archival uses explicit run-bound page confirmation, supports cancel/localization and fences duplicate or stale confirmation (1.694211ms)
+  Error: Native browser confirmation is unavailable
+      at globalThis.confirm (file:///home/david/Projects/Resid%C3%AAncia%20de%20IA/Challenge%202/DSH-Prototype-runs/tests/managed-ui.test.mjs:192:49)
+      at $.onclick (file:///home/david/Projects/Resid%C3%AAncia%20de%20IA/Challenge%202/DSH-Prototype-runs/public/managed.js?archive-test=1794956648583:216:49)
+      at TestContext.<anonymous> (file:///home/david/Projects/Resid%C3%AAncia%20de%20IA/Challenge%202/DSH-Prototype-runs/tests/managed-ui.test.mjs:205:45)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)

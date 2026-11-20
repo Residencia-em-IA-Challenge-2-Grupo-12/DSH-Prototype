@@ -1,0 +1,27 @@
+# Managed companion integration
+
+**Current evidence, 17 November:** the [actual Luna browser write](review/luna-browser-walkthrough-2026-11-17.md), [verified archive-page check and onboarding readiness](review/onboarding-readiness-2026-11-17.md) supersede delivery-status statements below. The live host fallback and scripted managed Docker route remain different. Earlier dated text is historical.
+
+**Later evidence, 16 November:** see [the bounded readiness review](review/readiness-2026-11-16.md) for the local Luna browser attempt, UI correction and current limits. The dated observations below remain historical.
+
+The focused companion now has a local web entry point, a separate trusted controller entry point and private Unix-socket RPC. The web process receives only fixed lifecycle/conversation/review operations; it does not receive Docker access. The page is an experimental bilingual carrier with run controls, conversation/questions, observed calendar and separately reviewed proposal sections. It is not a finished UI or a verified live Luna route.
+
+The controller needs trusted configuration: absolute `STUDY_RUN_ROOT`, immutable `STUDY_AGENT_IMAGE`, exact `STUDY_GATEWAY_CONTAINER_ID` and private `STUDY_GATEWAY_TOKEN_FILE`. Run it with `node src/managed-controller.mjs`. Its control socket is `<STUDY_RUN_ROOT>/control/controller.sock` and must never be mounted in the agent. The controller currently uses the existing Docker gateway driver, whose only implemented model route is DeepSeek; real gateway calls remain disabled until pricing/egress/accounting are verified. Use a controlled synthetic fake gateway for infrastructure tests. Do not infer Luna readiness from this entry point.
+
+The separate web process needs `STUDY_CONTROLLER_SOCKET` and an optional `PORT` (default 4176); run `node src/managed-server.mjs`. Open `http://127.0.0.1:4176/` on the facilitator machine. Mutations require that exact local origin. The legacy application/server is separate and is not a supported managed-run entry point. A hard-killed controller can leave a socket file; do not blindly remove it or start another controller without inspecting ownership and run state.
+
+Tests cover HTTP through private IPC, rejected missing origin, allowed explicit approval and denial of the legacy reset route. Managed status preserves state when the simulator is unavailable. Syntax and offline checks pass. The scripted browser loop is now verified as described below. Container packaging, stale socket recovery and live Luna remain outstanding. No continuous browser recording has been verified.
+
+## Scripted browser verification — 13 November 2026
+
+The actual browser companion drove the private controller RPC, Docker DSH agent and isolated Calendarpit through Bruno’s context reads → human question → answer → proposal → Monday correction → near-term approval. Independent controller observations verified five created near-term events, no study additions on 2 November, and zero future proposal events created. Future approval remained pending. Reload retained the displayed conversation and proposal. English and Brazilian Portuguese interface labels were inspected; the original English conversation is not translated.
+
+This is **scripted infrastructure evidence**, not a live Luna run or a model-quality comparison. The trusted controller and web process were on the host; agent and simulator were in Docker. The immutable agent image used was `sha256:7d0fc54f6061f09dc7188bd2c8e7584da8119f98f5448546ea033f325aa76d93`, built before this branch’s latest SDK timer/scoped-policy changes, so this browser test does not verify those changes inside the agent image. No paid model calls were made.
+
+The browser exercise found and fixed a stale blocked-run notice after startup, untranslated approval states, and an unbounded event list that pushed review controls far below the conversation. This remains a plain event list, not the planned proportional week view. Final screenshots and independent state assertions are in [managed-browser evidence](evidence/managed-browser/).
+
+To reproduce one **scripted** attempt, with Docker access and the pinned `study-dsh-agent:synthetic` image already built, run `node scripts/preview-managed-synthetic.mjs` and open `http://127.0.0.1:4176/`. Start Bruno, send a planning request, answer the five-hour question, send “Keep Monday, 2 November 2026 free,” and approve only Coming week. The fake upstream accepts exactly this sequence; it is not an interactive model and must not be used for free exploration. Stop the launcher with SIGINT/SIGTERM to archive/retire the run. If verified retirement fails it preserves the resources and evidence for inspection. A new launcher is required for another attempt. The helper never reads provider credentials and does not expose a LAN/Tailscale control endpoint.
+
+### Resumo em português
+
+O navegador percorreu o fluxo real de integração usando respostas **roteirizadas**: leitura do contexto, pergunta, resposta, proposta, correção para liberar a segunda-feira e aprovação apenas da próxima semana. A consulta independente confirmou cinco eventos criados, nenhum bloco de estudo em 2 de novembro e nenhum evento futuro criado. A aprovação futura permaneceu pendente. Isso valida a integração, não a qualidade do Luna. Controlador e servidor web ainda estavam no host; agente e simulador estavam em Docker. A gravação contínua, a conexão ao Luna e as demais etapas de entrega continuam pendentes.
