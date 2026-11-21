@@ -1,11 +1,15 @@
 import {mountCalendarWeek} from './calendar-week.js';
+import {mountPlanningReview,courseMinutes} from './planning-review.js';
 import {renderConversation} from './chat-message.js';
 const words={
   en:{
     weekLink:'Week',chatLink:'Conversation',questionLink:'Answer question',mode:'Managed experimental interface · synthetic data only · scripted/API gateway route; Luna not connected',
+    scriptedMode:'Scripted browser exercise · synthetic data',
     hostMode:'Host Luna fallback · GPT-6 Luna · synthetic data only · DSH/controller on host, Calendarpit in Docker; restart recovery is limited',
-    localAccess:'Open the live controls directly in a browser on the facilitator computer at http://127.0.0.1:4176/. Phone or embedded previews are not supported for control.',
+    localAccess:'Open the live controls directly in a browser on the facilitator computer using its loopback address. Phone or embedded previews are not supported for control.',
     invalidResponse:'The preview or server returned an empty or invalid response',unconfirmed:'Could not confirm the operation. Refresh and inspect the run before retrying; changes may have occurred.',connectionError:'Could not reach the local service.',requestFailed:'Request failed',
+    planningInputs:'Planning inputs',reviewInputs:'Confirm the planning inputs to continue.',inputsConfirmed:'Planning inputs confirmed. Ask for a draft.',
+    windowOk:'No current overlap',windowUnknown:'Calendar unavailable · choose a typed answer',windowConflict:'Overlaps',
     start:'Start selected scenario',retire:'End and archive run',refresh:'Refresh',send:'Send',chat:'Plan together',
     calendar:'Your week · calendar and proposal',proposal:'Review proposal',near:'Coming week',future:'Future tentative blocks',
     approveNear:'Approve coming week',approveFuture:'Approve future blocks',applying:'Applying…',
@@ -19,9 +23,12 @@ const words={
   },
   pt:{
     weekLink:'Semana',chatLink:'Conversa',questionLink:'Responder pergunta',mode:'Interface gerenciada experimental · apenas dados sintéticos · rota de gateway; Luna ainda não conectada',
+    scriptedMode:'Exercício guiado no navegador · dados sintéticos',
     hostMode:'Fallback Luna no host · GPT-6 Luna · apenas dados sintéticos · DSH/controlador no host, Calendarpit no Docker; recuperação após reinício é limitada',
-    localAccess:'Abra os controles diretamente em um navegador na máquina do facilitador em http://127.0.0.1:4176/. Prévias no celular ou incorporadas não permitem controlar a execução.',
+    localAccess:'Abra os controles diretamente em um navegador na máquina do facilitador pelo endereço local. Prévias no celular ou incorporadas não permitem controlar a execução.',
     invalidResponse:'A prévia ou o servidor retornou uma resposta vazia ou inválida',unconfirmed:'Não foi possível confirmar a operação. Atualize e confira a execução antes de tentar novamente; pode ter ocorrido uma alteração.',connectionError:'Não foi possível acessar o serviço local.',requestFailed:'A solicitação falhou',
+    planningInputs:'Dados do plano',reviewInputs:'Confirme os dados do plano para continuar.',inputsConfirmed:'Dados do plano confirmados. Solicite uma proposta.',
+    windowOk:'Sem sobreposição atual',windowUnknown:'Calendário indisponível · digite uma resposta',windowConflict:'Sobreposição com',
     start:'Iniciar cenário selecionado',retire:'Encerrar e arquivar',refresh:'Atualizar',send:'Enviar',chat:'Planejar em conjunto',
     calendar:'Sua semana · calendário e proposta',proposal:'Revisar proposta',near:'Próxima semana',future:'Blocos futuros provisórios',
     approveNear:'Aprovar próxima semana',approveFuture:'Aprovar blocos futuros',applying:'Aplicando…',
@@ -36,18 +43,21 @@ const words={
 };
 const $=id=>document.getElementById(id);
 let run=null,available=false,busy=false,questionKey='',messagesKey='',calendarKey='',proposalKey='',lastState=null,runtime='managed-gateway';
+const renderPlanning=$('planning-context')?mountPlanningReview($('planning-context')):null;
+let contextBusy=false,contextUnconfirmed=null;
 let calendarView=null,retireReview=null,retirePending=false,retireReviewKey='',retireConfirmButton=null;
 let questionIdentity='',questionEpoch=0,questionPending=false,questionControls=[],questionSubmit=null,questionCancel=null,questionError=null;
 const approvalBusy=new Set(),approvalCompleted=new Set(),approvalReviewRequired=new Set();
 const t=key=>words[$('language').value][key];
 function node(tag,text){const element=document.createElement(tag);element.textContent=text;return element;}
 async function api(route,data){
-  const method=data?'POST':'GET',query=data?'':'?'+new URLSearchParams(run?{runId:run.id}:{});
+  const method=data?'POST':'GET',query=data?'':(route.includes('?')?'&':'?')+new URLSearchParams(run?{runId:run.id}:{});
   let response;
   try{response=await fetch('/api/'+route+query,{method,...(data?{headers:{'content-type':'application/json'},body:JSON.stringify({runId:run?.id,...data})}:{})});}
   catch{throw Object.assign(Error(`${data?t('unconfirmed')+' ':''}${t('connectionError')} ${t('localAccess')}`),{unconfirmed:!!data});}
   const invalid=()=>Object.assign(Error(`${data?t('unconfirmed')+' ':''}${t('invalidResponse')} (HTTP ${response.status||'unknown'}). ${t('localAccess')}`),{unconfirmed:!!data});
   let body;try{body=await response.json();}catch{throw invalid();}
+  if(!data&&route.startsWith('file?')&&response.ok&&typeof body==='string')return body;
   if(!body||typeof body!=='object'||Array.isArray(body))throw invalid();
   if(!response.ok){
     if(data&&body.outcome==='unconfirmed')throw Object.assign(Error(t('unconfirmed')),{unconfirmed:true});
@@ -64,7 +74,7 @@ async function action(fn,success){
 function labels(){
   document.documentElement.lang=$('language').value==='pt'?'pt-BR':'en';
   for(const [id,key] of [['mode','mode'],['access-note','localAccess'],['start','start'],['retire','retire'],['refresh','refresh'],['send','send'],['chat-title','chat'],['calendar-title','calendar'],['proposal-title','proposal'],['message-label','messageLabel'],['nav-calendar','weekLink'],['nav-review','proposal']])if($(id))$(id).textContent=t(key);
-  $('mode').textContent=t(runtime==='host-luna-fallback'?'hostMode':'mode');
+  $('mode').textContent=t(runtime==='host-luna-fallback'?'hostMode':runtime==='scripted-review'?'scriptedMode':'mode');
   if($('approval-note'))$('approval-note').textContent=t('approvalNote');
   renderRetireReview();
 }
@@ -91,7 +101,7 @@ function renderRetireReview(){
 }
 function canApprove(state,plan,section){
   const changes=(plan[section]?.length||0)+(plan.remove?.[section]?.length||0)>0;
-  return available&&plan.status?.[section]==='pending'&&!state.recovery&&state.calendar?.availability==='available'&&changes&&
+  return available&&plan.status?.[section]==='pending'&&!state.recovery&&state.calendar?.availability==='available'&&changes&&!state.state?.planningContext?.pending&&
     !approvalBusy.has(`${plan.id}:${section}`)&&!approvalCompleted.has(`${plan.id}:${section}`)&&!approvalReviewRequired.has(`${plan.id}:${section}`);
 }
 function renderMessages(messages){
@@ -117,10 +127,17 @@ function chatShortcut(question){
     link.textContent=t(question?'questionLink':'chatLink');
   }
 }
-function renderQuestion(question){
+function visibleOptions(question,state){
+  if(!question||!state?.availabilityOptions)return [];
+  const labels=question.questions.flatMap(item=>(item.options||[]).map(option=>option.label));
+  return state.availabilityOptions.options.filter(option=>labels.includes(option.label));
+}
+function renderQuestion(question,state){
+  const options=visibleOptions(question,state);
+  const previewId=options.length?state.availabilityOptions.id:undefined;
   chatShortcut(question);
   const identity=question?JSON.stringify([run?.id,question.requestId]):'';
-  const key=JSON.stringify([identity,$('language').value,question]);if(key===questionKey)return;
+  const key=JSON.stringify([identity,$('language').value,question,previewId,options]);if(key===questionKey)return;
   const draft=identity===questionIdentity?questionDraft():new Map();
   if(identity!==questionIdentity){questionEpoch++;questionPending=false;}
   questionIdentity=identity;questionKey=key;questionControls=[];$('question').replaceChildren();
@@ -138,7 +155,19 @@ function renderQuestion(question){
       input.type=item.multiSelect?'checkbox':'radio';input.name=name;input.id=`${name}-${optionIndex}`;input.value=option.label;
       input.checked=!!prior?.selected.includes(option.label)&&(!prior.customMode||!!item.multiSelect);
       if(!item.multiSelect)input.onchange=()=>{if(input.checked)choose(input);};
-      label.append(input,node('span',option.label+(option.description?' — '+option.description:'')));field.append(label);
+      const text=node('span',option.label+(option.description?' — '+option.description:''));
+      const candidate=options.find(item=>item.label===option.label);
+      if(candidate){
+        const list=node('ul','');list.className='option-windows';
+        for(const window of candidate.windows){
+          const status=window.conflicts===null?t('windowUnknown'):window.conflicts.length?`${t('windowConflict')} ${window.conflicts.map(x=>x.summary).join(', ')}`:t('windowOk');
+          const range=node('li',`${window.date} · ${window.start}–${window.end} · ${status}`);
+          if(window.conflicts===null||window.conflicts.length){range.className='window-warning';input.disabled=true;input.checked=false;}
+          list.append(range);
+        }
+        text.append(list);
+      }
+      label.append(input,text);field.append(label);
       control.options.push({label:option.label,input});
     }
     const customLabel=node('label',t(control.multi?'otherAnswer':'typedAnswer'));customLabel.className='question-custom';
@@ -168,7 +197,7 @@ function renderQuestion(question){
       answers.push({id:control.id,selected,...(custom?{custom}:{})});
     }
     questionError.textContent='';setQuestionPending(true);
-    try{await api('chat/answer',{requestId:question.requestId,answers});showNotice(t('answered'));await refresh();}
+    try{await api('chat/answer',{requestId:question.requestId,answers,...(previewId?{previewId}:{})});showNotice(t('answered'));await refresh();}
     catch(error){if(epoch===questionEpoch){questionError.textContent=error.message;showNotice(error.message);}try{await refresh();}catch{}}
     finally{if(epoch===questionEpoch)setQuestionPending(false);}
   };
@@ -181,15 +210,15 @@ function renderQuestion(question){
   };
   $('question').append(form);setQuestionPending(questionPending);
 }
-function renderCalendar(state){
-  const key=JSON.stringify([run?.id,$('language').value,state.events,state.calendar?.availability,state.state?.plan]);if(key===calendarKey)return;
+function renderCalendar(state,options=[]){
+  const key=JSON.stringify([run?.id,$('language').value,state.events,state.calendar?.availability,state.state?.plan,options]);if(key===calendarKey)return;
   calendarKey=key;
   if(state.calendar?.availability!=='available'){$('calendar').replaceChildren(node('p',t('unknown')));calendarView=null;return;}
   if(!calendarView)calendarView=mountCalendarWeek($('calendar'));
-  calendarView.update({events:state.events||[],plan:state.state?.plan,language:$('language').value});
+  calendarView.update({events:state.events||[],plan:state.state?.plan,options,language:$('language').value});
 }
 function renderProposal(state){
-  const plan=state.state?.plan,key=JSON.stringify([run?.id,$('language').value,plan,state.recovery,state.calendar]);
+  const plan=state.state?.plan,key=JSON.stringify([run?.id,$('language').value,plan,state.recovery,state.calendar,state.state?.planningContext?.pending?.id]);
   if(key===proposalKey)return;
   proposalKey=key;$('proposal').replaceChildren();if(!plan)return;
   for(const section of ['near','future']){
@@ -199,6 +228,12 @@ function renderProposal(state){
     box.append(node('h3',`${t(label)} · ${t(status)||status||''}`));
     const blocks=plan[section]||[],minutes=blocks.reduce((sum,event)=>sum+(event.start?.dateTime&&event.end?.dateTime?(Date.parse(event.end.dateTime)-Date.parse(event.start.dateTime))/60000:0),0);
     box.append(node('p',`${blocks.length} ${t('blocks')} · ${Number((minutes/60).toFixed(2))} ${t('hours')}`));
+    if(plan.planningContextRevisionId&&(section==='near'||blocks.length)){
+      const coverage=node('ul','');coverage.className='course-coverage';
+      const nf=new Intl.NumberFormat($('language').value==='pt'?'pt-BR':'en',{maximumFractionDigits:2});
+      for(const [name,minutes] of courseMinutes(plan.sources,blocks))coverage.append(node('li',`${name} · ${nf.format(minutes/60)} h`));
+      box.append(coverage);
+    }
     const changes=node('details',''),summary=node('summary',t('showChanges')),list=node('ul','');changes.append(summary,list);
     const format=value=>value?new Intl.DateTimeFormat($('language').value==='pt'?'pt-BR':'en',{timeZone:'America/Sao_Paulo',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(value)):'';
     for(const event of blocks)list.append(node('li',`${format(event.start?.dateTime)} · ${event.summary||''}`));
@@ -237,21 +272,51 @@ function renderProposal(state){
 }
 function clearUnavailable(){
   chatShortcut(null);
+  renderPlanning?.({context:null});
+  if($('nav-context'))$('nav-context').hidden=true;
   for(const id of ['messages','question','calendar','proposal'])if($(id).children.length)$(id).replaceChildren();
   messagesKey=questionKey=calendarKey=proposalKey='';questionIdentity='';questionEpoch++;questionPending=false;questionControls=[];lastState=null;calendarView=null;$('calendar').append(node('p',t('noEvents')));
 }
 async function refresh(){
   const status=await api('run');run=status.run;available=status.available;runtime=status.runtime||'managed-gateway';labels();
   if(retireReview&&retireReview.id!==run?.id&&!retirePending){retireReview=null;renderRetireReview();}
-  $('run').textContent=run?`${run.student} · ${run.id} · ${run.phase}`:t('none');
-  $('start').disabled=!!run;$('retire').disabled=!run||retirePending;$('student').disabled=!!run||runtime==='host-luna-fallback';$('send').disabled=!available||busy;
+  $('run').textContent=run?`${status.caseId||run.student} · ${run.id} · ${run.phase}`:t('none');
+  if(status.student)$('student').value=status.student;
+  $('start').disabled=!!run;$('retire').disabled=!run||retirePending;$('student').disabled=!!run||runtime==='host-luna-fallback'||!!status.student;$('send').disabled=!available||busy;
   $('run-warning').textContent=run&&!available?t('blocked'):'';
   if(!available){clearUnavailable();return;}
   const [chat,state]=await Promise.all([api('chat/state'),api('status')]);busy=chat.busy;$('send').disabled=busy;
   lastState=state;
   $('run-warning').textContent=state.recovery?t('recovery'):'';
-  if($('chat-progress'))$('chat-progress').textContent=t(chat.question?'waiting':busy?'working':'ready');
-  renderMessages(chat.messages);renderQuestion(chat.question);renderCalendar(state);renderProposal(state);
+  const context=state.state?.planningContext;
+  if($('chat-progress'))$('chat-progress').textContent=t(chat.question?'waiting':busy?'working':context?.pending?'reviewInputs':'ready');
+  if($('nav-context')){
+    $('nav-context').hidden=!context;
+    $('nav-context').textContent=t('planningInputs');
+  }
+  const displayedRun=run.id;
+  renderPlanning?.({
+    context,language:$('language').value,locked:busy||contextBusy||context?.pending?.id===contextUnconfirmed,
+    replies:context?chat.messages.filter(message=>message.type==='user').slice(-20).map(message=>message.text):[],
+    confirm:async revisionId=>{
+      if(contextBusy||run?.id!==displayedRun||lastState?.state?.planningContext?.pending?.id!==revisionId)return;
+      contextBusy=true;
+      const button=$('planning-context')?.querySelector('button:last-child');
+      if(button)button.disabled=true;
+      try{
+        await api('context/confirm',{runId:displayedRun,revisionId});
+        showNotice(t('inputsConfirmed'));
+      }catch(error){
+        if(error.unconfirmed)contextUnconfirmed=revisionId;
+        showNotice(error.message);
+      }finally{
+        contextBusy=false;
+        try{await refresh();}catch{}
+      }
+    },
+    read:async path=>({result:await api('file?path='+encodeURIComponent(path))}),
+  });
+  renderMessages(chat.messages);renderQuestion(chat.question,state);renderCalendar(state,visibleOptions(chat.question,state));renderProposal(state);
   if(chat.error)showNotice(chat.error);
 }
 $('language').onchange=()=>{labels();action(refresh);};

@@ -1,0 +1,66 @@
+{
+  "verifiedOn": "2026-11-20",
+  "simulationDate": "2026-11-02",
+  "timeZone": "America/Sao_Paulo",
+  "source": "83c65faaf6a85c04f247760825ff33dec551f6a9",
+  "case": "bruno-text",
+  "model": "gpt-6-luna",
+  "runtime": "Host DSH and controller with disposable Calendarpit",
+  "operator": "Agent-operated Chrome with prepared fictional answers",
+  "usage": "unknown",
+  "scenario": "Two-week horizon to exercise a nonempty future section",
+  "attempts": [
+    {
+      "runId": "f8402376-33df-4edf-a3f4-179f8993c95c",
+      "status": "failed",
+      "note": "Luna treated the commute ending at 19:00 as a conflict with a 19:00 start. The attempt stopped before input confirmation.",
+      "observedEventCount": 146,
+      "writeClaims": 0,
+      "retired": true,
+      "dockerContainerAndNetworkVerifiedAbsent": true
+    },
+    {
+      "runId": "8251f07a-9f76-4b92-85eb-87dba04e39cd",
+      "status": "failed",
+      "note": "Luna repeatedly asked which exam date to use. The prepared automation repeated availability without answering that question.",
+      "observedEventCount": 146,
+      "writeClaims": 0,
+      "retired": true,
+      "dockerContainerAndNetworkVerifiedAbsent": true
+    },
+    {
+      "runId": "5a1f9d50-9264-4700-b51d-83803e11e985",
+      "status": "passed",
+      "note": "The operator tailored question answers. After the confirmed five-hours-per-week target was sent as ten, the planner rejected it. The operator clarified weekly hours in the browser before drafting resumed.",
+      "observedEventCount": 151,
+      "writeClaims": 1,
+      "retired": true,
+      "dockerContainerAndNetworkVerifiedAbsent": true,
+      "revisedContextId": "f001f935-73b6-4b9e-a549-561c02fa6522",
+      "planId": "aa302158-402e-4576-883a-050ac5a5b062",
+      "nearIds": [
+        "36160267d04a420c9c7225ee8d7211fa",
+        "5cd8e0de989f411fb2f0826b73348ee4",
+        "91594f68c2a34d99bca4fd04e2a78cee",
+        "940697716b6f4177ad60f0280bce6d0f",
+        "f14974e7ca33423f9190135415aa2eb7"
+      ],
+      "futureProposalIds": [
+        "082b7456ef2344ce8cb0029451145101",
+        "32534588c86144f6b276ee7bfb5db482",
+        "81301f06c8754a4fa613762210cfe44b",
+        "985b95f836ce4368b937c29d7e378463",
+        "a638479d1dd74d88bafdc46b347ec1fb"
+      ],
+      "originalCount": 146,
+      "newCount": 5,
+      "originalPreserved": true,
+      "futureObserved": 0,
+      "futureStatus": "pending"
+    }
+  ],
+  "scriptedCases": {
+    "bruno": "Busy option, late conflict, Monday diff and stale approval",
+    "ana": "Source opened, Machine Learning 4 h, Statistics 0 h"
+  }
+}

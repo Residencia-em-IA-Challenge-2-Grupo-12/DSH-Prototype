@@ -2,6 +2,7 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {ROOT,initializeScenario,withSyntheticRuntime,disposeSyntheticRuntime} from '../core.mjs';
+import {coldStartStudents} from '../cold-start-context.mjs';
 import {StudySession} from '../sdk-session.mjs';
 import {createStateStore} from '../state-store.mjs';
 import {startCalendarpitRun} from './calendarpit-runner.mjs';
@@ -26,10 +27,12 @@ async function exited(child){
 // Explicit synthetic fallback: DSH/controller remain on the host; Calendarpit
 // alone is containerized. Restart inspection blocks rather than reconstructing
 // or trusting an old host process. No credential paths enter API responses.
-export function createHostLunaDriver({root,lease,dshHome,sessionFactory=options=>new StudySession('bruno',options),authorizeCalendar=authorizeSyntheticCalendar}={}){
+export function createHostLunaDriver({root,lease,dshHome,coldStart,sessionFactory=(options,student)=>new StudySession(student,options),authorizeCalendar=authorizeSyntheticCalendar}={}){
   if(!path.isAbsolute(root||'')||!path.isAbsolute(dshHome||'')||!lease?.assertHeld)throw Error('Trusted absolute runtime/profile and controller lease required');
   if(typeof authorizeCalendar!=='function')throw Error('Trusted synthetic calendar authorization is required');
   if(dshHome===root||dshHome.startsWith(root+path.sep))throw Error('Persistent login must remain outside disposable runs');
+  if(coldStart!==undefined&&!Object.hasOwn(coldStartStudents,coldStart))throw Error('Unknown cold-start case');
+  const student=coldStart===undefined?'bruno':coldStartStudents[coldStart];
   let current;
   const owned=run=>{
     lease.assertHeld();
@@ -40,7 +43,7 @@ export function createHostLunaDriver({root,lease,dshHome,sessionFactory=options=
     active(id){return current?.id===id&&current.ready&&!current.stopped?current:null;},
     async start(run){
       lease.assertHeld();
-      if(run.student!=='bruno')throw Error('This bounded host walkthrough supports Bruno only');
+      if(run.student!==student)throw Error('The selected student does not match this browser exercise');
       if(current)throw Error('Previous host run has not been verified retired');
       const directory=path.join(root,'runs',run.id);
       await mkdir(directory,{recursive:true,mode:0o700});
@@ -49,18 +52,18 @@ export function createHostLunaDriver({root,lease,dshHome,sessionFactory=options=
       current={id:run.id,student:run.student,runDirectory:directory,ready:false,stopped:false};
       await writeFile(path.join(directory,'host-runtime.json'),JSON.stringify({version:1,runId:run.id,runtime:'host-luna-fallback',controllerPid:process.pid,restartRecovery:'blocked-until-host-writers-verified'})+'\n',{mode:0o600,flag:'wx'});
       const trace=await createExperimentTrace({directory:traceDirectory,runId:run.id,attemptId});current.trace=trace;
-      const fixture=await readFile(path.join(ROOT,'fixtures/calendars/bruno.json'),'utf8');
-      await trace.append('configuration',{runtime:'host-luna-fallback',provider:'codex',model:'gpt-6-luna',harness:'0.2.2-rc.1',fixedDate:'2026-11-02',fixtureSha256:createHash('sha256').update(fixture).digest('hex'),usage:'unknown'});
+      const fixture=await readFile(path.join(ROOT,'fixtures/calendars',student+'.json'),'utf8');
+      await trace.append('configuration',{runtime:'host-luna-fallback',provider:'codex',model:'gpt-6-luna',harness:'0.2.2-rc.1',fixedDate:'2026-11-02',...(coldStart?{caseId:coldStart}:{}),fixtureSha256:createHash('sha256').update(fixture).digest('hex'),usage:'unknown'});
       current.simulator=await startCalendarpitRun({fixture:JSON.parse(fixture),redirectUri:'http://127.0.0.1:4175/callback',runId:run.id,runDirectory:directory});
-      const accessToken=await authorizeCalendar({run:current.simulator,student:'bruno',redirectUri:'http://127.0.0.1:4175/callback'});
+      const accessToken=await authorizeCalendar({run:current.simulator,student,redirectUri:'http://127.0.0.1:4175/callback'});
       const store=createStateStore(directory);current.store=store;
       current.calendar=createClaimedCalendar({origin:current.simulator.origin,accessToken,getClaim:()=>store.getCalendarClaim()});
-      await withSyntheticRuntime(directory,()=>initializeScenario(current.calendar,'bruno'));
-      current.service=createTrustedStudyService({student:'bruno',calendar:current.calendar,runtimeDirectory:directory,trace});
+      await withSyntheticRuntime(directory,()=>initializeScenario(current.calendar,student,{coldStart}));
+      current.service=createTrustedStudyService({student,calendar:current.calendar,runtimeDirectory:directory,trace,coldStart:!!coldStart,browserStudy:!!coldStart});
       const ipc=path.join(directory,'ipc');await mkdir(ipc,{mode:0o700});
       const socketPath=path.join(ipc,'agent.sock');
       current.broker=await startStudyBroker({socketPath,boundary:current.service.agent});
-      current.session=sessionFactory({dshHome,brokerSocket:socketPath});
+      current.session=sessionFactory({dshHome,brokerSocket:socketPath,...(coldStart?{coldStart:true,browserStudy:true}:{})},student);
       const session=current.session;
       current.client=createExperimentSession({trace,client:{
         snapshot:async()=>session.snapshot(),

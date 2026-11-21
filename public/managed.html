@@ -4,11 +4,13 @@
 <nav class="workspace-nav" aria-label="Workspace">
   <a id="nav-calendar" href="#calendar-title">Week</a>
   <a id="nav-chat" href="#chat-title">Conversation</a>
+  <a id="nav-context" href="#planning-context" hidden>Planning inputs</a>
   <a id="nav-review" href="#proposal-title">Review proposal</a>
 </nav>
 <div class="layout">
   <article class="panel calendar-panel">
     <h2 id="calendar-title" tabindex="-1"></h2><div id="calendar"></div>
+    <section id="planning-context" class="planning-context" hidden></section>
     <section id="review"><h2 id="proposal-title" tabindex="-1"></h2><p id="approval-note" class="review-note"></p><div id="proposal"></div></section>
   </article>
   <article class="panel chat-panel"><h2 id="chat-title" tabindex="-1"></h2><p id="chat-progress" role="status"></p><div id="messages" aria-live="polite"></div><div id="question" tabindex="-1"></div><form id="chat"><label for="text" id="message-label">Your message</label><textarea id="text" required></textarea><button id="send" disabled></button></form></article>

@@ -7,5 +7,5 @@ import {registerStudyTools} from './mcp-tools.mjs';
 // direct simulator or a different workspace.
 const client=createStudyBrokerClient({socketPath:process.env.STUDY_BROKER_SOCKET});
 const server=new McpServer({name:'synthetic-study-demo',version:'0.1.0'});
-registerStudyTools(server,(method,args)=>client.call(method,args));
+registerStudyTools(server,(method,args)=>client.call(method,args),{coldStart:process.env.STUDY_COLD_START==='1',browserStudy:process.env.STUDY_BROWSER_COLD_START==='1'});
 await server.connect(new StdioServerTransport());

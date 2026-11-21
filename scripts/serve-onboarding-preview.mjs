@@ -24,7 +24,7 @@ const server=http.createServer(async(req,res)=>{
     const resolved=await realpath(entry.file);if(!entry.zip&&!resolved.startsWith(directory+path.sep))throw Error('Outside package');
     if(!(await stat(resolved)).isFile())throw Error('Not a file');const body=await readFile(resolved);if(hash(body)!==entry.sha)throw Error('Package changed; restart the verified preview');
     const scripts=entry.file.endsWith('.html')?[...body.toString().matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>"'sha256-"+createHash('sha256').update(m[1]).digest('base64')+"'"):[];
-    const ext=path.extname(entry.file),mime={'.html':'text/html; charset=utf-8','.json':'application/json','.jpg':'image/jpeg','.md':'text/plain; charset=utf-8','.txt':'text/plain; charset=utf-8','.zip':'application/zip'}[ext]||'application/octet-stream';
+    const ext=path.extname(entry.file),mime={'.html':'text/html; charset=utf-8','.json':'application/json','.jpg':'image/jpeg','.png':'image/png','.md':'text/plain; charset=utf-8','.txt':'text/plain; charset=utf-8','.zip':'application/zip'}[ext]||'application/octet-stream';
     res.writeHead(200,{'content-type':mime,'content-length':body.length,'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer','content-security-policy':`default-src 'self'; script-src 'self' ${scripts.join(' ')}; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'`,...(entry.zip?{'content-disposition':'attachment; filename="study-atlas-onboarding.zip"'}:{})});res.end(req.method==='HEAD'?undefined:body);
   }catch{return error(503,'Verified artifact unavailable; rebuild/restart preview');}
 });

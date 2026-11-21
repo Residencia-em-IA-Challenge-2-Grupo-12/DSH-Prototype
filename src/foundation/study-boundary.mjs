@@ -1,8 +1,8 @@
-import {assertStudent,FIXED_TODAY,listWorkspace,readWorkspace,draft,checkpoint,report,saveNarrative} from '../core.mjs';
+import {assertStudent,FIXED_TODAY,listWorkspace,readWorkspace,draft,checkpoint,report,saveNarrative,readPlanningContext,proposePlanningContext} from '../core.mjs';
 
 // Trusted application side of a single synthetic run. It deliberately exposes
 // no approval, reset, raw provider, administration or calendar-write method.
-export function createStudyBoundary({student,calendar,requireStaged=true}={}){
+export function createStudyBoundary({student,calendar,requireStaged=true,coldStart=false,availabilityPreview}={}){
   assertStudent(student);
   if(typeof requireStaged!=='boolean')throw new Error('Workspace policy must be explicit');
   if(!calendar||typeof calendar.events!=='function')throw new Error('A synthetic calendar is required');
@@ -15,6 +15,11 @@ export function createStudyBoundary({student,calendar,requireStaged=true}={}){
     ['routine_report',()=>report(calendar,student)],
     ['save_report_interpretation',a=>saveNarrative(student,a.narrative)]
   ]);
+  if(coldStart){
+    if(availabilityPreview)methods.set('preview_study_options',args=>availabilityPreview.stage(args.options));
+    methods.set('read_planning_context',()=>readPlanningContext(student));
+    methods.set('propose_planning_context',args=>proposePlanningContext(student,args.record));
+  }
   return {async call(method,args){
     if(!methods.has(method))throw new Error('Agent operation is not available');
     if(!args||typeof args!=='object'||Array.isArray(args)||args.student!==student)throw new Error('Request does not match the selected synthetic student');
