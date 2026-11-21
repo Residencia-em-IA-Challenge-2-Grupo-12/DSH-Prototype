@@ -34,3 +34,19 @@
   .layout { grid-template-areas: "week" "chat"; }
   .workspace-nav a { font-size: .9rem; }
 }
+
+.calendar-legend .candidate:before,.calendar-event.candidate{background:#eee7fa;border:1.5px dashed #6f5390;color:#503971}
+.calendar-legend .conflict:before,.calendar-event.conflict{background:#fff0e4;border:1.5px dashed #ac4e24;color:#7c351b}
+.option-windows{font-size:.78rem;padding-left:1rem;margin:.25rem 0}
+.window-warning{font-weight:650;color:#843c23}
+.planning-context{border-top:1px solid var(--line);margin-top:1rem;padding-top:1rem;scroll-margin-top:4rem}
+.context-columns{display:grid;grid-template-columns:1.2fr 1fr;gap:1rem;margin:.75rem 0}
+.context-columns>div{min-width:0;background:#f5f8f2;border:1px solid var(--line);border-radius:10px;padding:.8rem}
+.context-course{margin:.6rem 0}
+.context-course details{font-size:.86rem;overflow-wrap:anywhere}
+.context-course blockquote{margin:.4rem 0;padding-left:.6rem;border-left:2px solid #9fb9ab}
+.context-course pre{white-space:pre-wrap;max-height:17rem;overflow:auto;padding:.6rem;background:white}
+.context-changes{padding:.7rem .85rem;background:#fff3e7;border:1px solid #e8c8ac;border-radius:8px}
+.context-changes p{margin:0}.planning-context .review-note{margin:.8rem 0}.planning-context>button{background:var(--green);color:white}
+.course-coverage{padding-left:1rem;font-size:.85rem}
+@media(max-width:560px){.context-columns{grid-template-columns:1fr}}

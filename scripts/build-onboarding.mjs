@@ -22,6 +22,10 @@ const files=new Map(),textFiles=new Map();
 function add(relative,bytes){if(relative.startsWith('/')||relative.split('/').some(p=>p==='..'||!p))throw Error('Unsafe package path');files.set(relative,Buffer.from(bytes));}
 function text(relative,value){textFiles.set(relative,value);add(relative,value);}
 const mappedDocs=new Map([
+ ['docs/onboarding/browser-exercises.md','browser-exercises.md'],
+ ['docs/cold-start-browser-review.md','references/cold-start-browser-review.md'],
+ ['fixtures/cold-start/ana-conflict/courses/module-guide.md','cold-review/ana-module-guide.md'],
+ ['fixtures/cold-start/ana-conflict/notices/lms-assessment.txt','cold-review/ana-lms-assessment.txt'],
  ['docs/onboarding/facilitator-checklist.md','facilitator-checklist.md'],['docs/onboarding/bruno-persona.md','bruno-persona.md'],['docs/onboarding/scorecard.md','scorecard.md'],['docs/onboarding/schedule-review-decisions.md','references/schedule-review-decisions.md'],
  ['docs/evidence/consolidation-2026-11-17/retained-experiments.json','references/retained-experiments.json'],['docs/evidence/consolidation-2026-11-17/pr-heads.json','references/pr-heads.json'],['docs/evidence/consolidation-2026-11-17/original-acceptance.json','references/original-acceptance.json'],
  ['docs/host-luna-preview.md','references/host-luna-preview.md'],['docs/question-widget-contract.md','references/question-widget-contract.md'],['docs/pr-consolidation-proposal.md','references/pr-consolidation-proposal.md'],
@@ -30,6 +34,18 @@ const mappedDocs=new Map([
 for(const [source,dest] of mappedDocs)if(source.endsWith('.json'))add(dest,await readFile(path.join(root,source)));
 const evidenceNames=['replay.html','summary.json','conversation-and-plans.json','report.md','question.jpg','first-proposal.jpg','corrected-proposal.jpg','applied-en.jpg','applied-pt.jpg','applied-pt-before-label-fix.jpg','label-before.txt','offline-after.txt'];
 for(const name of evidenceNames){const repo='docs/evidence/luna-browser-2026-11-17/'+name,dest='evidence/'+name;mappedDocs.set(repo,dest);add(dest,await readFile(path.join(root,repo)));}
+const browserEvidence=['index.html','summary.json','scripted-busy-option.png','scripted-late-conflict.png',
+ 'scripted-monday-diff.png','scripted-ana-coverage.png','live-input-review.png','rehearsal-applied.png'];
+for(const name of browserEvidence){
+  const source='docs/evidence/group-browser-2026-11-20/'+name,dest='cold-review/'+name;
+  mappedDocs.set(source,dest);
+  if(name.endsWith('.html'))text(dest,await read(source));else add(dest,await readFile(path.join(root,source)));
+}
+for(const name of ['ana-module-guide.md','ana-lms-assessment.txt']){
+  const dest='cold-review/'+name;
+  const source=[...mappedDocs].find(([,mapped])=>mapped===dest)[0];
+  add(dest,await readFile(path.join(root,source)));
+}
 for(const slide of content.slides)if(slide.image){slide.image.path='assets/'+slide.image.file;add(slide.image.path,await readFile(path.join(root,slide.image.source)));delete slide.image.source;}
 for(const name of ['summary.json','confirmation-pt.jpg','archived-pt.jpg']){const repo='docs/evidence/archive-ui-2026-11-17/'+name,dest='archive-evidence/'+name;mappedDocs.set(repo,dest);add(dest,await readFile(path.join(root,repo)));}
 function mapLink(href,sourceFile,destFile){
@@ -59,7 +75,7 @@ function markdown(s){
 const style=await read('docs/onboarding/presentation/style.css'),app=await read('docs/onboarding/presentation/app.js'),template=await read('docs/onboarding/presentation/template.html');new vm.Script(app);
 for(const [source,dest] of mappedDocs){if(!source.endsWith('.md')||!source.startsWith('docs/')&&source!=='.github/CONTRIBUTING.md')continue;
   let md=await read(source);md=md.replace(/\]\(([^)]+)\)/g,(_,href)=>']('+mapLink(href,source,dest)+')');text(dest,md);
-  if(['facilitator-checklist.md','bruno-persona.md','scorecard.md'].includes(dest))text(dest.replace('.md','.html'),`<!doctype html><html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(dest)}</title><style>${style}</style><body><main class="doc"><a href="index.html">Presentation / Apresentação</a>${markdown(md).replace(/href="(bruno-persona|scorecard|facilitator-checklist)\.md"/g,'href="$1.html"')}<p><a href="${dest}">Editable Markdown / Markdown editável</a></p></main></body></html>`);
+  if(['facilitator-checklist.md','bruno-persona.md','scorecard.md','browser-exercises.md'].includes(dest))text(dest.replace('.md','.html'),`<!doctype html><html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(dest)}</title><style>${style}</style><body><main class="doc"><a href="index.html">Presentation / Apresentação</a>${markdown(md).replace(/href="(bruno-persona|scorecard|facilitator-checklist|browser-exercises)\.md"/g,'href="$1.html"')}<p><a href="${dest}">Editable Markdown / Markdown editável</a></p></main></body></html>`);
 }
 let html=template.replace('__STYLE__',style).replace('__CONTENT__',JSON.stringify(content).replaceAll('<','\\u003c')).replace('__APP__',app);text('index.html',html);text('content.json',JSON.stringify(content,null,2)+'\n');
 text('README.md',`# Study Atlas onboarding / Apresentação\n\nVerified / Verificado: ${content.verifiedOn}.\n\nOpen index.html in a browser. No server or network is needed for slides, notes, actual screenshot replay or included documents. GitHub references and the live application require their respective environment/network.\n\nAbra index.html em um navegador. Slides, notas, replay e documentos incluídos funcionam offline. Referências GitHub e a aplicação ao vivo exigem os respectivos ambientes/rede.\n\n${content.slides.length} slides, ${minutes} suggested briefing minutes including replay. Hands-on is separate. The package contains documentation and synthetic evidence, not the application, Docker images, credentials or private runtime archives.\n\n${content.slides.length} slides, ${minutes} minutos sugeridos com replay. Prática separada. O pacote contém documentos/evidências sintéticas, não a aplicação, imagens Docker, credenciais ou arquivos privados.\n\nEdit presentation/content.json and presentation/app.js/style.css in the repository, then run node scripts/build-onboarding.mjs with installed project dependencies. A maintainer verifies current code/issues before updating verifiedOn.\n`);

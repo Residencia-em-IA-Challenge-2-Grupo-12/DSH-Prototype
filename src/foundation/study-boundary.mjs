@@ -2,7 +2,7 @@ import {assertStudent,FIXED_TODAY,listWorkspace,readWorkspace,draft,checkpoint,r
 
 // Trusted application side of a single synthetic run. It deliberately exposes
 // no approval, reset, raw provider, administration or calendar-write method.
-export function createStudyBoundary({student,calendar,requireStaged=true,coldStart=false}={}){
+export function createStudyBoundary({student,calendar,requireStaged=true,coldStart=false,availabilityPreview}={}){
   assertStudent(student);
   if(typeof requireStaged!=='boolean')throw new Error('Workspace policy must be explicit');
   if(!calendar||typeof calendar.events!=='function')throw new Error('A synthetic calendar is required');
@@ -16,6 +16,7 @@ export function createStudyBoundary({student,calendar,requireStaged=true,coldSta
     ['save_report_interpretation',a=>saveNarrative(student,a.narrative)]
   ]);
   if(coldStart){
+    if(availabilityPreview)methods.set('preview_study_options',args=>availabilityPreview.stage(args.options));
     methods.set('read_planning_context',()=>readPlanningContext(student));
     methods.set('propose_planning_context',args=>proposePlanningContext(student,args.record));
   }

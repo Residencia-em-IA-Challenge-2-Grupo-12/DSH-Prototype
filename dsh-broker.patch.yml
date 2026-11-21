@@ -10,4 +10,5 @@
     env:
       STUDY_BROKER_SOCKET: !!js process.env.STUDY_BROKER_SOCKET
       STUDY_COLD_START: !!js process.env.STUDY_COLD_START || '0'
+      STUDY_BROWSER_COLD_START: !!js process.env.STUDY_BROWSER_COLD_START || '0'
     failOnStartupError: true
