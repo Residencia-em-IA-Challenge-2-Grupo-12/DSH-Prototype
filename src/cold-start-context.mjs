@@ -22,7 +22,7 @@ export const planningContextSchema = z.strictObject({
     time,
     citation,
     resolution:z.string().trim().min(1).max(450).optional(),
-  })).min(1).max(8),
+  })).min(1).max(8).describe('Study targets the operator wants time allocated to. Each entry can receive study blocks and cap the planning horizon. Keep optional clinics and other context-only milestones in the explanation.'),
   studyWindows:z.array(window).min(1).max(14),
   targetHours:z.number().int().min(1).max(20),
   maxDailyStudyHours:z.number().int().min(1).max(8),
