@@ -8,11 +8,16 @@ function localTime(value,zone){
 
 // Shared display model: observed events and pending proposal overlays remain
 // distinct. This renderer does not plan, approve or mutate calendar data.
-export function calendarWeekModel({events=[],plan,weekOffset=0,timeZone='America/Sao_Paulo',fixedDate='2026-11-02'}={}){
+export function calendarWeekModel({events=[],plan,options=[],weekOffset=0,timeZone='America/Sao_Paulo',fixedDate='2026-11-02'}={}){
   const start=addDays(fixedDate,weekOffset*7),entries=[],removed=new Set();
   for(const section of ['near','future'])if(plan?.status?.[section]==='pending')for(const e of plan.remove?.[section]||[])removed.add(e.id);
   for(const event of events||[])if(event.status!=='cancelled')entries.push({event,kind:removed.has(event.id)?'removal':'existing'});
   const observed=new Set(entries.map(x=>x.event.id));
+  for(const option of options)for(const [index,window] of option.windows.entries()){
+    entries.push({kind:window.conflicts?.length?'conflict':'candidate',event:{
+      id:`preview-${option.label}-${index}`,summary:option.label,start:{dateTime:window.startDateTime},end:{dateTime:window.endDateTime},
+    }});
+  }
   for(const section of ['near','future'])if(plan?.status?.[section]==='pending')for(const event of plan[section]||[])if(!observed.has(event.id))entries.push({event,kind:'proposed',section});
   return {start,end:addDays(start,6),days:Array.from({length:7},(_,offset)=>{
     const date=addDays(start,offset),blocks=[];
@@ -32,7 +37,7 @@ export function calendarWeekModel({events=[],plan,weekOffset=0,timeZone='America
   })};
 }
 
-const text={en:{previous:'Previous week',next:'Next week',calendar:'Weekly calendar preview',existing:'On calendar',proposed:'Proposed addition',removal:'Proposed removal',allDay:'All day',empty:'No events this week',note:'Outlined blocks are proposals. Chat does not approve changes; use the separate review controls.',time:'Time',details:'Activity details',future:'Future proposal',near:'Coming-week proposal'},pt:{previous:'Semana anterior',next:'Próxima semana',calendar:'Prévia semanal do calendário',existing:'No calendário',proposed:'Adição proposta',removal:'Remoção proposta',allDay:'Dia todo',empty:'Sem eventos nesta semana',note:'Blocos contornados são propostas. A conversa não aprova alterações; use os controles de revisão separados.',time:'Hora',details:'Detalhes da atividade',future:'Proposta futura',near:'Proposta da próxima semana'}};
+const text={en:{previous:'Previous week',next:'Next week',calendar:'Weekly calendar preview',existing:'On calendar',candidate:'Availability option',conflict:'Option conflicts',proposed:'Proposed addition',removal:'Proposed removal',allDay:'All day',empty:'No events this week',optionNote:'Availability options and proposed changes are previews. Calendar approval is separate.',note:'Outlined blocks are proposals. Chat does not approve changes; use the separate review controls.',time:'Time',details:'Activity details',future:'Future proposal',near:'Coming-week proposal'},pt:{previous:'Semana anterior',next:'Próxima semana',calendar:'Prévia semanal do calendário',existing:'No calendário',candidate:'Opção de horário',conflict:'Opção com conflito',proposed:'Adição proposta',removal:'Remoção proposta',allDay:'Dia todo',empty:'Sem eventos nesta semana',optionNote:'As opções de horário e as mudanças propostas são prévias. A aprovação do calendário é separada.',note:'Blocos contornados são propostas. A conversa não aprova alterações; use os controles de revisão separados.',time:'Hora',details:'Detalhes da atividade',future:'Proposta futura',near:'Proposta da próxima semana'}};
 const clock=minutes=>`${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`;
 export function mountCalendarWeek(root){
   const document=root.ownerDocument;
@@ -47,7 +52,7 @@ export function mountCalendarWeek(root){
     const locale=input.language==='pt'?'pt-BR':'en',t=text[input.language==='pt'?'pt':'en'];
     const model=calendarWeekModel({...input,weekOffset:offset}),format=new Intl.DateTimeFormat(locale,{month:'short',day:'numeric',timeZone:'UTC'});
     previous.textContent='← '+t.previous;next.textContent=t.next+' →';label.textContent=`${format.format(new Date(model.start+'T12:00Z'))} – ${format.format(new Date(model.end+'T12:00Z'))}`;
-    legend.replaceChildren(...['existing','proposed','removal'].map(kind=>el('span',t[kind],kind)));note.textContent=t.note;
+    legend.replaceChildren(...['existing','proposed','removal',...(input.options?.length?['candidate','conflict']:[])].map(kind=>el('span',t[kind],kind)));note.textContent=input.options?.length?t.optionNote:t.note;
     const grid=el('div',undefined,'calendar-grid'),header=el('div',undefined,'calendar-day-heading');header.textContent=t.time;grid.append(header);
     const weekday=new Intl.DateTimeFormat(locale,{weekday:'short',day:'numeric',timeZone:'UTC'});
     for(const day of model.days)grid.append(el('div',weekday.format(new Date(day.date+'T12:00Z')),'calendar-day-heading'));
