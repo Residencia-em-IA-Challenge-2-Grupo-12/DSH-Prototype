@@ -1,0 +1,34 @@
+{
+  "exportedAt": "2026-10-31T10:10:00Z",
+  "course": {
+    "code": "DATA-241",
+    "name": "Applied Data Ethics",
+    "section": "E02",
+    "displayTimeZone": "America/Sao_Paulo"
+  },
+  "assessment": {
+    "id": "data241-e02-case-memo",
+    "title": "Case memo",
+    "release": {
+      "revision": 2,
+      "status": "published",
+      "updatedAt": "2026-10-30T18:00:00Z",
+      "publishedBy": "Course coordination",
+      "opensAt": "2026-11-23T11:00:00Z",
+      "dueAt": "2026-12-01T20:30:00Z",
+      "closesAt": "2026-12-02T02:59:00Z"
+    },
+    "changeLog": [
+      {
+        "revision": 1,
+        "status": "superseded",
+        "dueAt": "2026-11-24T20:30:00Z",
+        "note": "Earlier planning date, also printed in the October module outline."
+      },
+      {
+        "revision": 2,
+        "note": "Revision 2 replaces the due date printed in the October module outline for E02. The upload portal stays open for late submissions after the due time."
+      }
+    ]
+  }
+}
