@@ -10,15 +10,26 @@ const {initializeScenario,withSyntheticRuntime,disposeSyntheticRuntime}=await lo
 
 const work=await mkdtemp('/tmp/study-scripted-review-');
 const original=JSON.parse(await readFile(path.join(repo,'fixtures/calendars',student+'.json'),'utf8')).events;
+const created=[];
 let initialized=false;
+async function command(){
+  try{return await readFile(control,'utf8');}
+  catch(error){if(error.code==='ENOENT')return null;throw error;}
+}
 const edited={id:'new-wednesday-appointment',summary:'New appointment',
   start:{dateTime:'2026-11-04T19:00:00-03:00'},end:{dateTime:'2026-11-04T20:00:00-03:00'}};
 const calendar={
   async events(){
-    let change;try{change=await readFile(control,'utf8');}catch{}
-    return structuredClone(initialized&&change==='add'?[...original,edited]:original);
+    const change=await command();
+    return structuredClone([...original,...created,...(initialized&&change==='add'?[edited]:[])]);
   },
-  async create(){await writeFile(control+'.unexpected','Calendar create called');throw Error('Unexpected write');},
+  async create(selected,event){
+    if(selected!==student||await command()!=='allow-writes'){
+      await writeFile(control+'.unexpected','Calendar create called');throw Error('Unexpected write');
+    }
+    created.push(structuredClone(event));
+    return structuredClone(event);
+  },
   async remove(){await writeFile(control+'.unexpected','Calendar remove called');throw Error('Unexpected write');}
 };
 
@@ -41,7 +52,7 @@ const record=student==='bruno'?{
   studyWindows:[{weekday:3,start:'14:00',end:'16:15'},{weekday:5,start:'14:00',end:'16:15'}],
   targetHours:4,assumption:'Use this planning week and retain the conflicting guide as context.',
 };
-Object.assign(record,{through:'2026-11-08',maxDailyStudyHours:2,studyBreakMinutes:15});
+Object.assign(record,{through:student==='bruno'?'2026-11-15':'2026-11-08',maxDailyStudyHours:2,studyBreakMinutes:15});
 const caseId=student==='bruno'?'bruno-text':'ana-conflict';
 let run=null,service=null,question=null;
 const messages=[];
@@ -63,7 +74,7 @@ const client={
     }else if(text==='Remove Monday'){
       record.studyWindows=record.studyWindows.filter(window=>window.weekday!==1);
       await call('propose_planning_context',{record});
-    }else if(text==='Draft the week')await call('draft_study_plan',{weeks:1});
+    }else if(text==='Draft the week')await call('draft_study_plan',{weeks:student==='bruno'?2:1});
     return view();
   },
   async answer(id,answers){

@@ -16,7 +16,7 @@ for(const [student,port] of [['bruno',startPort],['ana',startPort+1]]){
   const control=`${controlDir}/${student}`;
   const fixture=spawn(process.execPath,[fixtureScript,repo,student,port,control],{stdio:['ignore','pipe','inherit']});
   try{
-    await new Promise((resolve,reject)=>{fixture.stdout.once('data',resolve);fixture.once('exit',code=>reject(Error('Fixture exited '+code)));});
+    await new Promise((resolve,reject)=>{fixture.stdout.once('data',resolve);fixture.once('error',reject);fixture.once('exit',code=>reject(Error('Fixture exited '+code)));});
     await browser(`http://127.0.0.1:${port}/`,async({wait,fill,click,evaluate,capture,call})=>{
       const shot=name=>capture(out+'/'+name+'.png');
       const send=async text=>{await fill('#text',text);await click('#send');await wait("document.querySelector('#text').value === ''");};
@@ -68,14 +68,34 @@ for(const [student,port] of [['bruno',startPort],['ana',startPort+1]]){
         await wait("document.documentElement.scrollWidth === 390");
         await shot('scripted-ana-mobile');
       }else{
+        await wait("document.querySelector('.calendar-event.proposed')");
         // A fresh provider change after the plan is reviewed must fence writes.
+        const status=()=>evaluate("fetch('/api/status?runId=scripted-bruno').then(response=>response.json())");
+        const initial=await status();
         await writeFile(control,'add');
         await click('#proposal button:first-of-type');
         await wait("document.querySelector('#notice').innerText.includes('STALE')");
         ev.staleApprovalRejected=true;
+        await writeFile(control,'clear');
+        await send('Draft the week');
+        await wait(`fetch('/api/status?runId=scripted-bruno').then(response=>response.json()).then(body=>body.state.plan?.id !== ${JSON.stringify(initial.state.plan.id)})`);
+        await wait("document.querySelector('#proposal .proposal-section:first-of-type button:not(:disabled)')");
+        const reviewed=await status();
+        assert.notEqual(reviewed.state.plan.id,initial.state.plan.id);
+        assert.deepEqual(reviewed.events,initial.events);
+        assert.ok(reviewed.state.plan.future.length,'The future approval must have separate proposed events');
+        await writeFile(control,'allow-writes');
+        await click('#proposal .proposal-section:first-of-type button');
+        await wait("document.querySelector('#proposal .proposal-section:first-of-type h3').textContent.includes('applied')");
+        const after=await status();
+        assert.deepEqual(after.events.slice(0,initial.events.length),initial.events);
+        assert.deepEqual(after.events.slice(initial.events.length).map(event=>event.id).sort(),reviewed.state.plan.near.map(event=>event.id).sort());
+        assert.equal(after.state.plan.status.future,'pending');
+        ev.nearOnlyApplied=true;
+        await shot('scripted-near-only-applied');
       }
-      ev.calendarWrites=await readFile(control+'.unexpected','utf8').then(()=>true).catch(error=>{if(error.code==='ENOENT')return false;throw error;});
-      assert.equal(ev.calendarWrites,false);
+      ev.unexpectedCalendarWrites=await readFile(control+'.unexpected','utf8').then(()=>true).catch(error=>{if(error.code==='ENOENT')return false;throw error;});
+      assert.equal(ev.unexpectedCalendarWrites,false);
       result.cases[student]=ev;
     });
   }finally{
