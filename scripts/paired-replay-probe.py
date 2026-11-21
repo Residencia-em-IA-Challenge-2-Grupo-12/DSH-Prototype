@@ -88,6 +88,8 @@ def check_result(result, manifest, checksum, sources):
             require(all(source["citation"]["path"] in sources for source in entry["sources"]),
                     "Proposal cites an undeclared source")
             revisions[revision] = entry["sections"]
+        elif kind == "validation":
+            require(entry["revisionId"] in revisions, "Validation refers to an unknown proposal revision")
         elif kind in ("decision", "write"):
             key = entry["revisionId"], entry["section"]
             require(key[0] in revisions and key[1] in ("near", "future"),

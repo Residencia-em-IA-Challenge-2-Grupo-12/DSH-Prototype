@@ -41,6 +41,7 @@ const timeline = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('proposal'), revisionId: id, replaces: id.nullable(),
     sources: z.array(z.strictObject({ course: text, deadline: timestamp, citation })), assumptions: z.array(text),
     sections: z.strictObject({ near: z.array(action), future: z.array(action) }) }),
+  z.strictObject({ kind: z.literal('validation'), revisionId: id, passed: z.boolean(), findings: z.array(text) }),
   z.strictObject({ kind: z.literal('decision'), revisionId: id, section, approved: z.boolean() }),
   z.strictObject({ kind: z.literal('write'), revisionId: id, section,
     outcome: z.enum(['applied', 'rejected', 'partial', 'unknown']),

@@ -20,7 +20,6 @@ export const scenarios = ['success', 'stale', 'duplicate', 'unknown', 'unknown-u
 const exec = promisify(execFile);
 const eventIds = events => events.map(event => event.id).sort();
 const sameIds = (left, right) => isDeepStrictEqual([...left].sort(), [...right].sort());
-const phaseSection = 'near';
 
 function projectProposal(plan, previous) {
   const actions = section => [
@@ -66,7 +65,7 @@ export async function runDshReplay(bundle, scenario, saveResult) {
   const { manifest, inputSha256, fixture } = bundle;
   const { student, clock } = manifest;
   if (manifest.id !== 'bruno' || student !== 'bruno' || manifest.locale !== 'pt-BR' ||
-      clock.date !== FIXED_TODAY || clock.timezone !== 'America/Sao_Paulo' || manifest.operator.approval !== phaseSection) {
+      clock.date !== FIXED_TODAY || clock.timezone !== 'America/Sao_Paulo' || manifest.operator.approval !== 'near') {
     throw new Error('This scripted DSH adapter supports the fixed Bruno exercise');
   }
   if (!scenarios.includes(scenario)) throw new Error('Unknown synthetic run scenario');
@@ -87,7 +86,8 @@ export async function runDshReplay(bundle, scenario, saveResult) {
   };
   const note = event => result.timeline.push(event);
   const check = (id, ok, detail) => result.checks.push({ id, outcome: ok ? 'pass' : 'fail', detail });
-  let experiment, store, service, failures = [], retained = false;
+  const failures = [];
+  let experiment, store, service, retained = false;
   try {
     experiment = await startCalendarExperiment({ fixture, runId,
       context: { scenarioId: manifest.id, simulatedClock: `${clock.date}T00:00:00-03:00`, timeZone: clock.timezone,
@@ -159,11 +159,14 @@ export async function runDshReplay(bundle, scenario, saveResult) {
       proposalAdditions(first).some(action => manifest.expect.avoidDates.includes(action.start.slice(0, 10))),
     'A distinct proposal replaces the earlier proposal containing one of the excluded dates');
     const finding = validateSchedule(revised, initial, manifest);
-    check('feasibility', finding.length === 0 && revised.sections.near.length > 0 && revised.sections.future.length > 0,
-      finding.length ? finding.join('; ') : 'Both sections have study blocks and the revised blocks pass date, deadline and overlap checks');
+    if (!revised.sections.near.length || !revised.sections.future.length) finding.push('The exercise requires both proposal sections to contain study blocks');
+    note({ kind: 'validation', revisionId: revised.revisionId, passed: finding.length === 0, findings: finding });
+    check('feasibility', finding.length === 0, finding.length ? finding.join('. ') :
+      'Both sections have study blocks and the revised blocks pass date, deadline and overlap checks');
     const claims = compareScheduleClaims(revised, clock, [{ week: 2, minutes: 240 }, { date: '2026-11-11', minutes: 0 }]);
     check('narration_regression', claims.every(claim => !claim.matches),
-      `Historical claim check only: week 2 actual ${claims[0].actualMinutes} min vs claimed 240; 11 Nov actual ${claims[1].actualMinutes} min vs claimed 0`);
+      `Historical claim check: week 2 had ${claims[0].actualMinutes} min, compared with the claimed 240. 11 Nov had ${claims[1].actualMinutes} min, compared with the claimed 0.`);
+    if (result.checks.some(item => item.outcome === 'fail')) throw new Error('The scripted operator withheld approval because a precondition failed');
 
     const userEdit = scenario === 'stale' ? fixture.events.find(event => event.start.dateTime?.startsWith('2026-11-04')).id : null;
     if (userEdit) await editExistingCalendarEvent(experiment, student, userEdit);
