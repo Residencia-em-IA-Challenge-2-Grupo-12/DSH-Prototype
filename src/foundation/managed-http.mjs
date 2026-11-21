@@ -14,8 +14,9 @@ export function createManagedHttpHandler({api,origin}={}){
     'POST /api/run/retire':a=>api.retire(a.runId),
     'GET /api/chat/state':a=>api.snapshot(a.runId),
     'POST /api/chat/send':a=>api.prompt(a.runId,a.text),
-    'POST /api/chat/answer':a=>api.answer(a.runId,a.requestId,a.answers),
+    'POST /api/chat/answer':a=>api.answer(a.runId,a.requestId,a.answers,a.previewId),
     'POST /api/chat/cancel-question':a=>api.cancelQuestion(a.runId,a.requestId),
+    'POST /api/context/confirm':a=>api.confirmContext(a.runId,a.revisionId),
     'POST /api/approve':a=>api.approve(a.runId,a.planId,a.section)
   };
   const reply=(res,status,data)=>{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(JSON.stringify(data));};

@@ -21,6 +21,7 @@ export function apply(ctx){
   if(process.env.STUDY_COLD_START==='1'&&process.env.STUDY_BROKER_SOCKET){
     activeTools.add('mcp__study__read_planning_context');
     activeTools.add('mcp__study__propose_planning_context');
+    if(process.env.STUDY_BROWSER_COLD_START==='1')activeTools.add('mcp__study__preview_study_options');
   }
   ctx.tools.guard(execution=>activeTools.has(execution.name)?undefined:'This tool is not available in the synthetic study run.');
   if(process.env.STUDY_BROKER_SOCKET){

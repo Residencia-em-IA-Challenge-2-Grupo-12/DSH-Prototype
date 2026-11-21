@@ -2,6 +2,7 @@ import {spawn} from 'node:child_process';
 import {mkdtemp,rmdir} from 'node:fs/promises';
 import path from 'node:path';
 import {tmpdir} from 'node:os';
+import {coldStartStudents} from '../src/cold-start-context.mjs';
 import {ROOT} from '../src/core.mjs';
 import {createExclusiveRunManager} from '../src/foundation/exclusive-run-manager.mjs';
 import {createHostLunaDriver} from '../src/foundation/host-luna-driver.mjs';
@@ -12,9 +13,12 @@ const root=process.env.STUDY_RUN_ROOT||path.join(tmpdir(),`study-luna-${process.
 const dshHome=process.env.STUDY_LUNA_DSH_HOME,port=Number(process.env.PORT||4176);
 if(Buffer.byteLength(path.join(root,'runs','00000000-0000-4000-8000-000000000000','ipc/agent.sock'))>100)throw Error('Choose a shorter STUDY_RUN_ROOT for Unix socket limits');
 if(!Number.isInteger(port)||port<1||port>65535)throw Error('Invalid local port');
+const coldStart=process.env.STUDY_COLD_CASE;
+if(coldStart!==undefined&&!Object.hasOwn(coldStartStudents,coldStart))throw Error('Unknown STUDY_COLD_CASE');
+const student=coldStart?coldStartStudents[coldStart]:'bruno';
 let driver,web,rpc,ipc;
 const manager=await createExclusiveRunManager({root,driverFactory:({lease})=>{
-  driver=createHostLunaDriver({root,lease,dshHome});return driver;
+  driver=createHostLunaDriver({root,lease,dshHome,coldStart});return driver;
 }});
 try{
   // An old web process must never reconnect to a replacement controller.
@@ -23,8 +27,8 @@ try{
   const socketPath=path.join(ipc,'controller.sock');
   const operations=createManagedStudyApi({manager,driver});
   const api={...operations,
-    async runStatus(){return {...await operations.runStatus(),runtime:'host-luna-fallback'};},
-    async start(student){if(student!=='bruno')throw Error('This walkthrough supports Bruno only');return operations.start(student);}
+    async runStatus(){return {...await operations.runStatus(),runtime:'host-luna-fallback',...(coldStart?{caseId:coldStart,student}:{} )};},
+    async start(selected){if(selected!==student)throw Error('The selected student does not match this browser exercise');return operations.start(student);}
   };
   rpc=await startControllerRpc({socketPath,api});
   const env=Object.fromEntries(['PATH','LANG','LC_ALL','TZ'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));

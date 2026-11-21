@@ -261,7 +261,9 @@ export async function proposePlanningContext(student,value) {
     path=>readWorkspace(student,path,{requireStaged:true}),FIXED_TODAY);
   const revision={id:randomUUID(),record};
   return stateStore.update(student,state=>{
-    state.planningContext.pending=revision;
+    const context=state.planningContext;
+    context.previous=context.pending||context.confirmed;
+    context.pending=revision;
     return revision;
   },{requiresIdle:true});
 }
