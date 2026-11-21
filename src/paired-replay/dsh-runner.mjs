@@ -165,6 +165,9 @@ export async function runDshReplay(bundle, scenario, saveResult) {
     const reviewed = (await api.status(runId)).state.planningContext.confirmed.record;
     const finding = validateSchedule(revised, initial, manifest, reviewed);
     if (!revised.sections.near.length || !revised.sections.future.length) finding.push('The exercise requires both proposal sections to contain study blocks');
+    if ([...revised.sections.near, ...revised.sections.future].some(action => action.kind === 'remove')) {
+      finding.push('The Bruno replay must preserve every existing calendar event');
+    }
     note({ kind: 'validation', revisionId: revised.revisionId, passed: finding.length === 0, findings: finding });
     check('feasibility', finding.length === 0, finding.length ? finding.join('. ') :
       'Both sections have study blocks and the revision meets the reviewed windows, targets, limits, deadlines and breaks');

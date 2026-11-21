@@ -69,6 +69,8 @@ for(const [student,port] of [['bruno',startPort],['ana',startPort+1]]){
         await shot('scripted-ana-mobile');
       }else{
         await wait("document.querySelector('.calendar-event.proposed')");
+        await click('#proposal .proposal-section:first-of-type details summary');
+        assert.match(await evaluate("document.querySelector('#proposal .proposal-section:first-of-type details').innerText"),/19:00–20:00/);
         // A fresh provider change after the plan is reviewed must fence writes.
         const status=()=>evaluate("fetch('/api/status?runId=scripted-bruno').then(response=>response.json())");
         const initial=await status();
