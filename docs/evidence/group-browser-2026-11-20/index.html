@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Atlas · Browser walkthrough</title>
+<style>
+:root{--paper:#eef2e8;--ink:#18352f;--muted:#49645b;--green:#245d4c;--line:#cad8cc}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:16px/1.5 system-ui,sans-serif}
+main{max-width:1230px;margin:auto;padding:24px}h1{font:clamp(2.1rem,6vw,3.35rem)/1.1 Georgia,serif;margin:.25em 0}h2{margin:.18em 0;font-size:1.4rem}button,select{font:inherit;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:.6rem;padding:.48rem .74rem}button{cursor:pointer}button[aria-current]{background:var(--green);color:white}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-block:14px}a{color:var(--green)}.kind{color:var(--green);font-size:.85rem;font-weight:750}.muted{color:var(--muted)}
+figure{background:white;margin:0;padding:1rem;border:1px solid var(--line);border-radius:1rem}img{width:100%;display:block;border-radius:.55rem}p{margin:.5em 0 1em}.tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+</style>
+<main>
+<div class="tools"><a id="return" href="../index.html">Presentation</a><label>Language / Idioma <select id="language"><option value="en">English</option><option value="pt">Português brasileiro</option></select></label></div>
+<h1 id="heading">Review the decision in context</h1>
+<p class="muted" id="intro">Actual browser screenshots. Captions distinguish scripted cases from the live Luna rehearsal.</p>
+<nav id="steps" aria-label="Walkthrough scenes"></nav>
+<figure><figcaption aria-live="polite"><div class="kind" id="kind"></div><h2 id="title"></h2><p id="caption"></p></figcaption><a id="full"><img id="capture" alt=""></a></figure>
+</main>
+<script>
+const scenes=[
+ {file:'scripted-busy-option.png',en:['Busy option','Scripted · before drafting','Spot the overlap','The calendar puts the Tuesday option beside work. The question names the commitment and disables that choice.'],pt:['Opção ocupada','Roteirizado · antes da proposta','Identifique a sobreposição','A opção de terça aparece ao lado do trabalho. A pergunta identifica o compromisso e desativa a escolha.']},
+ {file:'scripted-late-conflict.png',en:['Late conflict','Scripted · calendar changed','Recheck a stale choice','A new appointment blocks Wednesday after the option was shown. The operator can choose another window or type an answer.'],pt:['Conflito posterior','Roteirizado · calendário alterado','Revalide uma opção antiga','Um novo compromisso ocupa a quarta depois que a opção aparece. O operador pode escolher outra janela ou digitar uma resposta.']},
+ {file:'scripted-monday-diff.png',en:['Monday correction','Scripted · revised inputs','Check what changed','Monday is shown as removed. Source excerpts and original answers remain available to review.'],pt:['Correção da segunda','Roteirizado · dados revisados','Confira o que mudou','A segunda aparece como removida. Trechos das fontes e respostas originais continuam disponíveis.']},
+ {file:'scripted-ana-coverage.png',en:['Course coverage','Scripted · Ana','Find the uncovered course','All four blocks fit. Machine Learning gets four hours and Statistics gets zero. Ask what the operator would change.'],pt:['Horas por matéria','Roteirizado · Ana','Encontre a matéria sem horas','Os quatro blocos cabem. São quatro horas de Machine Learning e zero de Estatística. Pergunte o que o operador mudaria.']},
+ {file:'live-input-review.png',en:['Live input review','Live GPT-6 Luna · proposal-only attempt','Confirm the planning inputs','The operator can open the cited dates and compare preferences before requesting a draft.'],pt:['Revisão ao vivo','GPT-6 Luna ao vivo · tentativa até a proposta','Confirme os dados do plano','O operador pode abrir as fontes citadas e comparar as preferências antes de pedir uma proposta.']},
+ {file:'rehearsal-applied.png',en:['Near-only approval','Live GPT-6 Luna · final rehearsal','Verify which section reached the calendar','The facilitator approved only the coming week. The reviewed near events appeared, and future changes stayed pending.'],pt:['Aprovação próxima','GPT-6 Luna ao vivo · ensaio final','Confira qual parte chegou ao calendário','O facilitador aprovou apenas a próxima semana. Os eventos próximos apareceram e as mudanças futuras continuaram pendentes.']}
+];
+const el=id=>document.getElementById(id),query=new URLSearchParams(location.hash.slice(1));
+const lang=el('language');lang.value=query.get('lang')==='pt'?'pt':'en';
+let index=0;
+function render(){
+ const pt=lang.value==='pt';
+ document.documentElement.lang=pt?'pt-BR':'en';
+ el('heading').textContent=pt?'Revise a decisão no contexto':'Review the decision in context';
+ el('intro').textContent=pt?'Capturas reais do navegador. As legendas distinguem casos roteirizados do ensaio Luna ao vivo.':'Actual browser screenshots. Captions distinguish scripted cases from the live Luna rehearsal.';
+ el('return').textContent=pt?'Apresentação':'Presentation';
+ el('return').href='../index.html#slide=10&lang='+lang.value;
+ el('steps').replaceChildren(...scenes.map((scene,i)=>{
+   const button=document.createElement('button');button.textContent=scene[lang.value][0];
+   if(i===index)button.setAttribute('aria-current','step');
+   button.onclick=()=>{index=i;render();el('steps').children[i].focus();};return button;
+ }));
+ const scene=scenes[index],[name,kind,title,caption]=scene[lang.value];
+ el('kind').textContent=kind;el('title').textContent=title;el('caption').textContent=caption;
+ el('capture').alt=name;el('capture').src=scene.file;el('full').href=scene.file;
+}
+lang.onchange=render;render();
+</script>
+</html>

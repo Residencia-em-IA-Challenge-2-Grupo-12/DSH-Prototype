@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "verifiedOn": "2026-11-17",
-  "applicationEvidenceHead": "734658b648e0f20f8d2793f9d265cb010bcd3077",
+  "verifiedOn": "2026-11-20",
+  "applicationEvidenceHead": "83c65faaf6a85c04f247760825ff33dec551f6a9",
   "archiveUIHead": "a920bc6d03da6233e6239e2007410fb05bad101b",
   "slides": [
     {
@@ -30,43 +30,39 @@
       "id": "bruno",
       "minutes": 1.5,
       "en": {
-        "title": "Bruno’s week already has commitments",
-        "lead": "A fictional employed college student with two December deadlines",
+        "title": "Bruno starts with a busy calendar",
+        "lead": "The cold-start exercise begins with course materials and an empty preference profile",
         "table": [
           [
             "Context",
-            "Authored fixture"
+            "Fictional case"
           ],
           [
             "Work",
-            "40 hours, Monday to Friday"
+            "40 hours, Monday through Friday"
           ],
           [
             "Classes",
             "Tuesday and Thursday evenings, Saturday morning"
           ],
           [
-            "Other commitments",
-            "Weekday lunch/travel, Friday activity, one family exception"
+            "Assessments",
+            "Algorithms exam and Database project"
           ],
           [
-            "Study target",
-            "5 hours/week, up to two 1h sessions/day, 15-minute breaks"
-          ],
-          [
-            "Deadlines",
-            "Algoritmos exam and Banco de Dados project on 14 December 2026"
+            "Preferences",
+            "Use the operator card when the agent asks"
           ]
         ],
-        "notes": "The simulated date is Monday 2 November 2026, America/Sao_Paulo. Mastery, remaining effort and fatigue are unknown. The group must not invent them. See the included persona for exact windows and prepared answers."
+        "notes": "The simulator starts on Monday 2 November 2026, São Paulo time. A later notice supersedes the original exam date. The operator card keeps choice and scope outside the agent workspace."
       },
       "pt": {
-        "title": "A semana de Bruno já tem compromissos",
-        "lead": "Um universitário fictício que trabalha e tem dois prazos em dezembro",
+        "title": "Bruno começa com uma agenda cheia",
+        "lead": "O exercício começa com materiais das disciplinas e um perfil de preferências vazio",
         "table": [
           [
             "Contexto",
-            "Fato do cenário"
+            "Cenário fictício"
           ],
           [
             "Trabalho",
@@ -74,30 +70,26 @@
           ],
           [
             "Aulas",
-            "Terça e quinta à noite, sábado pela manhã"
+            "Terça e quinta à noite, sábado de manhã"
           ],
           [
-            "Outros compromissos",
-            "Almoço/deslocamento, atividade na sexta e uma exceção familiar"
+            "Avaliações",
+            "Prova de Algoritmos e projeto de Banco de Dados"
           ],
           [
-            "Meta de estudo",
-            "5h/semana, até duas sessões de 1h/dia, intervalos de 15 minutos"
-          ],
-          [
-            "Prazos",
-            "Prova de Algoritmos e projeto de Banco de Dados em 14/12/2026"
+            "Preferências",
+            "Use a ficha do operador quando o agente perguntar"
           ]
         ],
-        "notes": "A data simulada é segunda-feira, 2/11/2026, no fuso America/Sao_Paulo. Domínio das matérias, esforço restante e cansaço são desconhecidos. Não inventar esses fatos. A persona incluída informa janelas e respostas preparadas."
+        "notes": "O simulador começa na segunda-feira, 2 de novembro de 2026, horário de São Paulo. Um aviso posterior altera a data original da prova. As escolhas e o escopo ficam na ficha do operador."
       },
       "links": [
         {
           "label": {
-            "en": "Bruno persona",
-            "pt": "Persona Bruno"
+            "en": "Browser exercise cards",
+            "pt": "Fichas dos exercícios"
           },
-          "href": "bruno-persona.md"
+          "href": "browser-exercises.html"
         }
       ]
     },
@@ -105,61 +97,61 @@
       "id": "collaboration",
       "minutes": 1.5,
       "en": {
-        "title": "The collaborative loop",
-        "lead": "Discussion changes the proposal before approval",
+        "title": "From a question to a calendar change",
+        "lead": "The operator reviews two different decisions",
         "steps": [
-          "Read selected materials and existing commitments",
-          "Ask a consequential missing question",
-          "Propose a detailed week and a lighter future outlook",
-          "Incorporate a correction",
-          "Approve near and future sections separately",
-          "Optionally check in and adapt"
+          "Read selected materials and observed commitments",
+          "Discuss a consequential missing preference",
+          "Review cited dates, windows and changes",
+          "Confirm planning inputs and request a draft",
+          "Review and approve one calendar section",
+          "Check the observed calendar and archive"
         ],
-        "notes": "These steps express the product direction. The demonstrated slice covers the first five with a synthetic simulator. Optional feedback and richer checkpoint adaptation exist in earlier prototype tools/tests but are not a complete managed-browser workflow."
+        "notes": "The briefing uses Bruno for this full sequence and a fixed Ana follow-up for course coverage. Verify what each action does before clicking it."
       },
       "pt": {
-        "title": "O ciclo colaborativo",
-        "lead": "A conversa modifica a proposta antes da aprovação",
+        "title": "Da pergunta à alteração na agenda",
+        "lead": "O operador revê duas decisões diferentes",
         "steps": [
-          "Ler materiais selecionados e compromissos existentes",
-          "Perguntar sobre uma informação ausente que faça diferença",
-          "Propor uma semana detalhada e uma perspectiva futura",
-          "Incorporar uma correção",
-          "Aprovar próximo e futuro separadamente",
-          "Opcionalmente acompanhar e adaptar"
+          "Ler os materiais selecionados e os compromissos observados",
+          "Discutir uma preferência que muda o plano",
+          "Revisar datas citadas, janelas e correções",
+          "Confirmar dados do plano e pedir uma proposta",
+          "Revisar e aprovar uma parte do calendário",
+          "Conferir a agenda observada e arquivar"
         ],
-        "notes": "Estas etapas expressam a direção do produto. A demonstração cobre as primeiras cinco com um simulador sintético. Feedback e adaptação em checkpoints aparecem em ferramentas/testes anteriores, mas não formam um fluxo completo no navegador gerenciado."
+        "notes": "Bruno percorre toda a sequência. O exercício fixo de Ana mostra a cobertura das matérias. Confira o efeito de cada ação antes de clicar."
       }
     },
     {
       "id": "questions",
       "minutes": 1,
       "en": {
-        "title": "A question is a clarification",
-        "lead": "The real Luna run asked for course priority",
+        "title": "Check an offered time against the calendar",
+        "lead": "A scripted browser check tests a conflict before any proposal",
         "points": [
-          "Pick one, pick several, type another answer or dismiss.",
-          "This run exercised one radio choice and preserved it during language switching.",
-          "A chat reply such as “yes” does not approve the calendar."
+          "The Tuesday option appears beside an existing work event.",
+          "The widget identifies the overlap and disables the option.",
+          "A late appointment triggers a fresh check when the operator answers."
         ],
-        "notes": "The other answer modes have offline protocol/DOM coverage, not live observation in this run. The assistant also confirmed known target/windows, which is partly redundant. Its question text stayed Portuguese while interface labels changed."
+        "notes": "This screenshot comes from an authored test, which reliably reproduces the conflict. Live questions can use selectable options or typed answers. Candidate overlays depend on the model supplying concrete times."
       },
       "pt": {
-        "title": "Uma pergunta esclarece o contexto",
-        "lead": "A execução real de Luna perguntou a prioridade das matérias",
+        "title": "Confira o horário sugerido na agenda",
+        "lead": "Um teste roteirizado verifica um conflito antes da proposta",
         "points": [
-          "Escolher uma opção, várias, digitar outra resposta ou dispensar.",
-          "Esta execução usou uma opção e preservou a seleção na troca de idioma.",
-          "Responder “sim” no chat não aprova o calendário."
+          "A opção de terça aparece ao lado de um compromisso de trabalho.",
+          "A pergunta identifica a sobreposição e desativa a opção.",
+          "Um compromisso novo exige outra verificação quando o operador responde."
         ],
-        "notes": "Os outros modos têm testes offline de protocolo/DOM, não observação ao vivo nesta execução. O assistente também confirmou meta/janelas já conhecidas, em parte redundante. O texto da pergunta continuou em português enquanto os rótulos da interface mudaram."
+        "notes": "A captura vem de um teste roteirizado que reproduz o conflito. Perguntas ao vivo permitem opções e respostas digitadas. O agente precisa fornecer horários concretos para exibir as opções na grade."
       },
       "image": {
-        "source": "docs/evidence/luna-browser-2026-11-17/question.jpg",
-        "file": "question.jpg",
+        "source": "docs/evidence/group-browser-2026-11-20/scripted-busy-option.png",
+        "file": "scripted-busy-option.png",
         "alt": {
-          "en": "Actual Portuguese question with selected no-priority radio and weekly calendar",
-          "pt": "Pergunta real em português com opção sem prioridade selecionada e calendário semanal"
+          "en": "Work and a blocked Tuesday option side by side",
+          "pt": "Trabalho e opção bloqueada de terça lado a lado"
         }
       }
     },
@@ -167,31 +159,31 @@
       "id": "calendar",
       "minutes": 1.5,
       "en": {
-        "title": "The calendar separates observation from proposal",
-        "lead": "A preview can change without changing the simulator",
+        "title": "Check the actual revision",
+        "lead": "The planning-input review separates cited facts from choices",
         "points": [
-          "Existing commitments and proposed additions have different visual styles.",
-          "The Monday correction means no new study on 2 November. Existing work stays.",
-          "Review the revised week and future outlook before using approval controls."
+          "Open the assessment source and read the excerpt.",
+          "Locate the removed Monday window in the revision.",
+          "Confirming inputs saves the reviewed facts and preferences."
         ],
-        "notes": "The proportional week view consumes provider observations plus proposal data. It is our view over Calendarpit, not an embedded Google Calendar. Drag/resize and a production Google connector are not implemented."
+        "notes": "The screenshot is a repeatable scripted correction. The live exercise also asks for the Monday correction. Drafting and calendar approval are separate subsequent actions."
       },
       "pt": {
-        "title": "O calendário separa observação de proposta",
-        "lead": "A prévia pode mudar sem alterar o simulador",
+        "title": "Confira a revisão dos dados",
+        "lead": "A revisão separa os fatos citados das escolhas",
         "points": [
-          "Compromissos existentes e adições propostas têm estilos diferentes.",
-          "A correção deixa 2/11 sem novo estudo. O trabalho existente permanece.",
-          "Revisar semana e futuro antes de usar os controles de aprovação."
+          "Abra a fonte da avaliação e leia o trecho.",
+          "Localize a janela de segunda removida da revisão.",
+          "Confirmar os dados salva os fatos e as preferências revisados."
         ],
-        "notes": "A visão semanal proporcional usa observações da API e dados da proposta. É nossa visualização sobre Calendarpit, não Google Calendar incorporado. Arrastar/redimensionar e um conector Google de produção não estão implementados."
+        "notes": "A captura mostra uma correção roteirizada que pode ser repetida. O exercício ao vivo também pede a correção da segunda. A proposta e a aprovação da agenda são ações posteriores."
       },
       "image": {
-        "source": "docs/evidence/luna-browser-2026-11-17/corrected-proposal.jpg",
-        "file": "corrected-proposal.jpg",
+        "source": "docs/evidence/group-browser-2026-11-20/scripted-monday-diff.png",
+        "file": "scripted-monday-diff.png",
         "alt": {
-          "en": "Actual revised study proposal before approval",
-          "pt": "Proposta de estudo revisada antes da aprovação"
+          "en": "Review listing Monday as removed",
+          "pt": "Revisão mostrando a segunda removida"
         }
       }
     },
@@ -281,74 +273,66 @@
       "id": "state",
       "minutes": 1.5,
       "en": {
-        "title": "Implemented, experimental and planned",
-        "lead": "The demonstration is a bounded product slice",
+        "title": "What the group can exercise today",
+        "lead": "Use the companion with selected synthetic cases",
         "table": [
           [
             "Area",
-            "Current state"
+            "Current evidence"
           ],
           [
-            "Bruno browser loop",
-            "Real Luna questioning, revision and near-only write observed"
+            "Cold-start input review",
+            "Cited deadlines, window revision and separate input confirmation"
           ],
           [
-            "Ana/four-week and managed Docker route",
-            "Fixtures and scripted/offline evidence, not this live walkthrough"
+            "Calendar options",
+            "Scripted overlap and stale-choice rejection"
           ],
           [
-            "Native DSH calendar panel",
-            "Read-only experiment, full workflow comparison pending"
+            "Bruno live browser flow",
+            "One bounded rehearsal on the pinned build"
           ],
           [
-            "Feedback, checkpoints and richer reporting",
-            "Earlier tools/tests exist, managed UI completion remains"
+            "Ana follow-up",
+            "Fixed course-coverage capture"
           ],
           [
-            "Real calendars and workspace changes",
-            "Separate readiness decisions, not authorized in this phase"
-          ],
-          [
-            "Planner, interface and embeddings",
-            "Comparisons preserved, final selections pending"
+            "Interface and planner",
+            "Comparison and selection remain open"
           ]
         ],
-        "notes": "The workspace in this walkthrough is preselected synthetic context, not an unrestricted user file browser. The current managed agent has read-only workspace tools. Browser/application operation remains a later fallback capability."
+        "notes": "The group uses fictional files and calendars. Compare the same proposal before attributing an improvement to interface or planner changes."
       },
       "pt": {
-        "title": "Implementado, experimental e planejado",
-        "lead": "A demonstração cobre uma parte delimitada do produto",
+        "title": "O que o grupo pode testar hoje",
+        "lead": "Use a interface com os cenários sintéticos selecionados",
         "table": [
           [
             "Área",
-            "Estado atual"
+            "Evidência atual"
           ],
           [
-            "Fluxo Bruno no navegador",
-            "Pergunta, revisão e escrita próxima com Luna real observadas"
+            "Revisão dos dados iniciais",
+            "Prazos citados, revisão de janelas e confirmação separada"
           ],
           [
-            "Ana/quatro semanas e rota Docker gerenciada",
-            "Cenários e testes roteirizados/offline, não este walkthrough ao vivo"
+            "Opções na agenda",
+            "Sobreposição roteirizada e rejeição de opção obsoleta"
           ],
           [
-            "Painel nativo DSH",
-            "Experimento somente leitura, comparação completa pendente"
+            "Bruno no navegador ao vivo",
+            "Um ensaio delimitado no commit fixado"
           ],
           [
-            "Feedback, checkpoints e relatórios ricos",
-            "Ferramentas/testes anteriores existem, falta completar a UI gerenciada"
+            "Exercício de Ana",
+            "Captura fixa das horas por matéria"
           ],
           [
-            "Calendários reais e alterações em arquivos",
-            "Decisões de prontidão separadas, fora desta fase"
-          ],
-          [
-            "Planejador, interface e embeddings",
-            "Comparações preservadas, escolhas finais pendentes"
+            "Interface e planejador",
+            "Comparação e escolha continuam em aberto"
           ]
         ],
-        "notes": "O workspace aqui é contexto sintético pré-selecionado, não um explorador irrestrito de arquivos do usuário. As ferramentas atuais do agente leem o workspace. Operação de aplicações pelo navegador continua como capacidade futura de fallback."
+        "notes": "O grupo usa arquivos e agendas fictícios. Compare a mesma proposta antes de atribuir uma melhoria à interface ou ao planejador."
       }
     },
     {
@@ -356,105 +340,103 @@
       "minutes": 1.5,
       "en": {
         "title": "Five reviewed events reached the simulator",
-        "lead": "Independent observations confirm the near-only write",
+        "lead": "Live rehearsal with a separate near-term approval",
         "table": [
           [
             "Check",
             "Observed result"
           ],
           [
-            "Near additions",
-            "Exactly the five reviewed event IDs"
+            "Coming week",
+            "Exactly five reviewed events added"
           ],
           [
-            "Existing calendar",
-            "All 146 prior event records unchanged"
+            "Existing commitments",
+            "All 146 preserved"
           ],
           [
-            "Future proposals",
-            "25 blocks pending, none created"
+            "Future",
+            "Five proposed blocks still pending. Zero added."
           ],
           [
-            "Constraints",
-            "No conflicts or Monday study additions, daily limits/breaks respected"
-          ],
-          [
-            "Write uncertainty",
-            "No unresolved claim"
+            "Retirement",
+            "Archive verified and resources removed"
           ]
         ],
-        "notes": "Codex operated actual browser controls with prepared fictional answers. This is one synthetic subscription attempt, not human UX research, a model-quality ranking or evidence of improved well-being. The live run preceded later UI wording/label fixes."
+        "notes": "The successful third attempt used prepared fictional answers. Luna confused a commute boundary in the first attempt. The second operator script repeated availability without resolving a date question. On the successful attempt, Luna passed ten hours as the weekly target. The service rejected it and the operator clarified five hours per week. The group should record similar coaching."
       },
       "pt": {
         "title": "Cinco eventos revisados chegaram ao simulador",
-        "lead": "Observações independentes confirmam a escrita somente próxima",
+        "lead": "Ensaio ao vivo com aprovação separada da próxima semana",
         "table": [
           [
             "Verificação",
             "Resultado observado"
           ],
           [
-            "Adições próximas",
-            "Exatamente os cinco IDs revisados"
+            "Próxima semana",
+            "Exatamente cinco eventos revisados criados"
           ],
           [
-            "Calendário existente",
-            "Os 146 registros anteriores preservados"
+            "Compromissos existentes",
+            "Todos os 146 preservados"
           ],
           [
-            "Propostas futuras",
-            "25 blocos pendentes, nenhum criado"
+            "Futuro",
+            "Cinco blocos propostos pendentes. Zero criados."
           ],
           [
-            "Restrições",
-            "Sem conflitos ou estudo novo na segunda, limites/intervalos respeitados"
-          ],
-          [
-            "Incerteza de escrita",
-            "Nenhuma reivindicação não resolvida"
+            "Encerramento",
+            "Arquivo verificado e recursos removidos"
           ]
         ],
-        "notes": "O Codex operou controles reais com respostas fictícias preparadas. É uma tentativa sintética com assinatura, não pesquisa de UX com humanos, ranking de modelos ou evidência de melhora de bem-estar. A execução antecedeu correções posteriores de rótulo/explicação."
+        "notes": "A terceira tentativa usou respostas fictícias preparadas. Na primeira, Luna confundiu o fim do deslocamento com conflito. Na segunda, o roteiro do operador repetiu a disponibilidade sem responder sobre o prazo. Na tentativa bem-sucedida, Luna enviou dez horas como meta semanal. O serviço rejeitou o valor e o operador esclareceu cinco horas por semana. Registre esse tipo de ajuda durante o exercício."
       },
       "image": {
-        "source": "docs/evidence/luna-browser-2026-11-17/applied-en.jpg",
-        "file": "applied-en.jpg",
+        "source": "docs/evidence/group-browser-2026-11-20/rehearsal-applied.png",
+        "file": "rehearsal-applied.png",
         "alt": {
-          "en": "Actual Coming week applied and Future tentative blocks pending",
-          "pt": "Estado real: próxima semana aplicada e blocos futuros pendentes"
+          "en": "Actual browser showing coming week applied and future pending",
+          "pt": "Navegador mostrando a próxima semana aplicada e o futuro pendente"
         }
-      }
+      },
+      "sources": [
+        {
+          "label": "Run IDs and provider observations / IDs e observações do simulador",
+          "href": "cold-review/summary.json"
+        }
+      ]
     },
     {
       "id": "replay",
       "minutes": 4,
       "en": {
-        "title": "The real example, with its imperfections",
-        "lead": "Five annotated captures with English and Portuguese captions",
+        "title": "Six scenes from the browser",
+        "lead": "The rehearsal and scripted cases answer different questions",
         "points": [
-          "Open the included replay before the group operates the live system.",
-          "Prepared answers and observed failures are disclosed.",
-          "The replay is a sequence of actual screenshots. No continuous video was captured."
+          "Scripted scenes repeat a busy option, a late conflict, a Monday correction and zero coverage.",
+          "Live scenes show Luna’s input review and the facilitator’s separate calendar action.",
+          "Use each scene to ask what the operator should inspect next."
         ],
-        "notes": "Allow about four minutes. The facilitator confirmed phone Next navigation from 1/5 to 2/5. This is a limited device check, not complete all-step, accessibility or human-workflow review. Do not score scripted infrastructure as live agent behavior."
+        "notes": "Open the included replay for about four minutes. Its captions identify the source of each screenshot. Take the prepared exercise offline if a live model call fails."
       },
       "pt": {
-        "title": "O exemplo real, com suas imperfeições",
-        "lead": "Cinco capturas anotadas com legendas em inglês e português",
+        "title": "Seis cenas do navegador",
+        "lead": "O ensaio e os casos roteirizados respondem a perguntas diferentes",
         "points": [
-          "Abrir o replay incluído antes de o grupo operar o sistema ao vivo.",
-          "Respostas preparadas e falhas observadas estão identificadas.",
-          "O replay contém capturas reais. Não houve gravação contínua."
+          "As cenas roteirizadas repetem opção ocupada, conflito posterior, correção da segunda e matéria sem horas.",
+          "As cenas ao vivo mostram a revisão com Luna e a ação separada do facilitador no calendário.",
+          "Em cada cena, pergunte o que o operador deveria conferir a seguir."
         ],
-        "notes": "Reservar cerca de quatro minutos. O facilitador confirmou Next de 1/5 para 2/5 no celular. É uma verificação limitada, não revisão completa de etapas, acessibilidade ou fluxo humano. Não avaliar infraestrutura roteirizada como comportamento de agente ao vivo."
+        "notes": "Abra a sequência incluída por cerca de quatro minutos. As legendas identificam a origem de cada captura. Se o modelo falhar, use os materiais preparados."
       },
       "links": [
         {
           "label": {
-            "en": "Open actual screenshot replay",
-            "pt": "Abrir replay de capturas reais"
+            "en": "Open six-scene browser walkthrough",
+            "pt": "Abrir as seis cenas do navegador"
           },
-          "href": "evidence/replay.html"
+          "href": "cold-review/index.html"
         }
       ]
     },
@@ -462,76 +444,50 @@
       "id": "quality",
       "minutes": 1.5,
       "en": {
-        "title": "Conflict-free still needs a quality review",
-        "lead": "The narration overstated course balance",
+        "title": "A plan can fit and still miss a course",
+        "lead": "The fixed Ana exercise makes a planner tradeoff visible",
         "table": [
           [
-            "Allocation",
-            "Algoritmos",
-            "Banco de Dados"
+            "Course",
+            "Proposed time"
           ],
           [
-            "Initial week",
-            "4h",
-            "1h"
+            "Machine Learning",
+            "4 h"
           ],
           [
-            "Initial six weeks",
-            "20h",
-            "10h"
-          ],
-          [
-            "Revised week",
-            "3h",
-            "2h"
-          ],
-          [
-            "Revised six weeks",
-            "19h",
-            "11h"
+            "Statistics",
+            "0 h"
           ]
         ],
         "points": [
-          "No stated priority justified the horizon skew.",
-          "The desired soft balance and workday/weekend choice are not implemented planner inputs."
+          "Ask where the deadline evidence lives.",
+          "Ask what the operator would change in this allocation."
         ],
-        "notes": "The user agreed to roughly equal horizon time as a soft default when deadlines and unknown needs match. Issue #42 holds a bounded paired experiment after baseline readiness. A prompt alone does not implement a planner objective. The later authored study-method prototype is separate."
+        "notes": "First hold the plan fixed and measure whether people notice the uncovered course. Review the allocation itself in #42 with equal information and constraints. An earlier deadline can justify priority if the reason is visible."
       },
       "pt": {
-        "title": "Ausência de conflito ainda exige avaliar qualidade",
-        "lead": "A explicação exagerou o equilíbrio entre matérias",
+        "title": "O plano pode caber e deixar uma matéria de fora",
+        "lead": "O exercício fixo de Ana torna a escolha do planejador visível",
         "table": [
           [
-            "Alocação",
-            "Algoritmos",
-            "Banco de Dados"
+            "Matéria",
+            "Tempo proposto"
           ],
           [
-            "Semana inicial",
-            "4h",
-            "1h"
+            "Machine Learning",
+            "4 h"
           ],
           [
-            "Seis semanas iniciais",
-            "20h",
-            "10h"
-          ],
-          [
-            "Semana revisada",
-            "3h",
-            "2h"
-          ],
-          [
-            "Seis semanas revisadas",
-            "19h",
-            "11h"
+            "Estatística",
+            "0 h"
           ]
         ],
         "points": [
-          "Nenhuma prioridade informada justificava o desequilíbrio no horizonte.",
-          "Equilíbrio flexível e escolha de carga entre dias úteis/fim de semana ainda não são entradas do planejador."
+          "Pergunte onde conferir a fonte do prazo.",
+          "Pergunte o que a pessoa mudaria nessa distribuição."
         ],
-        "notes": "Ficou acordado tempo aproximadamente igual no horizonte como padrão flexível quando prazos e necessidades desconhecidas são equivalentes. A issue #42 guarda um experimento pequeno após a prontidão da base. Um prompt não implementa um objetivo do planejador. O futuro protótipo de métodos de estudo é separado."
+        "notes": "Primeiro mantenha a proposta fixa e observe se as pessoas percebem a matéria sem horas. Avalie a distribuição em #42 com as mesmas informações e restrições. Um prazo mais próximo pode justificar prioridade se o motivo estiver visível."
       },
       "links": [
         {
@@ -663,42 +619,42 @@
       "minutes": 1.5,
       "en": {
         "title": "The group operates the next session",
-        "lead": "A guided task first, then separately paced exploration",
+        "lead": "One live Bruno task and one fixed Ana task",
         "steps": [
-          "Start a fresh Bruno fixture and use the persona facts",
-          "Answer the assistant and note redundancy or useful choices",
-          "Review the proposal and request the Monday correction",
-          "Approve near-term only if the revision is acceptable",
-          "Verify observed events and future pending, then archive"
+          "Use the Bruno operator card and find a cited deadline",
+          "Correct Monday and check the revision",
+          "Predict each confirmation before clicking",
+          "Inspect the simulator and archive",
+          "Read Ana’s per-course hours and record what you would change"
         ],
-        "notes": "Use five ratings 0–2 or Not observed: useful questions, context/assumptions, feasibility, correction and approval clarity. Record concrete evidence and technical failures separately. The briefing is 20–30minutes; hands-on has its own timing. If Luna fails, record it and use only clearly labeled deterministic exercises. Keep unknown persona facts unknown."
+        "notes": "The observer records the first response and any coaching. Use the five ratings, time and wrong turns. Keep live and fixed observations separate. The group exercise follows the briefing."
       },
       "pt": {
         "title": "O grupo opera a próxima sessão",
-        "lead": "Tarefa guiada primeiro, exploração em ritmo próprio depois",
+        "lead": "Uma tarefa ao vivo com Bruno e uma fixa com Ana",
         "steps": [
-          "Iniciar Bruno limpo e usar os fatos da persona",
-          "Responder e anotar redundâncias ou escolhas úteis",
-          "Revisar a proposta e pedir a correção de segunda",
-          "Aprovar somente o próximo se a revisão for aceitável",
-          "Conferir eventos observados e futuro pendente, depois arquivar"
+          "Use a ficha de Bruno e encontre um prazo citado",
+          "Corrija a segunda e confira a revisão",
+          "Preveja cada confirmação antes de clicar",
+          "Confira o simulador e arquive",
+          "Leia as horas de Ana por matéria e registre o que mudaria"
         ],
-        "notes": "Usar cinco critérios com 0–2 ou Não observado: perguntas, contexto/suposições, viabilidade, correção e clareza da aprovação. Registrar evidências e falhas técnicas separadamente. A apresentação tem 20–30minutos e a prática tem tempo próprio. Se Luna falhar, registrar e usar apenas exercícios determinísticos identificados. Manter fatos ausentes desconhecidos."
+        "notes": "O observador registra a primeira resposta e qualquer ajuda. Use as cinco notas, tempo e tentativas. Separe observações ao vivo e fixas. A prática do grupo acontece depois da apresentação."
       },
       "links": [
         {
           "label": {
-            "en": "Reusable local scorecard",
-            "pt": "Ficha local reutilizável"
+            "en": "Browser exercise cards",
+            "pt": "Fichas dos exercícios"
           },
-          "href": "scorecard.md"
+          "href": "browser-exercises.html"
         },
         {
           "label": {
-            "en": "Bruno facts and unknowns",
-            "pt": "Fatos e desconhecidos de Bruno"
+            "en": "Reusable scorecard",
+            "pt": "Ficha reutilizável"
           },
-          "href": "bruno-persona.md"
+          "href": "scorecard.html"
         }
       ]
     },
@@ -706,39 +662,39 @@
       "id": "git",
       "minutes": 1.5,
       "en": {
-        "title": "A reviewed integration path",
-        "lead": "Twenty-four drafts preserve different experiments",
-        "code": "main\n  #8 experimental baseline\n    #37 recovery/state\n      #38 lifecycle/provider/broker\n        #39 browser and onboarding\n\nProposed integration review: #39 into #38, then #37, then #8\nSeparate explicit decision: #8 into main",
+        "title": "The baseline and the browser experiment",
+        "lead": "Use the pinned build for the group exercise",
+        "code": "main · #8 synthetic baseline\n\n#50 cold-start fixtures and preference record\n  └─ #51 browser review and group exercise\n\n#49 calendar replay consolidation · separate review",
         "points": [
-          "Keep all 20 other experiment PRs and source branches for later comparisons.",
-          "Review the resulting parent diff and affected checks after every authorized integration."
+          "The group uses a dated build with known evidence.",
+          "The interface comparison can use those same proposals."
         ],
-        "notes": "This is a proposal, not permission to execute Git operations. No closure, retarget, rewrite or merge is implied. Retaining source artifacts avoids lossy consolidation without claiming equivalent tests. The actual parent branches are documented in the full preservation/readiness report. PR #8 remains draft until the user decides."
+        "notes": "The draft stack separates fixture/persistence and browser changes. Review the linked issue and PR before making a merge decision."
       },
       "pt": {
-        "title": "Um caminho de integração revisado",
-        "lead": "Vinte e quatro drafts preservam experimentos diferentes",
-        "code": "main\n  #8 base experimental\n    #37 recuperação/estado\n      #38 ciclo de vida/provedor/broker\n        #39 navegador e onboarding\n\nRevisão proposta: #39 no #38, depois #37 e #8\nDecisão explícita separada: #8 no main",
+        "title": "A base e o experimento no navegador",
+        "lead": "Use a versão fixada para o exercício do grupo",
+        "code": "main · #8 base sintética\n\n#50 cenários e registro de preferências\n  └─ #51 revisão no navegador e exercício\n\n#49 consolidação de replay · revisão separada",
         "points": [
-          "Preservar os outros 20 PRs e suas branches para comparações posteriores.",
-          "Revisar o diff do pai e testes afetados após cada integração autorizada."
+          "O grupo usa uma versão datada com evidências conhecidas.",
+          "A comparação de interfaces pode usar as mesmas propostas."
         ],
-        "notes": "É uma proposta, não autorização para operações Git. Não implica encerrar, alterar base, reescrever ou mesclar. Preservar os artefatos evita perda sem afirmar equivalência dos testes. As branches-pai estão no relatório completo. O PR #8 continua draft até decisão do usuário."
+        "notes": "A pilha de PRs separa persistência e cenários das mudanças no navegador. Consulte a issue e o PR antes da decisão de merge."
       },
       "links": [
         {
           "label": {
-            "en": "Issue41: lossless integration review",
-            "pt": "Issue41: revisão de integração sem perda"
+            "en": "Browser draft #51",
+            "pt": "Rascunho #51"
           },
-          "href": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/41"
+          "href": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/pull/51"
         },
         {
           "label": {
-            "en": "Current PR map",
-            "pt": "Mapa atual dos PRs"
+            "en": "Consolidation review #41",
+            "pt": "Revisão da consolidação #41"
           },
-          "href": "references/pr-consolidation-proposal.md"
+          "href": "https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/41"
         }
       ]
     },
@@ -746,26 +702,24 @@
       "id": "next",
       "minutes": 1,
       "en": {
-        "title": "The decisions after this exercise",
-        "lead": "Group findings inform the next bounded change",
+        "title": "Use the group findings to choose what to improve",
+        "lead": "Separate review effort from schedule quality",
         "points": [
-          "Review usability and schedule quality against actual evidence.",
-          "Decide the experimental baseline disposition after the readiness report.",
-          "Choose the next interface, planner or embedding comparison from observed needs.",
-          "Keep model comparison, richer study methods, secure remote control and real-data readiness on their explicit tracks."
+          "Test whether people find the source, spot the wrong day and predict approval.",
+          "Keep the schedule fixed when comparing the review experience.",
+          "Carry Ana’s uncovered course into the separate planner experiment."
         ],
-        "notes": "The later retrieval study remains planned as 36primary episodes and must be reassessed before execution. The bounded Luna/DeepSeek comparison is separate, with authorized routes and an approximate shared $5 target. No provider or foundation is selected by this briefing. Synthetic success does not prove real-provider recovery, universal sandbox security or improved student well-being."
+        "notes": "Use the #44 interface comparison and the #42 schedule-quality cases for follow-up. The group’s feedback informs the order and scope."
       },
       "pt": {
-        "title": "As decisões depois deste exercício",
-        "lead": "O que o grupo observar orienta a próxima mudança delimitada",
+        "title": "Use as observações do grupo para escolher o próximo ajuste",
+        "lead": "Separe esforço de revisão da qualidade da agenda",
         "points": [
-          "Revisar usabilidade e qualidade com evidências reais.",
-          "Decidir o destino da base experimental após o relatório de prontidão.",
-          "Escolher a próxima comparação de interface, planejador ou embeddings a partir dos problemas observados.",
-          "Manter comparação de modelos, métodos de estudo, controle remoto seguro e dados reais em suas etapas explícitas."
+          "Observe se as pessoas encontram a fonte, percebem o dia errado e preveem a aprovação.",
+          "Mantenha a proposta fixa ao comparar a experiência de revisão.",
+          "Leve a matéria sem horas de Ana ao experimento separado do planejador."
         ],
-        "notes": "O estudo de recuperação de contexto continua planejado com 36episódios principais, a reavaliar antes da execução. A comparação Luna/DeepSeek é separada, com rotas autorizadas e meta aproximada compartilhada de US$5. Esta apresentação não seleciona provedor ou fundamento. Sucesso sintético não comprova recuperação em provedor real, segurança universal de sandbox ou melhora do bem-estar."
+        "notes": "Use a comparação de interfaces #44 e os casos de qualidade da agenda #42. O retorno do grupo informa a ordem e o escopo."
       }
     }
   ]

@@ -14,7 +14,7 @@
     for(const [key,tag] of [['points','ul'],['steps','ol']])if(text[key]){const list=make(tag);for(const item of text[key])list.append(make('li',item));copy.append(list);}
     if(text.table){const table=make('table'),head=make('thead'),header=make('tr');for(const cell of text.table[0])header.append(make('th',cell));head.append(header);table.append(head);const tbody=make('tbody');for(const row of text.table.slice(1)){const tr=make('tr');for(const cell of row)tr.append(make('td',cell));tbody.append(tr);}table.append(tbody);copy.append(table);}
     if(text.code){const code=make('pre',text.code);copy.append(code);}
-    if(slide.links){const nav=make('p');nav.className='references';for(const item of slide.links)nav.append(link(item.href,item.label[language]),document.createTextNode(' '));copy.append(nav);}
+    if(slide.links){const nav=make('p');nav.className='references';for(const item of slide.links)nav.append(link(item.href==='cold-review/index.html'?item.href+'#lang='+language:item.href,item.label[language]),document.createTextNode(' '));copy.append(nav);}
     body.append(copy);
     if(slide.image){const figure=make('figure'),a=link(slide.image.path,''),img=make('img');img.src=slide.image.path;img.alt=slide.image.alt[language];img.loading=all?'lazy':'eager';img.onload=()=>requestAnimationFrame(updateScrollHint);a.append(img);figure.append(a,make('figcaption',ui[language].image));body.append(figure);}
     section.append(body);

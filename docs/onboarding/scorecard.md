@@ -19,13 +19,27 @@ Expectativas combinadas: [equilíbrio no horizonte e perguntas relevantes sobre 
 | Inspected artifacts/time ranges / Artefatos ou trechos inspecionados | |
 | Duration, waits/cuts, available usage / Duração, esperas/cortes, uso disponível | Record unknown as unknown / Registrar desconhecido como desconhecido |
 
+## Observation notes / Notas de observação
+
+Record the first response before giving a hint. Mark tasks not attempted as N/O. Use the same fixed Ana capture for each participant.
+
+Registre a primeira resposta antes de dar uma dica. Use N/O para tarefas não tentadas. Mostre a mesma captura de Ana para cada participante.
+
+| Task / Tarefa | First answer or action / Primeira resposta ou ação | Time, wrong turns, coaching / Tempo, tentativas e ajuda |
+| --- | --- | --- |
+| Find the authoritative deadline / Encontrar o prazo que vale | | |
+| Identify the changed Monday window / Identificar a mudança na segunda-feira | | |
+| Predict input confirmation / Prever a confirmação dos dados | | |
+| Predict and check near-only approval / Prever e conferir a aprovação próxima | | |
+| Spot zero course coverage in Ana / Identificar matéria sem horas no caso Ana | | |
+
 ## English ratings
 
 Choose **0** (observed problem), **1** (partly satisfactory), **2** (satisfactory for this exercise), or **N/O** (not observed). Supply evidence; do not turn N/O into zero or silently average it. A scripted prompt/answer sequence cannot establish live questioning or judgment quality. Keep raw ratings rather than treating a total as a success claim.
 
 | Criterion | What to inspect | Rating 0/1/2/N/O | Evidence and limitations |
 | --- | --- | --- | --- |
-| Useful questions | Did it ask about consequential missing information, avoid available facts, and make answering manageable? Confirming five hours alone is not enough: it is in the persona. | | |
+| Useful questions | Did it ask about consequential missing information, avoid available facts, and make answering manageable? Check whether it asked about a preference that could change the plan. | | |
 | Context and assumptions | Did it use the selected syllabus, deadlines, work/classes and preferences; cite relevant sources; separate facts, provisional assumptions and unknowns? | | |
 | Schedule feasibility | Are times conflict-free and plausible alongside work, travel and classes? Are daily limits/breaks respected? Are unmet needs and compromises explained rather than hidden? | | |
 | Response to correction | Did the revised proposal add no study on Monday 2 November while preserving existing commitments? Did it explain changed allocations and any new compromise? | | |
@@ -47,7 +61,7 @@ Escolher **0** (problema observado), **1** (parcialmente satisfatório), **2** (
 
 | Critério | O que observar | Nota 0/1/2/N/O | Evidências e limites |
 | --- | --- | --- | --- |
-| Perguntas úteis | Perguntou sobre informações ausentes que fazem diferença, evitou fatos disponíveis e facilitou a resposta? Confirmar cinco horas não basta: a meta já está na persona. | | |
+| Perguntas úteis | Perguntou sobre informações ausentes que fazem diferença, evitou fatos disponíveis e facilitou a resposta? Verifique se a pergunta tratou de uma preferência capaz de mudar o plano. | | |
 | Contexto e suposições | Usou ementas, prazos, trabalho/aulas e preferências; indicou fontes; separou fatos, suposições provisórias e desconhecidos? | | |
 | Viabilidade da agenda | Os horários evitam conflitos e são plausíveis com trabalho, deslocamento e aulas? Respeitam limites e intervalos? Explica necessidades não atendidas e concessões? | | |
 | Resposta à correção | A revisão deixou de adicionar estudo na segunda-feira, 2 de novembro, preservando compromissos? Explicou realocações e novas concessões? | | |

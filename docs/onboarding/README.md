@@ -1,14 +1,12 @@
 # Group onboarding / Apresentação do projeto
 
-Verified 17 November 2026. Audience: new project developers. Goal: understand and evaluate the current synthetic demonstration together, using one facilitator computer. The briefing/replay is 25 minutes; hands-on is separately paced. Human workflow scoring remains a group task.
+Verified 20 November 2026. The 25-minute bilingual briefing uses the pinned cold-start browser build. One facilitator controls the synthetic Bruno session and the group observes. The fixed Ana exercise follows separately.
 
 ## Open / Abrir
 
-The generated package contains a switchable EN/pt-BR HTML presentation, an actual screenshot replay, self-sufficient facilitator checklist, Bruno facts/unknowns, reusable scorecard, JSON evidence and references. It runs offline once downloaded: unzip and open **index.html**. It does not contain the application, Docker images, credentials or private runtime archives. The capture is explicitly a screenshot replay, not video.
+Unzip the package and open **index.html**. It includes the six-scene browser walkthrough, the [exercise cards](browser-exercises.md), the [facilitator checklist](facilitator-checklist.md), the [scorecard](scorecard.md) and curated synthetic evidence. The deck and included material work offline. Live controls use the development computer.
 
-O pacote contém apresentação HTML com troca EN/pt-BR, replay real de capturas, checklist autossuficiente, persona Bruno, ficha reutilizável, evidências JSON e referências. Funciona offline após baixar: extrair e abrir **index.html**. Não inclui aplicação, imagens Docker, credenciais ou arquivos privados. O replay não é vídeo.
-
-For the live exercise, use [the checklist](facilitator-checklist.md) and [local Luna guide](../host-luna-preview.md) on the development computer. Phone previews are read-only. The host fallback, uneven course balance, long-session memory/restart limits and unfinished production capabilities are explicit in the deck and [readiness report](../review/onboarding-readiness-2026-11-17.md).
+Extraia o pacote e abra **index.html**. Veja as seis cenas do navegador, os [exercícios](browser-exercises.md), o [checklist](facilitator-checklist.md), a [ficha](scorecard.md) e as evidências sintéticas selecionadas. Os materiais incluídos funcionam offline. Use o computador de desenvolvimento para a prática ao vivo.
 
 ## Build and update / Gerar e atualizar
 
@@ -29,9 +27,9 @@ Editar conteúdo compartilhado, código/estilo e guias Markdown. Gerar novamente
 The maintainer chooses an explicit network interface, then starts:
 
 ```bash
-STUDY_PREVIEW_BIND=100.120.7.46 PORT=4179 npm run preview:onboarding
+STUDY_PREVIEW_BIND=100.120.7.46 PORT=4193 npm run preview:onboarding
 ```
 
-This address is the verified Tailscale interface for the 17 November session, not a portable machine identifier. The helper defaults to localhost if no interface is set. It serves only manifest-listed, hash-checked generated files and ZIP. It does not proxy application APIs. POST is rejected. Stop it with Ctrl-C; after rebuilding changed files, restart it so the manifest matches. It is temporary and must be deliberately restarted after shutdown/reboot. No persistent service or public deployment is installed.
+This address is the verified Tailscale interface for the 20 November rehearsal, not a portable machine identifier. The helper defaults to localhost if no interface is set. It serves only manifest-listed, hash-checked generated files and ZIP. It does not proxy application APIs. POST is rejected. Stop it with Ctrl-C; after rebuilding changed files, restart it so the manifest matches. It is temporary and must be deliberately restarted after shutdown/reboot. No persistent service or public deployment is installed.
 
 A manutenção deve confirmar o IP da máquina antes de reutilizar o comando. A prévia só serve arquivos gerados previstos no manifesto e não encaminha APIs. É temporária; parar com Ctrl-C e reiniciar após gerar mudanças ou desligar/reiniciar a máquina.
