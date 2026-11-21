@@ -101,3 +101,15 @@ test('an unavailable calendar differs from an observed empty calendar or zero ch
   result.timeline[1].value.added = [];
   assert.equal(resultSchema.safeParse(result).success, false);
 });
+
+test('the archived Ana example preserves widget grouping and exact approved revision identity', async () => {
+  const example = resultSchema.parse(await parse(new URL('../docs/evidence/ana-regression-2026-11-21/ana-live-result.json', import.meta.url)));
+  assert.ok(example.timeline.filter(event => event.kind === 'question').every(event => event.groupId));
+  const validation = example.timeline.find(event => event.kind === 'validation');
+  const approval = example.timeline.find(event => event.kind === 'decision');
+  const receipt = example.timeline.find(event => event.kind === 'write');
+  assert.equal(validation.passed, true);
+  assert.equal(validation.revisionId, approval.revisionId);
+  assert.equal(receipt.revisionId, approval.revisionId);
+  assert.equal(receipt.section, 'near');
+});

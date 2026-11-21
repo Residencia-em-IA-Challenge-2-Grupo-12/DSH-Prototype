@@ -40,7 +40,10 @@ test('held-out Ana uses the published source and preserves the other Wednesday a
   assert.notEqual(revised.id, original.id);
   assert.deepEqual(revised.outlook.map(week => week.scheduledHours), [4, 4]);
   assert.ok(revised.near.every(event => !event.start.dateTime.startsWith('2026-11-04')));
-  assert.ok(revised.future.some(event => event.start.dateTime.startsWith('2026-11-11')));
+  const laterWednesday = revised.future.filter(event => event.start.dateTime.startsWith('2026-11-11'));
+  const appointment = events.find(event => event.id === 'ana-later');
+  assert.ok(laterWednesday.length);
+  assert.ok(laterWednesday.every(event => Date.parse(event.start.dateTime) >= Date.parse(appointment.end.dateTime)));
   await assert.rejects(() => applyApproved(calendar, 'ana', original.id, 'near'), /not pending/);
   assert.deepEqual(await calendar.events(), events);
 });
