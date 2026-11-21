@@ -65,7 +65,7 @@ def check_result(result, manifest, checksum, sources):
             and result["caseId"] == manifest["id"] and result["inputSha256"] == checksum,
             "Result does not reference this case version and exact input")
     require(IDENTIFIER.fullmatch(result["runId"]), "Invalid result run ID")
-    questions, revisions, approvals = set(), {}, set()
+    questions, revisions, validation, approvals, applied = set(), {}, {}, set(), set()
     requests = []
     for entry in result["timeline"]:
         kind = entry["kind"]
@@ -90,16 +90,24 @@ def check_result(result, manifest, checksum, sources):
             revisions[revision] = entry["sections"]
         elif kind == "validation":
             require(entry["revisionId"] in revisions, "Validation refers to an unknown proposal revision")
+            validation[entry["revisionId"]] = entry["passed"]
         elif kind in ("decision", "write"):
             key = entry["revisionId"], entry["section"]
             require(key[0] in revisions and key[1] in ("near", "future"),
                     "Approval or write refers to an unknown proposal section")
-            if kind == "decision" and entry["approved"] is True:
-                approvals.add(key)
+            if kind == "decision":
+                if entry["approved"] is True:
+                    require(validation.get(key[0]) is True, "Approval follows no successful validation of this revision")
+                    approvals.add(key)
+                else:
+                    approvals.discard(key)
             if kind == "write":
                 require(key in approvals, "Write has no previous explicit approval")
                 intended = {action["eventId"] for action in revisions[key[0]][key[1]]}
                 require(set(entry["intended"]) == intended, "Write intent differs from the approved section")
+                if entry["outcome"] == "applied":
+                    require(key not in applied, "Proposal section was applied more than once")
+                    applied.add(key)
         else:
             require(kind in ("context_review", "observation"), f"Unknown timeline event: {kind}")
     require(not requests or requests[0] == manifest["request"], "Opening request differs from the manifest")
