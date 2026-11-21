@@ -1,0 +1,254 @@
+{
+  "verifiedOn": "2026-11-21",
+  "base": "03edd68ad4e54d4cad33653ea1886085b514216a",
+  "implementation": "eb4d451152d467e9bd400c38f96b897868501674",
+  "node": "24.11.1",
+  "offlineChecksPassed": 180,
+  "initialFixtureEventCount": 146,
+  "baselineCheckpointIntegration": "passed",
+  "onboardingPackage": "built",
+  "modelCalls": 0,
+  "cases": [
+    {
+      "scenario": "success",
+      "runId": "5bcd8a62-7748-43db-9123-1aed5ee155c2",
+      "durationMs": 1616,
+      "approvedSection": "near",
+      "writes": [
+        {
+          "outcome": "applied",
+          "intended": [
+            "9e05e7fc58414fd9aeb92c53158a1adc",
+            "56c6f655301849fbbb085b4d3c915f40",
+            "5cd9dcddc81e42cdbe3a406801db6b4c",
+            "4bfbd0147f304fd5b8ee7dbd74a22f67",
+            "5ec21cfcc7294dae8aca68a1833ff005"
+          ],
+          "acknowledged": [
+            "9e05e7fc58414fd9aeb92c53158a1adc",
+            "56c6f655301849fbbb085b4d3c915f40",
+            "5cd9dcddc81e42cdbe3a406801db6b4c",
+            "4bfbd0147f304fd5b8ee7dbd74a22f67",
+            "5ec21cfcc7294dae8aca68a1833ff005"
+          ],
+          "unresolved": []
+        }
+      ],
+      "observed": {
+        "availability": "available",
+        "eventCount": 151,
+        "added": [
+          "4bfbd0147f304fd5b8ee7dbd74a22f67",
+          "56c6f655301849fbbb085b4d3c915f40",
+          "5cd9dcddc81e42cdbe3a406801db6b4c",
+          "5ec21cfcc7294dae8aca68a1833ff005",
+          "9e05e7fc58414fd9aeb92c53158a1adc"
+        ],
+        "removed": [],
+        "changed": []
+      },
+      "retirement": "verified",
+      "resultSha256": "2157bc039006648898eea7d416ee4b1e138757ed4c32e7a1dcadf2c821cf333f"
+    },
+    {
+      "scenario": "stale",
+      "runId": "6d280ca9-bb6d-4812-a2e8-43fd981d553d",
+      "durationMs": 1290,
+      "approvedSection": "near",
+      "writes": [
+        {
+          "outcome": "rejected",
+          "intended": [
+            "f2b3d2f4e08849068d03f8ab9f475e3a",
+            "86e23e2f2bcb4182940eee7f3a5b9a6f",
+            "23e92f0efffb4717a055ef85c7592917",
+            "8eb5d2cc88af44e68c218cdba5a05024",
+            "d069a51443a64f8184fe2e5ddc3f48b5"
+          ],
+          "acknowledged": [],
+          "unresolved": []
+        }
+      ],
+      "observed": {
+        "availability": "available",
+        "eventCount": 146,
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bruno-work-am-0-2"
+        ]
+      },
+      "retirement": "verified",
+      "resultSha256": "1c3edd52a47295f6359812351f16842efd650b243cbb31bbaf8362c0c3e2b445"
+    },
+    {
+      "scenario": "duplicate",
+      "runId": "69eedfca-34a3-415f-9d4d-146ed9d37a32",
+      "durationMs": 1725,
+      "approvedSection": "near",
+      "writes": [
+        {
+          "outcome": "applied",
+          "intended": [
+            "36c6eee5029044c1bc0665f913041278",
+            "c97c6d5f1de94ab58649bcf4ba26b3cc",
+            "f7bd5cd417d54d8d95eb6a75a17ac986",
+            "4ba328f2e90b41f2905995f616bc17cc",
+            "1e29034e06a142d5b1b41d82b038c1e4"
+          ],
+          "acknowledged": [
+            "36c6eee5029044c1bc0665f913041278",
+            "c97c6d5f1de94ab58649bcf4ba26b3cc",
+            "f7bd5cd417d54d8d95eb6a75a17ac986",
+            "4ba328f2e90b41f2905995f616bc17cc",
+            "1e29034e06a142d5b1b41d82b038c1e4"
+          ],
+          "unresolved": []
+        },
+        {
+          "outcome": "rejected",
+          "intended": [
+            "36c6eee5029044c1bc0665f913041278",
+            "c97c6d5f1de94ab58649bcf4ba26b3cc",
+            "f7bd5cd417d54d8d95eb6a75a17ac986",
+            "4ba328f2e90b41f2905995f616bc17cc",
+            "1e29034e06a142d5b1b41d82b038c1e4"
+          ],
+          "acknowledged": [],
+          "unresolved": []
+        }
+      ],
+      "observed": {
+        "availability": "available",
+        "eventCount": 151,
+        "added": [
+          "1e29034e06a142d5b1b41d82b038c1e4",
+          "36c6eee5029044c1bc0665f913041278",
+          "4ba328f2e90b41f2905995f616bc17cc",
+          "c97c6d5f1de94ab58649bcf4ba26b3cc",
+          "f7bd5cd417d54d8d95eb6a75a17ac986"
+        ],
+        "removed": [],
+        "changed": []
+      },
+      "retirement": "verified",
+      "resultSha256": "cd4006e40e326875df34558ab4f6d3acfa81fbee43c6766db98be959081cda5c"
+    },
+    {
+      "scenario": "unknown",
+      "runId": "3c216fcd-01a8-44e3-b7c5-901a998a031e",
+      "durationMs": 1317,
+      "approvedSection": "near",
+      "writes": [
+        {
+          "outcome": "unknown",
+          "intended": [
+            "833fc38ecf1a41439e1690e5c68d7150",
+            "79684c5b7b7d405d85809c1b8fd850c0",
+            "d7ca0327890147189782b07b380c9e1a",
+            "5a2558aae44b43708ec706a6bb70f9c6",
+            "e459c976c27144fe97bdf987d54abae0"
+          ],
+          "acknowledged": [],
+          "unresolved": [
+            "833fc38ecf1a41439e1690e5c68d7150"
+          ]
+        }
+      ],
+      "observed": {
+        "availability": "available",
+        "eventCount": 147,
+        "added": [
+          "833fc38ecf1a41439e1690e5c68d7150"
+        ],
+        "removed": [],
+        "changed": []
+      },
+      "retirement": "verified",
+      "resultSha256": "843164cfc0585ff1a4baa3fad6827041aab9953673fbc4889735ccc6f4379363"
+    },
+    {
+      "scenario": "unknown-unavailable",
+      "runId": "cb00c771-bb85-4797-b5bf-2d6b5d87a661",
+      "durationMs": 1207,
+      "approvedSection": "near",
+      "writes": [
+        {
+          "outcome": "unknown",
+          "intended": [
+            "fa9efd3d534e46f8867657f558503c1f",
+            "0699f86d6a8b438faa5d430e24f4210a",
+            "eae401dfe66644ddb44d664a6cb0e595",
+            "72124b21f3784546a13ffda2eb7479c3",
+            "36235dc8d25546979526865bb1f5f5a9"
+          ],
+          "acknowledged": [],
+          "unresolved": [
+            "fa9efd3d534e46f8867657f558503c1f"
+          ]
+        }
+      ],
+      "observed": {
+        "availability": "unavailable"
+      },
+      "retirement": "verified",
+      "resultSha256": "1582ece56ba7be629d7292b28f9da710c24498de8155de79d45caf35e2d64654"
+    }
+  ],
+  "pythonProbe": [
+    {
+      "caseId": "bruno",
+      "inputSha256": "00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7",
+      "runId": "e39bbc1a-16b9-4786-9b2b-82703ca13329",
+      "kind": "offline interoperability mock"
+    },
+    {
+      "caseId": "ana-held-out",
+      "inputSha256": "ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b",
+      "runId": "70979820-23d3-4c2c-9662-11322209577a",
+      "kind": "offline interoperability mock"
+    }
+  ],
+  "shortCalendarpitMemorySmoke": {
+    "durationSeconds": 42,
+    "reads": 15,
+    "samples": [
+      {
+        "seconds": 3,
+        "memory": {
+          "idle": "19.44MiB / 512MiB",
+          "provider-reads": "31.04MiB / 512MiB"
+        }
+      },
+      {
+        "seconds": 13,
+        "memory": {
+          "idle": "18.33MiB / 512MiB",
+          "provider-reads": "35.37MiB / 512MiB"
+        }
+      },
+      {
+        "seconds": 22,
+        "memory": {
+          "idle": "17.62MiB / 512MiB",
+          "provider-reads": "42.43MiB / 512MiB"
+        }
+      },
+      {
+        "seconds": 32,
+        "memory": {
+          "idle": "18.59MiB / 512MiB",
+          "provider-reads": "44.52MiB / 512MiB"
+        }
+      },
+      {
+        "seconds": 42,
+        "memory": {
+          "idle": "18.1MiB / 512MiB",
+          "provider-reads": "57.79MiB / 512MiB"
+        }
+      }
+    ],
+    "retirement": "verified"
+  }
+}
