@@ -1,7 +1,7 @@
 import {z} from 'zod';
 
 export const coldStartStudents = Object.freeze({
-  bruno:'bruno', 'bruno-text':'bruno', ana:'ana', 'ana-conflict':'ana',
+  bruno:'bruno', 'bruno-text':'bruno', ana:'ana', 'ana-conflict':'ana', 'ana-held-out':'ana',
 });
 
 const date = z.iso.date();

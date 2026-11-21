@@ -218,7 +218,9 @@ export async function initializeScenario(calendar,student,{coldStart}={}) {
   const staged=path.join(runtimeDir(),'workspaces',student);
   await fs.mkdir(path.dirname(staged),{recursive:true});
   try {await fs.mkdir(staged);} catch(error){if(error.code==='EEXIST')throw new Error('Synthetic workspace already initialized');throw error;}
-  await fs.cp(coldStart===undefined?path.join(ROOT,'fixtures/students',student):path.join(ROOT,'fixtures/cold-start',coldStart),staged,{recursive:true,force:false,errorOnExist:true});
+  const source=coldStart==='ana-held-out'?path.join(ROOT,'fixtures/paired-replay/ana-held-out/workspace'):
+    coldStart===undefined?path.join(ROOT,'fixtures/students',student):path.join(ROOT,'fixtures/cold-start',coldStart);
+  await fs.cp(source,staged,{recursive:true,force:false,errorOnExist:true});
   const feedback=(await readJSON(path.join(ROOT,'fixtures/feedback',student+'.json'))).map(validateFeedback);
   const state={student,feedback,history:[],plan:null,lastSnapshot:snapshot(events),annotations:{},protectedIds:[]};
   if(coldStart!==undefined)state.planningContext={caseId:coldStart,pending:null,confirmed:null};
