@@ -1,0 +1,130 @@
+{
+  "verifiedOn": "2026-11-21",
+  "source": "87c8b37fe94b7c697e1131d0ba0472a0f4973bc0",
+  "base": "03edd68ad4e54d4cad33653ea1886085b514216a",
+  "simulationDate": "2026-11-02",
+  "timezone": "America/Sao_Paulo",
+  "scriptedBrowser": {
+    "scripted": true,
+    "cases": {
+      "bruno": {
+        "initialOptionBlocked": true,
+        "lateConflictRejected": true,
+        "mondayDiff": true,
+        "coverage": "Algoritmos · 3 h\nBanco de Dados · 2 h",
+        "staleApprovalRejected": true,
+        "calendarWrites": false
+      },
+      "ana": {
+        "sourceOpened": true,
+        "coverage": "Machine Learning · 4 h\nStatistics · 0 h",
+        "alternative": "Machine Learning · 3 h\nStatistics · 1 h",
+        "calendarWrites": false
+      }
+    }
+  },
+  "liveBrowser": {
+    "model": "gpt-6-luna",
+    "provider": "codex",
+    "harness": "0.2.2-rc.1",
+    "runtime": "host-luna-fallback",
+    "case": "bruno-text",
+    "operator": "Agent-operated Chrome. Opening prompt specified the availability fork. Prepared fictional typed answers, correction and explicit approval.",
+    "usage": "unknown",
+    "attempts": [
+      {
+        "runId": "173ac0d2-3841-4286-a2f0-f658a6d86696",
+        "status": "start-failed",
+        "reason": "Operator supplied a DSH profile path containing an unnormalized parent segment. Retired before the normalized retry.",
+        "modelCalls": 0,
+        "observedEvents": 146,
+        "claims": 0,
+        "retired": true
+      },
+      {
+        "runId": "1b3bf46c-9947-4add-92f7-9423cc156838",
+        "attemptId": "c291e1ae-a05b-493e-b085-85fe1f6e09ed",
+        "status": "passed",
+        "startToWriteSeconds": 125.6,
+        "calendarConflictResults": [
+          {
+            "label": "Quarta 04/11, 18:45–19:45",
+            "windows": [
+              {
+                "date": "2026-11-04",
+                "start": "18:45",
+                "end": "19:45",
+                "startDateTime": "2026-11-04T18:45:00-03:00",
+                "endDateTime": "2026-11-04T19:45:00-03:00",
+                "conflicts": [
+                  {
+                    "id": "bruno-commute-0-2",
+                    "summary": "Deslocamento"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": "Quarta 04/11, 19:00–20:00",
+            "windows": [
+              {
+                "date": "2026-11-04",
+                "start": "19:00",
+                "end": "20:00",
+                "startDateTime": "2026-11-04T19:00:00-03:00",
+                "endDateTime": "2026-11-04T20:00:00-03:00",
+                "conflicts": []
+              }
+            ]
+          }
+        ],
+        "draftArgs": {
+          "student": "bruno",
+          "weeks": 2
+        },
+        "outlook": [
+          {
+            "week": 1,
+            "targetHours": 5,
+            "scheduledHours": 5,
+            "shortfall": 0
+          },
+          {
+            "week": 2,
+            "targetHours": 5,
+            "scheduledHours": 5,
+            "shortfall": 0
+          }
+        ],
+        "initialContextId": "3c70fe9f-a7db-47c5-b4f1-e64329909acb",
+        "reviewedContextId": "3e0c346e-c4a0-40bd-9d94-8915ba92d6f6",
+        "planId": "31cecb4e-da6d-4f32-bec4-f82c2784ee32",
+        "nearIds": [
+          "1d47c2d598db4e4db03690bacb1ff8c6",
+          "3fe31ec30a6b4eca877ea70a49db1edc",
+          "6da018635c9642618383b2312a7871b8",
+          "9bb54fcd712b41a1b5191ffce54fccfc",
+          "bb959556f32f487d82e622db580a2c2e"
+        ],
+        "futureProposalIds": [
+          "01ef94cc47b94a45924fb624474242fd",
+          "241fc1f85c9c4ad0aee17b6513d2293c",
+          "2e50e7370bab4565993e42c1618b02c7",
+          "896bf575883846d28bf109089a01db6e",
+          "e1f67cf2268e4dbca21bf0b1df128b11"
+        ],
+        "observed": {
+          "originalCount": 146,
+          "newCount": 5,
+          "originalPreserved": true,
+          "futureObserved": 0,
+          "futureStatus": "pending"
+        },
+        "unresolvedClaim": false,
+        "retired": true,
+        "limitation": "Before drafting Luna estimated four hours for week two because of a partial Wednesday conflict. The deterministic proposal fit five, including a 20:00 Wednesday block. The run was approved from the reviewed proposal. No final agent narration was observed."
+      }
+    ]
+  }
+}
