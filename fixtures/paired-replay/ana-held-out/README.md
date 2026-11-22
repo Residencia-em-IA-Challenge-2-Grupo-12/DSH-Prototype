@@ -1,0 +1,9 @@
+# Ana · held-out source variation
+
+Use the existing synthetic Ana calendar on 2 November 2026 in `America/Sao_Paulo`. Only files under `workspace/` are visible to the assistant. The runner holds `case.json` and supplies an operator answer when the question calls for it. Course records contain no study preferences.
+
+The published LMS export gives a due time of **1 December at 17:30 São Paulo time** (`20:30Z`). Revision 1 and the October outline both give 24 November. Revision 2 explicitly replaces that date for section E02. The upload portal opens on 23 November and accepts late submissions until 23:59 on 1 December. The 19 November clinic is optional. An answer can cite the published `dueAt` field and the change log.
+
+Ask Ana for acceptable times and workload before presenting a proposal. Empty calendar slots only establish that the calendar has no commitment there. Reveal preparation status if asked. Actual effort, assignment progress beyond the selected case, and future-week preferences beyond the two-week answer remain unknown. Introduce the 4 November correction after the first proposal. Keep the following week tentative and apply only a separately reviewed near-term section.
+
+This varies the source format and authority mechanism while holding the existing Ana calendar constant. The new sources and answers are synthetic and authored for this case. The temporal distractor follows the rubric pattern from [the retrieval challenge](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/blob/da6fdc7f1fe95afc7c10581ea9656272cadf8000/experiments/embedding-screen/challenge/README.md). The fixed clock and distinction between candidate windows and observed availability follow [the persona fixture design](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/blob/8e792920c09c49f395eb707a66bac2d6bf0d8c89/fixtures/personas-v1/README.md). The assessment data and operator answer text are fresh.

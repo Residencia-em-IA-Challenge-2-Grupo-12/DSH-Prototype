@@ -238,9 +238,18 @@ function renderProposal(state){
       box.append(coverage);
     }
     const changes=node('details',''),summary=node('summary',t('showChanges')),list=node('ul','');changes.append(summary,list);
-    const format=value=>value?new Intl.DateTimeFormat($('language').value==='pt'?'pt-BR':'en',{timeZone:'America/Sao_Paulo',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(value)):'';
-    for(const event of blocks)list.append(node('li',`${format(event.start?.dateTime)} · ${event.summary||''}`));
-    for(const event of plan.remove?.[section]||[])list.append(node('li',`− ${format(event.start?.dateTime)} · ${event.summary||''}`));
+    const locale=$('language').value==='pt'?'pt-BR':'en';
+    const day=new Intl.DateTimeFormat(locale,{timeZone:'America/Sao_Paulo',month:'short',day:'numeric'});
+    const time=new Intl.DateTimeFormat(locale,{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+    const describe=event=>{
+      const start=event.start?.dateTime,end=event.end?.dateTime;
+      if(!start)return `${event.start?.date||''} · ${event.summary||''}`;
+      const finish=end?(day.format(new Date(start))===day.format(new Date(end))?time.format(new Date(end)):`${day.format(new Date(end))} ${time.format(new Date(end))}`):'';
+      return `${day.format(new Date(start))} · ${time.format(new Date(start))}${finish?'–'+finish:''} · ${event.summary||''}`;
+    };
+    const chronological=(left,right)=>String(left.start?.dateTime||left.start?.date).localeCompare(String(right.start?.dateTime||right.start?.date));
+    for(const event of [...blocks].sort(chronological))list.append(node('li',describe(event)));
+    for(const event of [...(plan.remove?.[section]||[])].sort(chronological))list.append(node('li',`− ${describe(event)}`));
     box.append(changes);
     const approve=node('button',t(section==='near'?'approveNear':'approveFuture'));
     const approvalKey=`${plan.id}:${section}`;approve.disabled=!canApprove(state,plan,section);

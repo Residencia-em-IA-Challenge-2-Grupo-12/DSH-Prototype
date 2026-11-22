@@ -1,0 +1,418 @@
+{
+  "version": 1,
+  "caseId": "bruno",
+  "inputSha256": "00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7",
+  "runId": "5bcd8a62-7748-43db-9123-1aed5ee155c2",
+  "engine": {
+    "name": "DSH cold-start (success)",
+    "revision": "eb4d451152d467e9bd400c38f96b897868501674",
+    "mode": "scripted",
+    "model": null,
+    "harness": null,
+    "tools": [
+      "list_synthetic_files",
+      "read_synthetic_file",
+      "list_calendar",
+      "propose_planning_context",
+      "draft_study_plan"
+    ],
+    "simulator": "ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96"
+  },
+  "durationMs": 1616,
+  "usage": {
+    "availability": "not_applicable"
+  },
+  "timeline": [
+    {
+      "kind": "observation",
+      "phase": "initial",
+      "value": {
+        "availability": "available",
+        "eventCount": 146,
+        "added": [],
+        "removed": [],
+        "changed": []
+      }
+    },
+    {
+      "kind": "request",
+      "text": "Ajude-me a planejar meus estudos para a prova escrita de Algoritmos e o projeto final de Banco de Dados. Confira meus materiais e o calendário e me pergunte sobre disponibilidade se precisar."
+    },
+    {
+      "kind": "question",
+      "id": "availability",
+      "text": "Quantas horas por semana funcionam para você e quais janelas podemos considerar nestas duas semanas?",
+      "choices": []
+    },
+    {
+      "kind": "answer",
+      "questionId": "availability",
+      "text": "Use 5 horas por semana até 15/11. Posso estudar segundas e quartas das 19:00 às 21:15, sábado das 14:00 às 16:15 e domingo das 10:00 às 12:15, conforme o calendário. Limite de dois blocos de uma hora por dia e pausa de 15 minutos. Sem prioridade entre as disciplinas."
+    },
+    {
+      "kind": "context_review",
+      "revisionId": "89b1935f-abe2-4f30-8fc6-4e87e6147f8e"
+    },
+    {
+      "kind": "request",
+      "text": "Gere a proposta revisável para as duas semanas usando os dados confirmados."
+    },
+    {
+      "kind": "proposal",
+      "revisionId": "8b3353a8-4444-442e-8276-d216dff2e766",
+      "replaces": null,
+      "sources": [
+        {
+          "course": "Algoritmos",
+          "deadline": "2026-12-14T09:00:00-03:00",
+          "citation": {
+            "path": "notices/aviso-turma-n02.md",
+            "quote": "A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo."
+          }
+        },
+        {
+          "course": "Banco de Dados",
+          "deadline": "2026-12-14T18:00:00-03:00",
+          "citation": {
+            "path": "courses/banco-de-dados.md",
+            "quote": "Envio final do projeto de modelagem: 14/12/2026 às 18:00, horário de São Paulo"
+          }
+        }
+      ],
+      "assumptions": [
+        "Study blocks are suggestions; ask before writing.",
+        "Hours are goals, not evidence of actual study.",
+        "Study windows are stated possibilities; confirm they still suit the student.",
+        "Confirmed availability applies through 2026-11-15."
+      ],
+      "sections": {
+        "near": [
+          {
+            "kind": "add",
+            "eventId": "704433c53d8f44ebb9a6a5ff160e611c",
+            "label": "Study: Algoritmos",
+            "course": "Algoritmos",
+            "start": "2026-11-02T19:00:00-03:00",
+            "end": "2026-11-02T20:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "453e35921a384410a849ff224e54e72d",
+            "label": "Study: Algoritmos",
+            "course": "Algoritmos",
+            "start": "2026-11-04T19:00:00-03:00",
+            "end": "2026-11-04T20:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "3d8ecca5acbf4419bb4dba32f563a987",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-07T14:00:00-03:00",
+            "end": "2026-11-07T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "407f571235fa4752adab9388dd776bf4",
+            "label": "Study: Algoritmos",
+            "course": "Algoritmos",
+            "start": "2026-11-08T10:00:00-03:00",
+            "end": "2026-11-08T11:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "2ef271b1bb2d4d7b82a7293f2415921d",
+            "label": "Study: Algoritmos",
+            "course": "Algoritmos",
+            "start": "2026-11-02T20:15:00-03:00",
+            "end": "2026-11-02T21:15:00-03:00"
+          }
+        ],
+        "future": [
+          {
+            "kind": "add",
+            "eventId": "85db58313e834058b2a084bccb9edc2d",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-09T19:00:00-03:00",
+            "end": "2026-11-09T20:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "f672a2e775174db2a1c982cda19a98d4",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-11T20:00:00-03:00",
+            "end": "2026-11-11T21:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "5f73680f9c8a4e4ba8572bcd7018e68a",
+            "label": "Study: Algoritmos",
+            "course": "Algoritmos",
+            "start": "2026-11-14T14:00:00-03:00",
+            "end": "2026-11-14T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "f6443885ed644b678ba5b19de62a42ee",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-15T10:00:00-03:00",
+            "end": "2026-11-15T11:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "d61991e554214bc3b87a64b3d4fe3112",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-09T20:15:00-03:00",
+            "end": "2026-11-09T21:15:00-03:00"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "request",
+      "text": "Deixe as duas segundas-feiras, 2 e 9 de novembro, livres. Mantenha as demais janelas, carga e prazos."
+    },
+    {
+      "kind": "context_review",
+      "revisionId": "deef7e94-4247-4d75-9f35-dfa7873d6cc7"
+    },
+    {
+      "kind": "request",
+      "text": "Gere a proposta revisável para as duas semanas usando os dados confirmados."
+    },
+    {
+      "kind": "proposal",
+      "revisionId": "7e8fb08d-daab-4112-8814-824d0938a016",
+      "replaces": "8b3353a8-4444-442e-8276-d216dff2e766",
+      "sources": [
+        {
+          "course": "Algoritmos",
+          "deadline": "2026-12-14T09:00:00-03:00",
+          "citation": {
+            "path": "notices/aviso-turma-n02.md",
+            "quote": "A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo."
+          }
+        },
+        {
+          "course": "Banco de Dados",
+          "deadline": "2026-12-14T18:00:00-03:00",
+          "citation": {
+            "path": "courses/banco-de-dados.md",
+            "quote": "Envio final do projeto de modelagem: 14/12/2026 às 18:00, horário de São Paulo"
+          }
+        }
+      ],
+      "assumptions": [
+        "Study blocks are suggestions; ask before writing.",
+        "Hours are goals, not evidence of actual study.",
+        "Study windows are stated possibilities; confirm they still suit the student.",
+        "Confirmed availability applies through 2026-11-15."
+      ],
+      "sections": {
+        "near": [
+          {
+            "kind": "add",
+            "eventId": "9e05e7fc58414fd9aeb92c53158a1adc",
+            "label": "Study: Algoritmos",
+            "course": "Algoritmos",
+            "start": "2026-11-04T19:00:00-03:00",
+            "end": "2026-11-04T20:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "56c6f655301849fbbb085b4d3c915f40",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-07T14:00:00-03:00",
+            "end": "2026-11-07T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "5cd9dcddc81e42cdbe3a406801db6b4c",
+            "label": "Study: Algoritmos",
+            "course": "Algoritmos",
+            "start": "2026-11-08T10:00:00-03:00",
+            "end": "2026-11-08T11:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "4bfbd0147f304fd5b8ee7dbd74a22f67",
+            "label": "Study: Algoritmos",
+            "course": "Algoritmos",
+            "start": "2026-11-04T20:15:00-03:00",
+            "end": "2026-11-04T21:15:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "5ec21cfcc7294dae8aca68a1833ff005",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-07T15:15:00-03:00",
+            "end": "2026-11-07T16:15:00-03:00"
+          }
+        ],
+        "future": [
+          {
+            "kind": "add",
+            "eventId": "d6262f2032b14cceafa4c851612d18d5",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-11T20:00:00-03:00",
+            "end": "2026-11-11T21:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "4900e64b2abb4c8fb5a547d50cff87ca",
+            "label": "Study: Algoritmos",
+            "course": "Algoritmos",
+            "start": "2026-11-14T14:00:00-03:00",
+            "end": "2026-11-14T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "19383ec3423b484e8a581180b316651b",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-15T10:00:00-03:00",
+            "end": "2026-11-15T11:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "0ae5ca2989014cf9bea718b33d561f5e",
+            "label": "Study: Algoritmos",
+            "course": "Algoritmos",
+            "start": "2026-11-14T15:15:00-03:00",
+            "end": "2026-11-14T16:15:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "00d59cd12fed410db2eb773b3950894f",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-15T11:15:00-03:00",
+            "end": "2026-11-15T12:15:00-03:00"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "observation",
+      "phase": "review",
+      "value": {
+        "availability": "available",
+        "eventCount": 146,
+        "added": [],
+        "removed": [],
+        "changed": []
+      }
+    },
+    {
+      "kind": "validation",
+      "revisionId": "7e8fb08d-daab-4112-8814-824d0938a016",
+      "passed": true,
+      "findings": []
+    },
+    {
+      "kind": "observation",
+      "phase": "before_approval",
+      "value": {
+        "availability": "available",
+        "eventCount": 146,
+        "added": [],
+        "removed": [],
+        "changed": []
+      }
+    },
+    {
+      "kind": "decision",
+      "revisionId": "7e8fb08d-daab-4112-8814-824d0938a016",
+      "section": "near",
+      "approved": true
+    },
+    {
+      "kind": "write",
+      "revisionId": "7e8fb08d-daab-4112-8814-824d0938a016",
+      "section": "near",
+      "outcome": "applied",
+      "intended": [
+        "9e05e7fc58414fd9aeb92c53158a1adc",
+        "56c6f655301849fbbb085b4d3c915f40",
+        "5cd9dcddc81e42cdbe3a406801db6b4c",
+        "4bfbd0147f304fd5b8ee7dbd74a22f67",
+        "5ec21cfcc7294dae8aca68a1833ff005"
+      ],
+      "acknowledged": [
+        "9e05e7fc58414fd9aeb92c53158a1adc",
+        "56c6f655301849fbbb085b4d3c915f40",
+        "5cd9dcddc81e42cdbe3a406801db6b4c",
+        "4bfbd0147f304fd5b8ee7dbd74a22f67",
+        "5ec21cfcc7294dae8aca68a1833ff005"
+      ],
+      "unresolved": []
+    },
+    {
+      "kind": "observation",
+      "phase": "after_approval",
+      "value": {
+        "availability": "available",
+        "eventCount": 151,
+        "added": [
+          "4bfbd0147f304fd5b8ee7dbd74a22f67",
+          "56c6f655301849fbbb085b4d3c915f40",
+          "5cd9dcddc81e42cdbe3a406801db6b4c",
+          "5ec21cfcc7294dae8aca68a1833ff005",
+          "9e05e7fc58414fd9aeb92c53158a1adc"
+        ],
+        "removed": [],
+        "changed": []
+      }
+    }
+  ],
+  "checks": [
+    {
+      "id": "initial_event_ids",
+      "outcome": "pass",
+      "detail": "Independent provider read contains the fixture event IDs"
+    },
+    {
+      "id": "no_write_before_approval",
+      "outcome": "pass",
+      "detail": "Question, two input reviews and both proposal revisions leave the starting calendar untouched"
+    },
+    {
+      "id": "authoritative_deadline",
+      "outcome": "pass",
+      "detail": "Deadline timestamp and authoritative source both match the operator expectation"
+    },
+    {
+      "id": "revision",
+      "outcome": "pass",
+      "detail": "A distinct proposal replaces the earlier proposal containing one of the excluded dates"
+    },
+    {
+      "id": "feasibility",
+      "outcome": "pass",
+      "detail": "Both sections have study blocks and the revised blocks pass date, deadline and overlap checks"
+    },
+    {
+      "id": "narration_regression",
+      "outcome": "pass",
+      "detail": "Historical claim check: week 2 had 300 min, compared with the claimed 240. 11 Nov had 60 min, compared with the claimed 0."
+    },
+    {
+      "id": "future_pending",
+      "outcome": "pass",
+      "detail": "Future review stays pending; observations are checked for its event IDs when available"
+    },
+    {
+      "id": "near_only_observed",
+      "outcome": "pass",
+      "detail": "Independent observations match the approved IDs only; existing events were preserved"
+    }
+  ],
+  "retirement": "verified"
+}

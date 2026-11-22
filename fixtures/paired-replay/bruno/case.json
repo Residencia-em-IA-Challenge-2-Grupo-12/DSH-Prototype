@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "id": "bruno",
+  "student": "bruno",
+  "locale": "pt-BR",
+  "clock": {
+    "date": "2026-11-02",
+    "timezone": "America/Sao_Paulo"
+  },
+  "calendar": {
+    "student": "bruno",
+    "sha256": "11fafe128b6b189728f6b3bb8e6ee707e1871acbe062e70035cb73fecd0f7c3f"
+  },
+  "sources": [
+    {
+      "path": "courses/algoritmos.md",
+      "sha256": "b36c645e8b6c2caca76e3cf28afa3554627433daea06206d86397635695b4035"
+    },
+    {
+      "path": "courses/banco-de-dados.md",
+      "sha256": "207e45a8aebd0d3b8567ed9ff4a3b387c2ae3851504931bee8fdd8414535ac68"
+    },
+    {
+      "path": "notices/aviso-turma-n02.md",
+      "sha256": "bd4350a65131250a96138896621303dad9c558f0f10d108cab2241adb765f1a1"
+    }
+  ],
+  "request": "Ajude-me a planejar meus estudos para a prova escrita de Algoritmos e o projeto final de Banco de Dados. Confira meus materiais e o calendário e me pergunte sobre disponibilidade se precisar.",
+  "operator": {
+    "answers": [
+      {
+        "id": "availability",
+        "text": "Use 5 horas por semana até 15/11. Posso estudar segundas e quartas das 19:00 às 21:15, sábado das 14:00 às 16:15 e domingo das 10:00 às 12:15, conforme o calendário. Limite de dois blocos de uma hora por dia e pausa de 15 minutos. Sem prioridade entre as disciplinas."
+      }
+    ],
+    "correction": "Deixe as duas segundas-feiras, 2 e 9 de novembro, livres. Mantenha as demais janelas, carga e prazos.",
+    "approval": "near"
+  },
+  "expect": {
+    "deadline": {
+      "course": "Algoritmos",
+      "at": "2026-12-14T09:00:00-03:00",
+      "source": "notices/aviso-turma-n02.md"
+    },
+    "avoidDates": [
+      "2026-11-02",
+      "2026-11-09"
+    ]
+  }
+}

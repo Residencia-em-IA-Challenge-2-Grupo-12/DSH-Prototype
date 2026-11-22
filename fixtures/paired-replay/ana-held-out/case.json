@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "id": "ana-held-out",
+  "student": "ana",
+  "locale": "en",
+  "clock": {
+    "date": "2026-11-02",
+    "timezone": "America/Sao_Paulo"
+  },
+  "calendar": {
+    "student": "ana",
+    "sha256": "f6a346cc3dff4549071d75820980ab880a60aac9e0304ab0776fc89ae5aa712b"
+  },
+  "sources": [
+    {
+      "path": "course/clinic-reminder.txt",
+      "sha256": "e6f4f1300c02db0d32f708aa54c3de8ee90751391791a756c75138a806be27bf"
+    },
+    {
+      "path": "course/module-outline.md",
+      "sha256": "02eb67761f4195e5b32d118692b9fd1f9d82683383834df3c672da8e9cb1e1af"
+    },
+    {
+      "path": "lms/assessment-export.json",
+      "sha256": "4c6c0558cac48a7cd19ad2f37bfa7fe6ee7bcc2647113a0fe4bdeac0eff2cffe"
+    }
+  ],
+  "request": "Help me plan my study time for the Applied Data Ethics case memo over the next two weeks. Which deadline should we plan around? I have a module outline and a learning platform export. Check my calendar and ask what times work for me before making a proposal.",
+  "operator": {
+    "answers": [
+      {
+        "id": "availability",
+        "text": "For these two weeks, Wednesday, Thursday and Friday from 14:00 to 16:15 can work when the calendar is clear. I prefer to keep the weekend open."
+      },
+      {
+        "id": "workload",
+        "text": "Four study hours a week feels workable, with no more than two sessions a day and a 15-minute break between them."
+      },
+      {
+        "id": "preparation",
+        "text": "I picked a case but haven't written an outline. I don't know how much time it will take yet."
+      }
+    ],
+    "correction": "Keep Wednesday, 4 November, free for family logistics. Keep Thursday and Friday as candidates. Leave the following week tentative and preserve my existing appointments.",
+    "approval": "near"
+  },
+  "expect": {
+    "deadline": {
+      "course": "Applied Data Ethics",
+      "at": "2026-12-01T17:30:00-03:00",
+      "source": "lms/assessment-export.json"
+    },
+    "avoidDates": [
+      "2026-11-04"
+    ]
+  }
+}
