@@ -28,7 +28,7 @@ PORT=4186 STUDY_COLD_CASE=bruno-text STUDY_RUN_ROOT=/tmp/study-review-browser \
   ./node_modules/.bin/node scripts/preview-luna-synthetic.mjs
 ```
 
-Open `http://127.0.0.1:4186/` on the facilitator machine. The case can be `bruno`, `bruno-text`, `ana` or `ana-conflict`. The launcher fixes the case for that process. End and archive the run before switching cases or stopping the launcher. A run with unresolved ownership or writes needs inspection before reuse. The remote walkthrough shows read-only evidence. Live controls remain on loopback.
+Open `http://127.0.0.1:4186/` on the facilitator machine. The case can be `bruno`, `bruno-text`, `ana`, `ana-conflict` or `ana-held-out`. The launcher fixes the case for that process. End and archive the run before switching cases or stopping the launcher. A run with unresolved ownership or writes needs inspection before reuse. The remote walkthrough shows read-only evidence. Live controls remain on loopback. [Question grouping and inclusive scope evidence](review/question-scope-followup-2026-11-22.md).
 
 ## Group check
 
