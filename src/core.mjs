@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { calendarBoundaryMs as millis, intervalsOverlap as overlaps, isBusyCalendarEvent } from './calendar-time.mjs';
 import { createStateStore } from './state-store.mjs';
 import {coldStartStudents,validatePlanningContext,reviewedPlannerProfile} from './cold-start-context.mjs';
 
@@ -136,18 +137,17 @@ export function significant(e) {
 }
 export function snapshot(events) { return events.map(significant).sort((a,b) => a.id.localeCompare(b.id)); }
 export function digest(events) { return createHash('sha256').update(JSON.stringify(snapshot(events))).digest('hex'); }
-// The simulator uses fixed São Paulo time; all-day dates start at local midnight.
-const millis = (item, key) => Date.parse(item[key]?.dateTime || (item[key]?.date && item[key].date + 'T00:00:00-03:00'));
-const overlaps = (a,b) => millis(a,'start') < millis(b,'end') && millis(b,'start') < millis(a,'end');
 function localTime(date) { return date.toISOString().replace('Z','').slice(0,19) + '-03:00'; }
 
-export function makePlan(student, events, { weeks = 4, hours, protectedIds = [], avoidDates = [], preferredPeriod, focusCourse } = {}) {
+export function makePlan(student, events, { weeks = 4, hours, protectedIds = [], avoidDates = [], preferredPeriod, focusCourse, allocation } = {}) {
   const target = Number(hours ?? student.targetHours);
   if (!Number.isInteger(target) || target < 0 || target > 20) throw new Error('Hours must be a whole number between 0 and 20');
   const requested = Number(weeks);
   if (!Number.isInteger(requested) || requested < 1 || requested > 16) throw new Error('Weeks must be between 1 and 16');
   if (!Array.isArray(avoidDates) || avoidDates.length>112 || avoidDates.some(d=>typeof d!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d))) throw new Error('Avoid dates must be ISO dates');
   if (preferredPeriod && !['morning','afternoon','evening'].includes(preferredPeriod)) throw new Error('Unknown preferred period');
+  if(allocation!==undefined&&allocation!=='course-coverage')throw new Error('Unknown allocation strategy');
+  if(allocation&&focusCourse)throw new Error('Choose course coverage or a single-course focus for this proposal');
   const focus=focusCourse ? student.courses.find(c=>c.name.toLocaleLowerCase()===String(focusCourse).toLocaleLowerCase()) : null;
   if(focusCourse&&!focus)throw new Error('Focus course is not in the student course index');
   const windows=student.studyWindows||[], maxDaily=student.maxDailyStudyHours??2, breakMinutes=student.studyBreakMinutes??15;
@@ -166,8 +166,8 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
   const horizonEnd=Math.min(today+count*7*86400000,scopedEnd);
   const replaceable=events.filter(e => e.extendedProperties?.private?.studyDemo==='true' && e.extendedProperties?.private?.student===student.student && !protectedIds.includes(e.id) && millis(e,'start')>=Date.parse(FIXED_TODAY+'T00:00:00-03:00') && millis(e,'start')<horizonEnd);
   const replaceIds=new Set(replaceable.map(e=>e.id));
-  const busy = events.filter(e => e.status !== 'cancelled' && e.transparency !== 'transparent' && !replaceIds.has(e.id)).map(clone);
-  const blocks = [], outlook = [];
+  const busy = events.filter(e => isBusyCalendarEvent(e) && !replaceIds.has(e.id)).map(clone);
+  const blocks = [], outlook = [], coveredCourses = new Set();
   for (let w=0; w<count; w++) {
     let placed = 0;const daily=new Map(), weekBlocks=[], candidates=[];
     const sorted = [...student.courses].sort((a,b) => Date.parse(a.deadline)-Date.parse(b.deadline));
@@ -191,7 +191,10 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
       const daysToDeadline=(Date.parse(eligible[0].deadline)-cStart)/86400000;
       const focused=focus&&eligible.includes(focus)?focus:null;
       const other=focused?eligible.find(c=>c!==focused):null;
-      const course=focused?(placed%3===2&&other?other:focused):daysToDeadline<=14 && placed%3!==2?eligible[0]:eligible[(w+candidate.d)%eligible.length];
+      const uncovered=allocation==='course-coverage'?eligible.find(course=>!coveredCourses.has(course.name)):undefined;
+      const normalCourse=focused?(placed%3===2&&other?other:focused):daysToDeadline<=14 && placed%3!==2?eligible[0]:eligible[(w+candidate.d)%eligible.length];
+      const course=uncovered||normalCourse;
+      coveredCourses.add(course.name);
       const block={id:randomUUID().replaceAll('-',''),summary:'Study: '+course.name,start:candidate.start,end:candidate.end,
         status:w===0?'confirmed':'tentative',description:'Study planning demo. '+(w===0?'Near-term study block.':'Tentative; review at the next checkpoint.')+' Source: '+course.source,
         extendedProperties:{private:{studyDemo:'true',student:student.student,course:course.name}}};
@@ -201,7 +204,7 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
   }
   return { id:randomUUID(), student:student.student, createdAt:new Date().toISOString(), fixedToday:FIXED_TODAY,
     sources:student.courses, assumptions:['Study blocks are suggestions; ask before writing.','Hours are goals, not evidence of actual study.',windows.length?'Study windows are stated possibilities; confirm they still suit the student.':'No study availability supplied; empty calendar time is not assumed available.',...(student.availabilityThrough?['Confirmed availability applies through '+student.availabilityThrough+'.']:[]),...(focus?['Course focus: '+focus.name+'; other courses may still receive blocks.']:[])],
-    outlook, near:blocks.filter(b=>b.status==='confirmed'), future:blocks.filter(b=>b.status==='tentative'),
+    ...(allocation?{allocation}:{}),outlook, near:blocks.filter(b=>b.status==='confirmed'), future:blocks.filter(b=>b.status==='tentative'),
     remove:{near:replaceable.filter(e=>millis(e,'start')<Date.parse('2026-11-09T00:00:00-03:00')).map(significant),future:replaceable.filter(e=>millis(e,'start')>=Date.parse('2026-11-09T00:00:00-03:00')).map(significant)},
     baseHash:digest(events), status:{near:'pending',future:'pending'} };
 }

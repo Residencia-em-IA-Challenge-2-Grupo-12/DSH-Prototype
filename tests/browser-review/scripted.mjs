@@ -67,6 +67,13 @@ for(const [student,port] of [['bruno',startPort],['ana',startPort+1]]){
         await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
         await wait("document.documentElement.scrollWidth === 390");
         await shot('scripted-ana-mobile');
+        await send('Show a course coverage alternative');
+        await wait("document.querySelector('#proposal').innerText.includes('Course coverage alternative')");
+        ev.alternative=await evaluate("document.querySelector('#proposal .course-coverage').innerText");
+        assert.match(ev.alternative,/Machine Learning · 3 h/);
+        assert.match(ev.alternative,/Statistics · 1 h/);
+        await click('#nav-review');
+        await shot('scripted-ana-coverage-alternative');
       }else{
         // A fresh provider change after the plan is reviewed must fence writes.
         await writeFile(control,'add');

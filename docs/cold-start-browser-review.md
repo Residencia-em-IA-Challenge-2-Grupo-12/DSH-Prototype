@@ -2,9 +2,9 @@
 
 This pilot uses the existing companion as the interface for the cold-start cases in [the operator guide](cold-start-planning.md). The same logic reviews pending context, confirms a specific revision and requires separate approval for any calendar change.
 
-1. While a native question is open, the calendar displays the concrete times the model supplied as structured options. The widget identifies overlapping commitments and disables blocked choices. Typed answers remain available. A stale selection is checked against the calendar again when the operator sends the answer.
+1. Before asking about concrete times, the agent can check structured options against the simulator. The tool and widget use the same overlap rule: an event ending at 19:00 leaves a 19:00 start clear. The widget marks the overlap and disables the blocked choice. Typed answers remain available. A selection is checked against the current calendar again when the operator sends it.
 2. Review the assessment dates, source excerpts and proposed preferences. Open the cited files from the review panel. When the agent revises the context, inspect removed or added windows and any changes to the workload or deadline evidence. Compare with the original replies.
-3. Confirm the planning inputs and ask for a proposal. Review the coming week and future section independently. Each lists hours by course, including zero-hour courses. Calendar observations are checked again on approval.
+3. Confirm the planning inputs and ask for a proposal. The confirmed target applies each week. Review the coming week and future section independently. Each lists hours by course, including zero-hour courses. Ask for a course coverage alternative when it would help to see what changes if every eligible course gets a first block where feasible. Review the new revision before approving. Calendar observations are checked again on approval.
 
 The agent can ask a question without a structured time option. In that case the browser shows the question and the observed calendar without an overlay. This pilot does not attempt to infer dates from arbitrary question prose.
 
@@ -16,7 +16,7 @@ From the repo root, with installed Node dependencies and Chrome available:
 ./node_modules/.bin/node tests/browser-review/scripted.mjs .runtime/browser-review
 ```
 
-The script uses the real browser UI and in-process managed API. Authored conversation steps and an in-memory calendar isolate interface behavior from model variability. It covers a conflicting option, a late calendar change, the Monday revision, source inspection, zero course coverage, and stale calendar approval. It captures screenshots and a structured result. For a different Chrome executable or local test ports, set `STUDY_TEST_CHROME` or `STUDY_BROWSER_TEST_PORT`.
+The script uses the real browser UI and in-process managed API. Authored conversation steps and an in-memory calendar isolate interface behavior from model variability. It covers a conflicting option, a late calendar change, the Monday revision, source inspection, Ana’s two allocations, and stale calendar approval. It captures screenshots and a structured result. For a different Chrome executable or local test ports, set `STUDY_TEST_CHROME` or `STUDY_BROWSER_TEST_PORT`. [November 21 findings and live evidence](review/reviewed-planning-2026-11-21.md).
 
 ## Live Luna
 

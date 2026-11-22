@@ -64,6 +64,7 @@ const client={
       record.studyWindows=record.studyWindows.filter(window=>window.weekday!==1);
       await call('propose_planning_context',{record});
     }else if(text==='Draft the week')await call('draft_study_plan',{weeks:1});
+    else if(student==='ana'&&text==='Show a course coverage alternative')await call('draft_study_plan',{weeks:1,allocation:'course-coverage'});
     return view();
   },
   async answer(id,answers){

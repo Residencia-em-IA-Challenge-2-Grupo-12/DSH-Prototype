@@ -1,5 +1,5 @@
 import {spawn} from 'node:child_process';
-import {mkdtemp,rmdir} from 'node:fs/promises';
+import {mkdtemp,realpath,rmdir,stat} from 'node:fs/promises';
 import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {coldStartStudents} from '../src/cold-start-context.mjs';
@@ -10,11 +10,15 @@ import {createManagedStudyApi} from '../src/foundation/managed-study-api.mjs';
 import {startControllerRpc} from '../src/foundation/controller-rpc.mjs';
 
 const root=process.env.STUDY_RUN_ROOT||path.join(tmpdir(),`study-luna-${process.getuid?.()??'local'}`);
-const dshHome=process.env.STUDY_LUNA_DSH_HOME,port=Number(process.env.PORT||4176);
+const profile=process.env.STUDY_LUNA_DSH_HOME,port=Number(process.env.PORT||4176);
 if(Buffer.byteLength(path.join(root,'runs','00000000-0000-4000-8000-000000000000','ipc/agent.sock'))>100)throw Error('Choose a shorter STUDY_RUN_ROOT for Unix socket limits');
 if(!Number.isInteger(port)||port<1||port>65535)throw Error('Invalid local port');
 const coldStart=process.env.STUDY_COLD_CASE;
 if(coldStart!==undefined&&!Object.hasOwn(coldStartStudents,coldStart))throw Error('Unknown STUDY_COLD_CASE');
+if(!path.isAbsolute(profile||''))throw Error('Set STUDY_LUNA_DSH_HOME to an absolute existing profile directory');
+const dshHome=await realpath(profile).catch(()=>null);
+const profileInfo=dshHome&&await stat(dshHome).catch(()=>null);
+if(!profileInfo?.isDirectory())throw Error('STUDY_LUNA_DSH_HOME does not resolve to an accessible profile directory');
 const student=coldStart?coldStartStudents[coldStart]:'bruno';
 let driver,web,rpc,ipc;
 const manager=await createExclusiveRunManager({root,driverFactory:({lease})=>{
