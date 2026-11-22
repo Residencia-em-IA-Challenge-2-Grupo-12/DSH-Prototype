@@ -1,5 +1,7 @@
 # When to ask and when to draft · 22 November 2026
 
+[Follow-up results with revised agent guidance](clarification-guidance-2026-11-22.md).
+
 The experiment uses two fresh instances of the same synthetic Bruno calendar and source documents. It checks whether Luna asks when a real preference is missing, proceeds to input review when the request is complete, and makes a correction visible before any calendar approval. The existing planner, question widget and calendar review run from main at 15d5139. The operator used prepared fictional replies in headless Chrome with the host Luna fallback and disposable Calendarpit. Each run was capped at four question widgets per turn by the operator. Luna usage was unavailable.
 
 ## Cases
