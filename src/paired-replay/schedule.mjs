@@ -5,7 +5,8 @@ function localDate(value, timezone) {
 }
 
 function localTime(value, timezone) {
-  return new Intl.DateTimeFormat('en-GB', { timeZone: timezone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(value));
+  return new Intl.DateTimeFormat('en-GB', { timeZone: timezone, hour: '2-digit', minute: '2-digit', second: '2-digit',
+    fractionalSecondDigits: 3, hourCycle: 'h23' }).format(new Date(value));
 }
 
 const dayMs = 86_400_000;
@@ -43,7 +44,7 @@ export function validateSchedule(proposal, events, manifest, reviewed) {
       const weekday = new Date(day + 'T00:00:00Z').getUTCDay();
       const from = localTime(start, timezone), to = localTime(end, timezone);
       if (day > reviewed.through || localDate(end, timezone) !== day ||
-          !reviewed.studyWindows.some(window => window.weekday === weekday && window.start <= from && window.end >= to)) {
+          !reviewed.studyWindows.some(window => window.weekday === weekday && `${window.start}:00.000` <= from && `${window.end}:00.000` >= to)) {
         findings.push(`Study block falls outside reviewed availability ${block.eventId}`);
       }
       const week = Math.floor((Date.parse(day) - Date.parse(date)) / (7 * dayMs));

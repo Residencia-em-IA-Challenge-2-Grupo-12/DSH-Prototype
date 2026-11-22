@@ -59,13 +59,16 @@ def read_bundle(directory):
 
 
 def check_result(result, manifest, checksum, sources):
-    # This independent smoke check covers portable identities and references.
+    # This independent check covers portable identities, references and the
+    # reported sequence of review and approval. Provider observations remain separate.
     # The JSON Schemas supplied with the bundle describe the full wire format.
     require(type(result["version"]) is int and result["version"] == manifest["version"]
             and result["caseId"] == manifest["id"] and result["inputSha256"] == checksum,
             "Result does not reference this case version and exact input")
     require(IDENTIFIER.fullmatch(result["runId"]), "Invalid result run ID")
-    questions, revisions, validation, approvals, applied = set(), {}, {}, set(), set()
+    questions, revisions = set(), {}
+    validation, approvals, applicable_approvals, applied = {}, set(), set(), set()
+    active_revision = None
     requests = []
     for entry in result["timeline"]:
         kind = entry["kind"]
@@ -88,9 +91,12 @@ def check_result(result, manifest, checksum, sources):
             require(all(source["citation"]["path"] in sources for source in entry["sources"]),
                     "Proposal cites an undeclared source")
             revisions[revision] = entry["sections"]
+            active_revision = revision
         elif kind == "validation":
             require(entry["revisionId"] in revisions, "Validation refers to an unknown proposal revision")
             validation[entry["revisionId"]] = entry["passed"]
+            if entry["passed"] is not True:
+                applicable_approvals = {key for key in applicable_approvals if key[0] != entry["revisionId"]}
         elif kind in ("decision", "write"):
             key = entry["revisionId"], entry["section"]
             require(key[0] in revisions and key[1] in ("near", "future"),
@@ -99,13 +105,18 @@ def check_result(result, manifest, checksum, sources):
                 if entry["approved"] is True:
                     require(validation.get(key[0]) is True, "Approval follows no successful validation of this revision")
                     approvals.add(key)
+                    applicable_approvals.add(key)
                 else:
                     approvals.discard(key)
+                    applicable_approvals.discard(key)
             if kind == "write":
                 require(key in approvals, "Write has no previous explicit approval")
                 intended = {action["eventId"] for action in revisions[key[0]][key[1]]}
                 require(set(entry["intended"]) == intended, "Write intent differs from the approved section")
                 if entry["outcome"] == "applied":
+                    require(key[0] == active_revision, "Applied outcome refers to a superseded proposal")
+                    require(validation.get(key[0]) is True and key in applicable_approvals,
+                            "Applied outcome follows an invalidated approval")
                     require(key not in applied, "Proposal section was applied more than once")
                     applied.add(key)
         else:
