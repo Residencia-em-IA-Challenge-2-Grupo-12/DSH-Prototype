@@ -68,6 +68,24 @@ test('independent schedule validation distinguishes adjacency from overlap and c
   assert.match(validateSchedule(reference, [], manifest)[0], /excluded date/);
 });
 
+test('approval preflight rejects invalid times and constraints the student did not review', () => {
+  const manifest = { clock, expect: { avoidDates: [] } };
+  const reviewed = { targetHours: 2, maxDailyStudyHours: 2, studyBreakMinutes: 15, through: '2026-11-08',
+    studyWindows: [{ weekday: 3, start: '19:00', end: '22:00' }] };
+  const proposal = { ...reference, sections: { near: [
+    add('first', '2026-11-04T19:00:00-03:00', '2026-11-04T20:00:00-03:00'),
+    add('second', '2026-11-04T20:15:00-03:00', '2026-11-04T21:15:00-03:00'),
+  ], future: [] } };
+  assert.deepEqual(validateSchedule(proposal, [], manifest, reviewed), []);
+  const changed = structuredClone(proposal);
+  changed.sections.near[1].end = 'invalid';
+  assert.ok(validateSchedule(changed, [], manifest, reviewed).some(finding => /Invalid study interval/.test(finding)));
+  changed.sections.near[1].end = '2026-11-04T22:15:00-03:00';
+  changed.sections.near[1].start = '2026-11-04T20:05:00-03:00';
+  const findings = validateSchedule(changed, [], manifest, reviewed).join('\n');
+  for (const check of [/outside reviewed availability/, /daily cap/, /too little break/, /reviewed target/]) assert.match(findings, check);
+});
+
 test('an unavailable calendar differs from an observed empty calendar or zero changes', () => {
   const observed = compareObservations([], []);
   const unavailable = compareObservations([], null);
@@ -82,4 +100,16 @@ test('an unavailable calendar differs from an observed empty calendar or zero ch
   assert.equal(resultSchema.safeParse(result).success, true);
   result.timeline[1].value.added = [];
   assert.equal(resultSchema.safeParse(result).success, false);
+});
+
+test('the archived Ana example preserves widget grouping and exact approved revision identity', async () => {
+  const example = resultSchema.parse(await parse(new URL('../docs/evidence/ana-regression-2026-11-21/ana-live-result.json', import.meta.url)));
+  assert.ok(example.timeline.filter(event => event.kind === 'question').every(event => event.groupId));
+  const validation = example.timeline.find(event => event.kind === 'validation');
+  const approval = example.timeline.find(event => event.kind === 'decision');
+  const receipt = example.timeline.find(event => event.kind === 'write');
+  assert.equal(validation.passed, true);
+  assert.equal(validation.revisionId, approval.revisionId);
+  assert.equal(receipt.revisionId, approval.revisionId);
+  assert.equal(receipt.section, 'near');
 });

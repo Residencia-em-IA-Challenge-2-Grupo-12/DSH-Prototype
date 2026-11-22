@@ -14,7 +14,7 @@ import { createTrustedStudyService } from '../foundation/trusted-study-service.m
 import { createBrunoSession, draftRequest, scriptedTools } from './bruno.mjs';
 import { digestBytes, verifyWorkspace } from './bundle.mjs';
 import { resultSchema } from './contract.mjs';
-import { compareScheduleClaims, proposalAdditions, validateSchedule } from './schedule.mjs';
+import { proposalAdditions, validateSchedule } from './schedule.mjs';
 
 export const scenarios = ['success', 'stale', 'duplicate', 'unknown', 'unknown-unavailable'];
 const exec = promisify(execFile);
@@ -75,7 +75,11 @@ export async function runDshReplay(bundle, scenario, saveResult) {
   // An exact match matters because initializeScenario stages the canonical DSH
   // cold-start workspace. If it diverges, fail before invoking any tool.
   await verifyWorkspace(path.join(ROOT, 'fixtures/cold-start/bruno-text'), manifest.sources);
-  const revision = (await exec('git', ['rev-parse', 'HEAD'], { cwd: ROOT })).stdout.trim();
+  const [{stdout: head}, {stdout: changes}] = await Promise.all([
+    exec('git', ['rev-parse', 'HEAD'], { cwd: ROOT }),
+    exec('git', ['status', '--porcelain', '--untracked-files=normal', '--', 'src', 'scripts', 'fixtures', 'package.json', 'package-lock.json'], { cwd: ROOT }),
+  ]);
+  const revision = head.trim() + (changes.trim() ? '+working-tree' : '');
   const runId = randomUUID(), started = performance.now();
   const runtime = await mkdtemp(path.join(tmpdir(), 'study-paired-'));
   const result = {
@@ -158,14 +162,15 @@ export async function runDshReplay(bundle, scenario, saveResult) {
     check('revision', first.revisionId !== revised.revisionId && revised.replaces === first.revisionId &&
       proposalAdditions(first).some(action => manifest.expect.avoidDates.includes(action.start.slice(0, 10))),
     'A distinct proposal replaces the earlier proposal containing one of the excluded dates');
-    const finding = validateSchedule(revised, initial, manifest);
+    const reviewed = (await api.status(runId)).state.planningContext.confirmed.record;
+    const finding = validateSchedule(revised, initial, manifest, reviewed);
     if (!revised.sections.near.length || !revised.sections.future.length) finding.push('The exercise requires both proposal sections to contain study blocks');
+    if ([...revised.sections.near, ...revised.sections.future].some(action => action.kind === 'remove')) {
+      finding.push('The Bruno replay must preserve every existing calendar event');
+    }
     note({ kind: 'validation', revisionId: revised.revisionId, passed: finding.length === 0, findings: finding });
     check('feasibility', finding.length === 0, finding.length ? finding.join('. ') :
-      'Both sections have study blocks and the revised blocks pass date, deadline and overlap checks');
-    const claims = compareScheduleClaims(revised, clock, [{ week: 2, minutes: 240 }, { date: '2026-11-11', minutes: 0 }]);
-    check('narration_regression', claims.every(claim => !claim.matches),
-      `Historical claim check: week 2 had ${claims[0].actualMinutes} min, compared with the claimed 240. 11 Nov had ${claims[1].actualMinutes} min, compared with the claimed 0.`);
+      'Both sections have study blocks and the revision meets the reviewed windows, targets, limits, deadlines and breaks');
     if (result.checks.some(item => item.outcome === 'fail')) throw new Error('The scripted operator withheld approval because a precondition failed');
 
     const userEdit = scenario === 'stale' ? fixture.events.find(event => event.start.dateTime?.startsWith('2026-11-04')).id : null;

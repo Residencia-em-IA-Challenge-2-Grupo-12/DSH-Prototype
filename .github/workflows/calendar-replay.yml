@@ -1,0 +1,48 @@
+name: Calendar replay integration
+
+on:
+  pull_request:
+    paths: ['src/**', 'fixtures/**', 'scripts/paired-replay*', 'package*.json', '.github/workflows/calendar-replay.yml']
+  push:
+    branches: [main]
+    paths: ['src/**', 'fixtures/**', 'scripts/paired-replay*', 'package*.json', '.github/workflows/calendar-replay.yml']
+  workflow_dispatch:
+    inputs:
+      recovery:
+        description: Also exercise stale, duplicate and uncertain writes
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+          cache: npm
+      - run: npm ci
+      - name: Run the scripted Bruno smoke case
+        run: |
+          mkdir "$RUNNER_TEMP/study-replay"
+          node scripts/paired-replay.mjs pack bruno "$RUNNER_TEMP/study-replay/bruno"
+          node scripts/paired-replay.mjs run "$RUNNER_TEMP/study-replay/bruno" "$RUNNER_TEMP/study-replay/success.json"
+          python3 scripts/paired-replay-probe.py --check-result "$RUNNER_TEMP/study-replay/bruno" "$RUNNER_TEMP/study-replay/success.json"
+      - name: Exercise the recovery cases
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.recovery }}
+        run: |
+          for scenario in stale duplicate unknown unknown-unavailable; do
+            node scripts/paired-replay.mjs run "$RUNNER_TEMP/study-replay/bruno" "$RUNNER_TEMP/study-replay/$scenario.json"
+            python3 scripts/paired-replay-probe.py --check-result "$RUNNER_TEMP/study-replay/bruno" "$RUNNER_TEMP/study-replay/$scenario.json"
+          done
+      - name: Retain sanitized replay results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-calendar-replay
+          path: ${{ runner.temp }}/study-replay/*.json

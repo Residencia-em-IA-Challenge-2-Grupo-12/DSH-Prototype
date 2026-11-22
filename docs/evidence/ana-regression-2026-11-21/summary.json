@@ -1,0 +1,169 @@
+{
+  "date": "2026-11-21",
+  "caseId": "ana-held-out",
+  "source": "935d7aada8c44b31d0fe81ebc33ac6436566b1df",
+  "heads": {
+    "main": "03edd68ad4e54d4cad33653ea1886085b514216a",
+    "pr52": "e3981260590bc375f59340f7c55f8c8201b36c91",
+    "pr53": "4df26bd7d9cd4c5f26b1428adaae65677b774052",
+    "feature": "9c88ce927e04b1e4f8e8e2f54a246e3c6187dde6"
+  },
+  "baselineAttempts": [
+    {
+      "runId": "453d4276-61d5-4b0d-80aa-1d3caaa69571",
+      "source": "24dea67",
+      "outcome": "incomplete",
+      "retired": true,
+      "operatorWallMs": 232318,
+      "note": "Correct published deadline, optional clinic entered as a target, browser driver missed input-review state. Zero writes."
+    },
+    {
+      "runId": "4edebb0a-212b-4590-af7c-e6753a57da39",
+      "source": "941d76a1339aa4af90e5dc02531ba2f9e42e30ff",
+      "outcome": "flow-passed-with-narration-error",
+      "retired": true,
+      "operatorWallMs": 108921,
+      "observed": {
+        "original": 108,
+        "added": [
+          "573f43554117470c8a06d80178dd1047",
+          "8cb15d9a910f4fa6aa03a78ec67fa5e0",
+          "c0efe88ab1414e5a86eec0e727184460",
+          "e455ae8951bf47b79fe00eb7a055938d"
+        ],
+        "futureStatus": "pending",
+        "originalsPreserved": true
+      },
+      "note": "Separate near-only write succeeded. Luna omitted the 11 November block and later called it a conflict."
+    }
+  ],
+  "finalAttempt": {
+    "runId": "7efe65a6-7792-49b8-871c-adf19f32bf66",
+    "attemptId": "7a65e48d-c7f4-4497-93be-defeaa65f06d",
+    "operatorWallMs": 88223,
+    "observed": {
+      "original": 108,
+      "added": [
+        "05f8fd26fb124fd4b16328274edd21b8",
+        "1e6996b1d4d44eaa97a87c26fa6fe61a",
+        "a3752e0d084547448853a558b8fa7726",
+        "f0ad516f597647adb7be5583a8d3f163"
+      ],
+      "futureStatus": "pending",
+      "originalsPreserved": true
+    },
+    "retired": true,
+    "contextThrough": "2026-11-16",
+    "appointment": "14:00–15:00",
+    "tentativeBlock": "15:00–16:00",
+    "schedules": [
+      {
+        "revisionId": "e08dfe2b-ab40-4d0e-9078-228db21f7819",
+        "claims": [
+          {
+            "week": 1,
+            "minutes": 240,
+            "actualMinutes": 240,
+            "matches": true
+          },
+          {
+            "week": 2,
+            "minutes": 240,
+            "actualMinutes": 240,
+            "matches": true
+          },
+          {
+            "date": "2026-11-04",
+            "minutes": 120,
+            "actualMinutes": 120,
+            "matches": true
+          },
+          {
+            "date": "2026-11-05",
+            "minutes": 60,
+            "actualMinutes": 60,
+            "matches": true
+          },
+          {
+            "date": "2026-11-06",
+            "minutes": 60,
+            "actualMinutes": 60,
+            "matches": true
+          },
+          {
+            "date": "2026-11-11",
+            "minutes": 60,
+            "actualMinutes": 60,
+            "matches": true
+          },
+          {
+            "date": "2026-11-12",
+            "minutes": 120,
+            "actualMinutes": 120,
+            "matches": true
+          },
+          {
+            "date": "2026-11-13",
+            "minutes": 60,
+            "actualMinutes": 60,
+            "matches": true
+          }
+        ]
+      },
+      {
+        "revisionId": "89eb9631-db3b-405c-b9e1-bdefc301c150",
+        "claims": [
+          {
+            "week": 1,
+            "minutes": 240,
+            "actualMinutes": 240,
+            "matches": true
+          },
+          {
+            "week": 2,
+            "minutes": 240,
+            "actualMinutes": 240,
+            "matches": true
+          },
+          {
+            "date": "2026-11-04",
+            "minutes": 0,
+            "actualMinutes": 0,
+            "matches": true
+          },
+          {
+            "date": "2026-11-05",
+            "minutes": 120,
+            "actualMinutes": 120,
+            "matches": true
+          },
+          {
+            "date": "2026-11-06",
+            "minutes": 120,
+            "actualMinutes": 120,
+            "matches": true
+          },
+          {
+            "date": "2026-11-11",
+            "minutes": 60,
+            "actualMinutes": 60,
+            "matches": true
+          },
+          {
+            "date": "2026-11-12",
+            "minutes": 120,
+            "actualMinutes": 120,
+            "matches": true
+          },
+          {
+            "date": "2026-11-13",
+            "minutes": 60,
+            "actualMinutes": 60,
+            "matches": true
+          }
+        ]
+      }
+    ],
+    "reviewTimes": "Show proposed changes\nNov 11 · 15:00–16:00 · Study: Applied Data Ethics case memo\nNov 12 · 14:00–15:00 · Study: Applied Data Ethics case memo\nNov 12 · 15:15–16:15 · Study: Applied Data Ethics case memo\nNov 13 · 14:00–15:00 · Study: Applied Data Ethics case memo"
+  }
+}

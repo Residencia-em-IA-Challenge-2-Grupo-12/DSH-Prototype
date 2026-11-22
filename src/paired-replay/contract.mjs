@@ -34,7 +34,7 @@ const observation = z.discriminatedUnion('availability', [
 ]);
 const timeline = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('request'), text }),
-  z.strictObject({ kind: z.literal('question'), id, text, choices: z.array(text) }),
+  z.strictObject({ kind: z.literal('question'), id, groupId: id.optional(), text, choices: z.array(text) }),
   z.strictObject({ kind: z.literal('answer'), questionId: id, text }),
   z.strictObject({ kind: z.literal('advice'), text, sources: z.array(citation) }),
   z.strictObject({ kind: z.literal('context_review'), revisionId: id }),
