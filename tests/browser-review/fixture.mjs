@@ -65,10 +65,10 @@ const client={
   async prompt(text){
     append('user',text);
     if(text==='Start exercise'){
-      if(student==='bruno')await call('preview_study_options',{options:[
-        {label:'Tuesday morning',windows:[{date:'2026-11-03',start:'09:00',end:'11:00'}]},
-        {label:'Wednesday evening',windows:[{date:'2026-11-04',start:'19:00',end:'20:00'}]},
-      ]});
+      if(student==='bruno'){
+        await call('preview_study_options',{options:[{label:'Tuesday morning',windows:[{date:'2026-11-03',start:'09:00',end:'11:00'}]}]});
+        await call('preview_study_options',{options:[{label:'Wednesday evening',windows:[{date:'2026-11-04',start:'19:00',end:'20:00'}]}]});
+      }
       question={requestId:'first-question',questions:[{id:'choice',question:student==='bruno'?'Which candidate window works?':'Which source should govern?',
         options:(student==='bruno'?['Tuesday morning','Wednesday evening']:['Noon (LMS)','18:00 (module guide)']).map(label=>({label}))}]};
     }else if(text==='Remove Monday'){

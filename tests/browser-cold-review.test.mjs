@@ -32,6 +32,27 @@ test('candidate and real commitment stay distinct and a late conflict fences the
   assert.equal(preview.observe(),null);
 });
 
+test('earlier preview batches remain attached and the next question starts with its own options',async()=>{
+  let events=[];
+  const preview=createAvailabilityPreview({events:async()=>events},'bruno');
+  const first=await preview.stage([{label:'Earlier batch',windows:[window]}]);
+  const second=await preview.stage([{label:'Later batch',windows:[{...window,date:'2026-11-06'}]}]);
+  assert.deepEqual(second.options.map(option=>option.label),['Earlier batch','Later batch']);
+  const question={requestId:'grouped',questions:[{options:second.options}]};
+  const client={snapshot:async()=>({question}),answer:async()=>{
+    await preview.stage([{label:'Next question',windows:[window]}]);
+  }};
+  const api=createManagedStudyApi({manager:{current:async()=>({id:'r',phase:'active'})},
+    driver:{active:()=>({client,service:{availabilityPreview:preview}})}});
+  await assert.rejects(()=>api.answer('r','grouped',[{selected:['Earlier batch']}],first.id),/options changed/);
+  events=[event('new commitment','2026-11-04T19:00:00-03:00','2026-11-04T20:00:00-03:00')];
+  await assert.rejects(()=>api.answer('r','grouped',[{selected:['Earlier batch']}],second.id),/overlaps/);
+  await api.answer('r','grouped',[{selected:['Later batch']}],second.id);
+  assert.deepEqual(preview.observe().options.map(option=>option.label),['Next question']);
+  await assert.rejects(()=>preview.consume(async()=>{throw new Error('Answer rejected');}),/Answer rejected/);
+  assert.deepEqual(preview.observe().options.map(option=>option.label),['Next question']);
+});
+
 test('confirmation is bound to selected run and original operator replies',async()=>{
   const calls=[];
   let view={busy:true,messages:[]};

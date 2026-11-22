@@ -2,13 +2,13 @@ const words={
   en:{header:'Planning inputs',pending:'Review these inputs',saved:'Confirmed inputs',confirm:'Confirm planning inputs',
     note:'This confirms deadlines and preferences. Calendar changes have their own approval.',source:'Read source',page:'page',
     evidence:'Source evidence',dates:'Assessment dates',windows:'Study windows',hours:'hours per week',day:'hours per day',
-    break:'minute break',through:'through',changes:'Changes since the previous revision',added:'Added',removed:'Removed',
+    break:'minute break',through:'Preferences valid through',inclusive:'inclusive',changes:'Changes since the previous revision',added:'Added',removed:'Removed',
     replies:'Original replies',load:'Workload or scope changed',datesChanged:'Assessment evidence or dates changed',
     captureError:'Source unavailable',noContext:'The agent will propose cited dates and preferences here.'},
   pt:{header:'Dados para o planejamento',pending:'Revise estes dados',saved:'Dados confirmados',confirm:'Confirmar dados do plano',
     note:'Isto confirma prazos e preferências. Alterações no calendário têm aprovação separada.',source:'Ler fonte',page:'página',
     evidence:'Trecho da fonte',dates:'Datas das avaliações',windows:'Janelas de estudo',hours:'horas por semana',day:'horas por dia',
-    break:'minutos de pausa',through:'até',changes:'Mudanças desde a revisão anterior',added:'Adicionado',removed:'Removido',
+    break:'minutos de pausa',through:'Preferências válidas até',inclusive:'inclusive',changes:'Mudanças desde a revisão anterior',added:'Adicionado',removed:'Removido',
     replies:'Respostas originais',load:'Carga ou escopo alterado',datesChanged:'Datas ou fontes alteradas',
     captureError:'Fonte indisponível',noContext:'O agente apresentará aqui as datas citadas e as preferências.'},
 };
@@ -92,7 +92,8 @@ export function mountPlanningReview(root) {
       };
       details.append(load,body);block.append(details);deadlines.append(block);
     }
-    availability.append(el('h3',t.windows),el('p',`${r.targetHours} ${t.hours} · ${r.maxDailyStudyHours} ${t.day} · ${r.studyBreakMinutes} ${t.break} · ${t.through} ${formatDate(r.through)}`));
+    availability.append(el('h3',t.windows),el('p',`${r.targetHours} ${t.hours} · ${r.maxDailyStudyHours} ${t.day} · ${r.studyBreakMinutes} ${t.break}`),
+      el('p',`${t.through} ${formatDate(r.through)} (${t.inclusive})`));
     const windows=el('ul');
     for(const window of r.studyWindows)windows.append(el('li',formatWindow(window)));
     availability.append(windows);

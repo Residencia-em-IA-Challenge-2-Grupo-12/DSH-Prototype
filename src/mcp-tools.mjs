@@ -27,7 +27,7 @@ export function registerStudyTools(server,call,{coldStart=false,browserStudy=fal
   },safe('draft_study_plan'));
   if(coldStart){
     if(browserStudy)server.registerTool('preview_study_options',{
-      description:'Check concrete windows against commitments before offering them in a native question. Exact matching labels connect the result to the widget. An empty conflicts list means the window is clear; null means calendar unavailable. A window can start exactly when an event ends.',
+      description:'Check concrete windows against commitments before offering them in a native question. Batches combine by exact label for one question. An empty conflicts list means the window is clear; null means calendar unavailable. A window can start exactly when an event ends.',
       inputSchema:{student,options:availabilityOptions},},safe('preview_study_options'));
     server.registerTool('read_planning_context',{description:'Read the pending and operator-confirmed cold-start context. Reuse confirmed answers within their scope.',inputSchema:{student}},safe('read_planning_context'));
     server.registerTool('propose_planning_context',{description:'Submit normalized deadlines and planning preferences for separate operator review. Quote the authoritative document verbatim and give PDF pages. For conflicting sources, record the operator’s resolution. Use weekdays 0 (Sunday) through 6 (Saturday). Agree on time windows, target, daily limit, break, and expiry. Include important assumptions. Produces a pending record only.',inputSchema:{student,record:planningContextSchema}},safe('propose_planning_context'));
