@@ -77,6 +77,10 @@ test('approval preflight rejects invalid times and constraints the student did n
     add('second', '2026-11-04T20:15:00-03:00', '2026-11-04T21:15:00-03:00'),
   ], future: [] } };
   assert.deepEqual(validateSchedule(proposal, [], manifest, reviewed), []);
+  const late = structuredClone(proposal);
+  late.sections.near[1].start = '2026-11-04T21:00:00.001-03:00';
+  late.sections.near[1].end = '2026-11-04T22:00:00.001-03:00';
+  assert.match(validateSchedule(late, [], manifest, reviewed).join('\n'), /outside reviewed availability/);
   const changed = structuredClone(proposal);
   changed.sections.near[1].end = 'invalid';
   assert.ok(validateSchedule(changed, [], manifest, reviewed).some(finding => /Invalid study interval/.test(finding)));

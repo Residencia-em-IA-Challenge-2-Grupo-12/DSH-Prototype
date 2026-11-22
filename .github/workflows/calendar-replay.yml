@@ -2,10 +2,10 @@ name: Calendar replay integration
 
 on:
   pull_request:
-    paths: ['src/**', 'fixtures/**', 'scripts/paired-replay*', 'package*.json', '.github/workflows/calendar-replay.yml']
+    paths: ['src/**', 'fixtures/**', 'scripts/paired-replay*', 'tests/paired-replay-probe.test.py', 'package*.json', '.github/workflows/calendar-replay.yml']
   push:
     branches: [main]
-    paths: ['src/**', 'fixtures/**', 'scripts/paired-replay*', 'package*.json', '.github/workflows/calendar-replay.yml']
+    paths: ['src/**', 'fixtures/**', 'scripts/paired-replay*', 'tests/paired-replay-probe.test.py', 'package*.json', '.github/workflows/calendar-replay.yml']
   workflow_dispatch:
     inputs:
       recovery:
@@ -27,6 +27,8 @@ jobs:
           node-version: '24.11.1'
           cache: npm
       - run: npm ci
+      - name: Verify portable approval records
+        run: python3 -B tests/paired-replay-probe.test.py
       - name: Run the scripted Bruno smoke case
         run: |
           mkdir "$RUNNER_TEMP/study-replay"
