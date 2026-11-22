@@ -29,12 +29,21 @@ export function createAvailabilityPreview(calendar,student) {
     async stage(value) {
       const options=availabilityOptions.parse(value);
       if(new Set(options.map(option=>option.label)).size!==options.length)throw new Error('Use distinct option labels');
-      const preview={id:randomUUID(),options};
+      const grouped=new Map(current?.options.map(option=>[option.label,option]));
+      for(const option of options)grouped.set(option.label,option);
+      if(grouped.size>20)throw new Error('Keep availability options for one question to 20 or fewer');
+      const preview={id:randomUUID(),options:[...grouped.values()]};
       current=preview;
       const events=await calendar.events(student).catch(()=>null);
       return annotate(preview,events);
     },
     clear(){current=null;},
+    async consume(action){
+      const previous=current;
+      current=null;
+      try{return await action();}
+      catch(error){current??=previous;throw error;}
+    },
     observe(events){return annotate(current,events);},
     async checkSelection(id,labels) {
       if(!id||current?.id!==id)throw new Error('Availability options changed. Refresh and review before answering.');

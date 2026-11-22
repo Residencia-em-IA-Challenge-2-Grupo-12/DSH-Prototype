@@ -13,6 +13,7 @@ const words={
     start:'Start selected scenario',retire:'End and archive run',refresh:'Refresh',send:'Send',chat:'Plan together',
     calendar:'Your week · calendar and proposal',proposal:'Review proposal',near:'Coming week',future:'Future tentative blocks',
     approveNear:'Approve coming week',approveFuture:'Approve future blocks',applying:'Applying…',
+    coverageAlternative:'Course coverage alternative · includes a first block for each course when feasible.',
     approvalNote:'Chat messages do not apply calendar changes. Review each section and use its separate approval button.',
     messageLabel:'Your message',showChanges:'Show proposed changes',blocks:'blocks',hours:'study hours',noEvents:'Start a synthetic run to inspect its calendar.',working:'The agent is working…',waiting:'Your answer is needed. The execution timer is paused while you answer.',ready:'Ready for your next message.',typeInstead:'Type a different answer',otherAnswer:'Other answer (optional for multiple selection)',typedAnswer:'Your answer',dismissQuestion:'Dismiss question',questionDismissed:'Question dismissed. Calendar changes were not approved.',answerRequired:'Choose an option or type an answer for every question.',answerTooLong:'Keep each typed answer within 2000 characters.',approved:'Approved changes applied.',answer:'Send answer',sent:'Message sent.',answered:'Answer sent. Calendar approval remains separate.',started:'Synthetic run started.',
     archived:'Run archived.',refreshed:'View refreshed.',none:'No active run',
@@ -32,6 +33,7 @@ const words={
     start:'Iniciar cenário selecionado',retire:'Encerrar e arquivar',refresh:'Atualizar',send:'Enviar',chat:'Planejar em conjunto',
     calendar:'Sua semana · calendário e proposta',proposal:'Revisar proposta',near:'Próxima semana',future:'Blocos futuros provisórios',
     approveNear:'Aprovar próxima semana',approveFuture:'Aprovar blocos futuros',applying:'Aplicando…',
+    coverageAlternative:'Alternativa de cobertura · inclui um primeiro bloco por disciplina quando possível.',
     approvalNote:'Mensagens no chat não alteram o calendário. Revise cada seção e use o botão de aprovação correspondente.',
     messageLabel:'Sua mensagem',showChanges:'Mostrar alterações propostas',blocks:'blocos',hours:'horas de estudo',noEvents:'Inicie uma execução sintética para visualizar o calendário.',working:'O agente está trabalhando…',waiting:'Sua resposta é necessária. O tempo de execução fica pausado enquanto você responde.',ready:'Pronto para sua próxima mensagem.',typeInstead:'Digitar outra resposta',otherAnswer:'Outra resposta (opcional na seleção múltipla)',typedAnswer:'Sua resposta',dismissQuestion:'Dispensar pergunta',questionDismissed:'Pergunta dispensada. Nenhuma alteração no calendário foi aprovada.',answerRequired:'Escolha uma opção ou digite uma resposta para cada pergunta.',answerTooLong:'Use até 2000 caracteres em cada resposta digitada.',approved:'Alterações aprovadas e aplicadas.',answer:'Enviar resposta',sent:'Mensagem enviada.',answered:'Resposta enviada. A aprovação do calendário continua separada.',started:'Execução sintética iniciada.',
     archived:'Execução arquivada.',refreshed:'Visualização atualizada.',none:'Nenhuma execução ativa',
@@ -228,9 +230,7 @@ function renderProposal(state){
     box.append(node('h3',`${t(label)} · ${t(status)||status||''}`));
     const blocks=plan[section]||[],minutes=blocks.reduce((sum,event)=>sum+(event.start?.dateTime&&event.end?.dateTime?(Date.parse(event.end.dateTime)-Date.parse(event.start.dateTime))/60000:0),0);
     box.append(node('p',`${blocks.length} ${t('blocks')} · ${Number((minutes/60).toFixed(2))} ${t('hours')}`));
-    if(section==='near'&&plan.allocation==='course-coverage')box.append(node('p',$('language').value==='pt'
-      ? 'Alternativa de cobertura · inclui um primeiro bloco por disciplina quando possível.'
-      : 'Course coverage alternative · includes a first block for each course when feasible.'));
+    if(section==='near'&&plan.allocation==='course-coverage')box.append(node('p',t('coverageAlternative')));
     if(plan.planningContextRevisionId&&(section==='near'||blocks.length)){
       const coverage=node('ul','');coverage.className='course-coverage';
       const nf=new Intl.NumberFormat($('language').value==='pt'?'pt-BR':'en',{maximumFractionDigits:2});

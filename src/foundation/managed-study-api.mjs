@@ -34,21 +34,17 @@ export function createManagedStudyApi({manager,driver}={}){
         const shown=preview.observe()?.options.filter(option=>optionLabels.includes(option.label))||[];
         const labels=Array.isArray(answers)?answers.flatMap(answer=>Array.isArray(answer?.selected)?answer.selected:[]):[];
         if(labels.some(label=>shown.some(option=>option.label===label)))await preview.checkSelection(previewId,labels);
-        // Consume only after the underlying session validates the answer. Clear
-        // the exact preview we checked, even if the next turn publishes another.
-        const current=preview.observe()?.id;
-        const result=await active.client.answer(requestId,answers);
-        if(preview.observe()?.id===current)preview.clear();
-        return result;
+        // The model may stage the next question before the traced answer
+        // finishes. Start that group without any options from this question.
+        return preview.consume(()=>active.client.answer(requestId,answers));
       }
       return active.client.answer(requestId,answers);
     },
     async cancelQuestion(runId,requestId){
       const active=await selected(runId);
-      const preview=active.service.availabilityPreview,current=preview?.observe()?.id;
-      const result=await active.client.cancelQuestion(requestId);
-      if(preview?.observe()?.id===current)preview?.clear();
-      return result;
+      const preview=active.service.availabilityPreview;
+      const cancel=()=>active.client.cancelQuestion(requestId);
+      return preview?preview.consume(cancel):cancel();
     },
     async confirmContext(runId,revisionId){
       const active=await selected(runId);

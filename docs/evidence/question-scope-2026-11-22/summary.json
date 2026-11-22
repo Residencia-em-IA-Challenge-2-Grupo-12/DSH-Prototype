@@ -1,0 +1,33 @@
+{
+  "verifiedOn": "2026-11-22",
+  "implementation": "dcd10366ed7545b934bf64ce5c25fa91662324e1",
+  "referenceRun": "7efe65a6-7792-49b8-871c-adf19f32bf66",
+  "runId": "c3d534ff-4751-4396-b223-052c6634635c",
+  "attemptId": "36855c40-6306-47f1-8707-963c6706963f",
+  "caseId": "ana-held-out",
+  "runtime": "host-luna-fallback",
+  "model": "gpt-6-luna",
+  "usage": "unknown",
+  "operator": "Headless Chrome with prepared fictional answers and a separate coming-week approval",
+  "durationMs": 84259,
+  "questions": [
+    "For the two-week plan (Nov 2–15), which candidate times suit you? I checked these against your calendar; they are clear.",
+    "Which verified one-hour slots work for you? The Nov 11 14:00 slot conflicts with a health appointment; Nov 11 15:00–16:00 is clear. Select four hours per week or type another availability in your stated Wed–Fri 14:00–16:15 range."
+  ],
+  "questionWidgets": 2,
+  "contextThrough": "2026-11-15",
+  "referenceContextThrough": "2026-11-16",
+  "observed": {
+    "original": 108,
+    "added": [
+      "94c68ac3d61646dca71d4964e304119b",
+      "a80f1c4d6b4846179d2787b6c6e34d63",
+      "c3169827cd864f6eadf66e90f1c7343d",
+      "f26dcb40a69945558d9d9eba107d7c96"
+    ],
+    "futureStatus": "pending",
+    "originalsPreserved": true
+  },
+  "retainedSecondWednesday": true,
+  "calendarpitRetired": true
+}

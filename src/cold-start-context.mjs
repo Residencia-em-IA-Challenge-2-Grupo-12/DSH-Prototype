@@ -27,7 +27,7 @@ export const planningContextSchema = z.strictObject({
   targetHours:z.number().int().min(1).max(20),
   maxDailyStudyHours:z.number().int().min(1).max(8),
   studyBreakMinutes:z.number().int().min(0).max(120),
-  through:date,
+  through:date.describe('Inclusive final date of these preferences. Respect an explicit end date. For a relative duration, count its start date as day one. In this simulation, two weeks starting November 2, 2026 end on November 15, 2026.'),
   assumption:z.string().trim().min(1).max(600),
 });
 
