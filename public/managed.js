@@ -228,6 +228,9 @@ function renderProposal(state){
     box.append(node('h3',`${t(label)} · ${t(status)||status||''}`));
     const blocks=plan[section]||[],minutes=blocks.reduce((sum,event)=>sum+(event.start?.dateTime&&event.end?.dateTime?(Date.parse(event.end.dateTime)-Date.parse(event.start.dateTime))/60000:0),0);
     box.append(node('p',`${blocks.length} ${t('blocks')} · ${Number((minutes/60).toFixed(2))} ${t('hours')}`));
+    if(section==='near'&&plan.allocation==='course-coverage')box.append(node('p',$('language').value==='pt'
+      ? 'Alternativa de cobertura · inclui um primeiro bloco por disciplina quando possível.'
+      : 'Course coverage alternative · includes a first block for each course when feasible.'));
     if(plan.planningContextRevisionId&&(section==='near'||blocks.length)){
       const coverage=node('ul','');coverage.className='course-coverage';
       const nf=new Intl.NumberFormat($('language').value==='pt'?'pt-BR':'en',{maximumFractionDigits:2});

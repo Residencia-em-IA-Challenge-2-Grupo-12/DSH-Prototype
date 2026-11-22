@@ -11,7 +11,7 @@ const event=(id,start,end,extra={})=>({id,summary:id,start:{dateTime:start},end:
 test('candidate and real commitment stay distinct and a late conflict fences the structured answer',async()=>{
   let events=[event('commute','2026-11-04T18:00:00-03:00','2026-11-04T19:00:00-03:00')];
   const preview=createAvailabilityPreview({events:async()=>events},'bruno');
-  const {id}=preview.stage([{label:'Wednesday',windows:[window]}]);
+  const {id}=await preview.stage([{label:'Wednesday',windows:[window]}]);
   assert.deepEqual(preview.observe(events).options[0].windows[0].conflicts,[]);
   assert.equal(preview.observe(null).options[0].windows[0].conflicts,null);
   let answered=0;
