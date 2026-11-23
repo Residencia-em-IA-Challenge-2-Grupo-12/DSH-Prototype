@@ -1,5 +1,7 @@
 # Experiment brief · One evening preference
 
+[Live comparison results](../../docs/review/routine-preference-2026-11-22.md).
+
 This is the next bounded #42 experiment. It tests how a decision is presented after the same planner has generated candidates. #45 compares schedulers on its own frozen cases. The prototype leads into #5/#14, where a short optional check-in can inform the next proposal. Review and rebuild this child against #58 when its parent integrates.
 
 ## What we will do
