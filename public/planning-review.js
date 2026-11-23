@@ -3,13 +3,13 @@ const words={
     note:'This confirms deadlines and preferences. Calendar changes have their own approval.',source:'Read source',page:'page',
     evidence:'Source evidence',dates:'Assessment dates',windows:'Study windows',hours:'hours per week',day:'hours per day',
     break:'minute break',through:'Preferences valid through',inclusive:'inclusive',changes:'Changes since the previous revision',added:'Added',removed:'Removed',
-    replies:'Original replies',load:'Workload or scope changed',datesChanged:'Assessment evidence or dates changed',
+    replies:'Original replies',prior:'Previously confirmed',proposed:'Proposed preference',load:'Workload or scope changed',datesChanged:'Assessment evidence or dates changed',
     captureError:'Source unavailable',noContext:'The agent will propose cited dates and preferences here.'},
   pt:{header:'Dados para o planejamento',pending:'Revise estes dados',saved:'Dados confirmados',confirm:'Confirmar dados do plano',
     note:'Isto confirma prazos e preferências. Alterações no calendário têm aprovação separada.',source:'Ler fonte',page:'página',
     evidence:'Trecho da fonte',dates:'Datas das avaliações',windows:'Janelas de estudo',hours:'horas por semana',day:'horas por dia',
     break:'minutos de pausa',through:'Preferências válidas até',inclusive:'inclusive',changes:'Mudanças desde a revisão anterior',added:'Adicionado',removed:'Removido',
-    replies:'Respostas originais',load:'Carga ou escopo alterado',datesChanged:'Datas ou fontes alteradas',
+    replies:'Respostas originais',prior:'Confirmado anteriormente',proposed:'Preferência proposta',load:'Carga ou escopo alterado',datesChanged:'Datas ou fontes alteradas',
     captureError:'Fonte indisponível',noContext:'O agente apresentará aqui as datas citadas e as preferências.'},
 };
 
@@ -98,8 +98,14 @@ export function mountPlanningReview(root) {
     for(const window of r.studyWindows)windows.append(el('li',formatWindow(window)));
     availability.append(windows);
     cards.append(deadlines,availability);
-    root.append(cards,el('p',r.assumption));
-    const savedReplies=pending?replies:revision.operatorReplies;
+    root.append(cards);
+    const priorAssumption=pending&&context.confirmed?.record.assumption;
+    if(priorAssumption&&priorAssumption!==r.assumption){
+      const comparison=el('div');comparison.className='context-changes';
+      comparison.append(el('h3',t.prior),el('p',priorAssumption),el('h3',t.proposed),el('p',r.assumption));
+      root.append(comparison);
+    }else root.append(el('p',r.assumption));
+    const savedReplies=revision.operatorReplies??(pending?replies:[]);
     if(savedReplies?.length){
       const original=el('details');original.append(el('summary',t.replies));
       for(const reply of savedReplies)original.append(el('p',reply));
