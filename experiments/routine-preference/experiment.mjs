@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FIXED_TODAY, makePlan } from '../../src/core.mjs';
+import { decideRoutinePreference } from './decision.mjs';
 import { measurePlan } from '../planner-readiness/baseline.mjs';
 
 const bytes = readFileSync(new URL('./cases.json', import.meta.url));
@@ -71,19 +72,16 @@ export function packet(id) {
 
 export function formControl(id) {
   const { data, candidates } = scenario(id);
-  const mostStudy = Math.max(...candidates.map(candidate => candidate.studyMinutes));
-  const protectedOption = candidates.find(candidate => candidate.id === 'protect-wednesday');
-  if (data.validThrough < fixture.clock.date) return { action: 'recommend', candidateIds: ['flexible'] };
-  if (data.formPreference === 'hard' || protectedOption.studyMinutes === mostStudy) {
-    return { action: 'recommend', candidateIds: [protectedOption.id] };
-  }
-  if (data.fallbackMinutes !== undefined) {
-    const fallback = candidates.find(candidate => candidate.studyMinutes === mostStudy && candidate.wednesdayMinutes <= data.fallbackMinutes);
-    if (fallback) return { action: 'recommend', candidateIds: [fallback.id] };
-  }
-  const leastWednesday = candidates.filter(candidate => candidate.studyMinutes === mostStudy)
-    .sort((left, right) => left.wednesdayMinutes - right.wednesdayMinutes)[0];
-  return { action: 'ask', candidateIds: [protectedOption.id, leastWednesday.id] };
+  const preference = {
+    kind: data.formPreference,
+    validFrom: '2026-10-26',
+    validThrough: data.validThrough,
+    fallbackMinutes: data.fallbackMinutes,
+  };
+  const { action, candidateIds } = decideRoutinePreference(candidates.map(candidate => ({
+    ...candidate, protectedMinutes: candidate.wednesdayMinutes,
+  })), preference, fixture.clock.date);
+  return { action, candidateIds };
 }
 
 export function score(id, response) {

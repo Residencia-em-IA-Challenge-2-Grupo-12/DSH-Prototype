@@ -28,3 +28,26 @@ test('a rule-based form and judged model decisions can be compared on the same f
   assert.throws(() => score('hard-limit', decision('hard-limit', 'recommend', ['flexible'])), /valid action/);
   assert.throws(() => score('hard-limit', decision('expired', 'recommend', ['protect-wednesday'])), /case ID/);
 });
+
+test('reviewed routine policy asks only when a current preference leaves a materially better fallback open', async () => {
+  const { decideRoutinePreference } = await import('../experiments/routine-preference/decision.mjs');
+  const candidates = [
+    { id: 'usual', studyMinutes: 240, protectedMinutes: 120 },
+    { id: 'free', studyMinutes: 180, protectedMinutes: 0 },
+    { id: 'one', studyMinutes: 240, protectedMinutes: 60 },
+  ];
+  const reviewed = { kind: 'soft', validFrom: '2026-11-02', validThrough: '2026-11-08' };
+  const date = '2026-11-02';
+  assert.deepEqual(decideRoutinePreference(candidates, reviewed, date), {
+    action: 'ask', candidateIds: ['free', 'one'], reason: 'unresolved_tradeoff',
+  });
+  assert.deepEqual(decideRoutinePreference(candidates, { ...reviewed, fallbackMinutes: 60 }, date), {
+    action: 'recommend', candidateIds: ['one'], reason: 'explicit_fallback',
+  });
+  assert.deepEqual(decideRoutinePreference(candidates, { ...reviewed, fallbackMinutes: 0 }, date), {
+    action: 'recommend', candidateIds: ['free'], reason: 'explicit_fallback',
+  });
+  assert.deepEqual(decideRoutinePreference(candidates, { ...reviewed, validFrom: '2026-10-26', validThrough: '2026-11-01' }, date), {
+    action: 'recommend', candidateIds: ['usual'], reason: 'no_current_preference',
+  });
+});
