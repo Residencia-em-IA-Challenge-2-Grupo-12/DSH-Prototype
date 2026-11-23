@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-11-22",
+  "testedCommit": "8a8cff7b61122044247efaef2faa2f462b0fa76e",
+  "model": "gpt-6-luna",
+  "provider": "codex",
+  "runtime": "host-luna-fallback",
+  "harness": "0.2.2-rc.1",
+  "method": "Separate live browser capture. The actual widget test supplied authored reviewed records.",
+  "runs": [
+    {
+      "case": "open-choice",
+      "runId": "3a9d0e03-a04a-48a0-a5b3-13a1da2d3186",
+      "attemptId": "ce783b39-542f-4225-90ce-711b01684c9b",
+      "replyMs": 12863,
+      "totalMs": 14696,
+      "usage": "unknown",
+      "calendarEventsUnchanged": 108,
+      "toolCalls": 0,
+      "retirementVerified": true,
+      "traceSha256": "f2939dc037bf82d635a09050ead4353fbdb97283a5a5cebf0e2426ced9dd27fa",
+      "packet": {
+        "caseId": "x-1",
+        "today": "2026-11-02",
+        "planningWeek": "2–8 November 2026",
+        "statement": "I aim for four hours this week through 8 November. I would prefer to keep Friday afternoon free.",
+        "instructions": "This is a fictional interpretation test. Use only this packet and make no tool calls. Extract the Friday study preference as stated, including an expired preference. Treat this week as 2–8 November, inclusive. Report null fallbackMinutes unless given an explicit numerical allowance. Return only JSON with caseId, kind (soft or hard), validFrom and validThrough in YYYY-MM-DD, and fallbackMinutes (number or null)."
+      },
+      "rawResponse": "{\"caseId\":\"x-1\",\"kind\":\"soft\",\"validFrom\":\"2026-11-02\",\"validThrough\":\"2026-11-08\",\"fallbackMinutes\":null}",
+      "assessment": {
+        "exactMatch": true,
+        "differingFields": [],
+        "reviewedReference": {
+          "caseId": "x-1",
+          "fallbackMinutes": null,
+          "kind": "soft",
+          "validFrom": "2026-11-02",
+          "validThrough": "2026-11-08"
+        }
+      }
+    },
+    {
+      "case": "accepted-fallback",
+      "runId": "29cc657a-d3dd-4706-acd2-c4f402872d22",
+      "attemptId": "74daae99-c969-4da2-9ee0-5738097fcbfe",
+      "replyMs": 11287,
+      "totalMs": 13404,
+      "usage": "unknown",
+      "calendarEventsUnchanged": 108,
+      "toolCalls": 0,
+      "retirementVerified": true,
+      "traceSha256": "8831281d12f4601de0a5ca8fee14f87e46a4b7dfb23e08d5855a7c5cdb2dc347",
+      "packet": {
+        "caseId": "x-2",
+        "today": "2026-11-02",
+        "planningWeek": "2–8 November 2026",
+        "statement": "Keep Friday afternoon free through 8 November if you can. If I need it for four hours this week, one Friday hour is fine.",
+        "instructions": "This is a fictional interpretation test. Use only this packet and make no tool calls. Extract the Friday study preference as stated, including an expired preference. Treat this week as 2–8 November, inclusive. Report null fallbackMinutes unless given an explicit numerical allowance. Return only JSON with caseId, kind (soft or hard), validFrom and validThrough in YYYY-MM-DD, and fallbackMinutes (number or null)."
+      },
+      "rawResponse": "{\"caseId\":\"x-2\",\"kind\":\"soft\",\"validFrom\":\"2026-11-02\",\"validThrough\":\"2026-11-08\",\"fallbackMinutes\":60}",
+      "assessment": {
+        "exactMatch": true,
+        "differingFields": [],
+        "reviewedReference": {
+          "caseId": "x-2",
+          "fallbackMinutes": 60,
+          "kind": "soft",
+          "validFrom": "2026-11-02",
+          "validThrough": "2026-11-08"
+        }
+      }
+    },
+    {
+      "case": "expired",
+      "runId": "e131def1-f92d-405f-8213-b2cc746716b2",
+      "attemptId": "2ebf5f43-d20c-496f-bc16-78907ac3acae",
+      "replyMs": 8856,
+      "totalMs": 11158,
+      "usage": "unknown",
+      "calendarEventsUnchanged": 108,
+      "toolCalls": 0,
+      "retirementVerified": true,
+      "traceSha256": "34943d634fa70f5ad693f6a610841a4dc297e0b013f38e9da3fc6fe627c86599",
+      "packet": {
+        "caseId": "x-3",
+        "today": "2026-11-02",
+        "planningWeek": "2–8 November 2026",
+        "statement": "I asked to protect Friday afternoons from 26 October through 1 November only. I have no new request for this week.",
+        "instructions": "This is a fictional interpretation test. Use only this packet and make no tool calls. Extract the Friday study preference as stated, including an expired preference. Treat this week as 2–8 November, inclusive. Report null fallbackMinutes unless given an explicit numerical allowance. Return only JSON with caseId, kind (soft or hard), validFrom and validThrough in YYYY-MM-DD, and fallbackMinutes (number or null)."
+      },
+      "rawResponse": "{\"caseId\":\"x-3\",\"kind\":\"hard\",\"validFrom\":\"2026-10-26\",\"validThrough\":\"2026-11-01\",\"fallbackMinutes\":null}",
+      "assessment": {
+        "exactMatch": false,
+        "differingFields": [
+          "kind"
+        ],
+        "reviewedReference": {
+          "caseId": "x-3",
+          "fallbackMinutes": null,
+          "kind": "soft",
+          "validFrom": "2026-10-26",
+          "validThrough": "2026-11-01"
+        }
+      }
+    },
+    {
+      "case": "explanation",
+      "runId": "4f52ffa0-9f23-4fc7-bec3-97bc14525e3f",
+      "attemptId": "aab0afe6-bd0e-4550-95c3-21476f05381e",
+      "replyMs": 6821,
+      "totalMs": 8773,
+      "usage": "unknown",
+      "calendarEventsUnchanged": 108,
+      "toolCalls": 0,
+      "retirementVerified": true,
+      "traceSha256": "4cf53de889be11e573c72ad95c70688e97136c6f60649d6b34864bfd936d2717",
+      "packet": {
+        "caseId": "ex-01",
+        "decision": "ask",
+        "candidates": [
+          {
+            "id": "free",
+            "studyMinutes": 180,
+            "fridayStudyMinutes": 0
+          },
+          {
+            "id": "usual",
+            "studyMinutes": 240,
+            "fridayStudyMinutes": 60
+          }
+        ],
+        "instructions": "This is a fictional explanation test. Use only this packet and make no tool calls. Preserve the supplied action. Phrase the question in plain English with both exact total hours and the amount of Friday study. Return only JSON with caseId, action, and message. Do not claim calendar changes."
+      },
+      "rawResponse": "{\"caseId\":\"ex-01\",\"action\":\"ask\",\"message\":\"Would you prefer 3 total study hours with no Friday study, or 4 total study hours including 60 minutes on Friday?\"}",
+      "assessment": {
+        "review": "The question retains both totals and both Friday impacts in English. It does not claim any write."
+      }
+    }
+  ]
+}
