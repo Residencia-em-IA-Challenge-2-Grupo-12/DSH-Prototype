@@ -20,9 +20,12 @@ export function createStudyBoundary({student,calendar,requireStaged=true,coldSta
     methods.set('read_planning_context',()=>readPlanningContext(student));
     methods.set('propose_planning_context',args=>proposePlanningContext(student,args.record));
   }
-  return {async call(method,args){
-    if(!methods.has(method))throw new Error('Agent operation is not available');
-    if(!args||typeof args!=='object'||Array.isArray(args)||args.student!==student)throw new Error('Request does not match the selected synthetic student');
-    return methods.get(method)(args);
-  }};
+  return {
+    methods:()=>[...methods.keys()],
+    async call(method,args){
+      if(!methods.has(method))throw new Error('Agent operation is not available');
+      if(!args||typeof args!=='object'||Array.isArray(args)||args.student!==student)throw new Error('Request does not match the selected synthetic student');
+      return methods.get(method)(args);
+    },
+  };
 }

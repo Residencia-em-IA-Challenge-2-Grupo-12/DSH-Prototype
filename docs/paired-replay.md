@@ -1,6 +1,6 @@
 # Portable study-planning replay
 
-This v1 draft carries one synthetic study-planning exercise between implementations. The DSH adapter runs Bruno with authored turns through the managed study API, the existing planner, and a fresh Calendarpit. Ana provides a held-out source variation that can be packed and checked and opened through the separate Luna browser workflow. [Scope and handoff decisions](review/paired-replay-handoff-2026-11-21.md) · [Regression test schedule](regression-testing.md).
+This v1 draft carries one synthetic study-planning exercise between implementations. The DSH adapter runs Bruno with authored turns through the managed study API, the existing planner, and a fresh Calendarpit; external runners (such as StudyBuddy FastAPI or a non-DSH single-agent loop) plug into the same harness via `--runner-url` using the [HTTP runner contract](runner-contract.md). Ana provides a held-out source variation that can be packed and checked and opened through the separate Luna browser workflow. [Scope and handoff decisions](review/paired-replay-handoff-2026-11-21.md) · [Regression test schedule](regression-testing.md).
 
 ## Run Bruno
 

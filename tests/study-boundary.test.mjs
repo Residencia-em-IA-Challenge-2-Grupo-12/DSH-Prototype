@@ -24,6 +24,8 @@ test('a student-bound agent can inspect context and draft but cannot approve or 
   await assert.rejects(service.call('__proto__',{student:'ana'}),/not available/i);
   await assert.rejects(service.call('list_calendar',{student:'bruno'}),/student/i);
   await assert.rejects(service.call('read_synthetic_file',{student:'ana',path:'../../../../etc/passwd'}),/outside/i);
+  await assert.rejects(service.call('read_synthetic_file',{student:'ana',path:'../../../../nonexistent-outside-probe/secret.txt'}),/outside/i);
+  await assert.rejects(service.call('list_synthetic_files',{student:'ana',path:'../outside-dir'}),/outside/i);
   assert.equal(writes,0);
   const staged=join(runtimeDir(),'workspaces','ana');await rm(staged,{recursive:true});
   await assert.rejects(service.call('list_synthetic_files',{student:'ana'}));
