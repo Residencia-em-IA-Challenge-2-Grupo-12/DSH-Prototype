@@ -1,0 +1,244 @@
+{
+  "version": 2,
+  "scenario": "conflicting",
+  "language": "en",
+  "mode": "scripted / in-memory synthetic calendar",
+  "fixtureSha256": "d8b30692464396d7f1a02fc1291ce0a8c217ef4b5ed1d75d9d20e2035f0a7913",
+  "usage": "none",
+  "observations": [
+    {
+      "phase": "initial",
+      "studyMinutes": 240,
+      "fridayMinutes": 60
+    },
+    {
+      "phase": "first interpretation",
+      "expected": {
+        "kind": "hard",
+        "fallbackMinutes": null
+      },
+      "observed": {
+        "kind": "hard",
+        "validThrough": "2026-11-08",
+        "fallbackMinutes": null,
+        "validFrom": "2026-11-02"
+      }
+    },
+    {
+      "phase": "first confirmation",
+      "studyMinutes": 180,
+      "fridayMinutes": 0
+    },
+    {
+      "phase": "second interpretation",
+      "expected": {
+        "kind": "soft",
+        "fallbackMinutes": 60
+      },
+      "observed": {
+        "kind": "soft",
+        "validThrough": "2026-11-08",
+        "fallbackMinutes": 60,
+        "validFrom": "2026-11-02"
+      }
+    },
+    {
+      "phase": "conflict pending",
+      "studyMinutes": 180,
+      "fridayMinutes": 0
+    },
+    {
+      "phase": "replacement confirmed",
+      "studyMinutes": 240,
+      "fridayMinutes": 60
+    },
+    {
+      "phase": "next week",
+      "studyMinutes": 240,
+      "fridayMinutes": 120
+    }
+  ],
+  "captures": [
+    {
+      "scripted": true,
+      "reply": {
+        "kind": "hard",
+        "fallbackMinutes": null,
+        "validThrough": "2026-11-08"
+      }
+    },
+    {
+      "scripted": true,
+      "reply": {
+        "kind": "soft",
+        "fallbackMinutes": 60,
+        "validThrough": "2026-11-08"
+      }
+    }
+  ],
+  "runId": "checkin-ana-scripted",
+  "originalEvents": 108,
+  "passed": true,
+  "evidence": {
+    "notes": [
+      {
+        "id": "9d4f406f-6aac-405a-b840-25b9b1fc9cc1",
+        "planningWeek": "2026-11-02",
+        "text": "I cannot study on Friday afternoon at all during November 2 through November 8. Please keep it free."
+      },
+      {
+        "id": "80a7f298-381e-464f-b37a-077afb0a5c35",
+        "planningWeek": "2026-11-02",
+        "text": "I can study on Friday afternoon after all, during November 2 through November 8. I would prefer to keep it free, but I agree to one hour on Friday if it gets me to four study hours."
+      }
+    ],
+    "revisions": [
+      {
+        "id": "f157e5f0-94b7-48bd-afd3-df504fba23ca",
+        "preference": {
+          "kind": "hard",
+          "validThrough": "2026-11-08",
+          "fallbackMinutes": null,
+          "validFrom": "2026-11-02"
+        },
+        "sourceIds": [
+          "9d4f406f-6aac-405a-b840-25b9b1fc9cc1"
+        ],
+        "status": "superseded"
+      },
+      {
+        "id": "73eb5b28-fd02-430c-bd45-135ff3e3c292",
+        "preference": {
+          "kind": "soft",
+          "validThrough": "2026-11-08",
+          "fallbackMinutes": 60,
+          "validFrom": "2026-11-02"
+        },
+        "sourceIds": [
+          "9d4f406f-6aac-405a-b840-25b9b1fc9cc1",
+          "80a7f298-381e-464f-b37a-077afb0a5c35"
+        ],
+        "status": "confirmed"
+      }
+    ],
+    "selections": [
+      {
+        "weekOf": "2026-11-02",
+        "reason": "no_current_preference",
+        "planningRevisionId": null,
+        "proposalId": "d4455af6-e4b4-44c9-bff9-9f0a1c4a2cbf",
+        "studyMinutes": 240,
+        "fridayMinutes": 60,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-06",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-02",
+        "reason": "time_unavailable",
+        "planningRevisionId": "f157e5f0-94b7-48bd-afd3-df504fba23ca",
+        "proposalId": "98716873-5898-4f1c-81ed-7f60b03e1340",
+        "studyMinutes": 180,
+        "fridayMinutes": 0,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-02",
+        "reason": "explicit_fallback",
+        "planningRevisionId": "73eb5b28-fd02-430c-bd45-135ff3e3c292",
+        "proposalId": "6776ca1b-3bd2-41d1-80ab-60282f6f97e6",
+        "studyMinutes": 240,
+        "fridayMinutes": 60,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-06",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-09",
+        "reason": "no_current_preference",
+        "planningRevisionId": null,
+        "proposalId": "86fda916-6a57-4164-b2a0-f116632d0a69",
+        "studyMinutes": 240,
+        "fridayMinutes": 120,
+        "windows": [
+          {
+            "date": "2026-11-11",
+            "start": "15:00",
+            "end": "16:00"
+          },
+          {
+            "date": "2026-11-13",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-15",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-13",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      }
+    ],
+    "approvalAttempts": 0
+  },
+  "durationMs": 2896
+}

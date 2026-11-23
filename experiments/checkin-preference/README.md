@@ -32,7 +32,11 @@ node experiments/checkin-preference/walkthrough.mjs --scripted /tmp/study-checki
 node experiments/checkin-preference/walkthrough.mjs --live /tmp/study-checkin-luna
 ```
 
-## Decision for the next slice
+## Follow-up
+
+[Skipped, conflicting, and Brazilian Portuguese check-ins](FOLLOW-UP.md) extends the original run with six browser runs and a storage recommendation.
+
+## Original experiment options
 
 | Option | What it buys | Cost or limit |
 | --- | --- | --- |
@@ -41,6 +45,6 @@ node experiments/checkin-preference/walkthrough.mjs --live /tmp/study-checkin-lu
 | Interpret, review, then apply the rule | Natural input, inspectable correction and reproducible expiry | One review step where a preference may affect the plan |
 | Introduce persistent preference memory immediately | Reuse across runs and devices | Requires a retention and migration decision before we know which records and controls are worth keeping |
 
-The third option is the current experiment. Read the results before adding durable records. The prototype uses one English Ana case, local-only controls, a fixed clock, one topic and run-local state. The note describes a fictional earlier week and the preference applies to a separate planning period. It records the user’s wording without measuring well-being, assigning a numerical health score or deducing fatigue. Scenarios such as feedback about a specific session, feedback arriving after a plan, ambiguity in Portuguese, skipping the check-in, conflicting reports and deleting or retiring learned preferences belong in a small follow-up set before product adoption. A free-text reply inside the schedule-choice widget is outside the exercised path. Calendar writes, general-purpose preference memory, and changes to the planner are outside this adapter.
+The third option is the current experiment. Read the results before adding durable records. The first walkthrough used an English Ana case, local-only controls, a fixed clock, one topic and run-local state. The note describes a fictional earlier week and the preference applies to a separate planning period. It records the user’s wording without measuring well-being, assigning a numerical health score or deducing fatigue. The follow-up covers ambiguity in Portuguese, leaving the check-in unanswered, and a conflict with an already confirmed preference. Session-level feedback and deletion or retirement controls remain open. A free-text reply inside the schedule-choice widget is outside the exercised path. Calendar writes, general-purpose preference memory, and changes to the planner are outside this adapter.
 
 Track the optional-feedback workflow in [#5](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/5), broader adaptation in [#14](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/14) and any structured well-being evaluation in [#15](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/15). The separate planner comparison in [#45](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/45) still needs to be run against both solvers.

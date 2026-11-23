@@ -2,10 +2,10 @@ name: Scripted browser review
 
 on:
   pull_request:
-    paths: ['public/**', 'src/**', 'fixtures/**', 'tests/browser-review/**', 'package*.json', '.github/workflows/browser-review.yml']
+    paths: ['public/**', 'src/**', 'fixtures/**', 'tests/browser-review/**', 'experiments/checkin-preference/*.mjs', 'experiments/routine-preference/*.mjs', 'experiments/planner-readiness/*.mjs', 'package*.json', '.github/workflows/browser-review.yml']
   push:
     branches: [main]
-    paths: ['public/**', 'src/**', 'fixtures/**', 'tests/browser-review/**', 'package*.json', '.github/workflows/browser-review.yml']
+    paths: ['public/**', 'src/**', 'fixtures/**', 'tests/browser-review/**', 'experiments/checkin-preference/*.mjs', 'experiments/routine-preference/*.mjs', 'experiments/planner-readiness/*.mjs', 'package*.json', '.github/workflows/browser-review.yml']
   workflow_dispatch:
 
 permissions:
@@ -26,6 +26,11 @@ jobs:
         run: |
           google-chrome --version
           node tests/browser-review/scripted.mjs "$RUNNER_TEMP/study-browser"
+      - name: Run the scripted check-in variants
+        run: |
+          for scenario in joined skipped conflicting portuguese; do
+            node experiments/checkin-preference/walkthrough.mjs --scripted "$RUNNER_TEMP/study-browser/checkin-$scenario" "$scenario"
+          done
       - name: Retain synthetic browser evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

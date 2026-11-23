@@ -1,0 +1,209 @@
+{
+  "version": 2,
+  "scenario": "portuguese",
+  "language": "pt",
+  "mode": "scripted / in-memory synthetic calendar",
+  "fixtureSha256": "d8b30692464396d7f1a02fc1291ce0a8c217ef4b5ed1d75d9d20e2035f0a7913",
+  "usage": "none",
+  "observations": [
+    {
+      "phase": "initial",
+      "studyMinutes": 240,
+      "fridayMinutes": 60
+    },
+    {
+      "phase": "first interpretation",
+      "expected": {
+        "kind": "unknown",
+        "fallbackMinutes": null
+      },
+      "observed": {
+        "kind": "unknown",
+        "validThrough": "2026-11-08",
+        "fallbackMinutes": null,
+        "validFrom": "2026-11-02"
+      }
+    },
+    {
+      "phase": "unconfirmed",
+      "previewUnchanged": true,
+      "unknownConfirmationBlocked": true
+    },
+    {
+      "phase": "second interpretation",
+      "expected": {
+        "kind": "soft",
+        "fallbackMinutes": null
+      },
+      "observed": {
+        "kind": "soft",
+        "validThrough": "2026-11-08",
+        "fallbackMinutes": null,
+        "validFrom": "2026-11-02"
+      }
+    },
+    {
+      "phase": "confirmed and selected",
+      "studyMinutes": 180,
+      "fridayMinutes": 0
+    },
+    {
+      "phase": "next week",
+      "studyMinutes": 240,
+      "fridayMinutes": 120
+    }
+  ],
+  "captures": [
+    {
+      "scripted": true,
+      "reply": {
+        "kind": "unknown",
+        "fallbackMinutes": null,
+        "validThrough": "2026-11-08"
+      }
+    },
+    {
+      "scripted": true,
+      "reply": {
+        "kind": "soft",
+        "fallbackMinutes": null,
+        "validThrough": "2026-11-08"
+      }
+    }
+  ],
+  "runId": "checkin-ana-scripted",
+  "originalEvents": 108,
+  "passed": true,
+  "evidence": {
+    "notes": [
+      {
+        "id": "244e09e7-d299-409d-80e8-d10e93d3f268",
+        "planningWeek": "2026-11-02",
+        "text": "O estudo da sexta passada me cansou. Quero repensar a sexta à tarde para a semana de 2 a 8 de novembro."
+      },
+      {
+        "id": "68b7ded2-a91f-446d-bae6-96937225cd11",
+        "planningWeek": "2026-11-02",
+        "text": "Explicando melhor: de 2 a 8 de novembro, prefiro deixar a sexta à tarde livre se der. Minha meta é estudar quatro horas na semana, mas ainda não aceitei usar a sexta como alternativa."
+      }
+    ],
+    "revisions": [
+      {
+        "id": "dac0825f-e8c7-44c5-b96e-3953a6284e0a",
+        "preference": {
+          "kind": "unknown",
+          "validThrough": "2026-11-08",
+          "fallbackMinutes": null,
+          "validFrom": "2026-11-02"
+        },
+        "sourceIds": [
+          "244e09e7-d299-409d-80e8-d10e93d3f268"
+        ],
+        "status": "superseded"
+      },
+      {
+        "id": "e88dffb4-50f9-42ac-9e03-2f1fdd10e2bf",
+        "preference": {
+          "kind": "soft",
+          "validThrough": "2026-11-08",
+          "fallbackMinutes": null,
+          "validFrom": "2026-11-02"
+        },
+        "sourceIds": [
+          "244e09e7-d299-409d-80e8-d10e93d3f268",
+          "68b7ded2-a91f-446d-bae6-96937225cd11"
+        ],
+        "status": "confirmed"
+      }
+    ],
+    "selections": [
+      {
+        "weekOf": "2026-11-02",
+        "reason": "no_current_preference",
+        "planningRevisionId": null,
+        "proposalId": "ae026e76-4fcb-4d40-ad70-1a127eb66a5f",
+        "studyMinutes": 240,
+        "fridayMinutes": 60,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-06",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-02",
+        "reason": "user_selected_review",
+        "planningRevisionId": "e88dffb4-50f9-42ac-9e03-2f1fdd10e2bf",
+        "proposalId": "a082c86d-b46f-4673-9343-f4b83f63ff91",
+        "studyMinutes": 180,
+        "fridayMinutes": 0,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-09",
+        "reason": "no_current_preference",
+        "planningRevisionId": null,
+        "proposalId": "90228cef-e6fd-4be8-b556-d51db96359ab",
+        "studyMinutes": 240,
+        "fridayMinutes": 120,
+        "windows": [
+          {
+            "date": "2026-11-11",
+            "start": "15:00",
+            "end": "16:00"
+          },
+          {
+            "date": "2026-11-13",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-15",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-13",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      }
+    ],
+    "approvalAttempts": 0
+  },
+  "durationMs": 3152
+}
