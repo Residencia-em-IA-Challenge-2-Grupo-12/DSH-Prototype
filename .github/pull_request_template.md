@@ -1,6 +1,6 @@
 ## Outcome
 
-Describe the change and link the relevant issue.
+Describe the change and link the relevant issue. For user-facing changes, name the student task this serves. Link the product decision if it adds a new outcome.
 
 ## Dependencies and scope
 

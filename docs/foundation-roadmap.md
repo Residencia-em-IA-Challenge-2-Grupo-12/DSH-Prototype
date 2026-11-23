@@ -4,11 +4,17 @@ The agreed product is a calendar-centered assistant for adult students. This pha
 
 The merged demo baseline is verified at cb86720. Start with the [current closeout and experiment entry points](review/baseline-closeout-2026-11-22.md). Historical walkthrough and baseline decisions are in the [earlier readiness report](review/onboarding-readiness-2026-11-17.md).
 
+## Product scope
+
+Study Atlas helps students **plan, track and adapt their study** around deadlines and existing commitments, using feedback about what they actually did. The same workflow should make sense across subjects. Course documents can supply deadlines, requirements and context. Authored study activities can help test which existing tasks fit a time slot, a location or the resources the student has.
+
+Creating or editing course content and running coursework as a product feature are out of scope for the student-facing product until an explicit product decision adds them. A SQL exercise, generated worksheet or patch may serve as a synthetic fixture in a standalone engineering investigation. Its use as a fixture does not establish a student need or justify a page, menu item or default workflow. Selected-file access and sandbox studies establish technical capabilities. Proposed student features need their own outcome and evidence.
+
 ## Delivery checkpoints
 
 1. **Experimental baseline:** PR #8 and the follow-up #57 are merged. The clean checkout, browser evidence, provider replays and retained recovery limits are in the closeout. The [frozen planner cases](../experiments/planner-readiness/README.md) prepare the first comparison.
 2. **Foundation comparisons:** implement transactional shared state, isolated simulator runs and replay; compare native DSH and SDK interfaces, heuristic and constraint solvers, and four local embedding models. Present evidence and obtain selections before expanding the selected interface or planner.
-3. **Collaborative workflow:** implement evidence-informed agent planning, one bounded critique, reviewable alternatives, optional feedback and checkpoints, file diffs and sandboxed tools.
+3. **Collaborative workflow:** implement evidence-informed agent planning, one bounded critique, reviewable alternatives, optional feedback and checkpoints. Use controlled tools to read relevant sources and review proposed scheduling changes. Separate sandbox or file-diff experiments answer their own engineering questions.
 4. **Evaluation:** six bilingual synthetic cases, two repeats, three retrieval approaches (36 primary episodes), supplemented by scripted personas, authorized Luna fallback, evaluator reports and sampled human review. Reassess the suite before freezing/running and obtain a decision before changing its size. The separate preliminary/matched Luna–DeepSeek comparison and masked DeepSeek evaluator retain their authorized route, runtime-equivalence and shared cost boundaries.
 
 ## Baseline versus target
