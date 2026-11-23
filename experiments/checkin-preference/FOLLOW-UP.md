@@ -26,6 +26,10 @@ Start the next experiment with the third option. In a managed synthetic run, sav
 
 A restart-and-resume exercise is the next technical check. Verify that a confirmed time-bound preference is still enforceable and inspectable after restart, that a pending conflict cannot replace it, and that expiry survives restoration. Then check with a person whether the distinction is clear without facilitator guidance. This experiment used scripted operator actions and one fixture, so evidence for independent interpretation of the screen, multi-persona behavior, durability and a way to dismiss a pending replacement remains open.
 
+## Restart follow-up
+
+[Recovering a reviewed preference](PERSISTENCE.md) records the completed synthetic storage trial and the remaining human review and retention decisions.
+
 ## Reproduce
 
 ```sh
