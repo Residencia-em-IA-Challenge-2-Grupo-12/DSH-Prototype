@@ -1,0 +1,301 @@
+{
+  "date": "2026-11-22",
+  "baseline": "cb86720882b9dcbe6c6f60243ae2e4379a2a6d33",
+  "node": "24.11.1",
+  "offlineTestsPassed": 189,
+  "mainChecks": [
+    {
+      "conclusion": "success",
+      "databaseId": 45088687553,
+      "status": "completed",
+      "workflowName": "Scripted browser review"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 45088687536,
+      "status": "completed",
+      "workflowName": "Offline checks"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 45088687391,
+      "status": "completed",
+      "workflowName": "Calendar replay integration"
+    }
+  ],
+  "scriptedBrowser": {
+    "scripted": true,
+    "cases": {
+      "bruno": {
+        "initialOptionBlocked": true,
+        "lateConflictRejected": true,
+        "mondayDiff": true,
+        "coverage": "Algoritmos \u00b7 3 h\nBanco de Dados \u00b7 2 h",
+        "staleApprovalRejected": true,
+        "nearOnlyApplied": true,
+        "unexpectedCalendarWrites": false
+      },
+      "ana": {
+        "sourceOpened": true,
+        "coverage": "Machine Learning \u00b7 4 h\nStatistics \u00b7 0 h",
+        "alternative": "Machine Learning \u00b7 3 h\nStatistics \u00b7 1 h",
+        "unexpectedCalendarWrites": false
+      }
+    }
+  },
+  "onboarding": {
+    "zipBytes": 2287494,
+    "files": 52,
+    "slides": 16,
+    "suggestedMinutes": 25,
+    "localLinks": "verified",
+    "languageStructure": "parity verified",
+    "zipRoundTrip": "all hashes match"
+  },
+  "replays": {
+    "success": {
+      "runId": "814f177d-d8dc-46ec-9eee-f26266d0effa",
+      "retirement": "verified",
+      "checks": [
+        {
+          "id": "initial_event_ids",
+          "outcome": "pass",
+          "detail": "Independent provider read contains the fixture event IDs"
+        },
+        {
+          "id": "no_write_before_approval",
+          "outcome": "pass",
+          "detail": "Question, two input reviews and both proposal revisions leave the starting calendar untouched"
+        },
+        {
+          "id": "authoritative_deadline",
+          "outcome": "pass",
+          "detail": "Deadline timestamp and authoritative source both match the operator expectation"
+        },
+        {
+          "id": "revision",
+          "outcome": "pass",
+          "detail": "A distinct proposal replaces the earlier proposal containing one of the excluded dates"
+        },
+        {
+          "id": "feasibility",
+          "outcome": "pass",
+          "detail": "Both sections have study blocks and the revision meets the reviewed windows, targets, limits, deadlines and breaks"
+        },
+        {
+          "id": "future_pending",
+          "outcome": "pass",
+          "detail": "Future review stays pending; observations are checked for its event IDs when available"
+        },
+        {
+          "id": "near_only_observed",
+          "outcome": "pass",
+          "detail": "Independent observations match the approved IDs only; existing events were preserved"
+        }
+      ]
+    },
+    "stale": {
+      "runId": "8d1b34ac-b872-4eb3-9893-9d3dad078bbd",
+      "retirement": "verified",
+      "checks": [
+        {
+          "id": "initial_event_ids",
+          "outcome": "pass",
+          "detail": "Independent provider read contains the fixture event IDs"
+        },
+        {
+          "id": "no_write_before_approval",
+          "outcome": "pass",
+          "detail": "Question, two input reviews and both proposal revisions leave the starting calendar untouched"
+        },
+        {
+          "id": "authoritative_deadline",
+          "outcome": "pass",
+          "detail": "Deadline timestamp and authoritative source both match the operator expectation"
+        },
+        {
+          "id": "revision",
+          "outcome": "pass",
+          "detail": "A distinct proposal replaces the earlier proposal containing one of the excluded dates"
+        },
+        {
+          "id": "feasibility",
+          "outcome": "pass",
+          "detail": "Both sections have study blocks and the revision meets the reviewed windows, targets, limits, deadlines and breaks"
+        },
+        {
+          "id": "future_pending",
+          "outcome": "pass",
+          "detail": "Future review stays pending; observations are checked for its event IDs when available"
+        },
+        {
+          "id": "stale_approval",
+          "outcome": "pass",
+          "detail": "The intervening edit is preserved and the stale proposal caused no write"
+        }
+      ]
+    },
+    "duplicate": {
+      "runId": "f52e2fe0-56b7-4794-ad3b-ffd694eef170",
+      "retirement": "verified",
+      "checks": [
+        {
+          "id": "initial_event_ids",
+          "outcome": "pass",
+          "detail": "Independent provider read contains the fixture event IDs"
+        },
+        {
+          "id": "no_write_before_approval",
+          "outcome": "pass",
+          "detail": "Question, two input reviews and both proposal revisions leave the starting calendar untouched"
+        },
+        {
+          "id": "authoritative_deadline",
+          "outcome": "pass",
+          "detail": "Deadline timestamp and authoritative source both match the operator expectation"
+        },
+        {
+          "id": "revision",
+          "outcome": "pass",
+          "detail": "A distinct proposal replaces the earlier proposal containing one of the excluded dates"
+        },
+        {
+          "id": "feasibility",
+          "outcome": "pass",
+          "detail": "Both sections have study blocks and the revision meets the reviewed windows, targets, limits, deadlines and breaks"
+        },
+        {
+          "id": "duplicate_approval",
+          "outcome": "pass",
+          "detail": "Submitting the same approval again produced no provider mutation"
+        },
+        {
+          "id": "future_pending",
+          "outcome": "pass",
+          "detail": "Future review stays pending; observations are checked for its event IDs when available"
+        },
+        {
+          "id": "near_only_observed",
+          "outcome": "pass",
+          "detail": "Independent observations match the approved IDs only; existing events were preserved"
+        }
+      ]
+    },
+    "unknown": {
+      "runId": "577556fa-9a57-441c-9685-617cfca2c15a",
+      "retirement": "verified",
+      "checks": [
+        {
+          "id": "initial_event_ids",
+          "outcome": "pass",
+          "detail": "Independent provider read contains the fixture event IDs"
+        },
+        {
+          "id": "no_write_before_approval",
+          "outcome": "pass",
+          "detail": "Question, two input reviews and both proposal revisions leave the starting calendar untouched"
+        },
+        {
+          "id": "authoritative_deadline",
+          "outcome": "pass",
+          "detail": "Deadline timestamp and authoritative source both match the operator expectation"
+        },
+        {
+          "id": "revision",
+          "outcome": "pass",
+          "detail": "A distinct proposal replaces the earlier proposal containing one of the excluded dates"
+        },
+        {
+          "id": "feasibility",
+          "outcome": "pass",
+          "detail": "Both sections have study blocks and the revision meets the reviewed windows, targets, limits, deadlines and breaks"
+        },
+        {
+          "id": "future_pending",
+          "outcome": "pass",
+          "detail": "Future review stays pending; observations are checked for its event IDs when available"
+        },
+        {
+          "id": "uncertain_write",
+          "outcome": "pass",
+          "detail": "The sent claim stayed unresolved without retry; the independent observation retained its own availability and outcome"
+        }
+      ]
+    },
+    "unknown-unavailable": {
+      "runId": "d4205436-a3e0-4a9e-b059-20fcab1fd431",
+      "retirement": "verified",
+      "checks": [
+        {
+          "id": "initial_event_ids",
+          "outcome": "pass",
+          "detail": "Independent provider read contains the fixture event IDs"
+        },
+        {
+          "id": "no_write_before_approval",
+          "outcome": "pass",
+          "detail": "Question, two input reviews and both proposal revisions leave the starting calendar untouched"
+        },
+        {
+          "id": "authoritative_deadline",
+          "outcome": "pass",
+          "detail": "Deadline timestamp and authoritative source both match the operator expectation"
+        },
+        {
+          "id": "revision",
+          "outcome": "pass",
+          "detail": "A distinct proposal replaces the earlier proposal containing one of the excluded dates"
+        },
+        {
+          "id": "feasibility",
+          "outcome": "pass",
+          "detail": "Both sections have study blocks and the revision meets the reviewed windows, targets, limits, deadlines and breaks"
+        },
+        {
+          "id": "future_pending",
+          "outcome": "pass",
+          "detail": "Future review stays pending; observations are checked for its event IDs when available"
+        },
+        {
+          "id": "uncertain_write",
+          "outcome": "pass",
+          "detail": "The sent claim stayed unresolved without retry; the independent observation retained its own availability and outcome"
+        }
+      ]
+    }
+  },
+  "calendarPolling": {
+    "id": "7ffe15b8-0a4a-4528-838f-dcea6adc7be3",
+    "image": "ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96",
+    "pollIntervalMs": 2000,
+    "plannedReads": 60,
+    "samples": [
+      {
+        "successfulReads": 1,
+        "elapsedMs": 1061,
+        "memory": "24.99MiB / 512MiB"
+      },
+      {
+        "successfulReads": 16,
+        "elapsedMs": 31047,
+        "memory": "53.27MiB / 512MiB"
+      },
+      {
+        "successfulReads": 31,
+        "elapsedMs": 61086,
+        "memory": "75.08MiB / 512MiB"
+      },
+      {
+        "successfulReads": 46,
+        "elapsedMs": 91079,
+        "memory": "92.92MiB / 512MiB"
+      },
+      {
+        "successfulReads": 60,
+        "elapsedMs": 119104,
+        "memory": "108.7MiB / 512MiB"
+      }
+    ],
+    "retired": true
+  }
+}

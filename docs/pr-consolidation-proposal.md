@@ -1,5 +1,7 @@
 # Draft PR consolidation proposal
 
+The #8 backbone and #57 are merged. The [22 November closeout](review/baseline-closeout-2026-11-22.md#older-drafts-and-proposed-git-operations) records the current 16-draft map and proposed review units. The original inspection and historical dependency map follow below.
+
 **Inspected 13 November 2026. Proposal only.** No PR was merged, retargeted or closed and no source branch was rewritten or deleted by this review. A fresh GitHub CLI inspection reports 24 open draft PRs and successful reported checks at inspection. Checks reflect each existing base, not the future integrated stack. The earlier [head inventory](evidence/pr-inventory-2026-11-12.md) remains historical evidence; #38 has since advanced to `38da40034632` and contains 113 changed files relative to #37. The browser child is now #39, inspected at `934b0fb19ddf`; its scripted browser evidence does not establish a live Luna walkthrough.
 
 ## Current integration cut — 17 November 2026

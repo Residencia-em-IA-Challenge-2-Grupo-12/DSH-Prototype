@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "baseline": "cb86720882b9dcbe6c6f60243ae2e4379a2a6d33",
+  "casesSha256": "410f75aecfd236f96c9f15a361607b90c076ed1be97ba91ae0afc1870a02181d",
+  "results": [
+    {
+      "id": "bruno-equal-cutoff",
+      "heldOut": false,
+      "knownFeasibleMinutes": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "variants": {
+        "current": {
+          "scheduledMinutesByWeek": [
+            300,
+            300,
+            300,
+            300,
+            300,
+            300
+          ],
+          "perCourse": {
+            "Banco de Dados": 1140,
+            "Algoritmos": 660
+          },
+          "findings": [],
+          "elapsedMs": 16.319
+        },
+        "coverageOption": {
+          "scheduledMinutesByWeek": [
+            300,
+            300,
+            300,
+            300,
+            300,
+            300
+          ],
+          "perCourse": {
+            "Banco de Dados": 1140,
+            "Algoritmos": 660
+          },
+          "findings": [],
+          "elapsedMs": 9.761
+        },
+        "reversedCourseOrder": {
+          "scheduledMinutesByWeek": [
+            300,
+            300,
+            300,
+            300,
+            300,
+            300
+          ],
+          "perCourse": {
+            "Banco de Dados": 660,
+            "Algoritmos": 1140
+          },
+          "findings": [],
+          "elapsedMs": 7.942
+        }
+      }
+    },
+    {
+      "id": "ana-earlier-deadline",
+      "heldOut": false,
+      "knownFeasibleMinutes": [
+        240
+      ],
+      "variants": {
+        "current": {
+          "scheduledMinutesByWeek": [
+            240
+          ],
+          "perCourse": {
+            "Machine Learning": 240,
+            "Statistics": 0
+          },
+          "findings": [],
+          "elapsedMs": 1.599
+        },
+        "coverageOption": {
+          "scheduledMinutesByWeek": [
+            240
+          ],
+          "perCourse": {
+            "Machine Learning": 180,
+            "Statistics": 60
+          },
+          "findings": [],
+          "elapsedMs": 1.355
+        }
+      }
+    },
+    {
+      "id": "bruno-explicit-priority",
+      "heldOut": false,
+      "knownFeasibleMinutes": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "variants": {
+        "current": {
+          "scheduledMinutesByWeek": [
+            300,
+            300,
+            300,
+            300,
+            300,
+            300
+          ],
+          "perCourse": {
+            "Banco de Dados": 360,
+            "Algoritmos": 1440
+          },
+          "findings": [],
+          "elapsedMs": 10.813
+        }
+      }
+    },
+    {
+      "id": "bruno-tight-capacity",
+      "heldOut": false,
+      "knownFeasibleMinutes": [
+        60
+      ],
+      "variants": {
+        "current": {
+          "scheduledMinutesByWeek": [
+            60
+          ],
+          "perCourse": {
+            "Banco de Dados": 0,
+            "Algoritmos": 60
+          },
+          "findings": [],
+          "elapsedMs": 1.164
+        },
+        "coverageOption": {
+          "scheduledMinutesByWeek": [
+            60
+          ],
+          "perCourse": {
+            "Banco de Dados": 60,
+            "Algoritmos": 0
+          },
+          "findings": [],
+          "elapsedMs": 1.173
+        }
+      }
+    },
+    {
+      "id": "bruno-expired-course",
+      "heldOut": false,
+      "knownFeasibleMinutes": [
+        60
+      ],
+      "variants": {
+        "current": {
+          "scheduledMinutesByWeek": [
+            60
+          ],
+          "perCourse": {
+            "Banco de Dados": 0,
+            "Algoritmos": 60
+          },
+          "findings": [],
+          "elapsedMs": 2.171
+        },
+        "coverageOption": {
+          "scheduledMinutesByWeek": [
+            60
+          ],
+          "perCourse": {
+            "Banco de Dados": 0,
+            "Algoritmos": 60
+          },
+          "findings": [],
+          "elapsedMs": 2.08
+        }
+      }
+    },
+    {
+      "id": "ravi-shift-exception",
+      "heldOut": true,
+      "knownFeasibleMinutes": [
+        120
+      ],
+      "variants": {
+        "current": {
+          "scheduledMinutesByWeek": [
+            120
+          ],
+          "perCourse": {
+            "Writing": 120,
+            "Quantitative reasoning": 0
+          },
+          "findings": [],
+          "elapsedMs": 0.274
+        },
+        "coverageOption": {
+          "scheduledMinutesByWeek": [
+            120
+          ],
+          "perCourse": {
+            "Writing": 60,
+            "Quantitative reasoning": 60
+          },
+          "findings": [],
+          "elapsedMs": 0.209
+        }
+      }
+    }
+  ]
+}
