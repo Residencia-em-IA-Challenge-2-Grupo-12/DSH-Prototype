@@ -5,19 +5,26 @@ import path from 'node:path';
 export async function browser(url,task){
   const profile=await mkdtemp('/tmp/study-ui-chrome-');
   const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-  const chrome=spawn(process.env.STUDY_TEST_CHROME||'google-chrome',['--headless','--disable-gpu','--disable-background-networking','--no-first-run','--remote-debugging-port=0',`--user-data-dir=${profile}`,url],{stdio:['ignore','ignore','ignore']});
+  const chrome=spawn(process.env.STUDY_TEST_CHROME||'google-chrome',['--headless','--disable-gpu','--disable-background-networking','--no-first-run','--remote-debugging-port=0',`--user-data-dir=${profile}`,url],{stdio:['ignore','ignore','pipe']});
+  let stderr='',exited=null;
+  chrome.stderr.on('data',chunk=>{if(stderr.length<4096)stderr+=String(chunk);});
+  chrome.once('exit',(code,signal)=>{exited={code,signal};});
   let ws;
   try{
-    let port,tabs;
-    for(let i=0;i<100;i++){
+    let page=null;
+    const deadline=Date.now()+30_000;
+    while(Date.now()<deadline){
+      if(exited)throw new Error(`Chrome exited before exposing DevTools (code=${exited.code}, signal=${exited.signal}): ${stderr.trim()}`);
       try{
-        port=(await readFile(path.join(profile,'DevToolsActivePort'),'utf8')).split('\n')[0];
-        tabs=await(await fetch(`http://127.0.0.1:${port}/json/list`)).json();
-        if(tabs.find(x=>x.type==='page'))break;
+        const port=(await readFile(path.join(profile,'DevToolsActivePort'),'utf8')).split('\n')[0];
+        const tabs=await(await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+        page=Array.isArray(tabs)?tabs.find(x=>x.type==='page'):null;
+        if(page?.webSocketDebuggerUrl)break;
       }catch{}
       await delay(100);
     }
-    ws=new WebSocket(tabs.find(x=>x.type==='page').webSocketDebuggerUrl);
+    if(!page?.webSocketDebuggerUrl)throw new Error(`Chrome did not expose a debuggable page within 30s: ${stderr.trim()}`);
+    ws=new WebSocket(page.webSocketDebuggerUrl);
     await new Promise((resolve,reject)=>{ws.onopen=resolve;ws.onerror=reject;});
     let seq=0;
     const requests=new Map();

@@ -166,15 +166,7 @@ export function createHttpRunnerAdapter({ url, engine = {}, timeoutMs = 30_000, 
           toolBridge: {
             url: bridge.url,
             token: bridge.token,
-            methods: [
-              'list_synthetic_files',
-              'read_synthetic_file',
-              'list_calendar',
-              'read_planning_context',
-              'propose_planning_context',
-              'draft_study_plan',
-              'preview_study_options',
-            ],
+            methods: typeof service.agent.allowedMethods === 'function' ? service.agent.allowedMethods() : [],
           },
         }));
         sessionId = started.sessionId;

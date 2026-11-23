@@ -14,7 +14,9 @@ export function createTrustedStudyService({student,calendar,runtimeDirectory,tra
   const availabilityPreview=browserStudy?createAvailabilityPreview(calendar,student):null;
   const boundary=createStudyBoundary({student,calendar,coldStart,availabilityPreview}),gate=createWriteGate(),agentCalls=new Set();
   let retiring=false,drained=false;
-  const agent={call(method,args){
+  const agent={
+    allowedMethods:()=>boundary.methods(),
+    call(method,args){
     if(retiring)return Promise.reject(new Error('Synthetic run is retiring')); 
     const operation=Promise.resolve().then(async()=>{
       if(trace)await trace.append('tool',{phase:'requested',method,args});
