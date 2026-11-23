@@ -202,7 +202,10 @@ try {
     result.originalEvents = next.events.length;
     assert.equal(exercise.evidence.approvalAttempts, 0);
     assert.equal(await evaluate("document.querySelectorAll('#proposal button:not(:disabled)').length"), 0);
-    await click('#calendar .calendar-toolbar button:last-child');
+    const nextWeek = '#calendar .calendar-toolbar button:last-child';
+    await evaluate('document.querySelector(' + JSON.stringify(nextWeek) + ').scrollIntoView({ block: "center" })');
+    await click(nextWeek);
+    await wait("document.querySelector('#calendar .calendar-toolbar strong').textContent.includes('Nov 9') && document.querySelectorAll('.calendar-event.proposed[aria-label*=\"2026-11-13\"]').length === 2");
     await click('#nav-calendar');
     await evaluate("document.querySelector('#calendar .calendar-scroll').scrollTop = 12 * 32");
     await capture(path.join(out, '3-expired.png'));
