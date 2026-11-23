@@ -1,11 +1,11 @@
 const words={
-  en:{header:'Planning inputs',pending:'Review these inputs',saved:'Confirmed inputs',confirm:'Confirm planning inputs',
+  en:{header:'Planning inputs',pending:'Review these inputs',saved:'Confirmed inputs',expired:'Expired preference',confirm:'Confirm planning inputs',
     note:'This confirms deadlines and preferences. Calendar changes have their own approval.',source:'Read source',page:'page',
     evidence:'Source evidence',dates:'Assessment dates',windows:'Study windows',hours:'hours per week',day:'hours per day',
     break:'minute break',through:'Preferences valid through',inclusive:'inclusive',changes:'Changes since the previous revision',added:'Added',removed:'Removed',
     replies:'Original replies',prior:'Previously confirmed',proposed:'Proposed preference',load:'Workload or scope changed',datesChanged:'Assessment evidence or dates changed',
     captureError:'Source unavailable',noContext:'The agent will propose cited dates and preferences here.'},
-  pt:{header:'Dados para o planejamento',pending:'Revise estes dados',saved:'Dados confirmados',confirm:'Confirmar dados do plano',
+  pt:{header:'Dados para o planejamento',pending:'Revise estes dados',saved:'Dados confirmados',expired:'Preferência expirada',confirm:'Confirmar dados do plano',
     note:'Isto confirma prazos e preferências. Alterações no calendário têm aprovação separada.',source:'Ler fonte',page:'página',
     evidence:'Trecho da fonte',dates:'Datas das avaliações',windows:'Janelas de estudo',hours:'horas por semana',day:'horas por dia',
     break:'minutos de pausa',through:'Preferências válidas até',inclusive:'inclusive',changes:'Mudanças desde a revisão anterior',added:'Adicionado',removed:'Removido',
@@ -55,7 +55,7 @@ export function mountPlanningReview(root) {
     if(!revision){root.append(el('p',t.noContext));return;}
     const r=revision.record;
     const pending=context.pending?.id===revision.id;
-    root.append(el('p',pending?t.pending:t.saved));
+    root.append(el('p',pending?t.pending:revision.expired?t.expired:t.saved));
     const weekday=new Intl.DateTimeFormat(locale,{weekday:'long',timeZone:'UTC'});
     const formatWindow=window=>`${weekday.format(new Date(Date.UTC(2026,10,1+window.weekday)))} · ${window.start}–${window.end}`;
     const diff=planningContextChanges(context.previous?.record,r);

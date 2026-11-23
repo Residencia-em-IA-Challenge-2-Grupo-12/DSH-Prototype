@@ -31,6 +31,8 @@ jobs:
           for scenario in joined skipped conflicting portuguese; do
             node experiments/checkin-preference/walkthrough.mjs --scripted "$RUNNER_TEMP/study-browser/checkin-$scenario" "$scenario"
           done
+      - name: Recover a reviewed check-in across companion restarts
+        run: node experiments/checkin-preference/restart-browser.mjs --scripted "$RUNNER_TEMP/study-browser/checkin-restart"
       - name: Retain synthetic browser evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

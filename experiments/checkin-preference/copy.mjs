@@ -1,5 +1,7 @@
 export const checkinCopy = {
   en: {
+    resumed: 'Review restored from this synthetic run. Original check-in replies are available in Planning inputs.',
+    calendarChanged: 'The saved preview no longer matches the calendar. Review the calendar before reopening this run.',
     advance: 'Advance the synthetic exercise to November 9',
     busy: 'Wait for the current check-in operation',
     finishChoice: 'Finish the pending schedule choice',
@@ -30,6 +32,8 @@ export const checkinCopy = {
     preview: date => 'Calendar preview for the week of ' + date + '.',
   },
   pt: {
+    resumed: 'Revisão restaurada deste exercício. As respostas originais estão nos dados do plano.',
+    calendarChanged: 'A prévia salva já não corresponde ao calendário. Revise o calendário antes de reabrir este exercício.',
     advance: 'Avançar o exercício de simulação para 9 de novembro',
     busy: 'Aguarde o registro atual ser processado',
     finishChoice: 'Conclua a escolha de horário pendente',
