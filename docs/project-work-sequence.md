@@ -1,5 +1,7 @@
 # Project work sequence
 
+The baseline and #57 are merged. The [22 November closeout](review/baseline-closeout-2026-11-22.md) records the verified current scope, what remains, and the order for starting comparisons. This document preserves the earlier integration decision context.
+
 For current delivery and integration review, see the [readiness report](review/onboarding-readiness-2026-11-17.md) and the [Project board](https://github.com/orgs/Residencia-em-IA-Challenge-2-Grupo-12/projects/1). The status table below is a historical snapshot.
 
 Verified 13 November 2026. Issue/Project organization only: no PR was merged, closed, retargeted or rewritten. The existing six views and 19 fields were preserved; existing labels/status options were reused. No owners, due dates or new field options were invented.

@@ -1,0 +1,1055 @@
+{
+  "inspectedOn": "2026-11-22",
+  "baseline": "cb86720882b9dcbe6c6f60243ae2e4379a2a6d33",
+  "drafts": [
+    {
+      "number": 17,
+      "title": "Prototype transactional proposal history",
+      "branch": "feat/domain-store-spike",
+      "head": "c267240521724a8d7d0420047e57a5b84da15bec",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "baseBranch": "feat/study-planning-demo",
+      "destination": "#10",
+      "uniqueWork": "Domain store revision and history tests",
+      "files": [
+        {
+          "path": "src/domain-store.mjs",
+          "sourceBlob": "457077d9b985d493a110df3c74f01ab24f953ab7",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/domain-store.test.mjs",
+          "sourceBlob": "5c44c3430f60cde80abf27a38ee1fb25c2174867",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "title": "Compare heuristic and constraint solver on synthetic cases",
+      "branch": "feat/solver-comparison-spike",
+      "head": "6df7a5faef616de6b8f2522f62650daf65c0f950",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "baseBranch": "feat/study-planning-demo",
+      "destination": "#45",
+      "uniqueWork": "Toy comparison documentation and CI setup",
+      "files": [
+        {
+          "path": ".github/workflows/solver-experiment.yml",
+          "sourceBlob": "c5f3166cbcf78498d7e9c9c23eeeede938bd8c82",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/solver-comparison.md",
+          "sourceBlob": "70be8100fe18a5b85bf25e640a65e23af46b05d3",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/solver_comparison.py",
+          "sourceBlob": "16b8549260b98087fd898c65ea30318a3d53c30b",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/test_solver_comparison.py",
+          "sourceBlob": "78a034a527e281748ea6f84153fbf9a6b3c2ae42",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "title": "Add offline bilingual embedding screening scaffold",
+      "branch": "feat/embedding-screen-smoke",
+      "head": "bea47e8cc63cd164942c30ea1a9d2abacb67e720",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "baseBranch": "feat/study-planning-demo",
+      "destination": "#46",
+      "uniqueWork": "Embedding screening runner and smoke results",
+      "files": [
+        {
+          "path": ".github/workflows/embedding-smoke.yml",
+          "sourceBlob": "a1583d040433839efcf7106a5cc6442dd54810d0",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/.gitignore",
+          "sourceBlob": "0857eeec6146afcc66948d1f296408005112a233",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/README.md",
+          "sourceBlob": "c4cf067bb2eeb21974b9300bc585b174b0fc6978",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/benchmark.py",
+          "sourceBlob": "42fdc342280ff5e435d799c28876bc2e1500378e",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/corpus.json",
+          "sourceBlob": "188da8d0142589363a7e6e72dd9bcac49cc72951",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/results/2026-11-06-smoke.json",
+          "sourceBlob": "d09421ee848ecaced7ada91bb5bd2c102e51d2d9",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/results/2026-11-06-smoke.md",
+          "sourceBlob": "debd0f3d190207199884a4c4992b458214256474",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/test_benchmark.py",
+          "sourceBlob": "499662ae102b584e24fd28c0b83f1e0a03059c5e",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "title": "Explore native DSH calendar sidebar registration",
+      "branch": "feat/dsh-sidebar-spike",
+      "head": "516b3157a11b8820da732ecf42c871479d31e564",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "baseBranch": "feat/study-planning-demo",
+      "destination": "#44",
+      "uniqueWork": "Native registration spike and gateway tests",
+      "files": [
+        {
+          "path": "experiments/dsh-calendar-sidebar/README.md",
+          "sourceBlob": "a41b9945181258aae8c4f25e262e6e032feb2429",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-calendar-sidebar/calendar-host.mjs",
+          "sourceBlob": "7dd445c838fec4b8cbf29fa7698b5364c163d0d5",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-calendar-sidebar/client.js",
+          "sourceBlob": "cf674998794e537609547346fee9cb5dad158eac",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-calendar-sidebar/index.js",
+          "sourceBlob": "c090e1fbf4786c1934a08863e4dcee5473980eb7",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-calendar-sidebar/package.json",
+          "sourceBlob": "9b243e6a4cf9d66f7b0aa3b01596572b080058bc",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/dsh-calendar-sidebar.test.mjs",
+          "sourceBlob": "fb26715a21f71e82c997d69d1a9d36ac7c8641b6",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/dsh-remote-gateway.test.mjs",
+          "sourceBlob": "875a38692ea5f6cff4f8953e4a5ece28851b4a0e",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "title": "Expose local transactional domain service",
+      "branch": "feat/domain-service-api",
+      "head": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "mergeBase": "c267240521724a8d7d0420047e57a5b84da15bec",
+      "baseBranch": "feat/domain-store-spike",
+      "destination": "#10 / #44",
+      "uniqueWork": "Domain API contract and HTTP tests",
+      "files": [
+        {
+          "path": "docs/domain-service-spike.md",
+          "sourceBlob": "8a572fa3159e3ab00f808f4e64e85eed0be4c8ef",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "src/domain-service.mjs",
+          "sourceBlob": "1bdb4235dfe713b30122b98a926e78eba617f6b5",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/domain-service.test.mjs",
+          "sourceBlob": "54f4313ed6852aa96b2ecb53e032f6b07181a3db",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "title": "Add realistic bilingual synthetic personas",
+      "branch": "feat/realistic-bilingual-personas",
+      "head": "8e792920c09c49f395eb707a66bac2d6bf0d8c89",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "baseBranch": "feat/study-planning-demo",
+      "destination": "#45 / #46",
+      "uniqueWork": "Persona generator, bilingual source fixtures and CI",
+      "files": [
+        {
+          "path": ".github/workflows/persona-fixtures.yml",
+          "sourceBlob": "b703c3be83435e66b6590205e80a551add24e920",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/README.md",
+          "sourceBlob": "d97c2489ea8fb1be34ca2c57e6d7713c5d011dab",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generate.py",
+          "sourceBlob": "f4ba4098db5b5a1e2b233eba4b6b73a8cec187b1",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/en/calendar.json",
+          "sourceBlob": "d2c4b21db98860a95200d67ce75d2ae98bee1979",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/en/scenario.json",
+          "sourceBlob": "2eaec2c0f27b5e46e4b79a3ce3e2df4cbecbc342",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/en/workspace/context/preferences.md",
+          "sourceBlob": "bfe19162a882d6156b530c01e566ed16cc0b4afd",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/en/workspace/courses/syllabus.md",
+          "sourceBlob": "68acfc351014b7c3b543ec94c96dcb7b4ed663a5",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/pt-BR/calendar.json",
+          "sourceBlob": "2f7868632df97d3d07c9bc60eadcbaa7f119ed5f",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/pt-BR/scenario.json",
+          "sourceBlob": "9baac15bbf632c0df4b8b24202b3a0d67bcd4a41",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/pt-BR/workspace/context/preferences.md",
+          "sourceBlob": "4851896d22f3bdebbb834b71ee8b60eaacc58bc8",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/employed-exam/pt-BR/workspace/courses/syllabus.md",
+          "sourceBlob": "f25502e5f869ee627f8167aeaf26caabb23d85fa",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/en/calendar.json",
+          "sourceBlob": "b75e3a5e27b4dd167367c59d0ca970f28133daed",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/en/scenario.json",
+          "sourceBlob": "7dec378ef3d1a8e2ada0d701c3e3d606bfb14c99",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/en/workspace/context/preferences.md",
+          "sourceBlob": "172a6406867e8a0a785f7a36e0474c6b8594d6bf",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/en/workspace/courses/syllabus.md",
+          "sourceBlob": "c3feeee696203ad1a47f845d35868db93bca100d",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/pt-BR/calendar.json",
+          "sourceBlob": "368d0c2d841ed22a44bfa08fb6cbac7bf3597a47",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/pt-BR/scenario.json",
+          "sourceBlob": "9d69cab4b57ea7b84f512ffac0b241b379b5d4d1",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/pt-BR/workspace/context/preferences.md",
+          "sourceBlob": "3dc6f12e5d824df59f69bec6c20021a6eaf18a76",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/nonworking-college/pt-BR/workspace/courses/syllabus.md",
+          "sourceBlob": "bab150d51c492cf9a47db7c9c1497bd18a71d943",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/en/calendar.json",
+          "sourceBlob": "6e6fd2a9ed25078f7360fc6d49c6790a1ae26195",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/en/scenario.json",
+          "sourceBlob": "cfe6e814bbf0cb390bdfd137a855a24fef0628bf",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/en/workspace/context/preferences.md",
+          "sourceBlob": "a219c0cd0c74d9912cd3265967a25304c675d9e7",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/en/workspace/courses/syllabus.md",
+          "sourceBlob": "90f2457c81213d13733fd7ea85d113ff466e3e5f",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/pt-BR/calendar.json",
+          "sourceBlob": "86aa4bd0e40c3f13436106144d83ae2ab61771eb",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/pt-BR/scenario.json",
+          "sourceBlob": "6603f6f34a990b36c4fb73963e72bbe9492e7eb6",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/pt-BR/workspace/context/preferences.md",
+          "sourceBlob": "e2d7ff101aac6784e1197637547c34272308d9a7",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/generated/working-college/pt-BR/workspace/courses/syllabus.md",
+          "sourceBlob": "12174df9ac3414c6f658a8363f53bf8eb8a447f8",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "fixtures/personas-v1/test_personas.py",
+          "sourceBlob": "170591e6089e62e349c3ecc12a26f1abdab00995",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "title": "Add bilingual synthetic retrieval challenge",
+      "branch": "feat/bilingual-retrieval-challenge",
+      "head": "da6fdc7f1fe95afc7c10581ea9656272cadf8000",
+      "mergeBase": "fc7c2fbe50187f089e1cdef54eb41e98f0a4a754",
+      "baseBranch": "feat/embedding-screen-smoke",
+      "destination": "#46",
+      "uniqueWork": "Bilingual retrieval fixture, labels, runners and exploratory results",
+      "files": [
+        {
+          "path": ".github/workflows/retrieval-challenge.yml",
+          "sourceBlob": "8a36524cb42c939a3c622c834ac150eff023621d",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/README.md",
+          "sourceBlob": "871cd2113b1c90be2f8539834b89cdc22318ffb5",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/RUNNER.md",
+          "sourceBlob": "8cf707aeb1411e37e860e665cbdcdc859433fecb",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/evaluate.py",
+          "sourceBlob": "7f73622e8160ce0575bc2e7db2b7633ff9a216fe",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/generate_dataset.py",
+          "sourceBlob": "0cd2b67cde64bca26b072e720eeb67cfed7f3ba1",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/heldout.json",
+          "sourceBlob": "20c5ed1821ff267d91fb422586d24af5c2ac9189",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/results/2026-11-07-exploratory.json",
+          "sourceBlob": "832c49396af02b8218db482af4fcce9f3fa7e937",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/run_models.py",
+          "sourceBlob": "1304c8f4455224500f87cded5595f7e99e4564d9",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/test_evaluate.py",
+          "sourceBlob": "c5e1edc459a6ec23afa8a56aeaf5a71e19542e0b",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/embedding-screen/challenge/test_runner.py",
+          "sourceBlob": "297cc638a0a4125d4c1dae1338ac545cf9a95241",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 27,
+      "title": "Prototype approved synthetic calendar creation",
+      "branch": "feat/calendar-domain-bridge",
+      "head": "095f5693ca7d16f9a1367d2d0d46da53a24c140e",
+      "mergeBase": "6f2e128f08dea9051567ef346bc61e932e393b65",
+      "baseBranch": "feat/calendar-experiment-bundle",
+      "destination": "#10 / #11",
+      "uniqueWork": "Calendar observation, verified creation and claim tests",
+      "files": [
+        {
+          "path": "docs/calendar-domain-bridge-spike.md",
+          "sourceBlob": "641462d001cb9c46514b7f6a68f9125c0fecc286",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "src/domain-service.mjs",
+          "sourceBlob": "90733cff3207ca4323de930253f0de834d7dbd10",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "src/domain-store.mjs",
+          "sourceBlob": "6f9e63e398b3649f9bccad5dbcb59ddd9e1961a7",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "src/foundation/calendar-approved-create.mjs",
+          "sourceBlob": "454d8c8fcb9412e13f92d325384fd35684bf2bca",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "src/foundation/calendar-domain-observer.mjs",
+          "sourceBlob": "f376566891d3f42d12fd05bce11ee9a974860b6d",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "src/foundation/domain-http-observer-client.mjs",
+          "sourceBlob": "c5eb251788f0ae143044c234567638bf56920739",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/calendar-approved-create.test.mjs",
+          "sourceBlob": "be4aabc3c64963f49d51321c8347b8af22a02b9c",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/calendar-domain-observer.test.mjs",
+          "sourceBlob": "b1bde40f6638374caacacee27ca2ab12c6671631",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/calendar-experiment.integration.mjs",
+          "sourceBlob": "ad4e69dc60ba47c3c65fbb3799a0a22fd3c67804",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/domain-claim-rejection.test.mjs",
+          "sourceBlob": "97248c6f1ce7383615a5e1b4fdfaa005124bcda6",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/domain-service.test.mjs",
+          "sourceBlob": "54f4313ed6852aa96b2ecb53e032f6b07181a3db",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/domain-store.test.mjs",
+          "sourceBlob": "5c44c3430f60cde80abf27a38ee1fb25c2174867",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 28,
+      "title": "Prototype disposable synthetic Bash worker",
+      "branch": "feat/synthetic-worker-spike",
+      "head": "f8aeea2a2ccfabb3e0efecd4c9a4539b9ae8d2d3",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "baseBranch": "feat/study-planning-demo",
+      "destination": "#12 / #48",
+      "uniqueWork": "Worker process limits and negative-control probes",
+      "files": [
+        {
+          "path": ".github/workflows/synthetic-worker.yml",
+          "sourceBlob": "21c7f259537b4bfc6c152a3f30b0abd721c6b267",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/synthetic-worker/README.md",
+          "sourceBlob": "bdade7d098bbf7a7a6bb2345be2835f4f5705aea",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/synthetic-worker/bounded-process.mjs",
+          "sourceBlob": "4feb00b0690e43818efa14438d6dedaf9b346d76",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/synthetic-worker/bounded-process.test.mjs",
+          "sourceBlob": "5c2270b246a207f95c91fb15d6ae360a01a467f6",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/synthetic-worker/sdk-probe/README.md",
+          "sourceBlob": "a42c56824dee3ee25b0e857f89906cf8cc3be62e",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/synthetic-worker/sdk-probe/launch.py",
+          "sourceBlob": "c734245d1f3716ea7983b071aee2a0c49537253d",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/synthetic-worker/sdk-probe/plugin.mjs",
+          "sourceBlob": "da9843a03391cb1799dd43d8cf521e3c9b4df9e5",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/synthetic-worker/worker.mjs",
+          "sourceBlob": "0e5f2f1f41c8c971c3c7a7f65a39f220d246b6f0",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/synthetic-worker/worker.test.mjs",
+          "sourceBlob": "275cfefd6ad93a86a842fe16b21e61f1013cec16",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "title": "Package synthetic domain service in Docker",
+      "branch": "feat/domain-service-container",
+      "head": "2a3cf7e9ef8eb99866e4b711b3b5f59e1039503f",
+      "mergeBase": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "baseBranch": "feat/domain-service-api",
+      "destination": "#12",
+      "uniqueWork": "Domain-container packaging evidence",
+      "files": [
+        {
+          "path": "compose.domain.yaml",
+          "sourceBlob": "831d0f49677f31b0dd04532e1b2b32112b5ef8fe",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "docs/domain-container-spike.md",
+          "sourceBlob": "a474939dd068aee163a865ad71ef1e72a0262b6b",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "scripts/test-domain-container.sh",
+          "sourceBlob": "5493ee55f9b492b0b1c110eb61b8ecfa3058e904",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "src/Dockerfile.domain",
+          "sourceBlob": "b720d80196ec5f7166ce30b61d7c236556315d0e",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "title": "Connect synthetic context proposal and review",
+      "branch": "feat/shared-consumer-spike",
+      "head": "bbd28fa9609d496f2e718661598f27353f25ff92",
+      "mergeBase": "095f5693ca7d16f9a1367d2d0d46da53a24c140e",
+      "baseBranch": "feat/calendar-domain-bridge",
+      "destination": "#44",
+      "uniqueWork": "Shared consumer and provider integration",
+      "files": [
+        {
+          "path": "docs/consumer-spike.md",
+          "sourceBlob": "c9c6afe305bc8bd9398bd297414545640b656a97",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "scripts/consumer-spike.mjs",
+          "sourceBlob": "29a0cc767b7194c3e436be42da75f413f27d41d9",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "src/foundation/sdk-app-consumer.mjs",
+          "sourceBlob": "caae3ce8aab340b83d7c5381e4c6b09430399bce",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/calendar-experiment.integration.mjs",
+          "sourceBlob": "15380c4b85b76ed3b9200d126e8fee6d29db4618",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/sdk-app-consumer.test.mjs",
+          "sourceBlob": "ae6cd742c475eb4d90ddbe85e54f399701aff4ad",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 31,
+      "title": "Prototype read-only DSH domain bridge",
+      "branch": "feat/dsh-domain-read-bridge",
+      "head": "df54567bbcc9e9c29f33f5992e43742d11ee59b2",
+      "mergeBase": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "baseBranch": "feat/domain-service-api",
+      "destination": "#44",
+      "uniqueWork": "Read-only DSH bridge and descriptor tests",
+      "files": [
+        {
+          "path": "docs/dsh-domain-bridge-spike.md",
+          "sourceBlob": "c52bd9fa017e0b9ef1b4036e316e3b6ddb9201fe",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "src/foundation/dsh-calendar-descriptor.mjs",
+          "sourceBlob": "6b5bf73ca1c74167ae56f8a9ecc7b99137d9e835",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "src/foundation/dsh-calendar-host.mjs",
+          "sourceBlob": "52ddbd0df6339de30c576613f2611b1e757952b8",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/dsh-domain-bridge.test.mjs",
+          "sourceBlob": "079cb4a7c95680a79ea9960091fa6c1f22cbb096",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/dsh-domain-strict-client.test.mjs",
+          "sourceBlob": "9f11dfaabcaff040a94eb837cbebb86361ffc0af",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "title": "Prepare inactive evidence admission dossiers",
+      "branch": "feat/evidence-admission-dossiers",
+      "head": "874907ba02cc3105553a94d65655977499e5a051",
+      "mergeBase": "6bce31c1ab13740b5e5b1850254984e245c763a6",
+      "baseBranch": "feat/study-planning-demo",
+      "destination": "#14",
+      "uniqueWork": "Evidence dossiers pending human admission",
+      "files": [
+        {
+          "path": ".github/workflows/evidence-candidates.yml",
+          "sourceBlob": "ca58f1cb0f75de8e5f5d806c023ec73dee70f9b3",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "research/evidence-candidates/README.md",
+          "sourceBlob": "72868162fbba736726ec1cdea3370a82826f6487",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "research/evidence-candidates/build.py",
+          "sourceBlob": "117914fd8244387f0612ce77319fadc32c13efde",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "research/evidence-candidates/candidates.json",
+          "sourceBlob": "bebd7396e5c603a62b04c0e6da4116ee6ae01dbb",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "research/evidence-candidates/dossiers.md",
+          "sourceBlob": "2db48cf51944983693fe7c53bd8a9d06b5b419d6",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "research/evidence-candidates/test_dossiers.py",
+          "sourceBlob": "92dfcd3f619790da522617d511f3e763061dfe85",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 33,
+      "title": "Sketch custom synthetic calendar review shell",
+      "branch": "feat/custom-shell-comparison",
+      "head": "bc321a40173f88d9621abaebc6b3bde454c8e324",
+      "mergeBase": "bbd28fa9609d496f2e718661598f27353f25ff92",
+      "baseBranch": "feat/shared-consumer-spike",
+      "destination": "#44",
+      "uniqueWork": "Custom shell and shared-domain harness",
+      "files": [
+        {
+          "path": ".github/workflows/shell-comparison.yml",
+          "sourceBlob": "3926c7d69247494523bd4836a3163b3661056a6f",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/sdk-ui/README.md",
+          "sourceBlob": "1548383ee43af63a4b596d68e796f6ae6cf71ec9",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/sdk-ui/app.js",
+          "sourceBlob": "78148ba8e439c6c86802039ed83fa2f52683649e",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/sdk-ui/compare-index.html",
+          "sourceBlob": "a3318baa3ec726410b0eb61c105ae5e3d65f1528",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/sdk-ui/domain-read-server.mjs",
+          "sourceBlob": "409257dc29429cca5a840f9a82c245ccd7e345f1",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/sdk-ui/domain-view.mjs",
+          "sourceBlob": "e46b84292c3bef18ac31c494ad825bce2d6c2d9d",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/sdk-ui/index.html",
+          "sourceBlob": "d709b87bb58faff94bc72d478df12fe0befb007b",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/sdk-ui/runtime.mjs",
+          "sourceBlob": "ad9992dd45ba88ee57d6f0a387104c1fca042dd6",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/sdk-ui/server.mjs",
+          "sourceBlob": "5b716f590cbe26d1a51b1e3901828c7d1f4dc175",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/sdk-ui/style.css",
+          "sourceBlob": "29606d31293f8dbf0c4e94fc328f4709441fbbc1",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/sdk-domain-view.test.mjs",
+          "sourceBlob": "a1337eb4b794b60e68d863bdd5a24628ef6d930c",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/sdk-native-shared-domain.integration.mjs",
+          "sourceBlob": "53b2cf45d4396ddd15c39ac3d34fb620f31e9618",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/sdk-ui-spike.test.mjs",
+          "sourceBlob": "6394f478d6525c934ee718e52f9e574de2e06ce8",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "title": "Prototype native DSH calendar panel carrier",
+      "branch": "feat/dsh-native-panel",
+      "head": "ad8c020106825996c7393fc68a74552710adbbea",
+      "mergeBase": "ae9cc62964e22d1b3341479dbebaeb60e7ebbae2",
+      "baseBranch": "feat/domain-service-api",
+      "destination": "#44",
+      "uniqueWork": "Native panel, mount tests and cleanup",
+      "files": [
+        {
+          "path": ".github/workflows/dsh-native-panel.yml",
+          "sourceBlob": "bf213dbd83c8b037294758ca933f773393f9fe28",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/.gitignore",
+          "sourceBlob": "e3dcf871e2165ebf49e354b5b56d40aaa039eed8",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/README.md",
+          "sourceBlob": "09d34540dd8e81d82c994bc581b305a7493221b4",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/build.mjs",
+          "sourceBlob": "1721452a55b1826bcd89bf4189d3e068a812421c",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/carrier-test.mjs",
+          "sourceBlob": "1d048234a777e9f089a5dda9b58a5efaa5be724a",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/client-entry.mjs",
+          "sourceBlob": "5a631a95a3387d5acdc3918d7416dc1bbb525a6f",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/client-entry.test.mjs",
+          "sourceBlob": "d8695112fd10f1b5bd6a5f50cf7cccca69b855bc",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/host.test.mjs",
+          "sourceBlob": "54cfa4c8ef0043c38f16b0b0b62d9d3dbfae01a0",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/index.mjs",
+          "sourceBlob": "5930cf69d5a9efe89467b884516839e59192f7da",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/package.json",
+          "sourceBlob": "60110a52506a8db42027f629fb3b774fcc1b3fd7",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/panel-descriptor.mjs",
+          "sourceBlob": "97aac595f272ac07d86fe5d80c01c1a4e186000e",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/panel-registration.mjs",
+          "sourceBlob": "5c61d712583c02af2c7b0100d6962ba4e6190896",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/panel-view.mjs",
+          "sourceBlob": "d065e189511e984d77202906b804d7ad599928d0",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/panel-view.test.mjs",
+          "sourceBlob": "6f29a1fbcd74b557a248f5447091791abde74a57",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/process-cleanup.mjs",
+          "sourceBlob": "0fe8b575b194b3bb8a2759b8223e419c33d92f72",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/dsh-native-panel/process-cleanup.test.mjs",
+          "sourceBlob": "5493d133018602e129ee0e86da361fa82746dcc0",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "title": "Compare solvers against synthetic persona calendars",
+      "branch": "feat/fixture-solver-comparison",
+      "head": "b506d165cd888d9647278530c900667c57a62633",
+      "mergeBase": "8e792920c09c49f395eb707a66bac2d6bf0d8c89",
+      "baseBranch": "feat/realistic-bilingual-personas",
+      "destination": "#45",
+      "uniqueWork": "Fixture solver, sensitivity results and test coverage",
+      "files": [
+        {
+          "path": ".github/workflows/solver-experiment.yml",
+          "sourceBlob": "582c27e2d7f5b1255921e2b4b9189cbf29b830fd",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/fixture-solver-comparison.md",
+          "sourceBlob": "969c9290718ebdec62f483451cd3fe1e249cc82e",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/fixture_solver_comparison.py",
+          "sourceBlob": "04278abf340b1ba45d6cfebb3965aa15ee4a7f9a",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/results/2026-11-07-fixture-solver.json",
+          "sourceBlob": "252267153535f1c3c97118ada17b9c49dc2c5fce",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/results/2026-11-07-transition-sensitivity.json",
+          "sourceBlob": "8bc17270bed70bb16ebbca3424a054e8c9e92dbd",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/solver_comparison.py",
+          "sourceBlob": "16b8549260b98087fd898c65ea30318a3d53c30b",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "experiments/transition_sensitivity.py",
+          "sourceBlob": "662153e63cda245fb5e4375ae0408dbee2687eb2",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/test_fixture_solver_comparison.py",
+          "sourceBlob": "17d8db9d99b0c68d5b5903a892058b9ef0db28a5",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/test_solver_comparison.py",
+          "sourceBlob": "78a034a527e281748ea6f84153fbf9a6b3c2ae42",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        },
+        {
+          "path": "tests/test_transition_solver_comparison.py",
+          "sourceBlob": "51ca86c70f2d09c0a1851d37dfc23a9d08bd273b",
+          "baselineBlob": null,
+          "exactOnBaseline": false
+        }
+      ]
+    }
+  ],
+  "byteIdenticalSolverPathsIn19And35": [
+    "experiments/solver_comparison.py",
+    "tests/test_solver_comparison.py"
+  ],
+  "disposition": "Source refs retained. Destinations and closure candidates are proposed for separate review."
+}

@@ -26,7 +26,7 @@ Use one primary `area:` label and a work type (`bug`, `enhancement`, `documentat
 
 A coding slice is handed off only when its issue, PR and Project state have been verified by readback, or the exact synchronization blocker and next action are recorded. Re-run checks affected by changed behavior, configuration or base; a documentation or label-only change does not require unrelated model or test runs. Report the exact head/base for checks and distinguish offline, scripted-browser, live-model and human observations.
 
-Issue and PR templates collect only the short context needed to start and review work. Keep this procedure here instead of copying its full checklist into every template. Keep intermediate commits reviewable, and leave incomplete delivery in draft. PR #8 and later foundation choices retain their explicit decision gates.
+Issue and PR templates collect only the short context needed to start and review work. Keep this procedure here instead of copying its full checklist into every template. Keep intermediate commits reviewable, and leave incomplete delivery in draft. Keep merge and foundation choices at their recorded decision gates.
 
 ## Read-only organization check
 
