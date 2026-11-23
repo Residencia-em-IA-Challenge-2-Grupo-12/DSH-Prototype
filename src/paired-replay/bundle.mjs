@@ -71,8 +71,9 @@ export async function readBundle(directory) {
   const bytes = await checkedFile(root, 'case.json');
   const manifest = parseManifest(bytes);
   const fixture = checkedCalendar(await checkedFile(root, 'calendar.json'), manifest);
-  await verifyWorkspace(path.join(root, 'workspace'), manifest.sources);
-  return { manifest, inputSha256: digestBytes(bytes), fixture };
+  const workspaceDir = path.join(root, 'workspace');
+  await verifyWorkspace(workspaceDir, manifest.sources);
+  return { manifest, inputSha256: digestBytes(bytes), fixture, workspaceDir };
 }
 
 export async function packBundle(caseId, destination) {

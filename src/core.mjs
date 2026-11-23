@@ -89,7 +89,9 @@ export async function listWorkspace(student, relative = '',{requireStaged=false}
 }
 async function checkedPath(root, relative) {
   const resolvedRoot = await fs.realpath(root);
-  const candidate = await fs.realpath(path.resolve(root, relative || '.'));
+  const lexical = path.resolve(resolvedRoot, relative || '.');
+  if (lexical !== resolvedRoot && !lexical.startsWith(resolvedRoot + path.sep)) throw new Error('Path is outside synthetic workspace');
+  const candidate = await fs.realpath(lexical);
   if (candidate !== resolvedRoot && !candidate.startsWith(resolvedRoot + path.sep)) throw new Error('Path is outside synthetic workspace');
   return candidate;
 }
@@ -137,9 +139,21 @@ export function significant(e) {
 }
 export function snapshot(events) { return events.map(significant).sort((a,b) => a.id.localeCompare(b.id)); }
 export function digest(events) { return createHash('sha256').update(JSON.stringify(snapshot(events))).digest('hex'); }
-function localTime(date) { return date.toISOString().replace('Z','').slice(0,19) + '-03:00'; }
+function addDaysIso(isoDate, days) {
+  return new Date(Date.parse(isoDate + 'T00:00:00Z') + days * 86400000).toISOString().slice(0, 10);
+}
+function validateClock(today, timezoneOffset) {
+  if (typeof today !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(today) || !Number.isFinite(Date.parse(today + 'T00:00:00Z'))) {
+    throw new Error('Invalid planning clock date');
+  }
+  if (typeof timezoneOffset !== 'string' || !/^[+-](?:[01]\d|2[0-3]):[0-5]\d$/.test(timezoneOffset)) {
+    throw new Error('Invalid timezone offset');
+  }
+}
+function localTime(date, offset = '-03:00') { return date.toISOString().replace('Z','').slice(0,19) + offset; }
 
-export function makePlan(student, events, { weeks = 4, hours, protectedIds = [], avoidDates = [], preferredPeriod, focusCourse, allocation } = {}) {
+export function makePlan(student, events, { weeks = 4, hours, protectedIds = [], avoidDates = [], preferredPeriod, focusCourse, allocation, today: clockDate = FIXED_TODAY, timezoneOffset = '-03:00' } = {}) {
+  validateClock(clockDate, timezoneOffset);
   const target = Number(hours ?? student.targetHours);
   if (!Number.isInteger(target) || target < 0 || target > 20) throw new Error('Hours must be a whole number between 0 and 20');
   const requested = Number(weeks);
@@ -154,17 +168,18 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
   const parseTime=value=>{if(typeof value!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(value))throw new Error('Invalid study window time');return Number(value.slice(0,2))*60+Number(value.slice(3));};
   if(!Array.isArray(windows)||windows.length>30||!Number.isInteger(maxDaily)||maxDaily<1||maxDaily>12||!Number.isInteger(breakMinutes)||breakMinutes<0||breakMinutes>120)throw new Error('Invalid study availability');
   for(const window of windows)if(!Number.isInteger(window.weekday)||window.weekday<0||window.weekday>6||parseTime(window.end)<=parseTime(window.start))throw new Error('Invalid study window');
-  const start = new Date(FIXED_TODAY + 'T00:00:00Z');
-  const today = Date.parse(FIXED_TODAY + 'T00:00:00-03:00');
+  const start = new Date(clockDate + 'T00:00:00Z');
+  const today = Date.parse(clockDate + 'T00:00:00' + timezoneOffset);
+  const nextWeekStart = Date.parse(addDaysIso(clockDate, 7) + 'T00:00:00' + timezoneOffset);
   const upcomingDeadlines = student.courses.map(c => Date.parse(c.deadline)).filter(deadline => deadline > today);
   const deadline = upcomingDeadlines.length ? Math.min(...upcomingDeadlines) : today;
   const maxWeeks = Math.max(1, Math.ceil((deadline - today) / (7 * 86400000)));
   const scopedEnd=student.availabilityThrough
-    ? Date.parse(student.availabilityThrough+'T00:00:00-03:00')+86400000
+    ? Date.parse(student.availabilityThrough+'T00:00:00'+timezoneOffset)+86400000
     : Infinity;
   const count = Math.min(requested, maxWeeks, 16, Math.ceil((scopedEnd-today)/(7*86400000)));
   const horizonEnd=Math.min(today+count*7*86400000,scopedEnd);
-  const replaceable=events.filter(e => e.extendedProperties?.private?.studyDemo==='true' && e.extendedProperties?.private?.student===student.student && !protectedIds.includes(e.id) && millis(e,'start')>=Date.parse(FIXED_TODAY+'T00:00:00-03:00') && millis(e,'start')<horizonEnd);
+  const replaceable=events.filter(e => e.extendedProperties?.private?.studyDemo==='true' && e.extendedProperties?.private?.student===student.student && !protectedIds.includes(e.id) && millis(e,'start')>=today && millis(e,'start')<horizonEnd);
   const replaceIds=new Set(replaceable.map(e=>e.id));
   const busy = events.filter(e => isBusyCalendarEvent(e) && !replaceIds.has(e.id)).map(clone);
   const blocks = [], outlook = [], coveredCourses = new Set();
@@ -176,7 +191,7 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
       if(avoidDates.includes(dayKey)||(student.availabilityThrough&&dayKey>student.availabilityThrough))continue;
       for(const window of windows.filter(x=>x.weekday===day.getUTCDay()))for(let minute=parseTime(window.start);minute+60<=parseTime(window.end);minute+=15){
         const dt=new Date(day.getTime()+minute*60000),end=new Date(dt.getTime()+3600000),period=minute<720?'morning':minute<1080?'afternoon':'evening';
-        candidates.push({d,dayKey,dt,period,start:{dateTime:localTime(dt),timeZone:student.timezone},end:{dateTime:localTime(end),timeZone:student.timezone}});
+        candidates.push({d,dayKey,dt,period,start:{dateTime:localTime(dt,timezoneOffset),timeZone:student.timezone},end:{dateTime:localTime(end,timezoneOffset),timeZone:student.timezone}});
       }
     }
     while(placed<target && candidates.length){
@@ -202,15 +217,15 @@ export function makePlan(student, events, { weeks = 4, hours, protectedIds = [],
     }
     outlook.push({ week:w+1, targetHours:target, scheduledHours:placed, shortfall:Math.max(0,target-placed) });
   }
-  return { id:randomUUID(), student:student.student, createdAt:new Date().toISOString(), fixedToday:FIXED_TODAY,
+  return { id:randomUUID(), student:student.student, createdAt:new Date().toISOString(), fixedToday:clockDate,
     sources:student.courses, assumptions:['Study blocks are suggestions; ask before writing.','Hours are goals, not evidence of actual study.',windows.length?'Study windows are stated possibilities; confirm they still suit the student.':'No study availability supplied; empty calendar time is not assumed available.',...(student.availabilityThrough?['Confirmed availability applies through '+student.availabilityThrough+'.']:[]),...(focus?['Course focus: '+focus.name+'; other courses may still receive blocks.']:[])],
     ...(allocation?{allocation}:{}),outlook, near:blocks.filter(b=>b.status==='confirmed'), future:blocks.filter(b=>b.status==='tentative'),
-    remove:{near:replaceable.filter(e=>millis(e,'start')<Date.parse('2026-11-09T00:00:00-03:00')).map(significant),future:replaceable.filter(e=>millis(e,'start')>=Date.parse('2026-11-09T00:00:00-03:00')).map(significant)},
+    remove:{near:replaceable.filter(e=>millis(e,'start')<nextWeekStart).map(significant),future:replaceable.filter(e=>millis(e,'start')>=nextWeekStart).map(significant)},
     baseHash:digest(events), status:{near:'pending',future:'pending'} };
 }
 // Initializes an already-seeded, fresh synthetic run. It does not invoke the
 // simulator's administrative reset endpoint or overwrite an existing run.
-export async function initializeScenario(calendar,student,{coldStart}={}) {
+export async function initializeScenario(calendar,student,{coldStart,workspaceSource}={}) {
   assertStudent(student);
   if(coldStart!==undefined&&(!Object.hasOwn(coldStartStudents,coldStart)||coldStartStudents[coldStart]!==student))throw new Error('Unknown cold-start case for this student');
   try {await loadState(student);throw new Error('Synthetic scenario already initialized');}
@@ -221,8 +236,8 @@ export async function initializeScenario(calendar,student,{coldStart}={}) {
   const staged=path.join(runtimeDir(),'workspaces',student);
   await fs.mkdir(path.dirname(staged),{recursive:true});
   try {await fs.mkdir(staged);} catch(error){if(error.code==='EEXIST')throw new Error('Synthetic workspace already initialized');throw error;}
-  const source=coldStart==='ana-held-out'?path.join(ROOT,'fixtures/paired-replay/ana-held-out/workspace'):
-    coldStart===undefined?path.join(ROOT,'fixtures/students',student):path.join(ROOT,'fixtures/cold-start',coldStart);
+  const source=workspaceSource||(coldStart==='ana-held-out'?path.join(ROOT,'fixtures/paired-replay/ana-held-out/workspace'):
+    coldStart===undefined?path.join(ROOT,'fixtures/students',student):path.join(ROOT,'fixtures/cold-start',coldStart));
   await fs.cp(source,staged,{recursive:true,force:false,errorOnExist:true});
   const feedback=(await readJSON(path.join(ROOT,'fixtures/feedback',student+'.json'))).map(validateFeedback);
   const state={student,feedback,history:[],plan:null,lastSnapshot:snapshot(events),annotations:{},protectedIds:[]};
@@ -483,7 +498,8 @@ async function applyAnnotationLocked(calendar,student,id) {
   }});
   return {saved:true};
 }
-export function summarize(events, feedback, state) {
+export function summarize(events, feedback, state, { today = FIXED_TODAY, timezoneOffset = '-03:00' } = {}) {
+  validateClock(today, timezoneOffset);
   function category(e) {
     const title=(e.summary||'').toLowerCase();
     return state.annotations?.[e.id]?.category||(/study|estudo/.test(title)?'study':/class|aula/.test(title)?'classes':/work|trabalho/.test(title)?'work':/sleep|rest|sono|descanso/.test(title)?'rest':/physical|exercise|exercício/.test(title)?'physical':'other');
@@ -502,8 +518,8 @@ export function summarize(events, feedback, state) {
       feedbackCount:related.length,reportedMinutes:related.reduce((a,f)=>a+(f.actualMinutes||0),0),
       eventsWithoutFeedback:included.filter(e=>!feedback.some(f=>f.eventId===e.id)).length};
   }
-  const recent=period('2026-10-26T00:00:00-03:00','2026-11-02T00:00:00-03:00');
-  const upcoming=period('2026-11-02T00:00:00-03:00','2026-11-09T00:00:00-03:00');
+  const recent=period(addDaysIso(today,-7)+'T00:00:00'+timezoneOffset,today+'T00:00:00'+timezoneOffset);
+  const upcoming=period(today+'T00:00:00'+timezoneOffset,addDaysIso(today,7)+'T00:00:00'+timezoneOffset);
   const categories=upcoming.categories;
   return {categories,scheduledHours:Object.values(categories).reduce((a,b)=>a+b,0),feedbackCount:feedback.length,
     reportedMinutes:feedback.reduce((a,f)=>a+(f.actualMinutes||0),0),missingCompletion:feedback.filter(f=>!f.completion||f.completion==='unknown').length,
