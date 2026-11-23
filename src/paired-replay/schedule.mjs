@@ -17,7 +17,7 @@ export function proposalAdditions(proposal) {
   return [...proposal.sections.near, ...proposal.sections.future].filter(action => action.kind === 'add');
 }
 
-export function validateSchedule(proposal, events, manifest, reviewed) {
+export function validateSchedule(proposal, events, manifest, reviewed, { allowShortfall = false } = {}) {
   const blocks = proposalAdditions(proposal);
   const { date, timezone } = manifest.clock;
   const deadlines = new Map(proposal.sources.map(source => [source.course, Date.parse(source.deadline)]));
@@ -26,7 +26,7 @@ export function validateSchedule(proposal, events, manifest, reviewed) {
     end: event.end.dateTime || event.end.date + 'T00:00:00-03:00',
   }));
   const findings = [], byDay = new Map(), byWeek = new Map();
-  if (blocks.length === 0) findings.push('No study blocks in the proposal');
+  if (blocks.length === 0 && !allowShortfall) findings.push('No study blocks in the proposal');
   for (const [index, block] of blocks.entries()) {
     const start = Date.parse(block.start), end = Date.parse(block.end);
     if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) {
@@ -69,7 +69,9 @@ export function validateSchedule(proposal, events, manifest, reviewed) {
     }
     const weeks = Math.ceil((Date.parse(reviewed.through) - Date.parse(date) + dayMs) / (7 * dayMs));
     for (let week = 0; week < weeks; week++) {
-      if ((byWeek.get(week) || 0) !== reviewed.targetHours * 60) findings.push(`Study time differs from the reviewed target in week ${week + 1}`);
+      const scheduled = byWeek.get(week) || 0;
+      const target = reviewed.targetHours * 60;
+      if (allowShortfall ? scheduled > target : scheduled !== target) findings.push(`Study time differs from the reviewed target in week ${week + 1}`);
     }
   }
   return findings;

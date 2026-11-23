@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 1,
+  "baseline": "cb86720882b9dcbe6c6f60243ae2e4379a2a6d33",
+  "clock": {
+    "date": "2026-11-02",
+    "timezone": "America/Sao_Paulo"
+  },
+  "slotMinutes": 15,
+  "sessionMinutes": 60,
+  "cases": [
+    {
+      "id": "bruno-equal-cutoff",
+      "purpose": "Same exact authored cutoff, no course priority. Test horizon imbalance and input-order sensitivity.",
+      "calendar": {
+        "path": "fixtures/calendars/bruno.json",
+        "sha256": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1"
+      },
+      "profile": {
+        "student": "bruno",
+        "targetHours": 5,
+        "maxDailyStudyHours": 2,
+        "studyBreakMinutes": 15,
+        "availabilityThrough": "2026-12-13",
+        "courses": [
+          {
+            "name": "Banco de Dados",
+            "deadline": "2026-12-14T18:00:00-03:00",
+            "source": "synthetic:Banco de Dados"
+          },
+          {
+            "name": "Algoritmos",
+            "deadline": "2026-12-14T18:00:00-03:00",
+            "source": "synthetic:Algoritmos"
+          }
+        ],
+        "studyWindows": [
+          {
+            "weekday": 3,
+            "start": "19:00",
+            "end": "21:15"
+          },
+          {
+            "weekday": 6,
+            "start": "14:00",
+            "end": "16:15"
+          },
+          {
+            "weekday": 0,
+            "start": "10:00",
+            "end": "12:15"
+          }
+        ]
+      },
+      "weeks": 6,
+      "knownFeasibleMinutes": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ]
+    },
+    {
+      "id": "ana-earlier-deadline",
+      "purpose": "The resolved noon cutoff precedes Statistics. Compare coverage and assess whether the explanation supports concentration.",
+      "calendar": {
+        "path": "fixtures/calendars/ana.json",
+        "sha256": "d8b30692464396d7f1a02fc1291ce0a8c217ef4b5ed1d75d9d20e2035f0a7913"
+      },
+      "profile": {
+        "student": "ana",
+        "targetHours": 4,
+        "maxDailyStudyHours": 2,
+        "studyBreakMinutes": 15,
+        "availabilityThrough": "2026-11-08",
+        "courses": [
+          {
+            "name": "Machine Learning",
+            "deadline": "2026-11-30T12:00:00-03:00",
+            "source": "synthetic:Machine Learning"
+          },
+          {
+            "name": "Statistics",
+            "deadline": "2026-12-14T09:00:00-03:00",
+            "source": "synthetic:Statistics"
+          }
+        ],
+        "studyWindows": [
+          {
+            "weekday": 3,
+            "start": "14:00",
+            "end": "16:15"
+          },
+          {
+            "weekday": 5,
+            "start": "14:00",
+            "end": "16:15"
+          }
+        ]
+      },
+      "weeks": 1,
+      "knownFeasibleMinutes": [
+        240
+      ]
+    },
+    {
+      "id": "bruno-explicit-priority",
+      "purpose": "Same schedule as the equal-cutoff case with an explicit course priority.",
+      "calendar": {
+        "path": "fixtures/calendars/bruno.json",
+        "sha256": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1"
+      },
+      "profile": {
+        "student": "bruno",
+        "targetHours": 5,
+        "maxDailyStudyHours": 2,
+        "studyBreakMinutes": 15,
+        "availabilityThrough": "2026-12-13",
+        "courses": [
+          {
+            "name": "Banco de Dados",
+            "deadline": "2026-12-14T18:00:00-03:00",
+            "source": "synthetic:Banco de Dados"
+          },
+          {
+            "name": "Algoritmos",
+            "deadline": "2026-12-14T18:00:00-03:00",
+            "source": "synthetic:Algoritmos"
+          }
+        ],
+        "studyWindows": [
+          {
+            "weekday": 3,
+            "start": "19:00",
+            "end": "21:15"
+          },
+          {
+            "weekday": 6,
+            "start": "14:00",
+            "end": "16:15"
+          },
+          {
+            "weekday": 0,
+            "start": "10:00",
+            "end": "12:15"
+          }
+        ]
+      },
+      "weeks": 6,
+      "focusCourse": "Algoritmos",
+      "knownFeasibleMinutes": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ]
+    },
+    {
+      "id": "bruno-tight-capacity",
+      "purpose": "Shortfall with a date exclusion. One remaining window fits exactly one session.",
+      "calendar": {
+        "path": "fixtures/calendars/bruno.json",
+        "sha256": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1"
+      },
+      "profile": {
+        "student": "bruno",
+        "targetHours": 4,
+        "maxDailyStudyHours": 2,
+        "studyBreakMinutes": 15,
+        "availabilityThrough": "2026-11-08",
+        "courses": [
+          {
+            "name": "Banco de Dados",
+            "deadline": "2026-12-14T18:00:00-03:00",
+            "source": "synthetic:Banco de Dados"
+          },
+          {
+            "name": "Algoritmos",
+            "deadline": "2026-12-14T18:00:00-03:00",
+            "source": "synthetic:Algoritmos"
+          }
+        ],
+        "studyWindows": [
+          {
+            "weekday": 3,
+            "start": "19:00",
+            "end": "20:00"
+          },
+          {
+            "weekday": 6,
+            "start": "14:00",
+            "end": "15:00"
+          }
+        ]
+      },
+      "weeks": 1,
+      "avoidDates": [
+        "2026-11-04"
+      ],
+      "knownFeasibleMinutes": [
+        60
+      ]
+    },
+    {
+      "id": "bruno-expired-course",
+      "purpose": "An expired course is ineligible. The active assessment ends at the one feasible block boundary.",
+      "calendar": {
+        "path": "fixtures/calendars/bruno.json",
+        "sha256": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1"
+      },
+      "profile": {
+        "student": "bruno",
+        "targetHours": 4,
+        "maxDailyStudyHours": 2,
+        "studyBreakMinutes": 15,
+        "availabilityThrough": "2026-11-08",
+        "courses": [
+          {
+            "name": "Banco de Dados",
+            "deadline": "2026-10-30T18:00:00-03:00",
+            "source": "synthetic:Banco de Dados"
+          },
+          {
+            "name": "Algoritmos",
+            "deadline": "2026-11-04T20:00:00-03:00",
+            "source": "synthetic:Algoritmos"
+          }
+        ],
+        "studyWindows": [
+          {
+            "weekday": 3,
+            "start": "19:00",
+            "end": "21:15"
+          },
+          {
+            "weekday": 6,
+            "start": "14:00",
+            "end": "16:15"
+          },
+          {
+            "weekday": 0,
+            "start": "10:00",
+            "end": "12:15"
+          }
+        ]
+      },
+      "weeks": 1,
+      "knownFeasibleMinutes": [
+        60
+      ]
+    },
+    {
+      "id": "ravi-shift-exception",
+      "purpose": "Hold out from tuning. Employed exam candidate with a shift extension, protected all-day care and travel.",
+      "calendar": {
+        "events": [
+          {
+            "id": "shift",
+            "summary": "Shift extension",
+            "start": {
+              "dateTime": "2026-11-05T19:00:00-03:00"
+            },
+            "end": {
+              "dateTime": "2026-11-05T20:00:00-03:00"
+            }
+          },
+          {
+            "id": "care",
+            "summary": "Family caregiving",
+            "start": {
+              "date": "2026-11-07"
+            },
+            "end": {
+              "date": "2026-11-08"
+            }
+          },
+          {
+            "id": "travel",
+            "summary": "Travel",
+            "start": {
+              "dateTime": "2026-11-08T14:00:00-03:00"
+            },
+            "end": {
+              "dateTime": "2026-11-08T15:00:00-03:00"
+            }
+          }
+        ]
+      },
+      "profile": {
+        "student": "ravi",
+        "targetHours": 4,
+        "maxDailyStudyHours": 2,
+        "studyBreakMinutes": 15,
+        "availabilityThrough": "2026-11-08",
+        "courses": [
+          {
+            "name": "Writing",
+            "deadline": "2026-11-15T10:00:00-03:00",
+            "source": "synthetic:Writing"
+          },
+          {
+            "name": "Quantitative reasoning",
+            "deadline": "2026-11-15T10:00:00-03:00",
+            "source": "synthetic:Quantitative reasoning"
+          }
+        ],
+        "studyWindows": [
+          {
+            "weekday": 4,
+            "start": "19:00",
+            "end": "21:15"
+          },
+          {
+            "weekday": 6,
+            "start": "09:00",
+            "end": "11:15"
+          },
+          {
+            "weekday": 0,
+            "start": "14:00",
+            "end": "16:15"
+          }
+        ]
+      },
+      "weeks": 1,
+      "knownFeasibleMinutes": [
+        120
+      ],
+      "heldOut": true
+    }
+  ]
+}
