@@ -1,0 +1,92 @@
+{
+  "version": 2,
+  "scenario": "skipped",
+  "language": "en",
+  "mode": "scripted / in-memory synthetic calendar",
+  "fixtureSha256": "d8b30692464396d7f1a02fc1291ce0a8c217ef4b5ed1d75d9d20e2035f0a7913",
+  "usage": "none",
+  "observations": [
+    {
+      "phase": "initial",
+      "studyMinutes": 240,
+      "fridayMinutes": 60
+    },
+    {
+      "phase": "next week",
+      "studyMinutes": 240,
+      "fridayMinutes": 120
+    }
+  ],
+  "captures": [],
+  "runId": "checkin-ana-scripted",
+  "originalEvents": 108,
+  "passed": true,
+  "evidence": {
+    "notes": [],
+    "revisions": [],
+    "selections": [
+      {
+        "weekOf": "2026-11-02",
+        "reason": "no_current_preference",
+        "planningRevisionId": null,
+        "proposalId": "23326bd4-07cf-43b2-aba1-db24d6dd3639",
+        "studyMinutes": 240,
+        "fridayMinutes": 60,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-06",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-09",
+        "reason": "no_current_preference",
+        "planningRevisionId": null,
+        "proposalId": "73c76d64-b90a-4051-8b99-15b14aa8a219",
+        "studyMinutes": 240,
+        "fridayMinutes": 120,
+        "windows": [
+          {
+            "date": "2026-11-11",
+            "start": "15:00",
+            "end": "16:00"
+          },
+          {
+            "date": "2026-11-13",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-15",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-13",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      }
+    ],
+    "approvalAttempts": 0
+  },
+  "durationMs": 1676
+}

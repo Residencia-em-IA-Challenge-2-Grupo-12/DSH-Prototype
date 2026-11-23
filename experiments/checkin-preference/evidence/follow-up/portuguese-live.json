@@ -1,0 +1,253 @@
+{
+  "version": 2,
+  "scenario": "portuguese",
+  "language": "pt",
+  "mode": "host-luna-fallback / Calendarpit",
+  "model": "gpt-6-luna",
+  "provider": "codex",
+  "harness": "0.2.2-rc.1",
+  "fixtureSha256": "d8b30692464396d7f1a02fc1291ce0a8c217ef4b5ed1d75d9d20e2035f0a7913",
+  "usage": "unknown",
+  "observations": [
+    {
+      "phase": "initial",
+      "studyMinutes": 240,
+      "fridayMinutes": 60
+    },
+    {
+      "phase": "first interpretation",
+      "expected": {
+        "kind": "unknown",
+        "fallbackMinutes": null
+      },
+      "observed": {
+        "kind": "soft",
+        "validThrough": "2026-11-08",
+        "fallbackMinutes": null,
+        "validFrom": "2026-11-02"
+      }
+    },
+    {
+      "phase": "unconfirmed",
+      "previewUnchanged": true,
+      "unknownConfirmationBlocked": "not exercised"
+    },
+    {
+      "phase": "second interpretation",
+      "expected": {
+        "kind": "soft",
+        "fallbackMinutes": null
+      },
+      "observed": {
+        "kind": "soft",
+        "validThrough": "2026-11-08",
+        "fallbackMinutes": null,
+        "validFrom": "2026-11-02"
+      }
+    },
+    {
+      "phase": "confirmed and selected",
+      "studyMinutes": 180,
+      "fridayMinutes": 0
+    },
+    {
+      "phase": "next week",
+      "studyMinutes": 240,
+      "fridayMinutes": 120
+    }
+  ],
+  "captures": [
+    {
+      "packet": {
+        "task": "Interpret a fictional check-in about Friday afternoon as a proposed input for human review. Do not ask questions or use tools. Reply only with one JSON object with kind, validThrough (YYYY-MM-DD, inclusive), and fallbackMinutes (null, 0, or 60).",
+        "rules": "Use hard for an explicit prohibition or unavailability. Use soft for an explicit preference or flexibility. Use unknown if strength is unclear. Never infer certainty from frustration. Use the stated dates within this planning week, and set fallbackMinutes only for an explicit zero- or one-hour fallback. Do not infer agreement. The latest message can correct a previous interpretation.",
+        "noteLanguage": "Brazilian Portuguese",
+        "weekOf": "2026-11-02",
+        "weekThrough": "2026-11-08",
+        "latest": "O estudo da sexta passada me cansou. Quero repensar a sexta à tarde para a semana de 2 a 8 de novembro.",
+        "previous": null
+      },
+      "messages": [
+        {
+          "id": "6ccf36d0-0e91-4cc8-94df-06822b5742d6",
+          "type": "user",
+          "text": "{\"task\":\"Interpret a fictional check-in about Friday afternoon as a proposed input for human review. Do not ask questions or use tools. Reply only with one JSON object with kind, validThrough (YYYY-MM-DD, inclusive), and fallbackMinutes (null, 0, or 60).\",\"rules\":\"Use hard for an explicit prohibition or unavailability. Use soft for an explicit preference or flexibility. Use unknown if strength is unclear. Never infer certainty from frustration. Use the stated dates within this planning week, and set fallbackMinutes only for an explicit zero- or one-hour fallback. Do not infer agreement. The latest message can correct a previous interpretation.\",\"noteLanguage\":\"Brazilian Portuguese\",\"weekOf\":\"2026-11-02\",\"weekThrough\":\"2026-11-08\",\"latest\":\"O estudo da sexta passada me cansou. Quero repensar a sexta à tarde para a semana de 2 a 8 de novembro.\",\"previous\":null}"
+        },
+        {
+          "id": "a4133cd2-4365-41c2-aab7-28b7b9e7deb8",
+          "type": "assistant",
+          "text": "{\"kind\":\"soft\",\"validThrough\":\"2026-11-08\",\"fallbackMinutes\":null}"
+        }
+      ],
+      "durationMs": 7916
+    },
+    {
+      "packet": {
+        "task": "Interpret a fictional check-in about Friday afternoon as a proposed input for human review. Do not ask questions or use tools. Reply only with one JSON object with kind, validThrough (YYYY-MM-DD, inclusive), and fallbackMinutes (null, 0, or 60).",
+        "rules": "Use hard for an explicit prohibition or unavailability. Use soft for an explicit preference or flexibility. Use unknown if strength is unclear. Never infer certainty from frustration. Use the stated dates within this planning week, and set fallbackMinutes only for an explicit zero- or one-hour fallback. Do not infer agreement. The latest message can correct a previous interpretation.",
+        "noteLanguage": "Brazilian Portuguese",
+        "weekOf": "2026-11-02",
+        "weekThrough": "2026-11-08",
+        "latest": "Explicando melhor: de 2 a 8 de novembro, prefiro deixar a sexta à tarde livre se der. Minha meta é estudar quatro horas na semana, mas ainda não aceitei usar a sexta como alternativa.",
+        "previous": {
+          "kind": "soft",
+          "validThrough": "2026-11-08",
+          "fallbackMinutes": null,
+          "validFrom": "2026-11-02"
+        }
+      },
+      "messages": [
+        {
+          "id": "54ae98b2-aa68-4210-937d-b26bc84c31e3",
+          "type": "user",
+          "text": "{\"task\":\"Interpret a fictional check-in about Friday afternoon as a proposed input for human review. Do not ask questions or use tools. Reply only with one JSON object with kind, validThrough (YYYY-MM-DD, inclusive), and fallbackMinutes (null, 0, or 60).\",\"rules\":\"Use hard for an explicit prohibition or unavailability. Use soft for an explicit preference or flexibility. Use unknown if strength is unclear. Never infer certainty from frustration. Use the stated dates within this planning week, and set fallbackMinutes only for an explicit zero- or one-hour fallback. Do not infer agreement. The latest message can correct a previous interpretation.\",\"noteLanguage\":\"Brazilian Portuguese\",\"weekOf\":\"2026-11-02\",\"weekThrough\":\"2026-11-08\",\"latest\":\"Explicando melhor: de 2 a 8 de novembro, prefiro deixar a sexta à tarde livre se der. Minha meta é estudar quatro horas na semana, mas ainda não aceitei usar a sexta como alternativa.\",\"previous\":{\"kind\":\"soft\",\"validThrough\":\"2026-11-08\",\"fallbackMinutes\":null,\"validFrom\":\"2026-11-02\"}}"
+        },
+        {
+          "id": "41e040b2-ba49-457d-8f1a-bb06df387cb3",
+          "type": "assistant",
+          "text": "{\"kind\":\"soft\",\"validThrough\":\"2026-11-08\",\"fallbackMinutes\":null}"
+        }
+      ],
+      "durationMs": 1825
+    }
+  ],
+  "runId": "e1b9a731-e319-45cd-8b44-5f808756b704",
+  "originalEvents": 108,
+  "retired": {
+    "archiveSha256": "87e5d6a6af98a6bae171d448607d3132a6885a7981f40a7683abe1a8588c302d",
+    "verified": true
+  },
+  "passed": true,
+  "evidence": {
+    "notes": [
+      {
+        "id": "edb31194-8160-49cd-b19d-bbf39b9fa510",
+        "planningWeek": "2026-11-02",
+        "text": "O estudo da sexta passada me cansou. Quero repensar a sexta à tarde para a semana de 2 a 8 de novembro."
+      },
+      {
+        "id": "a3505d96-260d-4afa-8825-2d2509a6064b",
+        "planningWeek": "2026-11-02",
+        "text": "Explicando melhor: de 2 a 8 de novembro, prefiro deixar a sexta à tarde livre se der. Minha meta é estudar quatro horas na semana, mas ainda não aceitei usar a sexta como alternativa."
+      }
+    ],
+    "revisions": [
+      {
+        "id": "23b5831d-3e26-442e-a867-e8e7cc559d1a",
+        "preference": {
+          "kind": "soft",
+          "validThrough": "2026-11-08",
+          "fallbackMinutes": null,
+          "validFrom": "2026-11-02"
+        },
+        "sourceIds": [
+          "edb31194-8160-49cd-b19d-bbf39b9fa510"
+        ],
+        "status": "superseded"
+      },
+      {
+        "id": "b2c57299-04a3-4784-8ae5-b6a23fa1b363",
+        "preference": {
+          "kind": "soft",
+          "validThrough": "2026-11-08",
+          "fallbackMinutes": null,
+          "validFrom": "2026-11-02"
+        },
+        "sourceIds": [
+          "edb31194-8160-49cd-b19d-bbf39b9fa510",
+          "a3505d96-260d-4afa-8825-2d2509a6064b"
+        ],
+        "status": "confirmed"
+      }
+    ],
+    "selections": [
+      {
+        "weekOf": "2026-11-02",
+        "reason": "no_current_preference",
+        "planningRevisionId": null,
+        "proposalId": "a0203dac-0e9a-4dfe-a6ae-bc7586c10125",
+        "studyMinutes": 240,
+        "fridayMinutes": 60,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-06",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-02",
+        "reason": "user_selected_review",
+        "planningRevisionId": "b2c57299-04a3-4784-8ae5-b6a23fa1b363",
+        "proposalId": "e4ca64d6-9dfd-48d2-9af8-f30a4374bcf5",
+        "studyMinutes": 180,
+        "fridayMinutes": 0,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-09",
+        "reason": "no_current_preference",
+        "planningRevisionId": null,
+        "proposalId": "35d2e62a-80e1-401d-832d-85754d047160",
+        "studyMinutes": 240,
+        "fridayMinutes": 120,
+        "windows": [
+          {
+            "date": "2026-11-11",
+            "start": "15:00",
+            "end": "16:00"
+          },
+          {
+            "date": "2026-11-13",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-15",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-13",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      }
+    ],
+    "approvalAttempts": 0
+  },
+  "durationMs": 13419
+}

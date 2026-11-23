@@ -1,0 +1,97 @@
+{
+  "mode": "--scripted",
+  "model": "scripted",
+  "processes": [
+    3879712,
+    3880053,
+    3880098
+  ],
+  "observations": [
+    {
+      "phase": "confirmed restriction",
+      "studyMinutes": 180,
+      "fridayMinutes": 0,
+      "planId": "e24ea71f-ff38-4d20-9dd6-1dcdf2cfdd75",
+      "planPreferenceId": "7bdf98f6-bec8-46d4-82f8-99b098098d66",
+      "confirmed": {
+        "id": "7bdf98f6-bec8-46d4-82f8-99b098098d66",
+        "confirmedAt": "2026-11-23T05:51:50.274Z",
+        "supersedesId": null,
+        "sourceIds": [
+          "87e971b1-e37c-4599-90a6-923bbf6ff07b"
+        ],
+        "expired": false
+      },
+      "pendingId": null
+    },
+    {
+      "phase": "recovered with pending conflict",
+      "studyMinutes": 180,
+      "fridayMinutes": 0,
+      "planId": "e24ea71f-ff38-4d20-9dd6-1dcdf2cfdd75",
+      "planPreferenceId": "7bdf98f6-bec8-46d4-82f8-99b098098d66",
+      "confirmed": {
+        "id": "7bdf98f6-bec8-46d4-82f8-99b098098d66",
+        "confirmedAt": "2026-11-23T05:51:50.274Z",
+        "supersedesId": null,
+        "sourceIds": [
+          "87e971b1-e37c-4599-90a6-923bbf6ff07b"
+        ],
+        "expired": false
+      },
+      "pendingId": "175bd395-40ab-4916-8084-2e79f40091e1"
+    },
+    {
+      "phase": "replacement confirmed",
+      "studyMinutes": 240,
+      "fridayMinutes": 60,
+      "planId": "bd8b44d1-55c4-4e95-a87f-348d8adcee81",
+      "planPreferenceId": "175bd395-40ab-4916-8084-2e79f40091e1",
+      "confirmed": {
+        "id": "175bd395-40ab-4916-8084-2e79f40091e1",
+        "confirmedAt": "2026-11-23T05:51:51.329Z",
+        "supersedesId": "7bdf98f6-bec8-46d4-82f8-99b098098d66",
+        "sourceIds": [
+          "87e971b1-e37c-4599-90a6-923bbf6ff07b",
+          "80e5896b-85f3-4d94-8201-86ab42121625"
+        ],
+        "expired": false
+      },
+      "pendingId": null
+    },
+    {
+      "phase": "expiry after second restart",
+      "studyMinutes": 240,
+      "fridayMinutes": 120,
+      "planId": "119df6bb-eda4-4bac-b5e1-85a559bf228d",
+      "planPreferenceId": null,
+      "confirmed": {
+        "id": "175bd395-40ab-4916-8084-2e79f40091e1",
+        "confirmedAt": "2026-11-23T05:51:51.329Z",
+        "supersedesId": "7bdf98f6-bec8-46d4-82f8-99b098098d66",
+        "sourceIds": [
+          "87e971b1-e37c-4599-90a6-923bbf6ff07b",
+          "80e5896b-85f3-4d94-8201-86ab42121625"
+        ],
+        "expired": true
+      },
+      "pendingId": null
+    }
+  ],
+  "passed": true,
+  "runId": "7522a3e2-f644-4f45-8b35-8d0beb7ecf2f",
+  "staleConfirmationRejected": true,
+  "recoveredPreviewApprovalRejected": true,
+  "calendar": {
+    "events": 108,
+    "digest": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5"
+  },
+  "retirement": "verified",
+  "retired": {
+    "id": "7522a3e2-f644-4f45-8b35-8d0beb7ecf2f",
+    "archiveId": "7522a3e2-f644-4f45-8b35-8d0beb7ecf2f",
+    "archiveSha256": "33acd4606fa8a97689451895ffd8b9224f5cc134beae0a66402870a305ddfbc2",
+    "discarded": false
+  },
+  "archiveExcludesNotes": true
+}

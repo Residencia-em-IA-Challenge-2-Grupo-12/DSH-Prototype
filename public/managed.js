@@ -8,7 +8,7 @@ const words={
     hostMode:'Host Luna fallback · GPT-6 Luna · synthetic data only · DSH/controller on host, Calendarpit in Docker; restart recovery is limited',
     localAccess:'Open the live controls directly in a browser on the facilitator computer using its loopback address. Phone or embedded previews are not supported for control.',
     invalidResponse:'The preview or server returned an empty or invalid response',unconfirmed:'Could not confirm the operation. Refresh and inspect the run before retrying; changes may have occurred.',connectionError:'Could not reach the local service.',requestFailed:'Request failed',
-    planningInputs:'Planning inputs',reviewInputs:'Confirm the planning inputs to continue.',inputsConfirmed:'Planning inputs confirmed. Ask for a draft.',
+    planningInputs:'Planning inputs',reviewInputs:'Confirm the planning inputs to continue.',inputsConfirmed:'Planning inputs confirmed.',previewOnly:'Preview only · calendar writes are disabled in this exercise.',
     windowOk:'No current overlap',windowUnknown:'Calendar unavailable · choose a typed answer',windowConflict:'Overlaps',
     start:'Start selected scenario',retire:'End and archive run',refresh:'Refresh',send:'Send',chat:'Plan together',
     calendar:'Your week · calendar and proposal',proposal:'Review proposal',near:'Coming week',future:'Future tentative blocks',
@@ -28,7 +28,7 @@ const words={
     hostMode:'Fallback Luna no host · GPT-6 Luna · apenas dados sintéticos · DSH/controlador no host, Calendarpit no Docker; recuperação após reinício é limitada',
     localAccess:'Abra os controles diretamente em um navegador na máquina do facilitador pelo endereço local. Prévias no celular ou incorporadas não permitem controlar a execução.',
     invalidResponse:'A prévia ou o servidor retornou uma resposta vazia ou inválida',unconfirmed:'Não foi possível confirmar a operação. Atualize e confira a execução antes de tentar novamente; pode ter ocorrido uma alteração.',connectionError:'Não foi possível acessar o serviço local.',requestFailed:'A solicitação falhou',
-    planningInputs:'Dados do plano',reviewInputs:'Confirme os dados do plano para continuar.',inputsConfirmed:'Dados do plano confirmados. Solicite uma proposta.',
+    planningInputs:'Dados do plano',reviewInputs:'Confirme os dados do plano para continuar.',inputsConfirmed:'Dados do plano confirmados.',previewOnly:'Somente prévia. Alterações no calendário estão desativadas neste exercício.',
     windowOk:'Sem sobreposição atual',windowUnknown:'Calendário indisponível · digite uma resposta',windowConflict:'Sobreposição com',
     start:'Iniciar cenário selecionado',retire:'Encerrar e arquivar',refresh:'Atualizar',send:'Enviar',chat:'Planejar em conjunto',
     calendar:'Sua semana · calendário e proposta',proposal:'Revisar proposta',near:'Próxima semana',future:'Blocos futuros provisórios',
@@ -103,7 +103,7 @@ function renderRetireReview(){
 }
 function canApprove(state,plan,section){
   const changes=(plan[section]?.length||0)+(plan.remove?.[section]?.length||0)>0;
-  return available&&plan.status?.[section]==='pending'&&!state.recovery&&state.calendar?.availability==='available'&&changes&&!state.state?.planningContext?.pending&&
+  return available&&!plan.previewOnly&&plan.status?.[section]==='pending'&&!state.recovery&&state.calendar?.availability==='available'&&changes&&!state.state?.planningContext?.pending&&
     !approvalBusy.has(`${plan.id}:${section}`)&&!approvalCompleted.has(`${plan.id}:${section}`)&&!approvalReviewRequired.has(`${plan.id}:${section}`);
 }
 function renderMessages(messages){
@@ -223,6 +223,7 @@ function renderProposal(state){
   const plan=state.state?.plan,key=JSON.stringify([run?.id,$('language').value,plan,state.recovery,state.calendar,state.state?.planningContext?.pending?.id]);
   if(key===proposalKey)return;
   proposalKey=key;$('proposal').replaceChildren();if(!plan)return;
+  if(plan.previewOnly)$('proposal').append(node('p',t('previewOnly')));
   for(const section of ['near','future']){
     const box=node('section','');box.className='proposal-section';
     const label=section==='near'?'near':'future';

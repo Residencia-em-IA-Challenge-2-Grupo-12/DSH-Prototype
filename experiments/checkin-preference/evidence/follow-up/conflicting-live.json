@@ -1,0 +1,288 @@
+{
+  "version": 2,
+  "scenario": "conflicting",
+  "language": "en",
+  "mode": "host-luna-fallback / Calendarpit",
+  "model": "gpt-6-luna",
+  "provider": "codex",
+  "harness": "0.2.2-rc.1",
+  "fixtureSha256": "d8b30692464396d7f1a02fc1291ce0a8c217ef4b5ed1d75d9d20e2035f0a7913",
+  "usage": "unknown",
+  "observations": [
+    {
+      "phase": "initial",
+      "studyMinutes": 240,
+      "fridayMinutes": 60
+    },
+    {
+      "phase": "first interpretation",
+      "expected": {
+        "kind": "hard",
+        "fallbackMinutes": null
+      },
+      "observed": {
+        "kind": "hard",
+        "validThrough": "2026-11-08",
+        "fallbackMinutes": null,
+        "validFrom": "2026-11-02"
+      }
+    },
+    {
+      "phase": "first confirmation",
+      "studyMinutes": 180,
+      "fridayMinutes": 0
+    },
+    {
+      "phase": "second interpretation",
+      "expected": {
+        "kind": "soft",
+        "fallbackMinutes": 60
+      },
+      "observed": {
+        "kind": "soft",
+        "validThrough": "2026-11-08",
+        "fallbackMinutes": 60,
+        "validFrom": "2026-11-02"
+      }
+    },
+    {
+      "phase": "conflict pending",
+      "studyMinutes": 180,
+      "fridayMinutes": 0
+    },
+    {
+      "phase": "replacement confirmed",
+      "studyMinutes": 240,
+      "fridayMinutes": 60
+    },
+    {
+      "phase": "next week",
+      "studyMinutes": 240,
+      "fridayMinutes": 120
+    }
+  ],
+  "captures": [
+    {
+      "packet": {
+        "task": "Interpret a fictional check-in about Friday afternoon as a proposed input for human review. Do not ask questions or use tools. Reply only with one JSON object with kind, validThrough (YYYY-MM-DD, inclusive), and fallbackMinutes (null, 0, or 60).",
+        "rules": "Use hard for an explicit prohibition or unavailability. Use soft for an explicit preference or flexibility. Use unknown if strength is unclear. Never infer certainty from frustration. Use the stated dates within this planning week, and set fallbackMinutes only for an explicit zero- or one-hour fallback. Do not infer agreement. The latest message can correct a previous interpretation.",
+        "noteLanguage": "English",
+        "weekOf": "2026-11-02",
+        "weekThrough": "2026-11-08",
+        "latest": "I cannot study on Friday afternoon at all during November 2 through November 8. Please keep it free.",
+        "previous": null
+      },
+      "messages": [
+        {
+          "id": "c174228f-0d92-41bc-bf43-0973c626b9a5",
+          "type": "user",
+          "text": "{\"task\":\"Interpret a fictional check-in about Friday afternoon as a proposed input for human review. Do not ask questions or use tools. Reply only with one JSON object with kind, validThrough (YYYY-MM-DD, inclusive), and fallbackMinutes (null, 0, or 60).\",\"rules\":\"Use hard for an explicit prohibition or unavailability. Use soft for an explicit preference or flexibility. Use unknown if strength is unclear. Never infer certainty from frustration. Use the stated dates within this planning week, and set fallbackMinutes only for an explicit zero- or one-hour fallback. Do not infer agreement. The latest message can correct a previous interpretation.\",\"noteLanguage\":\"English\",\"weekOf\":\"2026-11-02\",\"weekThrough\":\"2026-11-08\",\"latest\":\"I cannot study on Friday afternoon at all during November 2 through November 8. Please keep it free.\",\"previous\":null}"
+        },
+        {
+          "id": "e7889b19-a80a-40e5-b5f3-4e995fa3dd40",
+          "type": "assistant",
+          "text": "{\"kind\":\"hard\",\"validThrough\":\"2026-11-08\",\"fallbackMinutes\":null}"
+        }
+      ],
+      "durationMs": 7575
+    },
+    {
+      "packet": {
+        "task": "Interpret a fictional check-in about Friday afternoon as a proposed input for human review. Do not ask questions or use tools. Reply only with one JSON object with kind, validThrough (YYYY-MM-DD, inclusive), and fallbackMinutes (null, 0, or 60).",
+        "rules": "Use hard for an explicit prohibition or unavailability. Use soft for an explicit preference or flexibility. Use unknown if strength is unclear. Never infer certainty from frustration. Use the stated dates within this planning week, and set fallbackMinutes only for an explicit zero- or one-hour fallback. Do not infer agreement. The latest message can correct a previous interpretation.",
+        "noteLanguage": "English",
+        "weekOf": "2026-11-02",
+        "weekThrough": "2026-11-08",
+        "latest": "I can study on Friday afternoon after all, during November 2 through November 8. I would prefer to keep it free, but I agree to one hour on Friday if it gets me to four study hours.",
+        "previous": {
+          "kind": "hard",
+          "validThrough": "2026-11-08",
+          "fallbackMinutes": null,
+          "validFrom": "2026-11-02"
+        }
+      },
+      "messages": [
+        {
+          "id": "4960c94f-d6bb-4642-87d0-7bc653911f16",
+          "type": "user",
+          "text": "{\"task\":\"Interpret a fictional check-in about Friday afternoon as a proposed input for human review. Do not ask questions or use tools. Reply only with one JSON object with kind, validThrough (YYYY-MM-DD, inclusive), and fallbackMinutes (null, 0, or 60).\",\"rules\":\"Use hard for an explicit prohibition or unavailability. Use soft for an explicit preference or flexibility. Use unknown if strength is unclear. Never infer certainty from frustration. Use the stated dates within this planning week, and set fallbackMinutes only for an explicit zero- or one-hour fallback. Do not infer agreement. The latest message can correct a previous interpretation.\",\"noteLanguage\":\"English\",\"weekOf\":\"2026-11-02\",\"weekThrough\":\"2026-11-08\",\"latest\":\"I can study on Friday afternoon after all, during November 2 through November 8. I would prefer to keep it free, but I agree to one hour on Friday if it gets me to four study hours.\",\"previous\":{\"kind\":\"hard\",\"validThrough\":\"2026-11-08\",\"fallbackMinutes\":null,\"validFrom\":\"2026-11-02\"}}"
+        },
+        {
+          "id": "cd56376f-7677-433e-8a74-94ed2bede277",
+          "type": "assistant",
+          "text": "{\"kind\":\"soft\",\"validThrough\":\"2026-11-08\",\"fallbackMinutes\":60}"
+        }
+      ],
+      "durationMs": 1816
+    }
+  ],
+  "runId": "324624d7-c6ad-4404-b26d-26ad4f524760",
+  "originalEvents": 108,
+  "retired": {
+    "archiveSha256": "fc11ab8f83e6e74853a221fbb004328cacd6eecd085950a9a279c6ab6295249c",
+    "verified": true
+  },
+  "passed": true,
+  "evidence": {
+    "notes": [
+      {
+        "id": "106f2c86-9f9e-434f-b880-8358e65788de",
+        "planningWeek": "2026-11-02",
+        "text": "I cannot study on Friday afternoon at all during November 2 through November 8. Please keep it free."
+      },
+      {
+        "id": "f22e413b-c002-4e44-ac36-44b3bafa1cb9",
+        "planningWeek": "2026-11-02",
+        "text": "I can study on Friday afternoon after all, during November 2 through November 8. I would prefer to keep it free, but I agree to one hour on Friday if it gets me to four study hours."
+      }
+    ],
+    "revisions": [
+      {
+        "id": "54f4c539-dbcb-465f-83e2-68a780b8e58e",
+        "preference": {
+          "kind": "hard",
+          "validThrough": "2026-11-08",
+          "fallbackMinutes": null,
+          "validFrom": "2026-11-02"
+        },
+        "sourceIds": [
+          "106f2c86-9f9e-434f-b880-8358e65788de"
+        ],
+        "status": "superseded"
+      },
+      {
+        "id": "c546afca-8cc2-4893-a3b5-743448e552e7",
+        "preference": {
+          "kind": "soft",
+          "validThrough": "2026-11-08",
+          "fallbackMinutes": 60,
+          "validFrom": "2026-11-02"
+        },
+        "sourceIds": [
+          "106f2c86-9f9e-434f-b880-8358e65788de",
+          "f22e413b-c002-4e44-ac36-44b3bafa1cb9"
+        ],
+        "status": "confirmed"
+      }
+    ],
+    "selections": [
+      {
+        "weekOf": "2026-11-02",
+        "reason": "no_current_preference",
+        "planningRevisionId": null,
+        "proposalId": "6c00f2ca-5c01-41aa-8727-8d50e0bd322f",
+        "studyMinutes": 240,
+        "fridayMinutes": 60,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-06",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-02",
+        "reason": "time_unavailable",
+        "planningRevisionId": "54f4c539-dbcb-465f-83e2-68a780b8e58e",
+        "proposalId": "a6e736d4-4386-4fca-8c1d-df5824a2f69d",
+        "studyMinutes": 180,
+        "fridayMinutes": 0,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-02",
+        "reason": "explicit_fallback",
+        "planningRevisionId": "c546afca-8cc2-4893-a3b5-743448e552e7",
+        "proposalId": "1d89b6e7-86a3-48bc-9213-1d6752c6a95d",
+        "studyMinutes": 240,
+        "fridayMinutes": 60,
+        "windows": [
+          {
+            "date": "2026-11-04",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-06",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-08",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-04",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      },
+      {
+        "weekOf": "2026-11-09",
+        "reason": "no_current_preference",
+        "planningRevisionId": null,
+        "proposalId": "a3d6a2df-2460-4248-aea3-95a3a40cc99d",
+        "studyMinutes": 240,
+        "fridayMinutes": 120,
+        "windows": [
+          {
+            "date": "2026-11-11",
+            "start": "15:00",
+            "end": "16:00"
+          },
+          {
+            "date": "2026-11-13",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-15",
+            "start": "14:00",
+            "end": "15:00"
+          },
+          {
+            "date": "2026-11-13",
+            "start": "15:15",
+            "end": "16:15"
+          }
+        ]
+      }
+    ],
+    "approvalAttempts": 0
+  },
+  "durationMs": 13175
+}

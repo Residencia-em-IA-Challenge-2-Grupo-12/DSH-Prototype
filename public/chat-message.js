@@ -28,7 +28,9 @@ export function renderConversation(root,messages,language='en'){
   for(const message of messages){
     if(message.type==='activity'){activity.push(message.text);continue;}
     const article=document.createElement('article');article.className=message.type==='user'?'user':'assistant';
-    const author=document.createElement('small');author.textContent=message.type==='user'?(pt?'Você':'You'):'Luna';article.append(author);
+    const author=document.createElement('small');
+    author.textContent=message.type==='user'?(pt?'Você':'You'):message.type==='study-review'?(pt?'Revisão do plano':'Plan review'):'Luna';
+    article.append(author);
     appendMessageText(article,message.text);out.push(article);
   }
   if(activity.length){
