@@ -8,6 +8,7 @@ import { StudySession } from '../src/sdk-session.mjs';
 function fakeHarness(expected={provider:'codex',model:'gpt-6-luna'}) {
   const child=new EventEmitter();child.stdout=new PassThrough();child.stderr=new PassThrough();child.killed=false;
   let waitId,sessionId,questionAnswered=false,approvalAnswer;
+  const prompts=[];
   const emit=frame=>child.stdout.write(JSON.stringify(frame)+'\n');
   child.stdin=new Writable({write(chunk,encoding,done){
     for(const line of chunk.toString().trim().split('\n')){
@@ -16,6 +17,7 @@ function fakeHarness(expected={provider:'codex',model:'gpt-6-luna'}) {
         assert.equal(frame.params.provider,expected.provider);assert.equal(frame.params.model,expected.model);
         emit({jsonrpc:'2.0',id:frame.id,result:{serverInfo:{name:'test'}}});
       } else if(frame.method==='session/prompt') {
+        prompts.push(frame.params.contentBlocks[0].text);
         sessionId=frame.params.sessionId;emit({jsonrpc:'2.0',id:frame.id,result:{messageId:'m1'}});
         emit({jsonrpc:'2.0',method:'session.event',params:{sessionId,event:{type:'tool/call',data:{name:'ask_user_question'}}}});
         emit({jsonrpc:'2.0',id:'q1',method:'user-question/ask',params:{requestId:'request1',questions:[{id:'hours',question:'How many?',options:[{label:'3 hours'},{label:'5 hours'}]}]}});
@@ -30,7 +32,7 @@ function fakeHarness(expected={provider:'codex',model:'gpt-6-luna'}) {
     }done();
   }});
   child.kill=()=>{child.killed=true;child.emit('exit',0);};
-  return {child,get questionAnswered(){return questionAnswered;},get approvalAnswer(){return approvalAnswer;}};
+  return {child,prompts,get questionAnswered(){return questionAnswered;},get approvalAnswer(){return approvalAnswer;}};
 }
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 test('SDK conversation forwards a question and fails approval closed',async()=>{
@@ -98,6 +100,31 @@ test('a trusted host fallback can use a persistent DSH profile without changing 
     assert.throws(()=>new StudySession('ana',{dshHome:'relative'}),/DSH profile/i);
     assert.throws(()=>new StudySession('ana',{dshHome:'/private/persistent-dsh'}),/brokered Luna/i);
     assert.throws(()=>new StudySession('ana',{dshHome:'/private/persistent-dsh',brokerSocket:'/run/study-broker/agent.sock',gateway:{baseURL:'http://127.0.0.1:12345/v1',accessToken:'a'.repeat(64)}}),/brokered Luna/i);
+  } finally {session.stop();}
+});
+
+test('browser cold-start guidance distinguishes resolved inputs from a consequential question on every turn',async()=>{
+  const fake=fakeHarness();
+  const session=new StudySession('bruno',{coldStart:true,browserStudy:true,
+    brokerSocket:'/run/study-broker/agent.sock',brokerProbe:async()=>true,
+    launch:(_command,_args,{env})=>{
+      writeFileSync(env.STUDY_POLICY_READY,'guard-registered',{mode:0o600,flag:'wx'});
+      return fake.child;
+    }});
+  try {
+    await session.prompt('My study dates and limits are settled.');await flush();
+    session.answer('request1',[{id:'hours',selected:['3 hours']}]);await flush();
+    await session.prompt('Shorten Sunday but keep the other dates.');await flush();
+    assert.equal(fake.prompts.length,2);
+    for(const prompt of fake.prompts){
+      assert.match(prompt,/review is the confirmation step/i);
+      assert.match(prompt,/ask only about a material missing or conflicting decision/i);
+      assert.match(prompt,/pass every proposed block for each choice to preview_study_options/i);
+      assert.match(prompt,/option labels verbatim/i);
+      assert.match(prompt,/refers to their confirmed date range/i);
+    }
+    assert.match(fake.prompts[0],/Use the synthetic tools/i);
+    assert.ok(fake.prompts[1].endsWith('User: Shorten Sunday but keep the other dates.'));
   } finally {session.stop();}
 });
 

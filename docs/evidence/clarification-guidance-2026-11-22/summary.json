@@ -1,0 +1,751 @@
+{
+  "verifiedOn": "2026-11-22",
+  "cases": {
+    "complete": {
+      "mode": "complete",
+      "opening": "Can you help me plan November 2–8, 2026 for my Algorithms exam and Database final project? Please use my course materials and calendar. Four hours this week, one-hour sessions, at most two a day with 15 minutes between them. No priority between assessments. Keep Monday free. This week only. Keep Wednesday evening free. Saturday 14:00–16:15 and Sunday 10:00–12:15 are my study windows this week.",
+      "correction": "I now need to stop by 11:00 on Sunday. Use Sunday 10:00–11:00 only, keep Saturday 14:00–16:15 and all workday evenings free, and reduce the target to three hours this week. All other planning inputs still stand. Update the reviewed inputs and proposal.",
+      "questions": [],
+      "sent": [
+        "Can you help me plan November 2–8, 2026 for my Algorithms exam and Database final project? Please use my course materials and calendar. Four hours this week, one-hour sessions, at most two a day with 15 minutes between them. No priority between assessments. Keep Monday free. This week only. Keep Wednesday evening free. Saturday 14:00–16:15 and Sunday 10:00–12:15 are my study windows this week.",
+        "Draft November 2–8, 2026 using the confirmed inputs. Show that week for review.",
+        "I now need to stop by 11:00 on Sunday. Use Sunday 10:00–11:00 only, keep Saturday 14:00–16:15 and all workday evenings free, and reduce the target to three hours this week. All other planning inputs still stand. Update the reviewed inputs and proposal.",
+        "Draft November 2–8, 2026 using the confirmed inputs. Show that week for review."
+      ],
+      "model": "gpt-6-luna",
+      "runtime": "host-luna-fallback",
+      "fixture": "bruno-text",
+      "implementation": "7ec1b4630943cf54b4932910570fafb296103de4",
+      "usage": "unknown",
+      "operator": "Headless Chrome with prepared fictional replies",
+      "runId": "9eeb0b7c-72ce-41fb-95f3-3b98ea30cf25",
+      "firstPending": {
+        "id": "ec89c11a-cd5a-4799-97f6-7181023273f7",
+        "record": {
+          "courses": [
+            {
+              "name": "Algoritmos — prova escrita de grafos",
+              "date": "2026-12-14",
+              "time": "09:00",
+              "citation": {
+                "path": "notices/aviso-turma-n02.md",
+                "quote": "A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo."
+              },
+              "resolution": "Aviso fixado da coordenação publicado em 30/10/2026 substitui a data inicial de 07/12/2026; prova às 09:00 na sala 22. Lista de grafos de 26/11 segue vigente e não é tratada como avaliação-alvo separada."
+            },
+            {
+              "name": "Banco de Dados — envio final do projeto de modelagem",
+              "date": "2026-12-14",
+              "time": "18:00",
+              "citation": {
+                "path": "courses/banco-de-dados.md",
+                "quote": "**Envio final do projeto de modelagem:** 14/12/2026 às 18:00, horário de São Paulo, na área de trabalhos do LMS."
+              },
+              "resolution": "É prazo de submissão do projeto, não horário de prova/exame."
+            }
+          ],
+          "studyWindows": [
+            {
+              "weekday": 6,
+              "start": "14:00",
+              "end": "16:15"
+            },
+            {
+              "weekday": 0,
+              "start": "10:00",
+              "end": "12:15"
+            }
+          ],
+          "targetHours": 4,
+          "maxDailyStudyHours": 2,
+          "studyBreakMinutes": 15,
+          "through": "2026-11-08",
+          "assumption": "Só 02–08/11/2026: segunda 02/11 livre, quarta à noite livre; estudo apenas sábado 07/11 14:00–16:15 e domingo 08/11 10:00–12:15. Cabem 4 sessões de 1h, duas por dia com pausa de 15 min; distribuir igualmente sem prioridade (2h por curso). Oficina opcional de BD 28/11 e plantão opcional de Algoritmos 19/11 são contexto, não agendados e fora do período. Calendário consultado; janelas sem colisões."
+        }
+      },
+      "initialRecord": {
+        "id": "ec89c11a-cd5a-4799-97f6-7181023273f7",
+        "record": {
+          "courses": [
+            {
+              "name": "Algoritmos — prova escrita de grafos",
+              "date": "2026-12-14",
+              "time": "09:00",
+              "citation": {
+                "path": "notices/aviso-turma-n02.md",
+                "quote": "A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo."
+              },
+              "resolution": "Aviso fixado da coordenação publicado em 30/10/2026 substitui a data inicial de 07/12/2026; prova às 09:00 na sala 22. Lista de grafos de 26/11 segue vigente e não é tratada como avaliação-alvo separada."
+            },
+            {
+              "name": "Banco de Dados — envio final do projeto de modelagem",
+              "date": "2026-12-14",
+              "time": "18:00",
+              "citation": {
+                "path": "courses/banco-de-dados.md",
+                "quote": "**Envio final do projeto de modelagem:** 14/12/2026 às 18:00, horário de São Paulo, na área de trabalhos do LMS."
+              },
+              "resolution": "É prazo de submissão do projeto, não horário de prova/exame."
+            }
+          ],
+          "studyWindows": [
+            {
+              "weekday": 6,
+              "start": "14:00",
+              "end": "16:15"
+            },
+            {
+              "weekday": 0,
+              "start": "10:00",
+              "end": "12:15"
+            }
+          ],
+          "targetHours": 4,
+          "maxDailyStudyHours": 2,
+          "studyBreakMinutes": 15,
+          "through": "2026-11-08",
+          "assumption": "Só 02–08/11/2026: segunda 02/11 livre, quarta à noite livre; estudo apenas sábado 07/11 14:00–16:15 e domingo 08/11 10:00–12:15. Cabem 4 sessões de 1h, duas por dia com pausa de 15 min; distribuir igualmente sem prioridade (2h por curso). Oficina opcional de BD 28/11 e plantão opcional de Algoritmos 19/11 são contexto, não agendados e fora do período. Calendário consultado; janelas sem colisões."
+        }
+      },
+      "initialReply": "Li os materiais e consultei o calendário. O contexto de planejamento foi enviado para revisão do operador; **ainda não vou rascunhar o plano** até essa confirmação.\n\n- **Algoritmos:** a prova escrita de grafos está marcada para **14/12/2026 às 09:00, sala 22**. O aviso fixado da coordenação diz: “A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo.” Isso substitui a data inicial de **07/12** no cronograma do curso.\n- **Banco de Dados:** o projeto final deve ser **enviado até 14/12/2026 às 18:00** — é um prazo de submissão, não um horário de prova.\n- **Marcos opcionais, apenas como contexto:** oficina de revisão de Banco de Dados em **28/11 às 10:00** e plantão de Algoritmos em **19/11 às 20:00**. Não os incluí como sessões de estudo.\n- **Semana solicitada:** quatro sessões de uma hora, divididas igualmente entre os cursos. Segunda-feira fica livre; as janelas consideradas são sábado **07/11, 14:00–16:15**, e domingo **08/11, 10:00–12:15**, com até duas sessões por dia e intervalo de 15 minutos. As janelas não colidem com compromissos do calendário consultado.\n\nO envio para confirmação do operador foi registrado com o ID `ec89c11a-cd5a-4799-97f6-7181023273f7`.",
+      "initialPlan": {
+        "id": "c9cc4ffd-279a-410b-b33d-10dfee3688c4",
+        "blocks": [
+          {
+            "start": "2026-11-07T14:00:00-03:00",
+            "end": "2026-11-07T15:00:00-03:00",
+            "summary": "Study: Banco de Dados — envio final do projeto de modelagem"
+          },
+          {
+            "start": "2026-11-07T15:15:00-03:00",
+            "end": "2026-11-07T16:15:00-03:00",
+            "summary": "Study: Banco de Dados — envio final do projeto de modelagem"
+          },
+          {
+            "start": "2026-11-08T10:00:00-03:00",
+            "end": "2026-11-08T11:00:00-03:00",
+            "summary": "Study: Algoritmos — prova escrita de grafos"
+          },
+          {
+            "start": "2026-11-08T11:15:00-03:00",
+            "end": "2026-11-08T12:15:00-03:00",
+            "summary": "Study: Algoritmos — prova escrita de grafos"
+          }
+        ],
+        "futureCount": 0,
+        "prose": "## Rascunho para revisão · 2–8 de novembro de 2026\n\n- **Sábado, 7/11**\n  - 14:00–15:00 — Banco de Dados\n  - 15:15–16:15 — Banco de Dados\n- **Domingo, 8/11**\n  - 10:00–11:00 — Algoritmos\n  - 11:15–12:15 — Algoritmos\n\n**Total da semana:** 4 horas — 2 horas por matéria. O intervalo entre as sessões no mesmo dia é de 15 minutos; o limite de duas sessões diárias é respeitado. Segunda-feira permanece livre. Não há sessões previstas para quarta-feira à noite.\n\nEste é um rascunho para revisão, não uma confirmação de estudo concluído. O calendário solicita aprovação separadamente."
+      },
+      "correctedRecord": {
+        "id": "07ed4a48-d633-4bf8-afff-89fa3ce3cf6b",
+        "record": {
+          "courses": [
+            {
+              "name": "Algoritmos — prova escrita de grafos",
+              "date": "2026-12-14",
+              "time": "09:00",
+              "citation": {
+                "path": "notices/aviso-turma-n02.md",
+                "quote": "A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo."
+              },
+              "resolution": "Aviso fixado da coordenação publicado em 30/10/2026 substitui a data inicial de 07/12/2026; prova às 09:00 na sala 22. Lista de grafos de 26/11 segue vigente e não é tratada como avaliação-alvo separada."
+            },
+            {
+              "name": "Banco de Dados — envio final do projeto de modelagem",
+              "date": "2026-12-14",
+              "time": "18:00",
+              "citation": {
+                "path": "courses/banco-de-dados.md",
+                "quote": "**Envio final do projeto de modelagem:** 14/12/2026 às 18:00, horário de São Paulo, na área de trabalhos do LMS."
+              },
+              "resolution": "É prazo de submissão do projeto, não horário de prova/exame."
+            }
+          ],
+          "studyWindows": [
+            {
+              "weekday": 6,
+              "start": "14:00",
+              "end": "16:15"
+            },
+            {
+              "weekday": 0,
+              "start": "10:00",
+              "end": "11:00"
+            }
+          ],
+          "targetHours": 3,
+          "maxDailyStudyHours": 2,
+          "studyBreakMinutes": 15,
+          "through": "2026-11-08",
+          "assumption": "Atualização para 02–08/11/2026: domingo 08/11 limitado a 10:00–11:00; sábado 07/11 mantém 14:00–16:15. Três sessões de 1h cabem: duas no sábado separadas por 15 min, uma domingo. Sem sessões em noites de dias úteis; segunda livre, quarta à noite livre. Sem prioridade: repartir aproximadamente igualmente, uma matéria com 2h e outra com 1h. Oficina opcional BD 28/11 e plantão opcional Algoritmos 19/11 apenas contexto, não agendados. Mantidos limites de no máximo 2h/dia e pausa de 15 min."
+        }
+      },
+      "correctedReply": "Atualizei a proposta para revisão do operador, preservando as demais informações confirmadas e limitando o período a **2–8/11/2026**. Ainda não vou gerar o rascunho: é preciso aguardar a confirmação desta proposta.\n\n**Alterações propostas:** meta de 3 horas; domingo, 8/11, disponível apenas das 10:00 às 11:00; sábado, 7/11, mantém a janela das 14:00 às 16:15; noites de dias úteis livres. A proposta prevê três sessões de uma hora — duas no sábado, separadas por 15 minutos, e uma no domingo — respeitando o limite de duas horas por dia. Como você não indicou prioridade, a distribuição entre as matérias ficaria em 2 horas para uma e 1 hora para a outra.\n\nAs datas dos materiais permanecem: prova de Algoritmos em **14/12 às 09:00** (a data inicial de 7/12 foi substituída pelo aviso da coordenação) e entrega do projeto de Banco de Dados em **14/12 às 18:00**. A oficina opcional de 28/11 e o plantão opcional de 19/11 continuam apenas como contexto, não como sessões agendadas.\n\nID da proposta atualizada: `07ed4a48-d633-4bf8-afff-89fa3ce3cf6b`.",
+      "correctedPlan": {
+        "id": "a1da3600-baf9-4b9e-8897-8986f6005243",
+        "blocks": [
+          {
+            "start": "2026-11-07T14:00:00-03:00",
+            "end": "2026-11-07T15:00:00-03:00",
+            "summary": "Study: Banco de Dados — envio final do projeto de modelagem"
+          },
+          {
+            "start": "2026-11-07T15:15:00-03:00",
+            "end": "2026-11-07T16:15:00-03:00",
+            "summary": "Study: Banco de Dados — envio final do projeto de modelagem"
+          },
+          {
+            "start": "2026-11-08T10:00:00-03:00",
+            "end": "2026-11-08T11:00:00-03:00",
+            "summary": "Study: Algoritmos — prova escrita de grafos"
+          }
+        ],
+        "futureCount": 0,
+        "prose": "## Rascunho atualizado · 2–8 de novembro de 2026\n\n- **Sábado, 7/11, 14:00–15:00** — Banco de Dados\n- **Sábado, 7/11, 15:15–16:15** — Banco de Dados\n- **Domingo, 8/11, 10:00–11:00** — Algoritmos\n\n**Total:** 3 horas (meta 3h; falta 0h), com até duas sessões por dia e 15 minutos entre as sessões de sábado. Não há sessões em noites de dias úteis.\n\nÉ um rascunho para revisão; qualquer aprovação de alterações no calendário é separada."
+      },
+      "outcome": "completed",
+      "calendar": {
+        "availability": "available",
+        "eventCount": 146,
+        "eventRecordsUnchanged": true
+      },
+      "retired": true,
+      "durationMs": 81400,
+      "attemptId": "77d452b4-1804-4280-9e51-5b69442e1040",
+      "traceSha256": "238ea971954e8f742c564e9c840558f22d0dc49db714e8f743153944200956a4",
+      "harness": "0.2.2-rc.1",
+      "fixtureCalendarSha256": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1",
+      "toolInvocations": {
+        "read_planning_context": 4,
+        "list_synthetic_files": 3,
+        "list_calendar": 1,
+        "read_synthetic_file": 3,
+        "propose_planning_context": 2,
+        "draft_study_plan": 2
+      },
+      "toolFailures": [],
+      "questionFields": 0,
+      "questionWidgets": 0,
+      "calendarApprovalClicked": false,
+      "verification": "Provider-backed companion status returned identical full calendar records before and after."
+    },
+    "gap": {
+      "mode": "gap",
+      "opening": "Can you help me plan November 2–8, 2026 for my Algorithms exam and Database final project? Please use my course materials and calendar. Four hours this week, one-hour sessions, at most two a day with 15 minutes between them. No priority between assessments. Keep Monday free. This week only. Wednesday 19:00–21:15, Saturday 14:00–16:15 and Sunday 10:00–12:15 could each work. Fitting a session after my workday and using up more of the weekend both have a cost for me.",
+      "correction": "I now need to stop by 11:00 on Sunday. Use Sunday 10:00–11:00 only, keep Saturday 14:00–16:15 and all workday evenings free, and reduce the target to three hours this week. All other planning inputs still stand. Update the reviewed inputs and proposal.",
+      "questions": [
+        {
+          "phase": "opening",
+          "requestId": "1d969af6-483f-4660-91b3-5700ff329ab5",
+          "display": "Qual alternativa prefere para distribuir as 4 sessões? Ambas estão livres no calendário, preservam segunda, têm no máximo 2 sessões por dia e deixam 15 min de intervalo entre sessões no mesmo dia.\nUma sessão na quarta à noite + três no fim de semana — Quarta, 19:00–20:00; sábado, 14:00–15:00 e 15:15–16:15; domingo, 10:00–11:00. Usa uma noite de dia útil e ocupa parte dos dois dias do fim de semana.\n2026-11-04 · 19:00–20:00 · No current overlap\n2026-11-07 · 14:00–15:00 · No current overlap\n2026-11-07 · 15:15–16:15 · No current overlap\n2026-11-08 · 10:00–11:00 · No current overlap\nQuatro sessões no fim de semana — Sábado, 14:00–15:00 e 15:15–16:15; domingo, 10:00–11:00 e 11:15–12:15. Evita a noite de dia útil, mas ocupa mais tempo do fim de semana.\n2026-11-07 · 14:00–15:00 · No current overlap\n2026-11-07 · 15:15–16:15 · No current overlap\n2026-11-08 · 10:00–11:00 · No current overlap\n2026-11-08 · 11:15–12:15 · No current overlap\nType a different answer\nYour answer\nSend answerDismiss question",
+          "answers": [
+            "Protect my workday evenings this week. Keep Wednesday evening free. Saturday 14:00–16:15 and Sunday 10:00–12:15 are my study windows this week."
+          ],
+          "fields": [
+            {
+              "id": "time_tradeoff",
+              "question": "Qual alternativa prefere para distribuir as 4 sessões? Ambas estão livres no calendário, preservam segunda, têm no máximo 2 sessões por dia e deixam 15 min de intervalo entre sessões no mesmo dia.",
+              "header": "Escolha de horários",
+              "options": [
+                {
+                  "label": "Uma sessão na quarta à noite + três no fim de semana",
+                  "description": "Quarta, 19:00–20:00; sábado, 14:00–15:00 e 15:15–16:15; domingo, 10:00–11:00. Usa uma noite de dia útil e ocupa parte dos dois dias do fim de semana."
+                },
+                {
+                  "label": "Quatro sessões no fim de semana",
+                  "description": "Sábado, 14:00–15:00 e 15:15–16:15; domingo, 10:00–11:00 e 11:15–12:15. Evita a noite de dia útil, mas ocupa mais tempo do fim de semana."
+                }
+              ]
+            }
+          ],
+          "previewByLabel": {
+            "Uma sessão na quarta à noite + três no fim de semana": {
+              "label": "Uma sessão na quarta à noite + três no fim de semana",
+              "windows": [
+                {
+                  "date": "2026-11-04",
+                  "start": "19:00",
+                  "end": "20:00",
+                  "startDateTime": "2026-11-04T19:00:00-03:00",
+                  "endDateTime": "2026-11-04T20:00:00-03:00",
+                  "conflicts": []
+                },
+                {
+                  "date": "2026-11-07",
+                  "start": "14:00",
+                  "end": "15:00",
+                  "startDateTime": "2026-11-07T14:00:00-03:00",
+                  "endDateTime": "2026-11-07T15:00:00-03:00",
+                  "conflicts": []
+                },
+                {
+                  "date": "2026-11-07",
+                  "start": "15:15",
+                  "end": "16:15",
+                  "startDateTime": "2026-11-07T15:15:00-03:00",
+                  "endDateTime": "2026-11-07T16:15:00-03:00",
+                  "conflicts": []
+                },
+                {
+                  "date": "2026-11-08",
+                  "start": "10:00",
+                  "end": "11:00",
+                  "startDateTime": "2026-11-08T10:00:00-03:00",
+                  "endDateTime": "2026-11-08T11:00:00-03:00",
+                  "conflicts": []
+                }
+              ]
+            },
+            "Quatro sessões no fim de semana": {
+              "label": "Quatro sessões no fim de semana",
+              "windows": [
+                {
+                  "date": "2026-11-07",
+                  "start": "14:00",
+                  "end": "15:00",
+                  "startDateTime": "2026-11-07T14:00:00-03:00",
+                  "endDateTime": "2026-11-07T15:00:00-03:00",
+                  "conflicts": []
+                },
+                {
+                  "date": "2026-11-07",
+                  "start": "15:15",
+                  "end": "16:15",
+                  "startDateTime": "2026-11-07T15:15:00-03:00",
+                  "endDateTime": "2026-11-07T16:15:00-03:00",
+                  "conflicts": []
+                },
+                {
+                  "date": "2026-11-08",
+                  "start": "10:00",
+                  "end": "11:00",
+                  "startDateTime": "2026-11-08T10:00:00-03:00",
+                  "endDateTime": "2026-11-08T11:00:00-03:00",
+                  "conflicts": []
+                },
+                {
+                  "date": "2026-11-08",
+                  "start": "11:15",
+                  "end": "12:15",
+                  "startDateTime": "2026-11-08T11:15:00-03:00",
+                  "endDateTime": "2026-11-08T12:15:00-03:00",
+                  "conflicts": []
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "sent": [
+        "Can you help me plan November 2–8, 2026 for my Algorithms exam and Database final project? Please use my course materials and calendar. Four hours this week, one-hour sessions, at most two a day with 15 minutes between them. No priority between assessments. Keep Monday free. This week only. Wednesday 19:00–21:15, Saturday 14:00–16:15 and Sunday 10:00–12:15 could each work. Fitting a session after my workday and using up more of the weekend both have a cost for me.",
+        "Draft November 2–8, 2026 using the confirmed inputs. Show that week for review.",
+        "I now need to stop by 11:00 on Sunday. Use Sunday 10:00–11:00 only, keep Saturday 14:00–16:15 and all workday evenings free, and reduce the target to three hours this week. All other planning inputs still stand. Update the reviewed inputs and proposal.",
+        "Draft November 2–8, 2026 using the confirmed inputs. Show that week for review."
+      ],
+      "model": "gpt-6-luna",
+      "runtime": "host-luna-fallback",
+      "fixture": "bruno-text",
+      "implementation": "7ec1b4630943cf54b4932910570fafb296103de4",
+      "usage": "unknown",
+      "operator": "Headless Chrome with prepared fictional replies",
+      "runId": "d9f37c0c-82b8-422f-b7bb-c9e6e689aeb5",
+      "firstPending": {
+        "id": "579aac9d-fffd-42c3-919b-da3b657babd3",
+        "record": {
+          "courses": [
+            {
+              "name": "Algoritmos (prova escrita de grafos)",
+              "date": "2026-12-14",
+              "time": "09:00",
+              "citation": {
+                "path": "notices/aviso-turma-n02.md",
+                "quote": "A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo.\n\nUse a sala 22."
+              },
+              "resolution": "Aviso LMS de 30/10 prevalece sobre cronograma inicial em courses/algoritmos.md (07/12/2026, 09:00); prova em 14/12 às 09:00, sala 22. A lista de grafos vence 26/11 às 22:00 e não é prova."
+            },
+            {
+              "name": "Banco de Dados (projeto final de modelagem)",
+              "date": "2026-12-14",
+              "time": "18:00",
+              "citation": {
+                "path": "courses/banco-de-dados.md",
+                "quote": "**Envio final do projeto de modelagem:** 14/12/2026 às 18:00, horário de São Paulo, na área de trabalhos do LMS."
+              },
+              "resolution": "Prazo de envio, não horário de prova. Oficina de revisão de 28/11 às 10:00 é opcional/contextual, não agendada."
+            }
+          ],
+          "studyWindows": [
+            {
+              "weekday": 6,
+              "start": "14:00",
+              "end": "16:15"
+            },
+            {
+              "weekday": 0,
+              "start": "10:00",
+              "end": "12:15"
+            }
+          ],
+          "targetHours": 4,
+          "maxDailyStudyHours": 2,
+          "studyBreakMinutes": 15,
+          "through": "2026-11-08",
+          "assumption": "Somente 02–08/11/2026, America/Sao_Paulo: 4h em sessões de 1h, duas por sábado e domingo, com 15 min de intervalo; segunda e noites de dia útil livres. Sem prioridade entre cursos. Prova de Algoritmos 14/12 às 09:00 (07/12 supersedida); projeto de Banco de Dados enviado até 14/12 às 18:00. Plantão opcional de Algoritmos 19/11 às 20:00 e oficina opcional de Banco de Dados 28/11 às 10:00 ficam apenas como contexto."
+        }
+      },
+      "initialRecord": {
+        "id": "579aac9d-fffd-42c3-919b-da3b657babd3",
+        "record": {
+          "courses": [
+            {
+              "name": "Algoritmos (prova escrita de grafos)",
+              "date": "2026-12-14",
+              "time": "09:00",
+              "citation": {
+                "path": "notices/aviso-turma-n02.md",
+                "quote": "A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo.\n\nUse a sala 22."
+              },
+              "resolution": "Aviso LMS de 30/10 prevalece sobre cronograma inicial em courses/algoritmos.md (07/12/2026, 09:00); prova em 14/12 às 09:00, sala 22. A lista de grafos vence 26/11 às 22:00 e não é prova."
+            },
+            {
+              "name": "Banco de Dados (projeto final de modelagem)",
+              "date": "2026-12-14",
+              "time": "18:00",
+              "citation": {
+                "path": "courses/banco-de-dados.md",
+                "quote": "**Envio final do projeto de modelagem:** 14/12/2026 às 18:00, horário de São Paulo, na área de trabalhos do LMS."
+              },
+              "resolution": "Prazo de envio, não horário de prova. Oficina de revisão de 28/11 às 10:00 é opcional/contextual, não agendada."
+            }
+          ],
+          "studyWindows": [
+            {
+              "weekday": 6,
+              "start": "14:00",
+              "end": "16:15"
+            },
+            {
+              "weekday": 0,
+              "start": "10:00",
+              "end": "12:15"
+            }
+          ],
+          "targetHours": 4,
+          "maxDailyStudyHours": 2,
+          "studyBreakMinutes": 15,
+          "through": "2026-11-08",
+          "assumption": "Somente 02–08/11/2026, America/Sao_Paulo: 4h em sessões de 1h, duas por sábado e domingo, com 15 min de intervalo; segunda e noites de dia útil livres. Sem prioridade entre cursos. Prova de Algoritmos 14/12 às 09:00 (07/12 supersedida); projeto de Banco de Dados enviado até 14/12 às 18:00. Plantão opcional de Algoritmos 19/11 às 20:00 e oficina opcional de Banco de Dados 28/11 às 10:00 ficam apenas como contexto."
+        }
+      },
+      "initialReply": "Li o contexto salvo: não havia nenhum planejamento confirmado nem pendente. Consultei os materiais e o calendário e enviei as informações para **revisão e confirmação do operador**. Ainda não criei um plano — aguardarei essa confirmação antes de redigir a proposta de sessões.\n\nO registro submetido é para **2–8 de novembro de 2026**, com meta de 4 horas em sessões de uma hora, no máximo duas por dia e intervalo de 15 minutos. Conforme sua preferência, mantém segunda-feira e as noites de dias úteis livres, usando as janelas de sábado, **14:00–16:15**, e domingo, **10:00–12:15**. Não indiquei prioridade entre Algoritmos e Banco de Dados.\n\n**Datas e evidências consideradas:**\n- A prova escrita de Algoritmos foi transferida de **7/12 às 09:00** para **14/12 às 09:00**, sala 22. O trecho do aviso oficial é: “A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo. Use a sala 22.” O registro inicial de 7/12 foi tratado como supersedido. O aviso está em [aviso-turma-n02.md](notices/aviso-turma-n02.md); não é um PDF, então não há número de página.\n- O projeto final de Banco de Dados tem **prazo de envio em 14/12 às 18:00** — uma entrega, não uma prova. O material diz: “**Envio final do projeto de modelagem:** 14/12/2026 às 18:00, horário de São Paulo, na área de trabalhos do LMS.” Consulte [banco-de-dados.md](courses/banco-de-dados.md); também não é PDF.\n- Mantive como marcos contextuais, sem agendá-los: o plantão opcional de Algoritmos em 19/11 às 20:00 e a oficina opcional de Banco de Dados em 28/11 às 10:00.\n\nO pedido foi submetido com o identificador **579aac9d-fffd-42c3-919b-da3b657babd3**.",
+      "initialPlan": {
+        "id": "05abfb0b-480b-4b22-a27e-dfbf45d49086",
+        "blocks": [
+          {
+            "start": "2026-11-07T14:00:00-03:00",
+            "end": "2026-11-07T15:00:00-03:00",
+            "summary": "Study: Banco de Dados (projeto final de modelagem)"
+          },
+          {
+            "start": "2026-11-07T15:15:00-03:00",
+            "end": "2026-11-07T16:15:00-03:00",
+            "summary": "Study: Banco de Dados (projeto final de modelagem)"
+          },
+          {
+            "start": "2026-11-08T10:00:00-03:00",
+            "end": "2026-11-08T11:00:00-03:00",
+            "summary": "Study: Algoritmos (prova escrita de grafos)"
+          },
+          {
+            "start": "2026-11-08T11:15:00-03:00",
+            "end": "2026-11-08T12:15:00-03:00",
+            "summary": "Study: Algoritmos (prova escrita de grafos)"
+          }
+        ],
+        "futureCount": 0,
+        "prose": "## Rascunho para 2–8 de novembro de 2026\n\n- **Sábado, 7/11, 14:00–15:00:** Banco de Dados\n- **Sábado, 7/11, 15:15–16:15:** Banco de Dados  \n  *Intervalo de 15 minutos.*\n- **Domingo, 8/11, 10:00–11:00:** Algoritmos\n- **Domingo, 8/11, 11:15–12:15:** Algoritmos  \n  *Intervalo de 15 minutos.*\n\n**Total da semana:** 4 horas planejadas, meta de 4 horas, sem déficit. São duas sessões por dia de estudo; segunda-feira e as noites de dias úteis ficam livres. Como você não indicou prioridade entre as avaliações, o rascunho divide o tempo igualmente entre as duas.\n\nEste é um **rascunho para revisão**, não uma confirmação de conclusão do estudo nem aprovação para alterar o calendário."
+      },
+      "correctedRecord": {
+        "id": "b3494804-9d34-49eb-830b-899a151e69e6",
+        "record": {
+          "courses": [
+            {
+              "name": "Algoritmos (prova escrita de grafos)",
+              "date": "2026-12-14",
+              "time": "09:00",
+              "citation": {
+                "path": "notices/aviso-turma-n02.md",
+                "quote": "A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo.\n\nUse a sala 22."
+              },
+              "resolution": "Aviso LMS de 30/10 prevalece sobre cronograma inicial em courses/algoritmos.md (07/12/2026, 09:00); prova em 14/12 às 09:00, sala 22. A lista de grafos vence 26/11 às 22:00 e não é prova."
+            },
+            {
+              "name": "Banco de Dados (projeto final de modelagem)",
+              "date": "2026-12-14",
+              "time": "18:00",
+              "citation": {
+                "path": "courses/banco-de-dados.md",
+                "quote": "**Envio final do projeto de modelagem:** 14/12/2026 às 18:00, horário de São Paulo, na área de trabalhos do LMS."
+              },
+              "resolution": "Prazo de envio, não horário de prova. Oficina de revisão de 28/11 às 10:00 é opcional/contextual, não agendada."
+            }
+          ],
+          "studyWindows": [
+            {
+              "weekday": 6,
+              "start": "14:00",
+              "end": "16:15"
+            },
+            {
+              "weekday": 0,
+              "start": "10:00",
+              "end": "11:00"
+            }
+          ],
+          "targetHours": 3,
+          "maxDailyStudyHours": 2,
+          "studyBreakMinutes": 15,
+          "through": "2026-11-08",
+          "assumption": "Correção para 02–08/11/2026 apenas: manter sábado 14:00–16:15, domingo somente 10:00–11:00, noites de dias úteis livres e segunda livre. Meta alterada para 3h; sessões de 1h, máximo 2/dia, intervalo de 15 min. Sem prioridade entre cursos. Preservados prazos verificados e marcos opcionais apenas contextuais: plantão de Algoritmos 19/11 20:00 e oficina de Banco de Dados 28/11 10:00."
+        }
+      },
+      "correctedReply": "Atualizei e enviei a correção dos inputs para revisão do operador, preservando os prazos e demais critérios confirmados. O registro atualizado (**b3494804-9d34-49eb-830b-899a151e69e6**) define a semana de **2–8/11/2026**, meta de **3 horas**, sessões de uma hora, no máximo duas por dia, intervalo de 15 minutos, sábado **14:00–16:15**, domingo apenas **10:00–11:00**, segunda livre e noites de dias úteis livres.\n\nVerifiquei no calendário a combinação **“Plano atualizado: duas sessões sábado + uma sessão domingo”**; os três horários propostos estão livres. Ainda não posso gerar um novo rascunho: a ferramenta informa que a revisão desta atualização está pendente. Aguardo a confirmação do operador para então preparar o plano.",
+      "correctedPlan": {
+        "id": "23902347-63b6-44c8-a885-e1bb42b72fb9",
+        "blocks": [
+          {
+            "start": "2026-11-07T14:00:00-03:00",
+            "end": "2026-11-07T15:00:00-03:00",
+            "summary": "Study: Banco de Dados (projeto final de modelagem)"
+          },
+          {
+            "start": "2026-11-07T15:15:00-03:00",
+            "end": "2026-11-07T16:15:00-03:00",
+            "summary": "Study: Banco de Dados (projeto final de modelagem)"
+          },
+          {
+            "start": "2026-11-08T10:00:00-03:00",
+            "end": "2026-11-08T11:00:00-03:00",
+            "summary": "Study: Algoritmos (prova escrita de grafos)"
+          }
+        ],
+        "futureCount": 0,
+        "prose": "## Rascunho atualizado · 2–8 de novembro de 2026\n\n- **Sábado, 7/11, 14:00–15:00:** Banco de Dados\n- **Sábado, 7/11, 15:15–16:15:** Banco de Dados  \n  *Pausa de 15 minutos entre as sessões.*\n- **Domingo, 8/11, 10:00–11:00:** Algoritmos\n\n**Total semanal:** 3 horas planejadas de uma meta de 3 horas; **déficit: 0**. O plano mantém segunda-feira e as noites de dias úteis livres, respeita o limite de duas sessões por dia e usa somente a janela de domingo que você especificou. Como não há prioridade entre as avaliações, as duas sessões de sábado ficaram com Banco de Dados e a de domingo com Algoritmos.\n\nEste é um rascunho para revisão. O calendário continua sujeito à aprovação pelos controles próprios; as horas planejadas não indicam estudo concluído."
+      },
+      "outcome": "completed",
+      "calendar": {
+        "availability": "available",
+        "eventCount": 146,
+        "eventRecordsUnchanged": true
+      },
+      "retired": true,
+      "durationMs": 113070,
+      "attemptId": "d198ceb5-5f97-4af8-b2ef-b424a6de51da",
+      "traceSha256": "758b28751c0a12c3cf15123fa7a0faf659e36d1e6eba57e0f8a99a7c1442f8e8",
+      "harness": "0.2.2-rc.1",
+      "fixtureCalendarSha256": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1",
+      "toolInvocations": {
+        "read_planning_context": 4,
+        "list_synthetic_files": 3,
+        "list_calendar": 1,
+        "read_synthetic_file": 3,
+        "preview_study_options": 2,
+        "inspect_checkpoint": 1,
+        "propose_planning_context": 2,
+        "draft_study_plan": 3
+      },
+      "toolFailures": [
+        "draft_study_plan"
+      ],
+      "questionFields": 1,
+      "questionWidgets": 1,
+      "calendarApprovalClicked": false,
+      "verification": "Provider-backed companion status returned identical full calendar records before and after."
+    },
+    "authority": {
+      "mode": "authority",
+      "opening": "Help me plan November 2–8, 2026 for the Machine Learning classification project and Statistics assessment. Read my course files and calendar. I have four hours, Wednesday and Friday 14:00–16:15, two one-hour sessions per day with a 15-minute break. No subject priority. This week only.",
+      "questions": [
+        {
+          "phase": "opening",
+          "requestId": "f9581bd6-e7ab-4452-b426-fc33311f6c8e",
+          "display": "Há conflito sobre o fechamento da entrega do projeto de classificação: o guia do módulo diz 30/11/2026 às 18:00, mas o aviso do LMS diz 30/11/2026 às 12:00 e não declara substituir o guia. Qual prazo devo considerar como autoridade para planejar?\nLMS: 30/11 às 12:00 (Recommended) — Usa o prazo mais cedo publicado no tile do LMS.\nGuia: 30/11 às 18:00 — Usa o prazo indicado no guia do módulo.\nRegistrar conflito sem resolver — Não consigo submeter um contexto de planejamento com uma data autoritativa até a divergência ser resolvida.\nType a different answer\nYour answer\nSend answerDismiss question",
+          "answers": [
+            "The instructor confirmed that the LMS noon cutoff is the binding deadline for the Machine Learning submission on November 30. The guide says 18:00, but use 12:00."
+          ],
+          "fields": [
+            {
+              "id": "ml-deadline",
+              "question": "Há conflito sobre o fechamento da entrega do projeto de classificação: o guia do módulo diz 30/11/2026 às 18:00, mas o aviso do LMS diz 30/11/2026 às 12:00 e não declara substituir o guia. Qual prazo devo considerar como autoridade para planejar?",
+              "header": "Deadline",
+              "options": [
+                {
+                  "label": "LMS: 30/11 às 12:00 (Recommended)",
+                  "description": "Usa o prazo mais cedo publicado no tile do LMS."
+                },
+                {
+                  "label": "Guia: 30/11 às 18:00",
+                  "description": "Usa o prazo indicado no guia do módulo."
+                },
+                {
+                  "label": "Registrar conflito sem resolver",
+                  "description": "Não consigo submeter um contexto de planejamento com uma data autoritativa até a divergência ser resolvida."
+                }
+              ]
+            }
+          ],
+          "previewByLabel": {}
+        }
+      ],
+      "sent": [
+        "Help me plan November 2–8, 2026 for the Machine Learning classification project and Statistics assessment. Read my course files and calendar. I have four hours, Wednesday and Friday 14:00–16:15, two one-hour sessions per day with a 15-minute break. No subject priority. This week only.",
+        "Draft the coming week using the confirmed inputs. Show the schedule for review."
+      ],
+      "model": "gpt-6-luna",
+      "runtime": "host-luna-fallback",
+      "fixture": "ana-conflict",
+      "implementation": "7ec1b4630943cf54b4932910570fafb296103de4",
+      "usage": "unknown",
+      "operator": "Headless Chrome with prepared fictional replies",
+      "runId": "933b8d12-b783-4510-828a-5beee8776bfe",
+      "firstPending": {
+        "id": "0279b947-cc3d-4cb7-a329-52a09e7e733e",
+        "record": {
+          "courses": [
+            {
+              "name": "Machine Learning classification project",
+              "date": "2026-11-30",
+              "time": "12:00",
+              "citation": {
+                "path": "notices/lms-assessment.txt",
+                "quote": "Classification project final submission closes at 12:00 on 2026-11-30."
+              },
+              "resolution": "Instructor confirmed LMS noon cutoff as binding; it supersedes the guide's 18:00 entry for planning."
+            },
+            {
+              "name": "Statistics probability and inference exam",
+              "date": "2026-12-14",
+              "time": "09:00",
+              "citation": {
+                "path": "courses/applied-statistics.md",
+                "quote": "The probability and inference exam starts on 2026-12-14 at 09:00, São Paulo time."
+              }
+            }
+          ],
+          "studyWindows": [
+            {
+              "weekday": 3,
+              "start": "14:00",
+              "end": "16:15"
+            },
+            {
+              "weekday": 5,
+              "start": "14:00",
+              "end": "16:15"
+            }
+          ],
+          "targetHours": 4,
+          "maxDailyStudyHours": 2,
+          "studyBreakMinutes": 15,
+          "through": "2026-11-08",
+          "assumption": "Scope Nov 2–8, 2026 inclusive. Four weekly study hours: two one-hour sessions Wednesday and Friday, separated by a 15-minute break; no subject priority. Calendar reviewed; afternoon periods unconflicted. Nov 25 Statistics coursework review is a revision clinic/context only. Optional ML dataset clinic: Nov 11 at 18:00. ML due Nov 30 at noon per instructor confirmation (guide says 18:00). Statistics date is exam start, not submission deadline."
+        }
+      },
+      "initialRecord": {
+        "id": "0279b947-cc3d-4cb7-a329-52a09e7e733e",
+        "record": {
+          "courses": [
+            {
+              "name": "Machine Learning classification project",
+              "date": "2026-11-30",
+              "time": "12:00",
+              "citation": {
+                "path": "notices/lms-assessment.txt",
+                "quote": "Classification project final submission closes at 12:00 on 2026-11-30."
+              },
+              "resolution": "Instructor confirmed LMS noon cutoff as binding; it supersedes the guide's 18:00 entry for planning."
+            },
+            {
+              "name": "Statistics probability and inference exam",
+              "date": "2026-12-14",
+              "time": "09:00",
+              "citation": {
+                "path": "courses/applied-statistics.md",
+                "quote": "The probability and inference exam starts on 2026-12-14 at 09:00, São Paulo time."
+              }
+            }
+          ],
+          "studyWindows": [
+            {
+              "weekday": 3,
+              "start": "14:00",
+              "end": "16:15"
+            },
+            {
+              "weekday": 5,
+              "start": "14:00",
+              "end": "16:15"
+            }
+          ],
+          "targetHours": 4,
+          "maxDailyStudyHours": 2,
+          "studyBreakMinutes": 15,
+          "through": "2026-11-08",
+          "assumption": "Scope Nov 2–8, 2026 inclusive. Four weekly study hours: two one-hour sessions Wednesday and Friday, separated by a 15-minute break; no subject priority. Calendar reviewed; afternoon periods unconflicted. Nov 25 Statistics coursework review is a revision clinic/context only. Optional ML dataset clinic: Nov 11 at 18:00. ML due Nov 30 at noon per instructor confirmation (guide says 18:00). Statistics date is exam start, not submission deadline."
+        }
+      },
+      "initialReply": "Enviei o contexto de planejamento de Ana para revisão do operador. **Ainda não elaborei um plano**; aguardarei a confirmação antes de usar o planejador.\n\nO contexto enviado cobre **2–8 de novembro de 2026**: 4 horas de estudo na semana, em sessões de uma hora às quartas e sextas, entre 14:00 e 16:15, com intervalo de 15 minutos e sem prioridade entre matérias. A agenda foi consultada e esses períodos estão livres.\n\nResolvi o prazo do projeto com base na sua informação de que o instrutor confirmou o horário do LMS como vinculante: **30/11 às 12:00**. O guia do módulo indica 18:00, mas fica superado para o planejamento. Para Estatística, o arquivo informa que a prova de probabilidade e inferência **começa em 14/12 às 09:00** — não é um prazo de entrega. Mantive como marcos contextuais a revisão de trabalhos de Estatística em 25/11 e a clínica opcional de dados de Machine Learning em 11/11; não os incluí como sessões de estudo.",
+      "initialPlan": {
+        "id": "1b185e93-ed61-4f07-b218-3b60aaaa4c40",
+        "blocks": [
+          {
+            "start": "2026-11-04T14:00:00-03:00",
+            "end": "2026-11-04T15:00:00-03:00",
+            "summary": "Study: Machine Learning classification project"
+          },
+          {
+            "start": "2026-11-04T15:15:00-03:00",
+            "end": "2026-11-04T16:15:00-03:00",
+            "summary": "Study: Machine Learning classification project"
+          },
+          {
+            "start": "2026-11-06T14:00:00-03:00",
+            "end": "2026-11-06T15:00:00-03:00",
+            "summary": "Study: Machine Learning classification project"
+          },
+          {
+            "start": "2026-11-06T15:15:00-03:00",
+            "end": "2026-11-06T16:15:00-03:00",
+            "summary": "Study: Machine Learning classification project"
+          }
+        ],
+        "futureCount": 0,
+        "prose": "## Rascunho para revisão — 2 a 8 de novembro de 2026\n\nO planejador propôs quatro sessões de uma hora, todas para o projeto de classificação de Machine Learning:\n\n| Data | Horário | Atividade |\n|---|---|---|\n| Quarta-feira, 4/11 | 14:00–15:00 | Machine Learning — projeto de classificação |\n| Quarta-feira, 4/11 | 15:15–16:15 | Machine Learning — projeto de classificação |\n| Sexta-feira, 6/11 | 14:00–15:00 | Machine Learning — projeto de classificação |\n| Sexta-feira, 6/11 | 15:15–16:15 | Machine Learning — projeto de classificação |\n\n**Total semanal:** 4 horas agendadas de 4 horas-alvo; déficit de 0 horas. O intervalo de 15 minutos entre as sessões de cada dia está preservado.\n\nEmbora você não tenha indicado prioridade entre matérias, o rascunho concentra todo o tempo em Machine Learning. O planejamento permanece como proposta; os blocos não foram adicionados ao calendário."
+      },
+      "outcome": "completed",
+      "calendar": {
+        "availability": "available",
+        "eventCount": 108,
+        "eventRecordsUnchanged": true
+      },
+      "retired": true,
+      "durationMs": 53240,
+      "attemptId": "3d3482bf-5422-4fae-9998-1faf7cc4badc",
+      "traceSha256": "0efbfd2749fe7fad2099098a1abc3c74f2ffa16f6ad38f3622a79feabae12cb0",
+      "harness": "0.2.2-rc.1",
+      "fixtureCalendarSha256": "d8b30692464396d7f1a02fc1291ce0a8c217ef4b5ed1d75d9d20e2035f0a7913",
+      "toolInvocations": {
+        "read_planning_context": 2,
+        "list_synthetic_files": 3,
+        "list_calendar": 1,
+        "read_synthetic_file": 3,
+        "propose_planning_context": 1,
+        "draft_study_plan": 1
+      },
+      "toolFailures": [],
+      "questionFields": 1,
+      "questionWidgets": 1,
+      "calendarApprovalClicked": false,
+      "verification": "Provider-backed companion status returned identical full calendar records before and after."
+    }
+  }
+}
