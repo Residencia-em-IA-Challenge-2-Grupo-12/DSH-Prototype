@@ -163,9 +163,11 @@ try {
       observedKind: firstKind, unknownConfirmationBlocked: firstKind === 'unknown' ? true : 'not exercised' });
 
     await send(correction);
-    await wait("document.querySelector('#planning-context').innerText.includes('Strength: soft')", 95000);
-    await wait("document.querySelector('#planning-context > button:not(:disabled)')");
+    await wait("[...document.querySelectorAll('#messages article')].filter(item => item.textContent.includes('Review the proposed Friday preference')).length === 2", 95000);
     const corrected = await status();
+    assert.match(await view('#planning-context'), /Strength: soft/);
+    assert.equal(exercise.evidence.revisions[1].preference.fallbackMinutes, null);
+    await wait("document.querySelector('#planning-context > button:not(:disabled)')");
     assert.equal(corrected.state.planningContext.previous.id, first.state.planningContext.pending.id);
     assert.equal(corrected.state.plan.id, initial.state.plan.id);
     const stale = await evaluate("fetch('/api/context/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:" +
