@@ -9,7 +9,7 @@ import { ROOT } from '../src/core.mjs';
 import { packBundle, readBundle } from '../src/paired-replay/bundle.mjs';
 import { createDshBrunoAdapter } from '../src/paired-replay/dsh-runner.mjs';
 import { createHttpRunnerAdapter } from '../src/paired-replay/http-adapter.mjs';
-import { runPortableReplay, scenarios } from '../src/paired-replay/runner.mjs';
+import { runPortableReplay, scenarios, selectStaleEventId } from '../src/paired-replay/runner.mjs';
 
 const exec = promisify(execFile);
 
@@ -246,4 +246,124 @@ test('cross-language Python HTTP runner completes Bruno replay through Trusted T
 
   const probe = await exec('python3', [path.join(ROOT, 'scripts/paired-replay-probe.py'), '--check-result', bundleDir, resultPath]);
   assert.match(probe.stdout, /Checked case bruno/);
+});
+
+test('manifest-driven operator runs ana-held-out with grouped + sequential questions and dynamic stale target', async t => {
+  const work = await mkdtemp(path.join(tmpdir(), 'portable-runner-ana-'));
+  t.after(() => rm(work, { recursive: true, force: true }));
+  const bundleDir = path.join(work, 'ana-held-out');
+  await packBundle('ana-held-out', bundleDir);
+  const bundle = await readBundle(bundleDir);
+
+  const staleId = selectStaleEventId(bundle.fixture, bundle.manifest);
+  assert.ok(staleId);
+  const staleEvent = bundle.fixture.events.find(event => event.id === staleId);
+  assert.notEqual(staleEvent.start.dateTime.slice(0, 10), '2026-11-04');
+
+  const anaRecord = {
+    courses: [{
+      name: 'Applied Data Ethics',
+      date: '2026-12-01',
+      time: '17:30',
+      citation: {
+        path: 'lms/assessment-export.json',
+        quote: '"dueAt": "2026-12-01T20:30:00Z"',
+      },
+      resolution: 'LMS export supersedes the earlier module outline date.',
+    }],
+    studyWindows: [
+      { weekday: 3, start: '14:00', end: '16:15' },
+      { weekday: 4, start: '14:00', end: '16:15' },
+      { weekday: 5, start: '14:00', end: '16:15' },
+    ],
+    through: '2026-11-15',
+    targetHours: 4,
+    maxDailyStudyHours: 2,
+    studyBreakMinutes: 15,
+    assumption: 'Two-week plan for Applied Data Ethics keeping weekends open.',
+  };
+
+  function createAnaAdapter() {
+    return {
+      engine: { name: 'Ana multi-turn adapter', revision: 'ana-test', mode: 'scripted', model: null, harness: 'custom', tools: [] },
+      createSession({ service }) {
+        const messages = [];
+        let question = null;
+        let phase = 'initial';
+        const view = () => ({ messages, question, busy: false, error: null });
+        const call = (method, args = {}) => service.agent.call(method, { student: 'ana', ...args });
+        return {
+          snapshot: async () => view(),
+          async prompt(text) {
+            messages.push({ type: 'user', text });
+            if (phase === 'initial') {
+              await call('read_synthetic_file', { path: 'lms/assessment-export.json' });
+              const cal = await call('list_calendar');
+              assert.equal(cal.simulationToday, bundle.manifest.clock.date);
+              assert.equal(cal.timezone, bundle.manifest.clock.timezone);
+              // Grouped multi-question widget (uses non-literal IDs to test keyword/fallback matching too)
+              question = {
+                requestId: 'group-1',
+                questions: [
+                  { id: 'q_times', groupId: 'intake', question: 'Which days and time windows work for you?', options: [] },
+                  { id: 'workload', groupId: 'intake', question: 'How many study hours per week and daily limit?', options: [] },
+                ],
+              };
+              phase = 'awaiting_group';
+            } else if (phase === 'initial_review' || phase === 'revised_review') {
+              await call('draft_study_plan', { weeks: 2 });
+              phase = phase === 'initial_review' ? 'initial_proposal' : 'revised_proposal';
+            } else if (phase === 'initial_proposal') {
+              // Avoid only Wednesday Nov 4 (not Nov 11) via draft avoidDates on next draft, or adjust windows for Nov 4
+              await call('propose_planning_context', { record: anaRecord });
+              phase = 'revised_review_avoid';
+            } else if (phase === 'revised_review_avoid') {
+              await call('draft_study_plan', { weeks: 2, avoidDates: ['2026-11-04'] });
+              phase = 'revised_proposal';
+            }
+            return view();
+          },
+          async answer(requestId, answers) {
+            for (const item of answers) messages.push({ type: 'user', text: item.custom });
+            if (phase === 'awaiting_group') {
+              assert.equal(requestId, 'group-1');
+              assert.equal(answers.length, 2);
+              // Sequential follow-up question turn
+              question = {
+                requestId: 'followup-2',
+                questions: [{ id: 'preparation', question: 'How far along is your outline or case preparation?', options: [] }],
+              };
+              phase = 'awaiting_prep';
+            } else if (phase === 'awaiting_prep') {
+              assert.equal(requestId, 'followup-2');
+              question = null;
+              await call('propose_planning_context', { record: anaRecord });
+              phase = 'initial_review';
+            }
+            return view();
+          },
+        };
+      },
+    };
+  }
+
+  for (const scenario of ['success', 'stale']) {
+    const harness = createInMemoryHarness();
+    const resultPath = path.join(work, `ana-${scenario}.json`);
+    const { result, failures } = await runPortableReplay(bundle, scenario, {
+      adapter: createAnaAdapter(),
+      saveResult: async evidence => { await writeFile(resultPath, JSON.stringify(evidence, null, 2) + '\n'); },
+      ...harness,
+    });
+    assert.deepEqual(failures, [], `Unexpected failure for ana-held-out ${scenario}`);
+    assert.equal(result.caseId, 'ana-held-out');
+    assert.equal(result.retirement, 'verified');
+    assert.ok(result.checks.every(check => check.outcome === 'pass'), JSON.stringify(result.checks));
+    const questions = result.timeline.filter(event => event.kind === 'question');
+    assert.equal(questions.length, 3);
+    assert.equal(questions[0].groupId, 'intake');
+    assert.equal(questions[1].groupId, 'intake');
+    const probe = await exec('python3', [path.join(ROOT, 'scripts/paired-replay-probe.py'), '--check-result', bundleDir, resultPath]);
+    assert.match(probe.stdout, /Checked case ana-held-out/);
+  }
 });

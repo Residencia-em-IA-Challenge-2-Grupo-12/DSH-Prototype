@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { isDeepStrictEqual, promisify } from 'node:util';
 import { ROOT, initializeScenario, withSyntheticRuntime, disposeSyntheticRuntime } from '../core.mjs';
+import { addDaysIso } from '../domain/runtime.mjs';
 import { createStateStore } from '../state-store.mjs';
 import { CALENDARPIT_IMAGE, startCalendarpitRun } from '../foundation/calendarpit-runner.mjs';
 import { observeReplay, startCalendarExperiment } from '../foundation/calendar-experiment.mjs';
@@ -17,10 +18,93 @@ import { proposalAdditions, validateSchedule } from './schedule.mjs';
 
 export const scenarios = ['success', 'stale', 'duplicate', 'unknown', 'unknown-unavailable'];
 export const DEFAULT_DRAFT_REQUEST = 'Gere a proposta revisável para as duas semanas usando os dados confirmados.';
+const DRAFT_REQUEST_BY_LOCALE = {
+  'pt-BR': DEFAULT_DRAFT_REQUEST,
+  en: 'Draft the reviewable two-week study proposal using the confirmed inputs.',
+};
 
 const exec = promisify(execFile);
 const eventIds = events => events.map(event => event.id).sort();
 const sameIds = (left, right) => isDeepStrictEqual([...left].sort(), [...right].sort());
+
+export function defaultDraftRequest(locale) {
+  return DRAFT_REQUEST_BY_LOCALE[locale] || DRAFT_REQUEST_BY_LOCALE.en;
+}
+
+export function selectStaleEventId(fixture, manifest) {
+  const weekStart = manifest.clock.date;
+  const weekEnd = addDaysIso(weekStart, 7);
+  const avoid = new Set(manifest.expect.avoidDates || []);
+  const candidates = fixture.events.filter(
+    event =>
+      event.status !== 'cancelled' &&
+      event.extendedProperties?.private?.studyDemo !== 'true' &&
+      typeof event.start?.dateTime === 'string',
+  );
+  const inWeek1 = candidates.filter(event => {
+    const day = event.start.dateTime.slice(0, 10);
+    return day >= weekStart && day < weekEnd;
+  });
+  const preferred = inWeek1.find(event => !avoid.has(event.start.dateTime.slice(0, 10)));
+  return (preferred || inWeek1[0] || candidates[0] || fixture.events[0])?.id || null;
+}
+
+const ANSWER_HINTS = [
+  { id: 'workload', pattern: /\b(hours|horas|workload|carga|break|pausa|daily|di[aá]ri|limit|limite|sessions?)\b/i },
+  { id: 'availability', pattern: /\b(window|janela|availab|disponib|days?|dias?|times?|hor[aá]ri|free|livre|weekend|fim de semana)\b/i },
+  { id: 'preparation', pattern: /\b(prepar|outline|esbo[cç]o|progress|progresso|started|come[cç]ou|case|caso)\b/i },
+];
+
+export function matchPreparedAnswer(asked, preparedAnswers, usedIds) {
+  const exact = preparedAnswers.find(answer => answer.id === asked.id);
+  if (exact) {
+    usedIds.add(exact.id);
+    return exact;
+  }
+  const unused = preparedAnswers.filter(answer => !usedIds.has(answer.id));
+  const text = asked.question || '';
+  for (const hint of ANSWER_HINTS) {
+    if (hint.pattern.test(text)) {
+      const hinted = unused.find(answer => answer.id === hint.id);
+      if (hinted) {
+        usedIds.add(hinted.id);
+        return hinted;
+      }
+    }
+  }
+  if (unused.length) {
+    usedIds.add(unused[0].id);
+    return unused[0];
+  }
+  return null;
+}
+
+async function drainQuestions(initialView, { api, runId, manifest, note, usedAnswerIds, maxTurns = 8 }) {
+  let view = initialView;
+  let turns = 0;
+  while (view?.question) {
+    if (++turns > maxTurns) throw new Error(`Runner exceeded maximum clarification turns (${maxTurns})`);
+    const pendingQuestion = view.question;
+    const answers = [];
+    for (const asked of pendingQuestion.questions) {
+      note({
+        kind: 'question',
+        id: asked.id,
+        ...(asked.groupId ? { groupId: asked.groupId } : {}),
+        text: asked.question,
+        choices: (asked.options || []).map(option => option.label),
+      });
+      const reply = matchPreparedAnswer(asked, manifest.operator.answers, usedAnswerIds);
+      if (!reply) throw new Error(`No prepared response for question ${asked.id}`);
+      answers.push({ id: asked.id, custom: reply.text, selected: [] });
+    }
+    view = await api.answer(runId, pendingQuestion.requestId, answers);
+    for (const answer of answers) {
+      note({ kind: 'answer', questionId: answer.id, text: answer.custom });
+    }
+  }
+  return view;
+}
 
 export function projectProposal(plan, previous) {
   const actions = section => [
@@ -107,6 +191,7 @@ export async function runPortableReplay(bundle, scenario, {
   observe = observeReplay,
   editExistingEvent = defaultEditExistingCalendarEvent,
   clockOffset = '-03:00',
+  maxQuestionTurns = 8,
 } = {}) {
   if (!adapter || typeof adapter.createSession !== 'function') throw new Error('A runner adapter with createSession is required');
   if (!scenarios.includes(scenario)) throw new Error('Unknown synthetic run scenario');
@@ -144,8 +229,9 @@ export async function runPortableReplay(bundle, scenario, {
   const note = event => result.timeline.push(event);
   const check = (id, ok, detail) => result.checks.push({ id, outcome: ok ? 'pass' : 'fail', detail });
   const failures = [];
-  const draftRequest = adapter.draftRequest || DEFAULT_DRAFT_REQUEST;
+  const draftRequest = adapter.draftRequest || defaultDraftRequest(manifest.locale);
   const coldStart = adapter.coldStartCase ? adapter.coldStartCase(bundle) : (manifest.id === 'bruno' ? 'bruno-text' : manifest.id);
+  const usedAnswerIds = new Set();
 
   let experiment, store, service, client, retained = false;
   try {
@@ -205,7 +291,7 @@ export async function runPortableReplay(bundle, scenario, {
     }));
     await verifyWorkspace(path.join(runtime, 'workspaces', student), manifest.sources);
 
-    service = createTrustedStudyService({ student, calendar, runtimeDirectory: runtime, coldStart: true, browserStudy: true });
+    service = createTrustedStudyService({ student, calendar, runtimeDirectory: runtime, coldStart: true, browserStudy: true, clock });
     client = await adapter.createSession({ bundle, service, runtime, runId, scenario });
     const api = createManagedStudyApi({
       manager: { current: async () => ({ id: runId, phase: 'active' }) },
@@ -213,24 +299,24 @@ export async function runPortableReplay(bundle, scenario, {
     });
 
     note({ kind: 'request', text: manifest.request });
-    const { question } = await api.prompt(runId, manifest.request);
-    const asked = question?.questions?.[0];
-    if (!asked) throw new Error('Runner did not ask the expected clarification question');
-    note({ kind: 'question', id: asked.id, ...(asked.groupId ? { groupId: asked.groupId } : {}), text: asked.question, choices: (asked.options || []).map(option => option.label) });
-    const reply = manifest.operator.answers.find(answer => answer.id === asked.id);
-    if (!reply) throw new Error('No prepared response for the question');
-    await api.answer(runId, question.requestId, [{ id: asked.id, custom: reply.text, selected: [] }]);
-    note({ kind: 'answer', questionId: asked.id, text: reply.text });
+    const firstTurn = await api.prompt(runId, manifest.request);
+    await drainQuestions(firstTurn, { api, runId, manifest, note, usedAnswerIds, maxTurns: maxQuestionTurns });
 
     async function reviewAndDraft(previous) {
-      const pending = (await api.status(runId)).state.planningContext.pending;
+      const statusBefore = await api.status(runId);
+      const pending = statusBefore.state.planningContext?.pending;
       if (!pending) throw new Error('Runner did not propose a pending planning context for review');
       await api.confirmContext(runId, pending.id);
       note({ kind: 'context_review', revisionId: pending.id });
-      note({ kind: 'request', text: draftRequest });
-      await api.prompt(runId, draftRequest);
-      const plan = (await api.status(runId)).state.plan;
-      if (!plan) throw new Error('Runner did not draft a reviewable study proposal');
+
+      let plan = (await api.status(runId)).state.plan;
+      if (!plan || plan.id === previous) {
+        note({ kind: 'request', text: draftRequest });
+        const draftTurn = await api.prompt(runId, draftRequest);
+        await drainQuestions(draftTurn, { api, runId, manifest, note, usedAnswerIds, maxTurns: maxQuestionTurns });
+        plan = (await api.status(runId)).state.plan;
+      }
+      if (!plan || plan.id === previous) throw new Error('Runner did not draft a reviewable study proposal');
       const proposal = projectProposal(plan, previous);
       note(proposal);
       return proposal;
@@ -238,7 +324,8 @@ export async function runPortableReplay(bundle, scenario, {
 
     const first = await reviewAndDraft(null);
     note({ kind: 'request', text: manifest.operator.correction });
-    await api.prompt(runId, manifest.operator.correction);
+    const correctionTurn = await api.prompt(runId, manifest.operator.correction);
+    await drainQuestions(correctionTurn, { api, runId, manifest, note, usedAnswerIds, maxTurns: maxQuestionTurns });
     const revised = await reviewAndDraft(first.revisionId);
 
     const review = compareObservations(initial, await readObserved());
@@ -270,7 +357,7 @@ export async function runPortableReplay(bundle, scenario, {
       throw new Error('The operator withheld approval because a precondition failed');
     }
 
-    const userEdit = scenario === 'stale' ? fixture.events.find(event => event.start.dateTime?.startsWith('2026-11-04'))?.id : null;
+    const userEdit = scenario === 'stale' ? selectStaleEventId(fixture, manifest) : null;
     if (userEdit) await editExistingEvent(experiment, student, userEdit);
     const beforeApproval = compareObservations(initial, await readObserved());
     note({ kind: 'observation', phase: 'before_approval', value: beforeApproval });
