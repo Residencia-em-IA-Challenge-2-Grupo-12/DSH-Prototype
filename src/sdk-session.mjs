@@ -25,7 +25,7 @@ const browserReview = [
 
 // A single-user synthetic demo: no credentials or raw SDK event payloads reach the browser.
 export class StudySession {
-  constructor(student, { launch=spawn, gateway, brokerSocket, dshHome, coldStart=false, browserStudy=false, turnTimeoutMs=180000, brokerProbe=socketPath=>createStudyBrokerClient({socketPath}).ping() }={}) {
+  constructor(student, { launch=spawn, gateway, brokerSocket, dshHome, coldStart=false, browserStudy=false, promptMode='planning', turnTimeoutMs=180000, brokerProbe=socketPath=>createStudyBrokerClient({socketPath}).ping() }={}) {
     this.student=assertStudent(student); this.launch=launch; this.sessionId='study-'+randomUUID();
     if(!Number.isInteger(turnTimeoutMs)||turnTimeoutMs<1||turnTimeoutMs>600000)throw new Error('Invalid turn execution budget');
     this.turnTimeoutMs=turnTimeoutMs;
@@ -35,7 +35,8 @@ export class StudySession {
     if(dshHome!==undefined&&(!brokerSocket||gateway!==undefined))throw new Error('A persistent DSH profile requires the brokered Luna route');
     if(typeof brokerProbe!=='function')throw new Error('A broker readiness probe is required');
     if(coldStart&&!brokerSocket)throw new Error('Cold-start sessions require the trusted broker');
-    this.coldStart=coldStart;this.browserStudy=browserStudy;
+    if(promptMode!=='planning'&&(promptMode!=='check-in'||!coldStart||!brokerSocket||!dshHome))throw new Error('Check-in interpretation requires the trusted synthetic Luna route');
+    this.coldStart=coldStart;this.browserStudy=browserStudy;this.promptMode=promptMode;
     this.brokerSocket=brokerSocket;this.dshHome=dshHome;this.brokerProbe=brokerProbe;
     this.messages=[]; this.question=null; this.busy=false; this.error=null;
     this.requests=new Map(); this.nextId=1; this.child=null; this.starting=null; this.closed=false;
@@ -139,7 +140,9 @@ export class StudySession {
       const content=(this.browserStudy
         ? [prefix.replace(/\n\nUser: $/,''),planningDecisions,browserReview,'User: '+requestText].filter(Boolean).join('\n\n')
         : prefix+requestText);
-      await this.request('session/prompt',{sessionId:this.sessionId,contentBlocks:[{type:'text',text:content}]});
+      await this.request('session/prompt',{sessionId:this.sessionId,contentBlocks:[{type:'text',text:this.promptMode==='check-in'
+        ? 'Interpret this fictional check-in for the trusted review flow. Use the supplied text only. Return structured data without tools or a calendar action.\n\n'+requestText
+        : content}]});
       this.add('user',text.trim());
       this.request('session/wait',{sessionId:this.sessionId},this.turnTimeoutMs).then(()=>{this.busy=false;},()=>{this.error='The harness did not complete this turn. Inspect the proposal and start a new conversation before retrying.';this.stop();});
     } catch(e) {this.error=e.message+'; inspect the proposal and start a new conversation before retrying.';this.stop();throw e;}

@@ -14,7 +14,7 @@ export function decideRoutinePreference(candidates, preference, date) {
 
   const leastImpact = [...byStudy].sort((left, right) =>
     right.studyMinutes - left.studyMinutes || left.protectedMinutes - right.protectedMinutes);
-  if (preference.fallbackMinutes !== undefined) {
+  if (preference.fallbackMinutes != null) {
     const permitted = leastImpact.find(candidate => candidate.protectedMinutes <= preference.fallbackMinutes);
     return recommend(permitted, 'explicit_fallback');
   }

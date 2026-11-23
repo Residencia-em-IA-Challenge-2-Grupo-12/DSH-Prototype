@@ -103,7 +103,7 @@ function renderRetireReview(){
 }
 function canApprove(state,plan,section){
   const changes=(plan[section]?.length||0)+(plan.remove?.[section]?.length||0)>0;
-  return available&&plan.status?.[section]==='pending'&&!state.recovery&&state.calendar?.availability==='available'&&changes&&!state.state?.planningContext?.pending&&
+  return available&&!plan.previewOnly&&plan.status?.[section]==='pending'&&!state.recovery&&state.calendar?.availability==='available'&&changes&&!state.state?.planningContext?.pending&&
     !approvalBusy.has(`${plan.id}:${section}`)&&!approvalCompleted.has(`${plan.id}:${section}`)&&!approvalReviewRequired.has(`${plan.id}:${section}`);
 }
 function renderMessages(messages){
