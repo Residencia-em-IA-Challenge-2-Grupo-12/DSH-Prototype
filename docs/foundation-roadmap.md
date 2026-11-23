@@ -4,13 +4,19 @@ The agreed product is a calendar-centered assistant for adult students. This pha
 
 For delivery evidence and remaining limits, start with the [baseline readiness report](review/onboarding-readiness-2026-11-17.md). [Issue #9](https://github.com/Residencia-em-IA-Challenge-2-Grupo-12/DSH-Prototype/issues/9) owns the current baseline decision.
 
+## Product scope
+
+Study Atlas helps students **plan, track and adapt their study** around deadlines and existing commitments, using feedback about what they actually did. The same workflow should make sense across subjects. Course documents can supply deadlines, requirements and context. Authored study activities can help test which existing tasks fit a time slot, a location or the resources the student has.
+
+Creating or editing course content and running coursework as a product feature are out of scope for the student-facing product until an explicit product decision adds them. A SQL exercise, generated worksheet or patch may serve as a synthetic fixture in a standalone engineering investigation. Its use as a fixture does not establish a student need or justify a page, menu item or default workflow. Selected-file access and sandbox studies establish technical capabilities. Proposed student features need their own outcome and evidence.
+
 ## Delivery checkpoints
 
 The [current Project work sequence](project-work-sequence.md) separates demonstration delivery and lossless integration review from later scheduling/activity experiments. The new study-method exploration follows a stable experimental baseline; it does not require every open experimental PR to merge. PR #8 still requires the user's explicit decision.
 
 1. **Experimental baseline (PR #8):** correct known scheduler defects, document what exists, run offline CI and verify the synthetic conversation, revision and separately approved calendar write. Keep the PR draft pending a readiness and merge decision.
 2. **Foundation comparisons:** implement transactional shared state, isolated simulator runs and replay; compare native DSH and SDK interfaces, heuristic and constraint solvers, and four local embedding models. Present evidence and obtain selections before expanding the selected interface or planner.
-3. **Collaborative workflow:** implement evidence-informed agent planning, one bounded critique, reviewable alternatives, optional feedback and checkpoints, file diffs and sandboxed tools.
+3. **Collaborative workflow:** implement evidence-informed agent planning, one bounded critique, reviewable alternatives, optional feedback and checkpoints. Use controlled tools to read relevant sources and review proposed scheduling changes. Separate sandbox or file-diff experiments answer their own engineering questions.
 4. **Evaluation:** six bilingual synthetic cases, two repeats, three retrieval approaches (36 primary episodes), supplemented by scripted personas, authorized Luna fallback, evaluator reports and sampled human review. Reassess the suite before freezing/running and obtain a decision before changing its size. The separate preliminary/matched Luna–DeepSeek comparison and masked DeepSeek evaluator retain their authorized route, runtime-equivalence and shared cost boundaries.
 
 ## Baseline versus target

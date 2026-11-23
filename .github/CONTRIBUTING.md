@@ -10,6 +10,10 @@ Use focused issues and feature branches. Keep fixtures synthetic; never commit c
 2. Preserve uncommitted and untracked work. Refresh live issue, Project and PR state before editing those surfaces. Keep the change within the issue's scope and its explicit gates.
 3. Treat sources according to what they own: the issue and Project own current outcome, acceptance, owner, status, priority, dependencies and next action; the PR and Git refs own proposed code scope, ancestry, tested revision and disposition; decision docs own accepted rationale and boundaries; versioned evidence owns observations and limitations. READMEs route readers to those sources instead of duplicating live status.
 
+### Check user-facing scope
+
+Before adding a user-facing screen, tool or example, name the planning, tracking or adaptation task it serves and the evidence that would show it helped. Replace the example subject with a different one as a quick check. A subject-specific example is fine when the workflow and need still make sense. Keep technical probes outside normal student navigation, label scripted output, and report what the probe actually verifies. If it creates a new product outcome, record an explicit scope decision before treating it as a feature. [Product scope](../docs/foundation-roadmap.md#product-scope)
+
 ### Handoff
 
 1. Account for every current acceptance item as **met**, **unmet** or **not observed**. Link evidence and identify the source commit/configuration, command or observation, date when relevant, and limitations. Preserve failed attempts and residual work. Do not present scripted evidence as live-model behavior or a proposal as an adopted decision.
