@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "schedulerCommit": "cb86720882b9dcbe6c6f60243ae2e4379a2a6d33",
+  "clock": {
+    "date": "2026-11-02",
+    "timezone": "America/Sao_Paulo"
+  },
+  "calendar": {
+    "path": "fixtures/calendars/bruno.json",
+    "sha256": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1"
+  },
+  "profile": {
+    "path": "fixtures/students/bruno/courses.json",
+    "sha256": "2f6f2efa9e3a0b4aadb63d4f0bc920c40e722572efb7ac9d9531458776357511"
+  },
+  "week": {
+    "through": "2026-11-08",
+    "targetHours": 4,
+    "wednesdayDate": "2026-11-04"
+  },
+  "changedEvent": {
+    "id": "fictional-sunday-care",
+    "summary": "Family commitment",
+    "start": {
+      "dateTime": "2026-11-08T11:00:00-03:00"
+    },
+    "end": {
+      "dateTime": "2026-11-08T12:15:00-03:00"
+    }
+  },
+  "cases": [
+    {
+      "id": "no-cost",
+      "sundayChange": false,
+      "formPreference": "soft",
+      "validThrough": "2026-11-08",
+      "statement": "For this week, I would prefer to keep Wednesday evening free. I still aim for four hours.",
+      "responseId": "rp-01"
+    },
+    {
+      "id": "needs-choice",
+      "sundayChange": true,
+      "formPreference": "soft",
+      "validThrough": "2026-11-08",
+      "statement": "For this week, I would prefer to keep Wednesday evening free. I still aim for four hours.",
+      "responseId": "rp-02"
+    },
+    {
+      "id": "bounded-fallback",
+      "sundayChange": true,
+      "formPreference": "soft",
+      "fallbackMinutes": 60,
+      "validThrough": "2026-11-08",
+      "statement": "For this week, I would prefer to keep Wednesday evening free. If otherwise I cannot reach four hours, one hour on Wednesday evening is OK.",
+      "responseId": "rp-03"
+    },
+    {
+      "id": "hard-limit",
+      "sundayChange": true,
+      "formPreference": "hard",
+      "validThrough": "2026-11-08",
+      "statement": "I am unavailable for study on Wednesday this week. I would like to fit four hours if possible.",
+      "responseId": "rp-04"
+    },
+    {
+      "id": "expired",
+      "sundayChange": true,
+      "formPreference": "soft",
+      "validThrough": "2026-11-01",
+      "statement": "Earlier check-in: last week Wednesday felt too demanding. I asked to keep that evening free through November 1 only. I have provided no newer check-in or preference about Wednesday.",
+      "responseId": "rp-05"
+    }
+  ]
+}
