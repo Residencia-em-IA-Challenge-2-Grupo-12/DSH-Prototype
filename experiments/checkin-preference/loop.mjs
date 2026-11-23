@@ -60,7 +60,7 @@ export function createCheckinLoop({ calendar, interpret }) {
       proposalId: plan.id, studyMinutes: candidate.studyMinutes, fridayMinutes: candidate.protectedMinutes,
       windows: candidate.windows,
     });
-    append('assistant', 'Calendar preview for the week of ' + dateInWeek(week) + '. ' + outline(candidate));
+    append('study-review', 'Calendar preview for the week of ' + dateInWeek(week) + '. ' + outline(candidate));
   }
 
   async function propose(preference) {
@@ -96,7 +96,7 @@ export function createCheckinLoop({ calendar, interpret }) {
           try { result = await propose(confirmed?.preference); }
           catch (error) { week = 0; throw error; }
           append('user', text);
-          append('assistant', confirmed ? 'The prior preference ended on ' + confirmed.preference.validThrough + '. Its check-in remains in the history.' : 'No preference was recorded.');
+          append('study-review', confirmed ? 'The prior preference ended on ' + confirmed.preference.validThrough + '. Its check-in remains in the history.' : 'No preference was recorded.');
           present(result);
           return;
         }
@@ -119,7 +119,7 @@ export function createCheckinLoop({ calendar, interpret }) {
         previous = pending;
         pending = { id: randomUUID(), preference, sourceIds: evidence.notes.map(item => item.id), status: 'pending' };
         evidence.revisions.push(pending);
-        append('assistant', 'Review the proposed Friday preference. ' + describe(preference));
+        append('study-review', 'Review the proposed Friday preference. ' + describe(preference));
       });
       return snapshot();
     },
@@ -139,7 +139,7 @@ export function createCheckinLoop({ calendar, interpret }) {
     async cancelQuestion(requestId) {
       if (busy || question?.requestId !== requestId) throw Error('Question is no longer pending');
       question = null;
-      append('assistant', 'The choice was dismissed.');
+      append('study-review', 'The choice was dismissed.');
       return snapshot();
     },
   };
@@ -176,7 +176,7 @@ export function createCheckinLoop({ calendar, interpret }) {
     async start() {
       const result = await propose(null);
       present(result);
-      append('assistant', 'Optional check-in: tell us how Friday’s study time fit your routine. The calendar above is a preview.');
+      append('study-review', 'Optional check-in: tell us how Friday’s study time fit your routine. The calendar above is a preview.');
     },
   };
 }

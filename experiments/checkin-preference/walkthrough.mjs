@@ -30,9 +30,9 @@ const result = {
 };
 const start = Date.now();
 const note = 'Friday study felt too demanding last week. Mark Friday afternoon as something to reconsider for November 2 through November 8.';
-const correction = 'For November 2 through November 8 this is a soft preference: keep Friday afternoon free if possible. I aim for four study hours, and I have not agreed to a Friday fallback.';
+const correction = 'To clarify, for November 2 through November 8 this is a soft preference: keep Friday afternoon free if possible. I aim for four study hours, and I have not agreed to a Friday fallback.';
 let hostDriver, manager, root, exercise, run, server;
-const runtime = live ? 'host-luna-fallback' : 'scripted check-in test';
+const runtime = live ? 'host-luna-fallback' : 'scripted-review';
 
 function parseReply(text) {
   return JSON.parse(text.trim().replace(/^\x60\x60\x60(?:json)?\s*|\s*\x60\x60\x60$/g, ''));
@@ -147,14 +147,20 @@ try {
     await send(note);
     await wait("document.querySelector('#planning-context > button:not(:disabled)')", 95000);
     await click('#nav-context');
-    assert.match(await view('#planning-context'), /Strength unclear/);
-    await capture(path.join(out, '1-interpreted.png'));
     const first = await status();
+    const firstKind = exercise.evidence.revisions[0].preference.kind;
+    if (!live) assert.equal(firstKind, 'unknown');
+    assert.match(await view('#planning-context'), new RegExp(firstKind === 'unknown' ? 'Strength unclear' : 'Strength: ' + firstKind));
     assert.equal(first.state.plan.id, initial.state.plan.id);
-    await click(confirm);
-    await wait("document.querySelector('#notice').innerText.includes('Clarify the preference strength')");
-    assert.equal((await status()).state.plan.id, initial.state.plan.id);
-    result.observations.push({ phase: 'unconfirmed', previewUnchanged: true, unknownConfirmationBlocked: true });
+    await click('#planning-context > details > summary');
+    await capture(path.join(out, '1-interpreted.png'));
+    if (firstKind === 'unknown') {
+      await click(confirm);
+      await wait("document.querySelector('#notice').innerText.includes('Clarify the preference strength')");
+      assert.equal((await status()).state.plan.id, initial.state.plan.id);
+    }
+    result.observations.push({ phase: 'unconfirmed', previewUnchanged: true, expectedKind: 'unknown',
+      observedKind: firstKind, unknownConfirmationBlocked: firstKind === 'unknown' ? true : 'not exercised' });
 
     await send(correction);
     await wait("document.querySelector('#planning-context').innerText.includes('Strength: soft')", 95000);
@@ -172,7 +178,8 @@ try {
     await wait("document.querySelector('#question form') && document.querySelector('.calendar-event.candidate')");
     assert.match(await view('#question'), /3 h of study, 0 h on Friday/);
     assert.match(await view('#question'), /4 h of study, 1 h on Friday/);
-    await click('#nav-chat');
+    await click('#nav-calendar');
+    await evaluate("document.querySelector('#calendar .calendar-scroll').scrollTop = 12 * 32");
     await capture(path.join(out, '2-tradeoff.png'));
     await click('#question input[value="Keep Friday free"]');
     await click('#question button[type=submit]');
@@ -194,6 +201,8 @@ try {
     assert.equal(exercise.evidence.approvalAttempts, 0);
     assert.equal(await evaluate("document.querySelectorAll('#proposal button:not(:disabled)').length"), 0);
     await click('#calendar .calendar-toolbar button:last-child');
+    await click('#nav-calendar');
+    await evaluate("document.querySelector('#calendar .calendar-scroll').scrollTop = 12 * 32");
     await capture(path.join(out, '3-expired.png'));
     await click('#retire');
     await click('#retire-confirm button:first-of-type');
