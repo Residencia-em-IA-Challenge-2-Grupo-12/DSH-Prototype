@@ -88,3 +88,24 @@ test('a reopened check-in refuses a stale calendar and retains the saved review'
     await store.close();
   }
 });
+
+test('a verified preference through Thursday cannot affect Friday, and a Friday end date is inclusive', async () => {
+  const loop = createCheckinLoop({
+    calendar: { events: async () => fixture },
+    interpret: async ({ previous }) => ({ kind: 'hard', validThrough: previous ? '2026-11-06' : '2026-11-05',
+      fallbackMinutes: null }),
+  });
+  await loop.start();
+  await loop.client.prompt('My restriction ends Thursday.');
+  const thursday = (await loop.service.status()).state.planningContext.pending;
+  await loop.service.confirmPlanningContext(thursday.id);
+  const before = (await loop.service.status()).state.plan;
+  assert.equal(before.preferenceRevisionId, null);
+  assert.equal(before.near.filter(block => block.start.dateTime.startsWith('2026-11-06')).length, 1);
+  await loop.client.prompt('My restriction includes Friday as well.');
+  const friday = (await loop.service.status()).state.planningContext.pending;
+  await loop.service.confirmPlanningContext(friday.id);
+  const after = (await loop.service.status()).state.plan;
+  assert.equal(after.preferenceRevisionId, friday.id);
+  assert.equal(after.near.filter(block => block.start.dateTime.startsWith('2026-11-06')).length, 0);
+});

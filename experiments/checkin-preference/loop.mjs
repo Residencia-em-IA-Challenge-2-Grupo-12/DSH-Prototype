@@ -63,7 +63,8 @@ export function createCheckinLoop({ calendar, interpret, language = 'en', storag
   function select(next, candidate, reason) {
     const date = dateInWeek(next.week);
     const active = confirmedIn(next);
-    const applied = active && date >= active.preference.validFrom && date <= active.preference.validThrough ? active.id : null;
+    const friday = dateInWeek(next.week, 4);
+    const applied = active && friday >= active.preference.validFrom && friday <= active.preference.validThrough ? active.id : null;
     next.plan = { ...candidate.proposal, preferenceRevisionId: applied };
     next.awaitingChoice = false;
     next.selections.push({
@@ -75,7 +76,7 @@ export function createCheckinLoop({ calendar, interpret, language = 'en', storag
 
   function propose(events, next) {
     const candidates = generateCandidates(events, { week: next.week, includeProposal: true });
-    const decision = decideRoutinePreference(candidates, confirmedIn(next)?.preference, dateInWeek(next.week));
+    const decision = decideRoutinePreference(candidates, confirmedIn(next)?.preference, dateInWeek(next.week, 4));
     if (decision.action === 'recommend') return { decision, selected: candidates.find(candidate => candidate.id === decision.candidateIds[0]) };
     const choices = decision.candidateIds.map(id => candidates.find(candidate => candidate.id === id))
       .map(candidate => ({ ...candidate, label: candidate.protectedMinutes === 0
