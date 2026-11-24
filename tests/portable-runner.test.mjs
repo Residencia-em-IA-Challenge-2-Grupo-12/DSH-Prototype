@@ -9,7 +9,7 @@ import { ROOT } from '../src/core.mjs';
 import { packBundle, readBundle } from '../src/paired-replay/bundle.mjs';
 import { createDshBrunoAdapter } from '../src/paired-replay/dsh-runner.mjs';
 import { createHttpRunnerAdapter } from '../src/paired-replay/http-adapter.mjs';
-import { runPortableReplay, scenarios, selectStaleEventId } from '../src/paired-replay/runner.mjs';
+import { matchPreparedAnswer, runPortableReplay, scenarios, selectStaleEventId } from '../src/paired-replay/runner.mjs';
 
 const exec = promisify(execFile);
 
@@ -366,4 +366,106 @@ test('manifest-driven operator runs ana-held-out with grouped + sequential quest
     const probe = await exec('python3', [path.join(ROOT, 'scripts/paired-replay-probe.py'), '--check-result', bundleDir, resultPath]);
     assert.match(probe.stdout, /Checked case ana-held-out/);
   }
+});
+
+test('matchPreparedAnswer reuses topic/combined replies, deduplicates timeline IDs, and allows single-date avoidDates revisions', async t => {
+  // Single combined answer (Bruno-style) split into 2 questions by a live model:
+  const brunoAnswers = [{ id: 'availability', text: '5h/week on Mon/Wed/Sat/Sun with 15 min break.' }];
+  const usedBruno = new Set();
+  assert.equal(matchPreparedAnswer({ id: 'janelas', question: 'Quais horários?' }, brunoAnswers, usedBruno)?.id, 'availability');
+  assert.equal(matchPreparedAnswer({ id: 'meta_semanal', question: 'Quantas horas por semana?' }, brunoAnswers, usedBruno)?.id, 'availability');
+
+  // Multiple answers (Ana-style) with a 4th follow-up question matching workload:
+  const anaAnswers = [
+    { id: 'availability', text: 'Wed/Thu/Fri 14:00-16:15' },
+    { id: 'workload', text: '4h/week, max 2 sessions/day, 15m break' },
+    { id: 'preparation', text: 'No outline yet' },
+  ];
+  const usedAna = new Set(['availability', 'workload', 'preparation']);
+  assert.equal(matchPreparedAnswer({ id: 'study_break_minutes', question: 'How long a break?' }, anaAnswers, usedAna)?.id, 'workload');
+  assert.equal(matchPreparedAnswer({ id: 'extra_q', question: 'Any other preferences?' }, anaAnswers, usedAna)?.id, 'combined');
+
+  // End-to-end replay: duplicate/non-identifier question IDs + single-date avoidDates revision without redundant context proposal:
+  const work = await mkdtemp(path.join(tmpdir(), 'portable-live-parity-'));
+  t.after(() => rm(work, { recursive: true, force: true }));
+  const bundleDir = path.join(work, 'ana-held-out');
+  await packBundle('ana-held-out', bundleDir);
+  const bundle = await readBundle(bundleDir);
+
+  const anaRecord = {
+    courses: [{
+      name: 'Applied Data Ethics',
+      date: '2026-12-01',
+      time: '17:30',
+      citation: { path: 'lms/assessment-export.json', quote: '"dueAt": "2026-12-01T20:30:00Z"' },
+      resolution: 'LMS export supersedes the earlier module outline date.',
+    }],
+    studyWindows: [
+      { weekday: 3, start: '14:00', end: '16:15' },
+      { weekday: 4, start: '14:00', end: '16:15' },
+      { weekday: 5, start: '14:00', end: '16:15' },
+    ],
+    through: '2026-11-15',
+    targetHours: 4,
+    maxDailyStudyHours: 2,
+    studyBreakMinutes: 15,
+    assumption: 'Two-week plan keeping weekends open.',
+  };
+
+  let phase = 'init';
+  const adapter = {
+    engine: { name: 'Single-date revision test adapter', revision: '1', mode: 'scripted', model: null, harness: 'test', tools: [] },
+    createSession({ service }) {
+      const call = (method, args = {}) => service.agent.call(method, { ...args, student: 'ana' });
+      const messages = [];
+      let question = null;
+      const view = () => ({ messages: [...messages], question, busy: false, error: null });
+      return {
+        snapshot: async () => view(),
+        async prompt(text) {
+          messages.push({ type: 'user', text });
+          if (phase === 'init') {
+            // Deliberately emit non-identifier & duplicate IDs across turns:
+            question = {
+              requestId: 'q-1',
+              questions: [
+                { id: 'slot / choice', question: 'Which windows work?', options: [] },
+                { id: 'slot / choice', question: 'How many weekly hours?', options: [] },
+              ],
+            };
+            phase = 'asked';
+          } else if (phase === 'confirmed') {
+            await call('draft_study_plan', { weeks: 2 });
+            phase = 'drafted_1';
+          } else if (phase === 'drafted_1') {
+            // Single-date correction: directly draft with avoidDates without re-proposing unchanged planningContext:
+            await call('draft_study_plan', { weeks: 2, avoidDates: ['2026-11-04'] });
+            phase = 'drafted_2';
+          }
+          return view();
+        },
+        async answer(_requestId, answers) {
+          for (const item of answers) messages.push({ type: 'user', text: item.custom });
+          question = null;
+          await call('propose_planning_context', { record: anaRecord });
+          phase = 'confirmed';
+          return view();
+        },
+      };
+    },
+  };
+
+  const harness = createInMemoryHarness();
+  const resultPath = path.join(work, 'ana-single-date-rev.json');
+  const { result, failures } = await runPortableReplay(bundle, 'success', {
+    adapter,
+    saveResult: async evidence => { await writeFile(resultPath, JSON.stringify(evidence, null, 2) + '\n'); },
+    ...harness,
+  });
+  assert.deepEqual(failures, []);
+  assert.ok(result.checks.every(check => check.outcome === 'pass'), JSON.stringify(result.checks));
+  const qEvents = result.timeline.filter(event => event.kind === 'question');
+  assert.deepEqual(qEvents.map(q => q.id), ['slot-choice', 'slot-choice-2']);
+  const probe = await exec('python3', [path.join(ROOT, 'scripts/paired-replay-probe.py'), '--check-result', bundleDir, resultPath]);
+  assert.match(probe.stdout, /Checked case ana-held-out/);
 });

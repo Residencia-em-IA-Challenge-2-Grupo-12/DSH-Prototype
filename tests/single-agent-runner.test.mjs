@@ -431,3 +431,66 @@ test('non-DSH single-agent HTTP runner handles ana-held-out grouped + sequential
   })).json();
   assert.match(snap.error, /maxSteps \(2\)/);
 });
+
+test('single-agent loop preserves reasoning_details across tool steps and emits onEvent traces', async t => {
+  const seenRequests = [];
+  const events = [];
+  let callIndex = 0;
+
+  const runnerServer = await startSingleAgentServer({
+    model: 'reasoning-model',
+    onEvent: ev => events.push(ev),
+    async completeChat({ messages }) {
+      seenRequests.push(structuredClone(messages));
+      callIndex++;
+      if (callIndex === 1) {
+        return {
+          usage: { prompt_tokens: 50, completion_tokens: 20 },
+          choices: [{
+            finish_reason: 'tool_calls',
+            message: {
+              role: 'assistant',
+              content: null,
+              reasoning_details: [{ type: 'reasoning.text', text: 'check calendar first' }],
+              tool_calls: [{ id: 'tc-1', type: 'function', function: { name: 'list_calendar', arguments: '{}' } }],
+            },
+          }],
+        };
+      }
+      return {
+        usage: { prompt_tokens: 80, completion_tokens: 15 },
+        choices: [{ finish_reason: 'stop', message: { role: 'assistant', content: 'All clear.' } }],
+      };
+    },
+  });
+  t.after(() => runnerServer.close());
+
+  const bridgeStub = http.createServer((_req, res) => {
+    res.writeHead(200, { 'content-type': 'application/json' });
+    res.end(JSON.stringify({ ok: true, result: { events: [] } }));
+  });
+  await new Promise(resolve => bridgeStub.listen(0, '127.0.0.1', resolve));
+  t.after(() => new Promise(resolve => bridgeStub.close(() => resolve())));
+
+  const started = await (await fetch(`${runnerServer.url}/sessions`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      student: 'bruno',
+      locale: 'pt-BR',
+      clock: { date: '2026-11-02', timezone: 'America/Sao_Paulo' },
+      toolBridge: { url: `http://127.0.0.1:${bridgeStub.address().port}/tools/call`, token: 'tok', methods: ['list_calendar'] },
+    }),
+  })).json();
+  const snap = await (await fetch(`${runnerServer.url}/sessions/${started.sessionId}/prompt`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ text: 'Check calendar' }),
+  })).json();
+  assert.equal(snap.error, null);
+  assert.equal(seenRequests.length, 2);
+  const assistantTurn = seenRequests[1].find(msg => msg.role === 'assistant');
+  assert.deepEqual(assistantTurn.reasoning_details, [{ type: 'reasoning.text', text: 'check calendar first' }]);
+  assert.equal(events.filter(ev => ev.type === 'llm_step').length, 2);
+  assert.equal(events.filter(ev => ev.type === 'tool' && ev.name === 'list_calendar').length, 1);
+});

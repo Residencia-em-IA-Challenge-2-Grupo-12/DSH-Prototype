@@ -80,8 +80,9 @@ export async function startSingleAgentServer({
   mode = 'live',
   harness = 'single-agent-http-v1',
   engineName,
-  maxSteps = 12,
+  maxSteps = 24,
   schemaCompat = 'standard',
+  onEvent,
 } = {}) {
   assertLoopbackHost(host);
   if (typeof completeChat !== 'function') throw new Error('completeChat function is required');
@@ -114,6 +115,7 @@ export async function startSingleAgentServer({
           model,
           maxSteps,
           schemaCompat,
+          onEvent,
         });
         sessions.set(session.sessionId, session);
         return send(200, {

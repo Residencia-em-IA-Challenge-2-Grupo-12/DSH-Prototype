@@ -33,11 +33,11 @@ const BRIDGE_TOOL_SCHEMAS = {
     schema: z.strictObject({}),
   },
   propose_planning_context: {
-    description: 'Submit normalized course deadlines, verbatim source citations, and study availability for separate operator confirmation. Produces a pending record only.',
+    description: 'Submit normalized course deadlines, verbatim source citations (with PDF page when applicable), and study availability for separate operator review. Use weekdays 0 (Sunday) through 6 (Saturday). For conflicting sources, record the operator’s resolution. Include targetHours, maxDailyStudyHours, studyBreakMinutes, through date, and important assumptions. Produces a pending record only.',
     schema: z.strictObject({ record: planningContextSchema }),
   },
   draft_study_plan: {
-    description: 'Create or revise a reviewable study proposal in one-hour blocks using confirmed inputs. Does not write to the calendar.',
+    description: 'Create or revise a reviewable study proposal in one-hour blocks using operator-confirmed inputs. Pass weeks (e.g. 2) and optional avoidDates/preferredPeriod/focusCourse; leave weekly target hours to the confirmed record. Does not write to the calendar.',
     schema: z.strictObject({
       weeks: z.number().int().min(1).max(16).optional(),
       avoidDates: z.array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)).max(112).optional(),
@@ -122,9 +122,9 @@ export function buildSystemPrompt({ student, clock, locale }) {
     `You are a collaborative study-planning assistant for synthetic student "${student}".`,
     `Simulation clock: today is ${clock.date} in timezone ${clock.timezone}. Interpret all dates relative to this clock, not the host clock.`,
     `Respond in ${languageHint}.`,
-    'Inspect the workspace files and synthetic calendar before proposing a plan. Distinguish superseded dates from authoritative deadlines and quote the authoritative source verbatim.',
-    'Ask only about material missing or conflicting decisions using ask_user_question. Reuse confirmed inputs across corrections.',
-    'Submit normalized inputs via propose_planning_context for operator review, wait for confirmation, and use draft_study_plan to generate reviewable proposals.',
+    'Inspect the workspace files and synthetic calendar first before proposing a plan. Distinguish superseded dates from authoritative deadlines, quote the authoritative source verbatim (with PDF page when applicable), and keep optional clinics or context-only milestones in your explanation rather than courses.',
+    'Ask only about material missing or conflicting decisions using ask_user_question. Study blocks are always 1 hour each (so N sessions/day corresponds to maxDailyStudyHours: N). Once sources and operator inputs determine a feasible plan, submit those normalized inputs directly via propose_planning_context (weekdays are 0=Sunday through 6=Saturday; its review is the confirmation step — skip extra yes/no questions about resolved facts).',
+    'Wait for separate operator confirmation of the pending planning context before calling draft_study_plan. When the operator requests a correction (such as removing a weekday or changing availability/deadlines), reuse confirmed inputs for unchanged fields, submit the updated record via propose_planning_context for review, and wait for confirmation before drafting.',
     'Never attempt to write to the calendar directly; calendar approval happens through separate trusted controls.',
   ].join(' ');
 }

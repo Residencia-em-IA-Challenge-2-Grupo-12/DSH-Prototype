@@ -124,14 +124,15 @@ export async function startTrustedToolBridge({ student, service }) {
  * Compatible with any language/stack (Python FastAPI StudyBuddy, Node non-DSH
  * tool loops, or runtime-defined delegating agents).
  */
-export function createHttpRunnerAdapter({ url, engine = {}, timeoutMs = 30_000, draftRequest } = {}) {
+export function createHttpRunnerAdapter({ url, engine = {}, timeoutMs, draftRequest } = {}) {
+  const effectiveTimeoutMs = timeoutMs ?? (engine.mode === 'live' ? 300_000 : 30_000);
   const base = assertLoopbackOrigin(url);
   async function request(method, route, body) {
     const response = await fetch(base + route, {
       method,
       headers: body === undefined ? {} : { 'content-type': 'application/json' },
       body: body === undefined ? undefined : JSON.stringify(body),
-      signal: AbortSignal.timeout(timeoutMs),
+      signal: AbortSignal.timeout(effectiveTimeoutMs),
     });
     const text = await response.text();
     if (!response.ok) throw new Error(`External runner ${response.status} on ${method} ${route}: ${text.slice(0, 300)}`);
