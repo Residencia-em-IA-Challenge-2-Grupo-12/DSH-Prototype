@@ -1,6 +1,6 @@
 import {createHash,timingSafeEqual} from 'node:crypto';
 import {createServer} from 'node:http';
-import {prepareOpenRouterRequest} from './openrouter-policy.mjs';
+import {normalizeOpenRouterPolicy,prepareOpenRouterRequest} from './openrouter-policy.mjs';
 
 const ENDPOINT='https://openrouter.ai/api/v1/chat/completions';
 const digest=value=>createHash('sha256').update(value).digest();
@@ -48,16 +48,17 @@ async function forwardStream(upstream,res,budget,id){
 
 // Trusted gateway only. No key, prompt, provider response or raw upstream error
 // is written to logs or the budget ledger. A local budget is not a hard cap.
-export function createOpenRouterGateway({apiKey,accessToken,budget,pricing,fetchImpl=fetch}){
+export function createOpenRouterGateway({apiKey,accessToken,budget,pricing,policy,fetchImpl=fetch}){
   if(typeof apiKey!=='string'||!apiKey.trim()||typeof accessToken!=='string'||!accessToken.trim())throw new Error('Gateway credentials are unavailable');
   if(!budget||typeof budget.reserve!=='function'||typeof budget.settle!=='function')throw new Error('A local comparison budget is required');
+  normalizeOpenRouterPolicy(policy);
   const expected=digest(`Bearer ${accessToken}`);
   return createServer(async(req,res)=>{
     if(req.method!=='POST'||req.url!=='/v1/chat/completions')return reply(res,404,{error:'Unknown endpoint'});
     if(!timingSafeEqual(digest(req.headers.authorization||''),expected))return reply(res,401,{error:'Gateway authorization required'});
     let body,estimate,role;
     try {
-      body=prepareOpenRouterRequest(await readBody(req));
+      body=prepareOpenRouterRequest(await readBody(req),policy);
       role=req.headers['x-study-role']||'agent';
       if(!['agent','judge','setup'].includes(role))throw new Error('Invalid request role');
       estimate=estimatedCost(body,pricing);

@@ -39,7 +39,7 @@ for(const student of ['ana','bruno'])for(let repetition=1;repetition<=repeats;re
     assert.equal(state.plan.outlook.length,student==='ana'?4:6);
     const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
     assert.equal(digest((await active.service.agent.call('list_calendar',{student})).events),digest(before),'drafting changed the calendar');
-    const time=(event,key)=>Date.parse(event[key]?.dateTime||event[key]?.date);
+    const time=(event,key)=>Date.parse(typeof event[key]==='string'?event[key]:event[key]?.dateTime||event[key]?.date);
     for(const block of state.plan.near)for(const existing of before.filter(event=>event.status!=='cancelled'&&event.transparency!=='transparent'))
       assert(!(time(block,'start')<time(existing,'end')&&time(existing,'start')<time(block,'end')),'study block conflicts with an existing commitment');
     await active.service.approvePlan(state.plan.id,'near');

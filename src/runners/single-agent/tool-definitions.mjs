@@ -64,20 +64,36 @@ const BRIDGE_TOOL_SCHEMAS = {
   },
 };
 
-function toParameters(schema) {
-  const jsonSchema = z.toJSONSchema(schema);
-  delete jsonSchema.$schema;
-  return jsonSchema;
+export const SCHEMA_COMPAT_MODES = ['standard', 'gemini'];
+
+export function stripAdditionalProperties(node) {
+  if (Array.isArray(node)) return node.map(stripAdditionalProperties);
+  if (!node || typeof node !== 'object') return node;
+  const cleaned = {};
+  for (const [key, value] of Object.entries(node)) {
+    if (key === 'additionalProperties') continue;
+    cleaned[key] = stripAdditionalProperties(value);
+  }
+  return cleaned;
 }
 
-export function buildOpenAITools(allowedMethods = []) {
+function toParameters(schema, schemaCompat = 'standard') {
+  if (!SCHEMA_COMPAT_MODES.includes(schemaCompat)) {
+    throw new Error(`Unsupported schemaCompat mode: ${schemaCompat} (expected one of ${SCHEMA_COMPAT_MODES.join(', ')})`);
+  }
+  const jsonSchema = z.toJSONSchema(schema);
+  delete jsonSchema.$schema;
+  return schemaCompat === 'gemini' ? stripAdditionalProperties(jsonSchema) : jsonSchema;
+}
+
+export function buildOpenAITools(allowedMethods = [], { schemaCompat = 'standard' } = {}) {
   const tools = [
     {
       type: 'function',
       function: {
         name: 'ask_user_question',
         description: 'Ask the operator one or more concrete clarification questions when material preferences or conflicting deadlines are unresolved.',
-        parameters: toParameters(askUserQuestionSchema),
+        parameters: toParameters(askUserQuestionSchema, schemaCompat),
       },
     },
   ];
@@ -89,7 +105,7 @@ export function buildOpenAITools(allowedMethods = []) {
       function: {
         name: method,
         description: spec.description,
-        parameters: toParameters(spec.schema),
+        parameters: toParameters(spec.schema, schemaCompat),
       },
     });
   }

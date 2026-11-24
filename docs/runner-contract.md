@@ -49,6 +49,7 @@ For each run, the Foundation starts an ephemeral loopback bridge at `toolBridge.
 
 - **Request:** `POST <toolBridge.url>` with `{ "method": "<tool_name>", "args": { ... } }`
 - **Allowed methods (derived dynamically from `StudyBoundary`):** `list_synthetic_files`, `read_synthetic_file`, `list_calendar`, `read_planning_context`, `propose_planning_context`, `draft_study_plan`, `preview_study_options` (plus `inspect_checkpoint`, `routine_report`, `save_report_interpretation`).
+- **Compact `list_calendar` projection:** `StudyBoundary` projects agent-facing calendar events to `{ id, summary, start, end }` plus non-default `status`/`transparency`, `description`, `location`, and `{ studyBlock: true, course }` for Study Atlas demo blocks. This reduces calendar tool payload size by ~61–62% on the Bruno and Ana fixtures while keeping internal planner and diffing logic on raw calendar records.
 - **Forbidden:** Calendar writes, approvals, and resets are absent from the bridge and return `403`. Only the trusted Foundation operator confirms context and approves calendar writes.
 
 ## Multi-turn & Live Runner Notes (for Slice 3 Runners)
@@ -57,10 +58,17 @@ For each run, the Foundation starts an ephemeral loopback bridge at `toolBridge.
 - **Locale-aware draft prompt:** After confirming a pending planning context revision, `runner.mjs` sends the locale-matched draft prompt (`pt-BR` or `en`) unless the runner has already drafted a new plan revision.
 - **Dynamic stale-write target:** In the `stale` scenario, `runner.mjs` selects a non-study week-1 commitment relative to `manifest.clock.date` rather than assuming a fixed date.
 - **Expected Slice 3 runners:**
-  1. **Standalone non-DSH single-agent runner (included):** `scripts/single-agent-runner.mjs` runs a plain OpenAI-compatible tool-calling loop over `http-runner-v1` with zero dependency on `@deepseek-ai/dsh` or `@modelcontextprotocol/sdk`:
+  1. **Standalone non-DSH single-agent runner (included):** `scripts/single-agent-runner.mjs` runs a plain OpenAI-compatible tool-calling loop over `http-runner-v1` with zero dependency on `@deepseek-ai/dsh` or `@modelcontextprotocol/sdk`. It supports `--schema-compat standard|gemini` (stripping `additionalProperties` for Google's OpenAI-compatible Gemini endpoint) and `--reasoning-effort none|minimal|low|medium|high|xhigh`:
      ```sh
+     # Via local OpenRouter budgeted gateway:
      STUDY_RUNNER_API_KEY=... ./node_modules/.bin/node scripts/single-agent-runner.mjs \
        --base-url http://127.0.0.1:4179/v1 --model deepseek/deepseek-v4.1-flash-1017 --port 4180
+
+     # Via Google's OpenAI-compatible Gemini endpoint:
+     STUDY_RUNNER_API_KEY=... ./node_modules/.bin/node scripts/single-agent-runner.mjs \
+       --base-url https://generativelanguage.googleapis.com/v1beta/openai \
+       --model gemini-4-hydrogen --schema-compat gemini --reasoning-effort low --port 4180
+
      ./node_modules/.bin/node scripts/paired-replay.mjs run /tmp/bruno-bundle /tmp/result.json success \
        --runner-url http://127.0.0.1:4180 --mode live
      ```

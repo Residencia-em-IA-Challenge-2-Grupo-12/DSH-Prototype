@@ -1,7 +1,9 @@
 import http from 'node:http';
 import { createSingleAgentSession } from './agent-loop.mjs';
+import { SCHEMA_COMPAT_MODES } from './tool-definitions.mjs';
 
 const LOOPBACK_HOSTS = new Set(['127.0.0.1', 'localhost', '::1', '[::1]']);
+const REASONING_EFFORT_LEVELS = new Set(['none', 'minimal', 'low', 'medium', 'high', 'xhigh']);
 
 function assertLoopbackHost(host) {
   if (!LOOPBACK_HOSTS.has(host)) throw new Error('Single-agent HTTP runner must bind to loopback only');
@@ -32,12 +34,23 @@ export function createOpenAICompatibleCompleter({
   baseUrl,
   apiKey,
   headers = {},
+  reasoningEffort,
   timeoutMs = 120_000,
   fetchImpl = fetch,
 } = {}) {
   if (typeof baseUrl !== 'string' || !baseUrl.trim()) throw new Error('baseUrl is required');
+  if (reasoningEffort !== undefined && !REASONING_EFFORT_LEVELS.has(reasoningEffort)) {
+    throw new Error(`Unsupported reasoningEffort: ${reasoningEffort} (expected one of ${[...REASONING_EFFORT_LEVELS].join(', ')})`);
+  }
   const endpoint = `${baseUrl.replace(/\/+$/, '')}/chat/completions`;
   return async function completeChat({ model, messages, tools }) {
+    const requestBody = {
+      model,
+      messages,
+      tools,
+      stream: false,
+      ...(reasoningEffort ? { reasoning_effort: reasoningEffort } : {}),
+    };
     const response = await fetchImpl(endpoint, {
       method: 'POST',
       headers: {
@@ -45,7 +58,7 @@ export function createOpenAICompatibleCompleter({
         ...(apiKey ? { authorization: `Bearer ${apiKey}` } : {}),
         ...headers,
       },
-      body: JSON.stringify({ model, messages, tools, stream: false }),
+      body: JSON.stringify(requestBody),
       signal: AbortSignal.timeout(timeoutMs),
     });
     const text = await response.text();
@@ -68,9 +81,13 @@ export async function startSingleAgentServer({
   harness = 'single-agent-http-v1',
   engineName,
   maxSteps = 12,
+  schemaCompat = 'standard',
 } = {}) {
   assertLoopbackHost(host);
   if (typeof completeChat !== 'function') throw new Error('completeChat function is required');
+  if (!SCHEMA_COMPAT_MODES.includes(schemaCompat)) {
+    throw new Error(`Unsupported schemaCompat mode: ${schemaCompat} (expected one of ${SCHEMA_COMPAT_MODES.join(', ')})`);
+  }
 
   const sessions = new Map();
   const server = http.createServer(async (req, res) => {
@@ -83,7 +100,7 @@ export async function startSingleAgentServer({
       const parts = url.pathname.split('/').filter(Boolean);
 
       if (req.method === 'GET' && url.pathname === '/health') {
-        return send(200, { ok: true, harness, model, mode });
+        return send(200, { ok: true, harness, model, mode, schemaCompat });
       }
       if (req.method === 'POST' && parts.length === 1 && parts[0] === 'sessions') {
         const body = await readJsonBody(req);
@@ -96,6 +113,7 @@ export async function startSingleAgentServer({
           completeChat,
           model,
           maxSteps,
+          schemaCompat,
         });
         sessions.set(session.sessionId, session);
         return send(200, {
