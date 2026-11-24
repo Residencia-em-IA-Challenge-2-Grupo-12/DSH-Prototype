@@ -47,8 +47,9 @@ export function createSingleAgentSession({
   toolBridge,
   completeChat,
   model,
-  maxSteps = 12,
+  maxSteps = 24,
   schemaCompat = 'standard',
+  onEvent,
 } = {}) {
   if (typeof completeChat !== 'function') throw new Error('completeChat function is required');
   if (!toolBridge?.url || !toolBridge?.token) throw new Error('A valid toolBridge is required');
@@ -124,6 +125,7 @@ export function createSingleAgentSession({
       }
 
       const outcome = await callToolBridge(toolBridge, name, parsedArgs);
+      onEvent?.({ type: 'tool', step: stepCounter, name, isError: outcome.isError, error: outcome.error });
       conversation.push({
         role: 'tool',
         tool_call_id: call.id,
@@ -133,11 +135,14 @@ export function createSingleAgentSession({
     return 'continue';
   }
 
+  let stepCounter = 0;
+
   async function runLoop() {
     busy = true;
     error = null;
     try {
       for (let step = 0; step < maxSteps; step++) {
+        stepCounter++;
         const completion = await completeChat({
           model,
           messages: conversation,
@@ -150,9 +155,17 @@ export function createSingleAgentSession({
 
         const text = normalizeContent(message.content);
         const toolCalls = Array.isArray(message.tool_calls) ? message.tool_calls : [];
+        onEvent?.({
+          type: 'llm_step',
+          step: stepCounter,
+          toolCalls: toolCalls.map(tc => tc?.function?.name).filter(Boolean),
+          usage: completion?.usage || null,
+          finishReason: choice?.finish_reason || null,
+        });
         conversation.push({
           role: 'assistant',
           content: text || null,
+          ...(message.reasoning_details !== undefined ? { reasoning_details: message.reasoning_details } : {}),
           ...(toolCalls.length ? { tool_calls: toolCalls } : {}),
         });
         if (text.trim()) {

@@ -19,7 +19,7 @@ async function main() {
   const apiKey = process.env.STUDY_RUNNER_API_KEY || undefined;
   const port = Number(flags.port || process.env.PORT || 4180);
   const mode = flags.mode || 'live';
-  const maxSteps = Number(flags['max-steps'] || 12);
+  const maxSteps = Number(flags['max-steps'] || 24);
   const schemaCompat = flags['schema-compat'] || process.env.STUDY_RUNNER_SCHEMA_COMPAT || 'standard';
   const reasoningEffort = flags['reasoning-effort'] || process.env.STUDY_RUNNER_REASONING_EFFORT || undefined;
   if (!baseUrl || !model) {

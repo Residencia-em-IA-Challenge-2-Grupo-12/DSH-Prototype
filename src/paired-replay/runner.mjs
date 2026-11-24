@@ -27,6 +27,23 @@ const exec = promisify(execFile);
 const eventIds = events => events.map(event => event.id).sort();
 const sameIds = (left, right) => isDeepStrictEqual([...left].sort(), [...right].sort());
 
+export function findAuthoritativeCourseSource(sources, expectedCourse) {
+  if (!Array.isArray(sources) || typeof expectedCourse !== 'string') return undefined;
+  const normalize = value => String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+  const target = normalize(expectedCourse);
+  const exact = sources.find(item => normalize(item?.course) === target);
+  if (exact) return exact;
+  return sources.find(item => {
+    const candidate = normalize(item?.course);
+    if (!candidate.startsWith(target)) return false;
+    const remainder = candidate.slice(target.length);
+    const match = remainder.match(/^(?:\s*[-–—:(/]\s*|\s+)(.+)$/);
+    if (!match) return false;
+    // Reject numbered distinct courses such as "Algoritmos 2" or "Algoritmos II".
+    return !/^(?:\d+|[ivx]+)(?:\b|$)/i.test(match[1].trim());
+  });
+}
+
 export function defaultDraftRequest(locale) {
   return DRAFT_REQUEST_BY_LOCALE[locale] || DRAFT_REQUEST_BY_LOCALE.en;
 }
@@ -56,13 +73,14 @@ const ANSWER_HINTS = [
 ];
 
 export function matchPreparedAnswer(asked, preparedAnswers, usedIds) {
+  if (!Array.isArray(preparedAnswers) || preparedAnswers.length === 0) return null;
   const exact = preparedAnswers.find(answer => answer.id === asked.id);
   if (exact) {
     usedIds.add(exact.id);
     return exact;
   }
   const unused = preparedAnswers.filter(answer => !usedIds.has(answer.id));
-  const text = asked.question || '';
+  const text = `${asked.id || ''} ${asked.question || ''}`;
   for (const hint of ANSWER_HINTS) {
     if (hint.pattern.test(text)) {
       const hinted = unused.find(answer => answer.id === hint.id);
@@ -76,20 +94,43 @@ export function matchPreparedAnswer(asked, preparedAnswers, usedIds) {
     usedIds.add(unused[0].id);
     return unused[0];
   }
-  return null;
+  for (const hint of ANSWER_HINTS) {
+    if (hint.pattern.test(text)) {
+      const hinted = preparedAnswers.find(answer => answer.id === hint.id);
+      if (hinted) return hinted;
+    }
+  }
+  if (preparedAnswers.length === 1) return preparedAnswers[0];
+  return { id: 'combined', text: preparedAnswers.map(answer => answer.text).join(' ') };
 }
 
-async function drainQuestions(initialView, { api, runId, manifest, note, usedAnswerIds, maxTurns = 8 }) {
+function uniqueTimelineQuestionId(rawId, seenIds) {
+  const sanitized = String(rawId || 'question')
+    .replace(/[^A-Za-z0-9._-]+/g, '-')
+    .replace(/^[^A-Za-z0-9]+/, '')
+    .slice(0, 110) || 'question';
+  let candidate = sanitized;
+  let suffix = 2;
+  while (seenIds.has(candidate)) {
+    candidate = `${sanitized}-${suffix++}`;
+  }
+  seenIds.add(candidate);
+  return candidate;
+}
+
+async function drainQuestions(initialView, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns = 8 }) {
   let view = initialView;
   let turns = 0;
   while (view?.question) {
     if (++turns > maxTurns) throw new Error(`Runner exceeded maximum clarification turns (${maxTurns})`);
     const pendingQuestion = view.question;
     const answers = [];
+    const noted = [];
     for (const asked of pendingQuestion.questions) {
+      const timelineId = uniqueTimelineQuestionId(asked.id, seenQuestionIds);
       note({
         kind: 'question',
-        id: asked.id,
+        id: timelineId,
         ...(asked.groupId ? { groupId: asked.groupId } : {}),
         text: asked.question,
         choices: (asked.options || []).map(option => option.label),
@@ -97,10 +138,11 @@ async function drainQuestions(initialView, { api, runId, manifest, note, usedAns
       const reply = matchPreparedAnswer(asked, manifest.operator.answers, usedAnswerIds);
       if (!reply) throw new Error(`No prepared response for question ${asked.id}`);
       answers.push({ id: asked.id, custom: reply.text, selected: [] });
+      noted.push({ questionId: timelineId, text: reply.text });
     }
     view = await api.answer(runId, pendingQuestion.requestId, answers);
-    for (const answer of answers) {
-      note({ kind: 'answer', questionId: answer.id, text: answer.custom });
+    for (const answer of noted) {
+      note({ kind: 'answer', questionId: answer.questionId, text: answer.text });
     }
   }
   return view;
@@ -232,6 +274,7 @@ export async function runPortableReplay(bundle, scenario, {
   const draftRequest = adapter.draftRequest || defaultDraftRequest(manifest.locale);
   const coldStart = adapter.coldStartCase ? adapter.coldStartCase(bundle) : (manifest.id === 'bruno' ? 'bruno-text' : manifest.id);
   const usedAnswerIds = new Set();
+  const seenQuestionIds = new Set();
 
   let experiment, store, service, client, retained = false;
   try {
@@ -300,20 +343,24 @@ export async function runPortableReplay(bundle, scenario, {
 
     note({ kind: 'request', text: manifest.request });
     const firstTurn = await api.prompt(runId, manifest.request);
-    await drainQuestions(firstTurn, { api, runId, manifest, note, usedAnswerIds, maxTurns: maxQuestionTurns });
+    await drainQuestions(firstTurn, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns: maxQuestionTurns });
 
     async function reviewAndDraft(previous) {
       const statusBefore = await api.status(runId);
       const pending = statusBefore.state.planningContext?.pending;
-      if (!pending) throw new Error('Runner did not propose a pending planning context for review');
-      await api.confirmContext(runId, pending.id);
-      note({ kind: 'context_review', revisionId: pending.id });
+      const confirmed = statusBefore.state.planningContext?.confirmed;
+      if (pending) {
+        await api.confirmContext(runId, pending.id);
+        note({ kind: 'context_review', revisionId: pending.id });
+      } else if (!previous || !confirmed) {
+        throw new Error('Runner did not propose a pending planning context for review');
+      }
 
       let plan = (await api.status(runId)).state.plan;
       if (!plan || plan.id === previous) {
         note({ kind: 'request', text: draftRequest });
         const draftTurn = await api.prompt(runId, draftRequest);
-        await drainQuestions(draftTurn, { api, runId, manifest, note, usedAnswerIds, maxTurns: maxQuestionTurns });
+        await drainQuestions(draftTurn, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns: maxQuestionTurns });
         plan = (await api.status(runId)).state.plan;
       }
       if (!plan || plan.id === previous) throw new Error('Runner did not draft a reviewable study proposal');
@@ -325,7 +372,7 @@ export async function runPortableReplay(bundle, scenario, {
     const first = await reviewAndDraft(null);
     note({ kind: 'request', text: manifest.operator.correction });
     const correctionTurn = await api.prompt(runId, manifest.operator.correction);
-    await drainQuestions(correctionTurn, { api, runId, manifest, note, usedAnswerIds, maxTurns: maxQuestionTurns });
+    await drainQuestions(correctionTurn, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns: maxQuestionTurns });
     const revised = await reviewAndDraft(first.revisionId);
 
     const review = compareObservations(initial, await readObserved());
@@ -333,7 +380,7 @@ export async function runPortableReplay(bundle, scenario, {
     check('no_write_before_approval', review.added.length + review.changed.length + review.removed.length === 0 && faults.providerAttempts === 0,
       'Question, two input reviews and both proposal revisions leave the starting calendar untouched');
 
-    const source = revised.sources.find(item => item.course === manifest.expect.deadline.course);
+    const source = findAuthoritativeCourseSource(revised.sources, manifest.expect.deadline.course);
     check('authoritative_deadline', source?.citation.path === manifest.expect.deadline.source &&
       Date.parse(source?.deadline) === Date.parse(manifest.expect.deadline.at),
       'Deadline timestamp and authoritative source both match the operator expectation');
