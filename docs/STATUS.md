@@ -10,7 +10,7 @@
 
 | Priority | Track / Issues | Concrete Goal |
 | --- | --- | --- |
-| **Now (High)** | **Portable Foundation Seam (`#47`, `#10`, `#11`)** | Fix `zod` phantom dep + `checkedPath` containment bug; split hardcoded demo literals and DSH glue out of `src/core.mjs`; formalize the runner contract for StudyBuddy + non-DSH single-agent replay. |
+| **Now (High)** | **Portable Foundation Seam (`#47`, `#10`, `#11`)** | Slices 1–2 merged (`#63`, `#64`: `http-runner-v1`, modular `src/domain/*`, multi-case operator). Slice 3 adds the standalone non-DSH single-agent HTTP runner (`scripts/single-agent-runner.mjs`); next is wiring StudyBuddy's FastAPI `/replay` adapter for head-to-head `#47` comparisons. |
 | **Now (High)** | **Interface Walkthrough (`#44`)** | Add clean `?lab=0` flag to the static Bruno/Ana prototype (`exp/interface-comparison`), run a small unaided walkthrough, and carry findings into the `#44` contract comparison. |
 | **Next (Medium)** | **Solver & Sandbox Decisions (`#45`, `#12`, `#46`)** | `#45` heuristic vs CP-SAT on frozen cases; `#12` selected-syllabus sandbox (see [sandbox-options-research-2026-11-11.md](research/sandbox-options-research-2026-11-11.md)); `#46` local bilingual embeddings. |
 | **Later (Low / Parked)** | **Workflow, Delegation & Eval (`#48`, `#14`, `#15`, `#42`, `#43`, `#5`)** | Reopen once the portable runner seam and `Now`/`Next` selections are settled. |
