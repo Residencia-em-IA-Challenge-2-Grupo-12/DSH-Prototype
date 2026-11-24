@@ -20,13 +20,18 @@ async function main() {
   const port = Number(flags.port || process.env.PORT || 4180);
   const mode = flags.mode || 'live';
   const maxSteps = Number(flags['max-steps'] || 12);
+  const schemaCompat = flags['schema-compat'] || process.env.STUDY_RUNNER_SCHEMA_COMPAT || 'standard';
+  const reasoningEffort = flags['reasoning-effort'] || process.env.STUDY_RUNNER_REASONING_EFFORT || undefined;
   if (!baseUrl || !model) {
-    throw new Error('Usage: single-agent-runner.mjs --base-url <http://.../v1> --model <model-id> [--port 4180] [--mode live|scripted]');
+    throw new Error(
+      'Usage: single-agent-runner.mjs --base-url <http://.../v1> --model <model-id> [--port 4180] [--mode live|scripted] [--schema-compat standard|gemini] [--reasoning-effort none|minimal|low|medium|high|xhigh]',
+    );
   }
 
   const completeChat = createOpenAICompatibleCompleter({
     baseUrl,
     apiKey,
+    reasoningEffort,
     headers: process.env.STUDY_RUNNER_ROLE ? { 'x-study-role': process.env.STUDY_RUNNER_ROLE } : {},
   });
   const server = await startSingleAgentServer({
@@ -36,9 +41,17 @@ async function main() {
     model,
     mode,
     maxSteps,
+    schemaCompat,
     engineName: flags['engine-name'] || `Single-agent HTTP (${model})`,
   });
-  console.log(JSON.stringify({ ready: true, url: server.url, model, mode }));
+  console.log(JSON.stringify({
+    ready: true,
+    url: server.url,
+    model,
+    mode,
+    schemaCompat,
+    ...(reasoningEffort ? { reasoningEffort } : {}),
+  }));
   const stop = async () => {
     await server.close();
     process.exit(0);

@@ -48,11 +48,12 @@ export function createSingleAgentSession({
   completeChat,
   model,
   maxSteps = 12,
+  schemaCompat = 'standard',
 } = {}) {
   if (typeof completeChat !== 'function') throw new Error('completeChat function is required');
   if (!toolBridge?.url || !toolBridge?.token) throw new Error('A valid toolBridge is required');
 
-  const tools = buildOpenAITools(toolBridge.methods || []);
+  const tools = buildOpenAITools(toolBridge.methods || [], { schemaCompat });
   const conversation = [{ role: 'system', content: buildSystemPrompt({ student, clock, locale }) }];
   const visibleMessages = [];
   let pendingQuestion = null; // { requestId, toolCallId, view, remainingToolCalls }

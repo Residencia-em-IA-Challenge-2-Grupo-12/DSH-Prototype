@@ -10,6 +10,7 @@ import {
   readPlanningContext,
   proposePlanningContext,
 } from '../core.mjs';
+import { compactCalendarEvents } from './calendar-view.mjs';
 
 // Trusted application side of a single synthetic run. It deliberately exposes
 // no approval, reset, raw provider, administration or calendar-write method.
@@ -30,7 +31,11 @@ export function createStudyBoundary({
   const methods = new Map([
     ['list_synthetic_files', args => listWorkspace(student, args.path || '', { requireStaged })],
     ['read_synthetic_file', args => readWorkspace(student, args.path, { requireStaged })],
-    ['list_calendar', async () => ({ simulationToday, timezone, events: await calendar.events(student) })],
+    ['list_calendar', async () => ({
+      simulationToday,
+      timezone,
+      events: compactCalendarEvents(await calendar.events(student)),
+    })],
     [
       'draft_study_plan',
       args =>
