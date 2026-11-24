@@ -48,5 +48,13 @@ Set `"question": null` when no user clarification is pending.
 For each run, the Foundation starts an ephemeral loopback bridge at `toolBridge.url` protected by header `x-study-run-token: <toolBridge.token>`.
 
 - **Request:** `POST <toolBridge.url>` with `{ "method": "<tool_name>", "args": { ... } }`
-- **Allowed methods (enforced by `StudyBoundary`):** `list_synthetic_files`, `read_synthetic_file`, `list_calendar`, `read_planning_context`, `propose_planning_context`, `draft_study_plan`, `preview_study_options`.
+- **Allowed methods (derived dynamically from `StudyBoundary`):** `list_synthetic_files`, `read_synthetic_file`, `list_calendar`, `read_planning_context`, `propose_planning_context`, `draft_study_plan`, `preview_study_options` (plus `inspect_checkpoint`, `routine_report`, `save_report_interpretation`).
 - **Forbidden:** Calendar writes, approvals, and resets are absent from the bridge and return `403`. Only the trusted Foundation operator confirms context and approves calendar writes.
+
+## Multi-turn & Live Runner Notes (for Slice 3 Runners)
+
+- **Grouped and sequential questions:** `runner.mjs` answers any pending `question.questions` array in one `POST /sessions/:id/answer` call and loops across follow-up question turns (up to `maxQuestionTurns = 8`). Questions are matched to `manifest.operator.answers` first by exact `id`, then by topic keywords (`availability`, `workload`, `preparation`), and finally by next unused prepared answer.
+- **Locale-aware draft prompt:** After confirming a pending planning context revision, `runner.mjs` sends the locale-matched draft prompt (`pt-BR` or `en`) unless the runner has already drafted a new plan revision.
+- **Dynamic stale-write target:** In the `stale` scenario, `runner.mjs` selects a non-study week-1 commitment relative to `manifest.clock.date` rather than assuming a fixed date.
+- **Expected Slice 3 runners:** (1) a plain non-DSH single-agent HTTP runner in this repository (proving zero DSH dependency) and (2) a thin StudyBuddy FastAPI `/replay` adapter (`#47`) implementing the endpoints above.
+
