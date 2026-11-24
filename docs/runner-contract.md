@@ -56,5 +56,13 @@ For each run, the Foundation starts an ephemeral loopback bridge at `toolBridge.
 - **Grouped and sequential questions:** `runner.mjs` answers any pending `question.questions` array in one `POST /sessions/:id/answer` call and loops across follow-up question turns (up to `maxQuestionTurns = 8`). Questions are matched to `manifest.operator.answers` first by exact `id`, then by topic keywords (`availability`, `workload`, `preparation`), and finally by next unused prepared answer.
 - **Locale-aware draft prompt:** After confirming a pending planning context revision, `runner.mjs` sends the locale-matched draft prompt (`pt-BR` or `en`) unless the runner has already drafted a new plan revision.
 - **Dynamic stale-write target:** In the `stale` scenario, `runner.mjs` selects a non-study week-1 commitment relative to `manifest.clock.date` rather than assuming a fixed date.
-- **Expected Slice 3 runners:** (1) a plain non-DSH single-agent HTTP runner in this repository (proving zero DSH dependency) and (2) a thin StudyBuddy FastAPI `/replay` adapter (`#47`) implementing the endpoints above.
+- **Expected Slice 3 runners:**
+  1. **Standalone non-DSH single-agent runner (included):** `scripts/single-agent-runner.mjs` runs a plain OpenAI-compatible tool-calling loop over `http-runner-v1` with zero dependency on `@deepseek-ai/dsh` or `@modelcontextprotocol/sdk`:
+     ```sh
+     STUDY_RUNNER_API_KEY=... ./node_modules/.bin/node scripts/single-agent-runner.mjs \
+       --base-url http://127.0.0.1:4179/v1 --model deepseek/deepseek-v4.1-flash-1017 --port 4180
+     ./node_modules/.bin/node scripts/paired-replay.mjs run /tmp/bruno-bundle /tmp/result.json success \
+       --runner-url http://127.0.0.1:4180 --mode live
+     ```
+  2. **StudyBuddy FastAPI `/replay` adapter (`#47`):** implements the same 6 endpoints above in Python FastAPI and connects via `--runner-url`.
 
