@@ -3,25 +3,26 @@
 > **Read this first when starting a new thread.** Keep this page under ~65 lines. Update it only when a decision, baseline, or priority changes.
 
 ## Current Baseline (`main`)
-- **Verified demo baseline:** Merged through `#58` (baseline closeout + frozen planner cases) and `#61` (student-facing product scope guard). See [baseline-closeout-2026-11-22.md](review/baseline-closeout-2026-11-22.md) and [foundation-roadmap.md](foundation-roadmap.md).
-- **Agreed architectural direction (Path 2 — Portable Core + Pluggable Runners):** Decouple the harness-agnostic **Foundation** (frozen scenarios/specs, isolated Calendarpit + SQLite claim safety, shared deterministic/blind oracle) behind a versioned HTTP/JSON runner contract so **StudyBuddy** (hardcoded pipeline, Approach A), **DSH / non-DSH single-agent** (Approach B), and **runtime-defined delegation** (Approach C) run on equal footing with zero DSH lock-in.
+- **Verified portable core (`main` through `#67`):** `http-runner-v1` + bearer-protected Trusted Tool Bridge (`#63`), modular `src/domain/*` + multi-case operator (`#64`), standalone zero-DSH single-agent HTTP runner (`#65`), compact agent-facing `list_calendar` (~61–62% payload reduction) + `--schema-compat gemini` / custom OpenRouter allowlist (`#66`), and live-replay parity fixes (`#67`).
+- **Live 3-model single-agent baseline (`2026-11-24`):** See [live-single-agent-baseline-2026-11-24/README.md](evidence/live-single-agent-baseline-2026-11-24/README.md) (`scripts/compare-live-models.mjs`, `$0.0749` total across 6 Docker Calendarpit runs). `openai/gpt-6-luna` (**2/2 PASS**, `$0.0137` total) and `meta/muse-ember` (**2/2 PASS**, `$0.0172` total, fastest at `46s` avg) both passed `bruno` and `ana-held-out` cleanly; `deepseek/deepseek-v4.1-flash-1017` (`fireworks`) failed both (`0/2`, `$0.0440`). Default live comparison model is now **`openai/gpt-6-luna`**.
+- **Agreed architectural direction (Path 2 — Portable Core + Pluggable Runners):** Decouple the harness-agnostic **Foundation** behind `http-runner-v1` so **Approach A (StudyBuddy hardcoded pipeline)**, **Approach B (single-agent non-DSH + pinned DSH)**, and **Approach C (bounded read-only delegation, `#48`)** run on equal footing.
 
 ## Undated Priority Queue
 
 | Priority | Track / Issues | Concrete Goal |
 | --- | --- | --- |
-| **Now (High)** | **Portable Foundation Seam (`#47`, `#10`, `#11`)** | Slices 1–2 merged (`#63`, `#64`: `http-runner-v1`, modular `src/domain/*`, multi-case operator). Slice 3 adds the standalone non-DSH single-agent HTTP runner (`scripts/single-agent-runner.mjs`); next is wiring StudyBuddy's FastAPI `/replay` adapter for head-to-head `#47` comparisons. |
-| **Now (High)** | **Interface Walkthrough (`#44`)** | Add clean `?lab=0` flag to the static Bruno/Ana prototype (`exp/interface-comparison`), run a small unaided walkthrough, and carry findings into the `#44` contract comparison. |
-| **Next (Medium)** | **Solver & Sandbox Decisions (`#45`, `#12`, `#46`)** | `#45` heuristic vs CP-SAT on frozen cases; `#12` selected-syllabus sandbox (see [sandbox-options-research-2026-11-11.md](research/sandbox-options-research-2026-11-11.md)); `#46` local bilingual embeddings. |
-| **Later (Low / Parked)** | **Workflow, Delegation & Eval (`#48`, `#14`, `#15`, `#42`, `#43`, `#5`)** | Reopen once the portable runner seam and `Now`/`Next` selections are settled. |
+| **Now (High)** | **Approach A vs B (`#47`)** | Build a standalone Python FastAPI `/replay` prototype inside `DSH-Prototype` faithful to StudyBuddy's staged pipeline (`Escopo → Triagem → Pesquisa → Planejador → Verificador`), run head-to-head against Approach B on `openai/gpt-6-luna` (same bundles/oracle), and carry proven choices into a later `studybuddy` rewrite. |
+| **Now (High)** | **Interface Walkthrough (`#44`)** | Prototype has `?lab=0` + `WALKTHROUGH-CHECKLIST.md` on local `exp/interface-comparison`; run 3–5 quick classmate walkthroughs and publish findings + winning direction. |
+| **Next (Medium)** | **Delegation & Solver (`#48`, `#45`)** | After A-vs-B streamlines our understanding, evaluate **Approach C (`#48`)** with well-designed tests (without overfitting to A/B quirks), and compare heuristic vs CP-SAT (`#45`) behind `src/domain/planner.mjs`. |
+| **Later (Parked)** | **Sandbox, Embeddings & Product Polish (`#11`, `#12`, `#46`, `#14`, `#15`, `#42`, `#43`, `#5`)** | Epic `#10` closed (`2026-11-24`); Epic `#11` narrowed solely to the 1h Calendarpit 0.9.7 OOMKill finding. Keep `#12`/`#46`/`#5`/`#42`/`#43` explicitly parked until core architecture & UI settle. |
 
 ## Open / Parked Branches & Preservation
-- **Active parked draft PRs:** `#59` (`exp/routine-preference`, retargeted onto `main`) and `#60` (`exp/checkin-preference`, stacked on `#59` — paused at verified 197-test / 108-event restart checkpoint).
-- **Local-only preview worktree:** `DSH-Prototype-interface-comparison` (`exp/interface-comparison`, SQL probe removed at `f858ba9`; publish on a fresh clean branch if PR'd later).
+- **Active parked draft PRs:** `#59` (`exp/routine-preference`) and `#60` (`exp/checkin-preference`, local worktree `DSH-Prototype-checkin-preference`) — explicitly parked until after `#44` walkthroughs and `#47` A-vs-B results.
+- **Local-only preview worktree:** `DSH-Prototype-interface-comparison` (`exp/interface-comparison`, `?lab=0` + checklist at `7717a69`) — kept local for walkthroughs.
 - **Rescued research docs (in `docs/research/`):** [sandbox-options-research-2026-11-11.md](research/sandbox-options-research-2026-11-11.md) (`#12`) and [product-opportunity-audit-2026-11-23.md](research/product-opportunity-audit-2026-11-23.md) (`#44`).
-- **Archived pre-baseline draft PRs (`#17, #19, #20, #22, #24–#35`):** Closed on GitHub; commits preserved permanently at git tags `archive/pr-<N>` and mapped in [retained-drafts.json](evidence/baseline-closeout-2026-11-22/retained-drafts.json).
+- **Archived pre-baseline draft PRs (`#17, #19, #20, #22, #24–#35`):** Closed on GitHub; preserved at git tags `archive/pr-<N>`.
 
 ## Working Rules (Thread Hygiene & Stop-Rule)
 1. **One thread per bounded slice:** Avoid multi-week mega-threads; hand off via this file and PRs.
-2. **Exploration stop-rule:** Autonomous spikes get **one bounded pass** (1 hypothesis → 1 inspectable artifact/check → report what uncertainty was reduced). Do not stack deeper synthetic reliability/recovery iterations without a user decision or an active `Now` blocker.
+2. **Exploration stop-rule:** Autonomous spikes get **one bounded pass** (1 hypothesis → 1 inspectable artifact/check → report what uncertainty was reduced).
 3. **Product scope guard:** Every student-facing addition must serve planning, tracking, or adapting study across subjects (see [foundation-roadmap.md#product-scope](foundation-roadmap.md#product-scope)).
