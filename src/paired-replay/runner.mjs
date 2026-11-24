@@ -27,6 +27,23 @@ const exec = promisify(execFile);
 const eventIds = events => events.map(event => event.id).sort();
 const sameIds = (left, right) => isDeepStrictEqual([...left].sort(), [...right].sort());
 
+export function findAuthoritativeCourseSource(sources, expectedCourse) {
+  if (!Array.isArray(sources) || typeof expectedCourse !== 'string') return undefined;
+  const normalize = value => String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+  const target = normalize(expectedCourse);
+  const exact = sources.find(item => normalize(item?.course) === target);
+  if (exact) return exact;
+  return sources.find(item => {
+    const candidate = normalize(item?.course);
+    if (!candidate.startsWith(target)) return false;
+    const remainder = candidate.slice(target.length);
+    const match = remainder.match(/^(?:\s*[-–—:(/]\s*|\s+)(.+)$/);
+    if (!match) return false;
+    // Reject numbered distinct courses such as "Algoritmos 2" or "Algoritmos II".
+    return !/^(?:\d+|[ivx]+)(?:\b|$)/i.test(match[1].trim());
+  });
+}
+
 export function defaultDraftRequest(locale) {
   return DRAFT_REQUEST_BY_LOCALE[locale] || DRAFT_REQUEST_BY_LOCALE.en;
 }
@@ -363,7 +380,7 @@ export async function runPortableReplay(bundle, scenario, {
     check('no_write_before_approval', review.added.length + review.changed.length + review.removed.length === 0 && faults.providerAttempts === 0,
       'Question, two input reviews and both proposal revisions leave the starting calendar untouched');
 
-    const source = revised.sources.find(item => item.course === manifest.expect.deadline.course);
+    const source = findAuthoritativeCourseSource(revised.sources, manifest.expect.deadline.course);
     check('authoritative_deadline', source?.citation.path === manifest.expect.deadline.source &&
       Date.parse(source?.deadline) === Date.parse(manifest.expect.deadline.at),
       'Deadline timestamp and authoritative source both match the operator expectation');

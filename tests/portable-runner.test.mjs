@@ -9,7 +9,7 @@ import { ROOT } from '../src/core.mjs';
 import { packBundle, readBundle } from '../src/paired-replay/bundle.mjs';
 import { createDshBrunoAdapter } from '../src/paired-replay/dsh-runner.mjs';
 import { createHttpRunnerAdapter } from '../src/paired-replay/http-adapter.mjs';
-import { matchPreparedAnswer, runPortableReplay, scenarios, selectStaleEventId } from '../src/paired-replay/runner.mjs';
+import { findAuthoritativeCourseSource, matchPreparedAnswer, runPortableReplay, scenarios, selectStaleEventId } from '../src/paired-replay/runner.mjs';
 
 const exec = promisify(execFile);
 
@@ -369,6 +369,12 @@ test('manifest-driven operator runs ana-held-out with grouped + sequential quest
 });
 
 test('matchPreparedAnswer reuses topic/combined replies, deduplicates timeline IDs, and allows single-date avoidDates revisions', async t => {
+  // Authoritative course source matching (exact + normalized suffix without matching numbered sibling courses):
+  assert.equal(findAuthoritativeCourseSource([{ course: 'Applied Data Ethics' }], 'Applied Data Ethics')?.course, 'Applied Data Ethics');
+  assert.equal(findAuthoritativeCourseSource([{ course: 'Applied Data Ethics - Case memo' }], 'Applied Data Ethics')?.course, 'Applied Data Ethics - Case memo');
+  assert.equal(findAuthoritativeCourseSource([{ course: 'Applied Data Ethics case memo' }], 'Applied Data Ethics')?.course, 'Applied Data Ethics case memo');
+  assert.equal(findAuthoritativeCourseSource([{ course: 'Algoritmos 2' }, { course: 'Algoritmos II' }], 'Algoritmos'), undefined);
+
   // Single combined answer (Bruno-style) split into 2 questions by a live model:
   const brunoAnswers = [{ id: 'availability', text: '5h/week on Mon/Wed/Sat/Sun with 15 min break.' }];
   const usedBruno = new Set();

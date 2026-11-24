@@ -17,7 +17,7 @@ const window = z.strictObject({
 
 export const planningContextSchema = z.strictObject({
   courses:z.array(z.strictObject({
-    name:z.string().trim().min(1).max(120),
+    name:z.string().trim().min(1).max(120).describe('Course title only (omit task suffixes such as "case memo" or "exam").'),
     date,
     time,
     citation,
@@ -28,7 +28,7 @@ export const planningContextSchema = z.strictObject({
   maxDailyStudyHours:z.number().int().min(1).max(8),
   studyBreakMinutes:z.number().int().min(0).max(120),
   through:date.describe('Inclusive final date of these preferences. Respect an explicit end date. For a relative duration, count its start date as day one. In this simulation, two weeks starting November 2, 2026 end on November 15, 2026.'),
-  assumption:z.string().trim().min(1).max(600),
+  assumption:z.string().trim().min(1).max(600).describe('Concise summary of key assumptions (strictly under 600 characters).'),
 });
 
 export async function validatePlanningContext(value, readSource, today) {
