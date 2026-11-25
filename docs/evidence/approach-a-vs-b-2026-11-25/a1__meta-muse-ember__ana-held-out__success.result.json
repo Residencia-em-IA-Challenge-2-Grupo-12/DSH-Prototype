@@ -1,0 +1,370 @@
+{
+  "version": 1,
+  "caseId": "ana-held-out",
+  "inputSha256": "ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b",
+  "runId": "8388cba0-f0e9-45d0-9575-6069ebf15f8d",
+  "engine": {
+    "name": "StudyBuddy A1 (meta/muse-ember)",
+    "revision": "studybuddy-pipeline-0.1.0",
+    "mode": "live",
+    "model": "meta/muse-ember",
+    "harness": "studybuddy-pipeline-a1-v1",
+    "tools": [
+      "draft_study_plan",
+      "list_calendar",
+      "list_synthetic_files",
+      "propose_planning_context",
+      "read_planning_context",
+      "read_synthetic_file"
+    ],
+    "simulator": "ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96"
+  },
+  "durationMs": 60049,
+  "usage": {
+    "availability": "available",
+    "inputTokens": 14278,
+    "outputTokens": 22607
+  },
+  "timeline": [
+    {
+      "kind": "observation",
+      "phase": "initial",
+      "value": {
+        "availability": "available",
+        "eventCount": 108,
+        "added": [],
+        "removed": [],
+        "changed": []
+      }
+    },
+    {
+      "kind": "request",
+      "text": "Help me plan my study time for the Applied Data Ethics case memo over the next two weeks. Which deadline should we plan around? I have a module outline and a learning platform export. Check my calendar and ask what times work for me before making a proposal."
+    },
+    {
+      "kind": "question",
+      "id": "availability",
+      "groupId": "a1-intake",
+      "text": "Which days and time windows do you prefer for study blocks, given your calendar busy times (part-time work 08:00-12:00 Mon-Fri, lunch 12:00-13:00, and evening travel/class on several weekdays)?",
+      "choices": []
+    },
+    {
+      "kind": "question",
+      "id": "workload",
+      "groupId": "a1-intake",
+      "text": "What weekly study goal, maximum number of 1-hour blocks per day, and break duration do you prefer for planning the case memo?",
+      "choices": []
+    },
+    {
+      "kind": "answer",
+      "questionId": "availability",
+      "text": "For these two weeks, Wednesday, Thursday and Friday from 14:00 to 16:15 can work when the calendar is clear. I prefer to keep the weekend open."
+    },
+    {
+      "kind": "answer",
+      "questionId": "workload",
+      "text": "Four study hours a week feels workable, with no more than two sessions a day and a 15-minute break between them."
+    },
+    {
+      "kind": "context_review",
+      "revisionId": "94434a71-fbbf-4370-ad01-c6f1a2ae1547"
+    },
+    {
+      "kind": "request",
+      "text": "Draft the reviewable two-week study proposal using the confirmed inputs."
+    },
+    {
+      "kind": "proposal",
+      "revisionId": "d9a86ba5-7e2f-488c-9840-5abb326ab771",
+      "replaces": null,
+      "sources": [
+        {
+          "course": "Applied Data Ethics",
+          "deadline": "2026-12-01T17:30:00-03:00",
+          "citation": {
+            "path": "lms/assessment-export.json",
+            "quote": "\"dueAt\": \"2026-12-01T20:30:00Z\","
+          }
+        }
+      ],
+      "assumptions": [
+        "Study blocks are suggestions; ask before writing.",
+        "Hours are goals, not evidence of actual study.",
+        "Study windows are stated possibilities; confirm they still suit the student.",
+        "Confirmed availability applies through 2026-11-15."
+      ],
+      "sections": {
+        "near": [
+          {
+            "kind": "add",
+            "eventId": "4ac499ddfa744ad9b615d844c7eec2f3",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-04T14:00:00-03:00",
+            "end": "2026-11-04T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "bdf92cfe887947f796064cad8204811b",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-05T14:00:00-03:00",
+            "end": "2026-11-05T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "7203c062829f4f6bb5550f8ee0a68938",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-06T14:00:00-03:00",
+            "end": "2026-11-06T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "eab7e125d28d42b88b99dfed8d02d3ac",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-04T15:15:00-03:00",
+            "end": "2026-11-04T16:15:00-03:00"
+          }
+        ],
+        "future": [
+          {
+            "kind": "add",
+            "eventId": "90bf95d7cdd14f83aa53eb1dca5595b1",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-11T15:00:00-03:00",
+            "end": "2026-11-11T16:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "941d2b74fa1943c79183cf5ab266738d",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-12T14:00:00-03:00",
+            "end": "2026-11-12T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "b0454efa476848f3a4ccf5463c697d25",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-13T14:00:00-03:00",
+            "end": "2026-11-13T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "c2607f99983f4378a27da99b90a1f034",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-12T15:15:00-03:00",
+            "end": "2026-11-12T16:15:00-03:00"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "request",
+      "text": "Keep Wednesday, 4 November, free for family logistics. Keep Thursday and Friday as candidates. Leave the following week tentative and preserve my existing appointments."
+    },
+    {
+      "kind": "proposal",
+      "revisionId": "15f22b75-52d4-43ab-8a83-35e9052f6843",
+      "replaces": "d9a86ba5-7e2f-488c-9840-5abb326ab771",
+      "sources": [
+        {
+          "course": "Applied Data Ethics",
+          "deadline": "2026-12-01T17:30:00-03:00",
+          "citation": {
+            "path": "lms/assessment-export.json",
+            "quote": "\"dueAt\": \"2026-12-01T20:30:00Z\","
+          }
+        }
+      ],
+      "assumptions": [
+        "Study blocks are suggestions; ask before writing.",
+        "Hours are goals, not evidence of actual study.",
+        "Study windows are stated possibilities; confirm they still suit the student.",
+        "Confirmed availability applies through 2026-11-15."
+      ],
+      "sections": {
+        "near": [
+          {
+            "kind": "add",
+            "eventId": "f02f856ce0354748911b3aa5549b28cd",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-05T14:00:00-03:00",
+            "end": "2026-11-05T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "cbb82f65dc274726875193c988b13aa6",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-06T14:00:00-03:00",
+            "end": "2026-11-06T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "164f4b8749a74e3e94c1e39f1d039fe6",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-05T15:15:00-03:00",
+            "end": "2026-11-05T16:15:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "b3926ab55b2d407a8352cd2f39b7cd34",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-06T15:15:00-03:00",
+            "end": "2026-11-06T16:15:00-03:00"
+          }
+        ],
+        "future": [
+          {
+            "kind": "add",
+            "eventId": "b87da15f6a7b4750b34ee9b33edb3526",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-11T15:00:00-03:00",
+            "end": "2026-11-11T16:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "5ca74943c259417cb398802cd10b698f",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-12T14:00:00-03:00",
+            "end": "2026-11-12T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "c3d07e5aa4ad482491fe98f6bdd754ed",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-13T14:00:00-03:00",
+            "end": "2026-11-13T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "7df1e28fb45a429cabe6ab41115b1d1a",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-12T15:15:00-03:00",
+            "end": "2026-11-12T16:15:00-03:00"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "observation",
+      "phase": "review",
+      "value": {
+        "availability": "available",
+        "eventCount": 108,
+        "added": [],
+        "removed": [],
+        "changed": []
+      }
+    },
+    {
+      "kind": "validation",
+      "revisionId": "15f22b75-52d4-43ab-8a83-35e9052f6843",
+      "passed": true,
+      "findings": []
+    },
+    {
+      "kind": "observation",
+      "phase": "before_approval",
+      "value": {
+        "availability": "available",
+        "eventCount": 108,
+        "added": [],
+        "removed": [],
+        "changed": []
+      }
+    },
+    {
+      "kind": "decision",
+      "revisionId": "15f22b75-52d4-43ab-8a83-35e9052f6843",
+      "section": "near",
+      "approved": true
+    },
+    {
+      "kind": "write",
+      "revisionId": "15f22b75-52d4-43ab-8a83-35e9052f6843",
+      "section": "near",
+      "outcome": "applied",
+      "intended": [
+        "f02f856ce0354748911b3aa5549b28cd",
+        "cbb82f65dc274726875193c988b13aa6",
+        "164f4b8749a74e3e94c1e39f1d039fe6",
+        "b3926ab55b2d407a8352cd2f39b7cd34"
+      ],
+      "acknowledged": [
+        "f02f856ce0354748911b3aa5549b28cd",
+        "cbb82f65dc274726875193c988b13aa6",
+        "164f4b8749a74e3e94c1e39f1d039fe6",
+        "b3926ab55b2d407a8352cd2f39b7cd34"
+      ],
+      "unresolved": []
+    },
+    {
+      "kind": "observation",
+      "phase": "after_approval",
+      "value": {
+        "availability": "available",
+        "eventCount": 112,
+        "added": [
+          "164f4b8749a74e3e94c1e39f1d039fe6",
+          "b3926ab55b2d407a8352cd2f39b7cd34",
+          "cbb82f65dc274726875193c988b13aa6",
+          "f02f856ce0354748911b3aa5549b28cd"
+        ],
+        "removed": [],
+        "changed": []
+      }
+    }
+  ],
+  "checks": [
+    {
+      "id": "initial_event_ids",
+      "outcome": "pass",
+      "detail": "Independent provider read contains the fixture event IDs"
+    },
+    {
+      "id": "no_write_before_approval",
+      "outcome": "pass",
+      "detail": "Question, two input reviews and both proposal revisions leave the starting calendar untouched"
+    },
+    {
+      "id": "authoritative_deadline",
+      "outcome": "pass",
+      "detail": "Deadline timestamp and authoritative source both match the operator expectation"
+    },
+    {
+      "id": "revision",
+      "outcome": "pass",
+      "detail": "A distinct proposal replaces the earlier proposal containing one of the excluded dates"
+    },
+    {
+      "id": "feasibility",
+      "outcome": "pass",
+      "detail": "Both sections have study blocks and the revision meets the reviewed windows, targets, limits, deadlines and breaks"
+    },
+    {
+      "id": "future_pending",
+      "outcome": "pass",
+      "detail": "Future review stays pending; observations are checked for its event IDs when available"
+    },
+    {
+      "id": "near_only_observed",
+      "outcome": "pass",
+      "detail": "Independent observations match the approved IDs only; existing events were preserved"
+    }
+  ],
+  "retirement": "verified"
+}

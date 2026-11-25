@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "caseId": "ana-held-out",
+  "inputSha256": "ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b",
+  "runId": "1c553691-cc08-4742-8f2b-1b547fda59df",
+  "engine": {
+    "name": "StudyBuddy A1 (openai/gpt-6-luna)",
+    "revision": "studybuddy-pipeline-0.1.0",
+    "mode": "live",
+    "model": "openai/gpt-6-luna",
+    "harness": "studybuddy-pipeline-a1-v1",
+    "tools": [
+      "list_calendar",
+      "list_synthetic_files",
+      "read_planning_context",
+      "read_synthetic_file"
+    ],
+    "simulator": "ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96"
+  },
+  "durationMs": 72636,
+  "usage": {
+    "availability": "available",
+    "inputTokens": 2534,
+    "outputTokens": 2294
+  },
+  "timeline": [
+    {
+      "kind": "observation",
+      "phase": "initial",
+      "value": {
+        "availability": "available",
+        "eventCount": 108,
+        "added": [],
+        "removed": [],
+        "changed": []
+      }
+    },
+    {
+      "kind": "request",
+      "text": "Help me plan my study time for the Applied Data Ethics case memo over the next two weeks. Which deadline should we plan around? I have a module outline and a learning platform export. Check my calendar and ask what times work for me before making a proposal."
+    },
+    {
+      "kind": "question",
+      "id": "availability",
+      "groupId": "a1-intake",
+      "text": "Which days and exact time windows work for study over the next two weeks, and should I treat 2026-11-16 as the end of that planning period? The calendar shows the optional clinic on 2026-11-19 overlapping travel; do you want to attend it, and can that travel block move?",
+      "choices": []
+    },
+    {
+      "kind": "question",
+      "id": "workload",
+      "groupId": "a1-intake",
+      "text": "What weekly study-time target, maximum number of one-hour blocks per day, and break duration in minutes would you prefer?",
+      "choices": []
+    }
+  ],
+  "checks": [
+    {
+      "id": "initial_event_ids",
+      "outcome": "pass",
+      "detail": "Independent provider read contains the fixture event IDs"
+    },
+    {
+      "id": "execution",
+      "outcome": "fail",
+      "detail": "The replay run did not complete. Inspect the private runtime and local diagnostic."
+    }
+  ],
+  "retirement": "verified"
+}

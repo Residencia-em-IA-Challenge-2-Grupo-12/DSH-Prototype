@@ -1,0 +1,2317 @@
+{
+  "generatedAt": "2026-11-25T23:43:12.819Z",
+  "pipelines": [
+    "a1",
+    "a2"
+  ],
+  "models": [
+    "openai/gpt-6-luna",
+    "meta/muse-ember"
+  ],
+  "cases": [
+    "bruno",
+    "ana-held-out"
+  ],
+  "scenarios": [
+    "success",
+    "stale"
+  ],
+  "budgetPerRunUsd": 0.25,
+  "totalObservedUsd": 0.12362000000000001,
+  "rows": [
+    {
+      "pipeline": "a1",
+      "model": "openai/gpt-6-luna",
+      "caseId": "bruno",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result c4244514-edd8-4b2c-92aa-3ade1f402fea.",
+      "durationMs": 90373,
+      "llmCalls": 15,
+      "toolCallCount": 22,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 1,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 20312,
+        "outputTokens": 10715
+      },
+      "observedUsd": 0.007316,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Maestro",
+          "acao": "triagem → initial_plan",
+          "detalhe": "objetivo=Planejar os estudos para a prova escrita de Algoritmos e o projeto final de Banco de Dados.; nota=Ainda não há contexto confirmado; reunir e revisar os materiais e o calendário e, se faltarem dados, perguntar sobre prazos, disponibilidade e prioridades antes de propor o plano.",
+          "segundos": 3.181,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=6, clarification_needed=True",
+          "segundos": 12.374,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "281 chars",
+          "segundos": 2.469,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 1)",
+          "detalhe": "O pedido é de contexto inicial e as respostas informam disponibilidade, carga e horizonte. Usei as datas confirmadas dos materiais, aplicando o aviso posterior que transferiu a pro",
+          "segundos": 7.776,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → REPROVADO",
+          "detalhe": "bloqueios=2, overload_risk=False; A carga semanal e os limites diários são compatíveis com as janelas informadas, sem risco de sobrecarga aparente. Corrija a alteração recorr",
+          "segundos": 11.023,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 2)",
+          "detalhe": "O estudante forneceu disponibilidade, meta semanal, limite diário e pausa, então não é necessário pedir esclarecimentos. Mantive as janelas recorrentes declaradas, inclusive quarta",
+          "segundos": 6.437,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 2) → REPROVADO",
+          "detalhe": "bloqueios=1, overload_risk=False; As datas dos compromissos acadêmicos estão apoiadas nas citações e a meta de 5 horas semanais não indica sobrecarga por si só. Corrija a dis",
+          "segundos": 9.651,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=max_iterations_reached, iterations=2",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "117 chars",
+          "segundos": 1.56,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → draft_plan",
+          "detalhe": "objetivo=Gerar uma proposta revisável de estudo para as próximas duas semanas com base nos dados confirmados.; nota=O contexto está confirmado e ainda não existe rascunho; encaminhar para gerar a proposta inicial revisável.",
+          "segundos": 2.665,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=[], near=5, future=5",
+          "segundos": 0.033,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "202 chars",
+          "segundos": 2.745,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → revise_plan",
+          "detalhe": "objetivo=Deixar livres as segundas-feiras, 2 e 9 de novembro.; nota=Já existe um rascunho; ajustar o plano para liberar as duas segundas-feiras e preservar as demais condições.",
+          "segundos": 2.483,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=7, clarification_needed=True",
+          "segundos": 17.846,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho draft_avoid_dates_only (iteração 1)",
+          "detalhe": "As segundas-feiras, 2 e 9 de novembro, ficam sem blocos de estudo; as demais janelas, a carga e os prazos permanecem inalterados.",
+          "segundos": 1.829,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; O rascunho deixa livres as segundas-feiras corretas, 2 e 9 de novembro de 2026, e não altera as demais janelas, a carga ou os prazos.",
+          "segundos": 4.37,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=1",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=['2026-11-02', '2026-11-09'], near=5, future=5",
+          "segundos": 0.033,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "109 chars",
+          "segundos": 1.786,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a1__openai-gpt-6-luna__bruno__success.result.json"
+    },
+    {
+      "pipeline": "a1",
+      "model": "openai/gpt-6-luna",
+      "caseId": "bruno",
+      "scenario": "stale",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result 13757e60-dc94-4dab-b979-05583cced694.",
+      "durationMs": 99255,
+      "llmCalls": 15,
+      "toolCallCount": 22,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 1,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 19750,
+        "outputTokens": 11512
+      },
+      "observedUsd": 0.007669,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "stale_approval": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Maestro",
+          "acao": "triagem → initial_plan",
+          "detalhe": "objetivo=Planejar os estudos para a prova escrita de Algoritmos e o projeto final de Banco de Dados.; nota=Ainda não há contexto confirmado nem rascunho; reunir informações dos materiais e do calendário e esclarecer a disponibilidade antes de elaborar o plano.",
+          "segundos": 2.508,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=3, clarification_needed=True",
+          "segundos": 11.017,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "360 chars",
+          "segundos": 1.638,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 1)",
+          "detalhe": "Registrei os prazos obrigatórios dos materiais, incluindo a lista de grafos relacionada à disciplina. A prova de Algoritmos foi atualizada conforme o aviso oficial, que substitui a",
+          "segundos": 13.256,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → REPROVADO",
+          "detalhe": "bloqueios=4, overload_risk=False; O risco de sobrecarga não é demonstrado: a meta de 5 horas semanais cabe nas janelas informadas e respeita o limite diário. Ainda assim, há ",
+          "segundos": 15.208,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 2)",
+          "detalhe": "Usei uma entrada por disciplina e os prazos confirmados pelos materiais. O aviso da coordenação atualiza a data da prova de Algoritmos. A disponibilidade estruturada evita o compro",
+          "segundos": 9.478,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 2) → REPROVADO",
+          "detalhe": "bloqueios=1, overload_risk=False; As datas e horários dos prazos estão respaldados pelas citações e não há risco de sobrecarga indicado para a meta de 5 horas semanais. Corri",
+          "segundos": 12.913,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=max_iterations_reached, iterations=2",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "132 chars",
+          "segundos": 3.316,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → draft_plan",
+          "detalhe": "objetivo=Gerar uma proposta revisável de estudos para duas semanas usando os dados confirmados.; nota=O contexto está confirmado e ainda não há rascunho; encaminhar para geração da proposta.",
+          "segundos": 2.797,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=[], near=5, future=5",
+          "segundos": 0.035,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "229 chars",
+          "segundos": 2.421,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → revise_plan",
+          "detalhe": "objetivo=Deixar livres as segundas-feiras, 2 e 9 de novembro de 2026.; nota=Já existe um rascunho; ajustar a proposta para liberar as duas segundas-feiras sem alterar as demais janelas, a carga ou os prazos.",
+          "segundos": 2.664,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=3, clarification_needed=True",
+          "segundos": 11.971,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho draft_avoid_dates_only (iteração 1)",
+          "detalhe": "As duas segundas-feiras indicadas serão mantidas livres, sem alterar as demais janelas, a carga ou o prazo do plano.",
+          "segundos": 2.464,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; O rascunho exclui apenas 2 e 9 de novembro de 2026, sem inventar datas nem alterar janelas, carga ou prazos. Não há violações determinística",
+          "segundos": 3.257,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=1",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=['2026-11-02', '2026-11-09'], near=5, future=5",
+          "segundos": 0.038,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "106 chars",
+          "segundos": 2.46,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a1__openai-gpt-6-luna__bruno__stale.result.json"
+    },
+    {
+      "pipeline": "a1",
+      "model": "openai/gpt-6-luna",
+      "caseId": "ana-held-out",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result 3d0ca814-43d8-4353-b94b-1b1a9e15c7c1.",
+      "durationMs": 114882,
+      "llmCalls": 15,
+      "toolCallCount": 22,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 1,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 17764,
+        "outputTokens": 13239
+      },
+      "observedUsd": 0.008529,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Maestro",
+          "acao": "triagem → initial_plan",
+          "detalhe": "objetivo=Plan study time for the Applied Data Ethics case memo over the next two weeks.; nota=Review the provided materials and calendar, clarify the deadline and the student's available study times, then confirm the planning context before drafting a proposal.",
+          "segundos": 3.206,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=2, clarification_needed=True",
+          "segundos": 13.058,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "428 chars",
+          "segundos": 2.576,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 1)",
+          "detalhe": "A revisão 2 publicada no LMS é a fonte final para a entrega e substitui a data do esboço do módulo. O plano usa os dias e horários informados, mantém o fim de semana livre e respei",
+          "segundos": 7.507,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → REPROVADO",
+          "detalhe": "bloqueios=1, overload_risk=False; A conversão do prazo do LMS para 17:30 em São Paulo está correta, e as metas declaradas não indicam sobrecarga. Corrija a janela que conflit",
+          "segundos": 14.965,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 2)",
+          "detalhe": "A data a usar é 1º de dezembro às 17:30, pois a revisão 2 publicada no LMS substitui a data antiga do outline. Registrei as janelas preferidas sem presumir disponibilidade no fim d",
+          "segundos": 11.457,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 2) → REPROVADO",
+          "detalhe": "bloqueios=1, overload_risk=False; A carga de quatro horas semanais é compatível com duas sessões por dia, intervalo de 15 minutos e fins de semana livres. A conversão de 20:3",
+          "segundos": 16.777,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=no_progress, iterations=2",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "103 chars",
+          "segundos": 2.998,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → draft_plan",
+          "detalhe": "objetivo=Gerar uma proposta de estudos revisável para duas semanas com base nos dados confirmados.; nota=O contexto está confirmado e ainda não há rascunho; encaminhar para gerar a proposta.",
+          "segundos": 2.61,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=[], near=4, future=4",
+          "segundos": 0.027,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "198 chars",
+          "segundos": 2.335,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → revise_plan",
+          "detalhe": "objetivo=Adjust the existing study plan around family logistics and existing appointments.; nota=Revise the existing draft; do not schedule over existing appointments.",
+          "segundos": 2.778,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=2, clarification_needed=True",
+          "segundos": 15.198,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho draft_avoid_dates_only (iteração 1)",
+          "detalhe": "Removi 4 de novembro das datas disponíveis para manter esse dia livre para logística familiar. Quinta e sexta continuam como candidatas; a semana seguinte permanece tentativa, sem ",
+          "segundos": 5.949,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; A data 2026-11-04 corresponde à quarta-feira solicitada. O rascunho mantém quinta e sexta como candidatas, deixa a semana seguinte tentativa",
+          "segundos": 8.892,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=1",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=['2026-11-04'], near=4, future=4",
+          "segundos": 0.03,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "99 chars",
+          "segundos": 2.674,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a1__openai-gpt-6-luna__ana-held-out__success.result.json"
+    },
+    {
+      "pipeline": "a1",
+      "model": "openai/gpt-6-luna",
+      "caseId": "ana-held-out",
+      "scenario": "stale",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": false,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result 1c553691-cc08-4742-8f2b-1b547fda59df.",
+      "durationMs": 72636,
+      "llmCalls": 8,
+      "toolCallCount": 9,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 1,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 2534,
+        "outputTokens": 2294
+      },
+      "observedUsd": 0.005966,
+      "checks": {
+        "initial_event_ids": "pass",
+        "execution": "fail"
+      },
+      "failedCheckDetails": [
+        {
+          "id": "execution",
+          "outcome": "fail",
+          "detail": "The replay run did not complete. Inspect the private runtime and local diagnostic."
+        }
+      ],
+      "failureMessages": [
+        "External runner 400 on POST /sessions/a1-ebd207773537/answer: {\"detail\":\"A1 Validation stopped (no_progress) with unresolved errors: Verbatim quote was not found in 'lms/assessment-export.json'. Candidate lines: ['\\\"exportedAt\\\": \\\"2026-10-31T10:10:00Z\\\",', '\\\"updatedAt\\\": \\\"2026-10-30T18:00:00Z\\\",', '\\\"opensAt\\\": \\\"2026-11-23T11:00:00Z\\\",', '\\\"dueAt\\\": \\\"2026"
+      ],
+      "rastro": [
+        {
+          "agente": "Maestro",
+          "acao": "triagem → initial_plan",
+          "detalhe": "objetivo=Plan study time for the Applied Data Ethics case memo over the next two weeks.; nota=Review the module outline and platform export to identify the applicable deadline, check the calendar, then ask the student about preferred study times before proposing a plan.",
+          "segundos": 2.874,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=2, clarification_needed=True",
+          "segundos": 13.747,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "407 chars",
+          "segundos": 2.478,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 1)",
+          "detalhe": "A revisão publicada 2 do LMS substitui a data anterior do outline. O prazo a considerar é 1º de dezembro de 2026, às 17:30 em São Paulo. As janelas respeitam os compromissos do cal",
+          "segundos": 9.053,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → REPROVADO",
+          "detalhe": "bloqueios=2, overload_risk=False; A carga de quatro horas semanais cabe nas janelas informadas, respeita o limite diário e mantém os fins de semana livres. Porém, as afirmaçõ",
+          "segundos": 13.756,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 2)",
+          "detalhe": "A revisão publicada 2 do LMS substitui explicitamente a data anterior do outline; portanto, o prazo a considerar é 1º de dezembro às 17:30 em São Paulo. As janelas propostas respei",
+          "segundos": 17.92,
+          "llm_calls": 2
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 2) → REPROVADO",
+          "detalhe": "bloqueios=2, overload_risk=False; O prazo de 1º de dezembro de 2026 às 17:30 em São Paulo é coerente com o dueAt informado e com o fuso horário. As janelas respeitam os dias ",
+          "segundos": 11.628,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=no_progress, iterations=2",
+          "segundos": 0,
+          "llm_calls": 0
+        }
+      ],
+      "resultFile": "a1__openai-gpt-6-luna__ana-held-out__stale.result.json"
+    },
+    {
+      "pipeline": "a1",
+      "model": "meta/muse-ember",
+      "caseId": "bruno",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result 16fe5074-06b5-4b9b-95f6-997240e58cb7.",
+      "durationMs": 64802,
+      "llmCalls": 13,
+      "toolCallCount": 22,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 0,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 15511,
+        "outputTokens": 25056
+      },
+      "observedUsd": 0.013349,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Maestro",
+          "acao": "triagem → initial_plan",
+          "detalhe": "objetivo=Planejar estudos para a prova escrita de Algoritmos e o projeto final de Banco de Dados; nota=Pedido inicial sem contexto confirmado (has_confirmed=False) e sem rascunho prévio (already_drafted=False); necessário confirmar contexto, materiais, calendário e disponibilidade antes de gerar proposta.",
+          "segundos": 1.956,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=5, clarification_needed=True",
+          "segundos": 11.182,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "381 chars",
+          "segundos": 3.484,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 1)",
+          "detalhe": "Incluídos apenas os dois prazos solicitados e autoritativos em 14/12/2026, excluindo atividades opcionais, a data superada de 07/12 e datas indicativas posteriores. Janelas, carga ",
+          "segundos": 7.109,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; Rascunho aderente às fontes e às restrições do estudante: prazos de 14/12/2026 citados, data superada de 07/12 excluída, janelas seg/qua/sáb",
+          "segundos": 7.165,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=1",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "164 chars",
+          "segundos": 2.961,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → draft_plan",
+          "detalhe": "objetivo=Gerar a proposta revisável para as duas semanas usando os dados confirmados; nota=has_confirmed=True e already_drafted=False; pedido para gerar a proposta a partir do contexto confirmado, sem correção de rascunho existente.",
+          "segundos": 2.459,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=[], near=5, future=5",
+          "segundos": 0.034,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "223 chars",
+          "segundos": 2.185,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → revise_plan",
+          "detalhe": "objetivo=Manter o plano de estudo já gerado, ajustando apenas os dias livres solicitados; nota=Já existe rascunho gerado (already_drafted=True) e o estudante pede correção para deixar dias livres, classificando como revise_plan",
+          "segundos": 2.607,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=3, clarification_needed=True",
+          "segundos": 9.016,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho draft_avoid_dates_only (iteração 1)",
+          "detalhe": "Pedido apenas exclui as datas pontuais de 02 e 09/11/2026, mantendo janelas recorrentes, carga de 5h/semana, limites e prazos de 14/12/2026 já confirmados.",
+          "segundos": 3.872,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; Draft aprovado: avoid_dates 2026-11-02 e 2026-11-09 correspondem exatamente às segundas-feiras solicitadas, sem datas inventadas no campo es",
+          "segundos": 6.303,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=1",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=['2026-11-02', '2026-11-09'], near=5, future=5",
+          "segundos": 0.031,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "140 chars",
+          "segundos": 2.156,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a1__meta-muse-ember__bruno__success.result.json"
+    },
+    {
+      "pipeline": "a1",
+      "model": "meta/muse-ember",
+      "caseId": "bruno",
+      "scenario": "stale",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result 71bc038e-af63-4388-812b-3f116cc9c4d1.",
+      "durationMs": 72651,
+      "llmCalls": 15,
+      "toolCallCount": 22,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 1,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 20822,
+        "outputTokens": 29412
+      },
+      "observedUsd": 0.015694,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "stale_approval": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Maestro",
+          "acao": "triagem → initial_plan",
+          "detalhe": "objetivo=Planejar estudos para a prova escrita de Algoritmos e o projeto final de Banco de Dados; nota=Pedido inicial sem contexto confirmado (has_confirmed=False, has_pending=False, already_drafted=False); verificar materiais e calendário e perguntar sobre disponibilidade se necessário antes de gerar rascunho.",
+          "segundos": 1.975,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=3, clarification_needed=True",
+          "segundos": 8.488,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "339 chars",
+          "segundos": 1.755,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 1)",
+          "detalhe": "Contexto inicial com disponibilidade e carga confirmadas pelo estudante: 5h/semana até 15/11, janelas seg/qua 19:00-21:15, sáb 14:00-16:15 e dom 10:00-12:15. Inclui os três marcos ",
+          "segundos": 7.048,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → REPROVADO",
+          "detalhe": "bloqueios=2, overload_risk=False; Reprovado pela duplicação de Algoritmos e Estruturas de Dados com datas distintas, violando a regra determinística de uma entrada por curso.",
+          "segundos": 13.092,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 2)",
+          "detalhe": "Corrigida duplicidade: uma única entrada por disciplina, mantendo para Algoritmos a prova escrita transferida para 14/12/2026 e removendo a lista de 26/11, com janelas e carga info",
+          "segundos": 5.136,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 2) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; Aprovado: datas 14/12/2026 citadas nas fontes, sem datas inventadas e com entrada única por disciplina; janelas, 5h/semana, limite de 2h/dia",
+          "segundos": 6.068,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=2",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "165 chars",
+          "segundos": 1.96,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → draft_plan",
+          "detalhe": "objetivo=Gerar proposta revisável de estudo para duas semanas usando os dados confirmados; nota=Já existe contexto confirmado e nenhum rascunho gerado; estudante pede geração da proposta, encaminhar para draft_plan.",
+          "segundos": 2.835,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=[], near=5, future=5",
+          "segundos": 0.034,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "264 chars",
+          "segundos": 2.767,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → revise_plan",
+          "detalhe": "objetivo=Ajustar o plano de estudo deixando livres as segundas-feiras de 2 e 9 de novembro, mantendo as demais janelas, carga e prazos.; nota=Já existe rascunho gerado (already_drafted=True) e o pedido é de correção para deixar dias livres, classificando como revise_plan.",
+          "segundos": 2.124,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=6, clarification_needed=True",
+          "segundos": 8.693,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho draft_avoid_dates_only (iteração 1)",
+          "detalhe": "Pedido apenas exclui pontualmente 2026-11-02 e 2026-11-09, mantendo as demais janelas recorrentes, carga, prazos e disciplinas já confirmados; nenhuma alteração de dias recorrentes",
+          "segundos": 3.723,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; Aprovado: 2026-11-02 e 2026-11-09 são segundas-feiras e correspondem fielmente ao pedido, sem datas inventadas. Manter demais janelas e 5h/s",
+          "segundos": 3.706,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=1",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=['2026-11-02', '2026-11-09'], near=5, future=5",
+          "segundos": 0.025,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "99 chars",
+          "segundos": 1.377,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a1__meta-muse-ember__bruno__stale.result.json"
+    },
+    {
+      "pipeline": "a1",
+      "model": "meta/muse-ember",
+      "caseId": "ana-held-out",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result 8388cba0-f0e9-45d0-9575-6069ebf15f8d.",
+      "durationMs": 60049,
+      "llmCalls": 13,
+      "toolCallCount": 22,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 0,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 14278,
+        "outputTokens": 22607
+      },
+      "observedUsd": 0.012306,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Maestro",
+          "acao": "triagem → initial_plan",
+          "detalhe": "objetivo=Plan study time for the Applied Data Ethics case memo over the next two weeks; nota=No confirmed context yet (has_confirmed=False, already_drafted=False); gather and confirm deadline, calendar, and availability before drafting a proposal.",
+          "segundos": 2.3,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=1, clarification_needed=True",
+          "segundos": 9.107,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "463 chars",
+          "segundos": 3.323,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 1)",
+          "detalhe": "Used the authoritative LMS revision 2 deadline of 2026-12-01 17:30 Sao Paulo time over the superseded module outline date. Set recurring study windows to the operator-confirmed Wed",
+          "segundos": 5.805,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; Deadline correctly converted from 2026-12-01T20:30:00Z to 2026-12-01 17:30 America/Sao_Paulo. Study windows match the confirmed Wed-Fri 14:0",
+          "segundos": 10.862,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=1",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "124 chars",
+          "segundos": 1.57,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → draft_plan",
+          "detalhe": "objetivo=Draft the reviewable two-week study proposal using the confirmed inputs.; nota=has_confirmed=True, has_pending=False e already_drafted=False; contexto confirmado pronto para gerar o rascunho de estudo de duas semanas.",
+          "segundos": 2.276,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=[], near=4, future=4",
+          "segundos": 0.026,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "225 chars",
+          "segundos": 1.618,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → revise_plan",
+          "detalhe": "objetivo=Adjust the existing study plan while keeping Wednesday 4 November free, keeping Thursday and Friday as candidates, and preserving existing appointments; nota=has_confirmed=True and already_drafted=True, and the message requests a correction to an already drafted plan (leave Wednesday free and adjust windows), so route to revise_plan",
+          "segundos": 2.195,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=2, clarification_needed=True",
+          "segundos": 11.322,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho draft_avoid_dates_only (iteração 1)",
+          "detalhe": "Student requested only that Wednesday 2026-11-04 remain free for family logistics, keeping Thursday/Friday as candidates, the following week tentative, and existing appointments pr",
+          "segundos": 2.936,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; Draft aprovado: evita apenas 2026-11-04 conforme pedido, sem datas inventadas; mantém quinta e sexta como candidatas, a semana seguinte como",
+          "segundos": 3.44,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=1",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=['2026-11-04'], near=4, future=4",
+          "segundos": 0.026,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "173 chars",
+          "segundos": 1.53,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a1__meta-muse-ember__ana-held-out__success.result.json"
+    },
+    {
+      "pipeline": "a1",
+      "model": "meta/muse-ember",
+      "caseId": "ana-held-out",
+      "scenario": "stale",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result 213f0c4d-58dd-4b70-84b0-f100f241fc3d.",
+      "durationMs": 95985,
+      "llmCalls": 15,
+      "toolCallCount": 22,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 1,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 19098,
+        "outputTokens": 37276
+      },
+      "observedUsd": 0.019823,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "stale_approval": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Maestro",
+          "acao": "triagem → initial_plan",
+          "detalhe": "objetivo=Plan study time for the Applied Data Ethics case memo over the next two weeks; nota=No confirmed context exists yet (has_confirmed=False, already_drafted=False), so route to initial intake to confirm deadline, calendar availability, and materials before drafting any study plan.",
+          "segundos": 2.673,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=1, clarification_needed=True",
+          "segundos": 8.441,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "778 chars",
+          "segundos": 3.787,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 1)",
+          "detalhe": "Used authoritative LMS revision 2 dueAt 2026-12-01T20:30:00Z (17:30 Sao Paulo) instead of superseded 2026-11-24 outline/revision 1 date, with verbatim citation from lms/assessment-",
+          "segundos": 9.273,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → REPROVADO",
+          "detalhe": "bloqueios=2, overload_risk=False; Draft aprovado. Prazo LMS rev.2 2026-12-01T20:30Z = 17:30 America/Sao_Paulo com citacao verbatim, sem datas inventadas. Janelas qua-sex 14:0",
+          "segundos": 10.294,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho propose_context (iteração 2)",
+          "detalhe": "Operator confirmed Wed-Fri 14:00-16:15 and 4h/week, max 2 sessions/day, 15 min break. Each 135-min window fits two 1h blocks with 15 min break. Week 1 capacity is 6h and Week 2 is ",
+          "segundos": 6.348,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 2) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; Approved: deadline 2026-12-01 17:30 America/Sao_Paulo correctly derived from cited LMS dueAt 2026-12-01T20:30:00Z, with revision 2 supersedi",
+          "segundos": 8.751,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=2",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "137 chars",
+          "segundos": 2.632,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → draft_plan",
+          "detalhe": "objetivo=Draft the reviewable two-week study proposal using the confirmed inputs.; nota=has_confirmed=true, has_pending=false, and already_drafted=false; confirmed context is ready and no draft exists yet, so route to draft generation.",
+          "segundos": 3.317,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=[], near=4, future=4",
+          "segundos": 0.02,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "303 chars",
+          "segundos": 3.257,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "triagem → revise_plan",
+          "detalhe": "objetivo=Adjust the drafted study plan around existing appointments while keeping Wednesday free; nota=has_confirmed=true and already_drafted=true with no pending plan; message requests revision to leave a day free and alter windows, so revise existing draft rather than initial_plan or draft_plan.",
+          "segundos": 2.228,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Research",
+          "acao": "coletou fontes e produziu dossiê",
+          "detalhe": "arquivos=3, cursos=2, clarification_needed=True",
+          "segundos": 10.284,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Analysis",
+          "acao": "propôs rascunho draft_avoid_dates_only (iteração 1)",
+          "detalhe": "Only 2026-11-04 is blocked for family logistics; recurring Wed/Thu/Fri 14:00-16:15 windows, 4h/week, max 2h/day, 15-min breaks, through 2026-11-15 and 2026-12-01 deadline remain un",
+          "segundos": 6.538,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Validation",
+          "acao": "auditou proposta (iteração 1) → APROVADO",
+          "detalhe": "bloqueios=0, overload_risk=False; Rascunho aprovado: bloqueia apenas 2026-11-04 (quarta-feira) para logística familiar, mantém quinta e sexta como candidatas nas janelas 14:0",
+          "segundos": 14.735,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Maestro",
+          "acao": "encerrou loop Analysis↔Validation",
+          "detalhe": "stop_reason=approved, iterations=1",
+          "segundos": 0,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Analysis",
+          "acao": "executou draft_study_plan com contexto confirmado",
+          "detalhe": "weeks=2, avoidDates=['2026-11-04'], near=4, future=4",
+          "segundos": 0.034,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Communication",
+          "acao": "gerou síntese final em Markdown",
+          "detalhe": "94 chars",
+          "segundos": 1.851,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a1__meta-muse-ember__ana-held-out__stale.result.json"
+    },
+    {
+      "pipeline": "a2",
+      "model": "openai/gpt-6-luna",
+      "caseId": "bruno",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result 139055fd-6cfc-46fc-a627-4a4ad60d3a0c.",
+      "durationMs": 22218,
+      "llmCalls": 3,
+      "toolCallCount": 27,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 0,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 7664,
+        "outputTokens": 2760
+      },
+      "observedUsd": 0.002088,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.03,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage2.Extraction",
+          "acao": "extraiu prazos e preferências faltantes",
+          "detalhe": "deadlines=6, conflicts=1",
+          "segundos": 9.919,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage3.Gate",
+          "acao": "avaliou citações e lacunas de preferências",
+          "detalhe": "perguntas=2, alertas_citacao=0",
+          "segundos": 0.001,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.SynthesisVerifier",
+          "acao": "validou em código e submeteu propose_planning_context",
+          "detalhe": "courses=2, through=2026-11-15, retries=0",
+          "segundos": 7.547,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.023,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.PlannerBridge",
+          "acao": "gerou proposta revisável via draft_study_plan (0 LLM)",
+          "detalhe": "weeks=2, near=5, future=5",
+          "segundos": 0.022,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.031,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.Revision",
+          "acao": "aplicou revisão avoidDates diretamente em draft_study_plan",
+          "detalhe": "avoidDates=['2026-11-02', '2026-11-09'], near=5, future=5",
+          "segundos": 2.643,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a2__openai-gpt-6-luna__bruno__success.result.json"
+    },
+    {
+      "pipeline": "a2",
+      "model": "openai/gpt-6-luna",
+      "caseId": "bruno",
+      "scenario": "stale",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result 3b877032-8ec9-4c42-bb82-b6b51b34e0dc.",
+      "durationMs": 22036,
+      "llmCalls": 3,
+      "toolCallCount": 27,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 0,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 7647,
+        "outputTokens": 2756
+      },
+      "observedUsd": 0.002084,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "stale_approval": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.03,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage2.Extraction",
+          "acao": "extraiu prazos e preferências faltantes",
+          "detalhe": "deadlines=5, conflicts=1",
+          "segundos": 11.923,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage3.Gate",
+          "acao": "avaliou citações e lacunas de preferências",
+          "detalhe": "perguntas=2, alertas_citacao=0",
+          "segundos": 0.001,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.SynthesisVerifier",
+          "acao": "validou em código e submeteu propose_planning_context",
+          "detalhe": "courses=2, through=2026-11-15, retries=0",
+          "segundos": 5.578,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.041,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.PlannerBridge",
+          "acao": "gerou proposta revisável via draft_study_plan (0 LLM)",
+          "detalhe": "weeks=2, near=5, future=5",
+          "segundos": 0.029,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.022,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.Revision",
+          "acao": "aplicou revisão avoidDates diretamente em draft_study_plan",
+          "detalhe": "avoidDates=['2026-11-02', '2026-11-09'], near=5, future=5",
+          "segundos": 2.832,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a2__openai-gpt-6-luna__bruno__stale.result.json"
+    },
+    {
+      "pipeline": "a2",
+      "model": "openai/gpt-6-luna",
+      "caseId": "ana-held-out",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result d89d36f9-c233-4a35-9ea7-0996e7dafff3.",
+      "durationMs": 27751,
+      "llmCalls": 3,
+      "toolCallCount": 27,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 0,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 6880,
+        "outputTokens": 3355
+      },
+      "observedUsd": 0.0023,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.031,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage2.Extraction",
+          "acao": "extraiu prazos e preferências faltantes",
+          "detalhe": "deadlines=3, conflicts=1",
+          "segundos": 13.627,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage3.Gate",
+          "acao": "avaliou citações e lacunas de preferências",
+          "detalhe": "perguntas=2, alertas_citacao=0",
+          "segundos": 0.001,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.SynthesisVerifier",
+          "acao": "validou em código e submeteu propose_planning_context",
+          "detalhe": "courses=1, through=2026-11-15, retries=0",
+          "segundos": 9.65,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.055,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.PlannerBridge",
+          "acao": "gerou proposta revisável via draft_study_plan (0 LLM)",
+          "detalhe": "weeks=2, near=4, future=4",
+          "segundos": 0.023,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.019,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.Revision",
+          "acao": "aplicou revisão avoidDates diretamente em draft_study_plan",
+          "detalhe": "avoidDates=['2026-11-04'], near=4, future=4",
+          "segundos": 2.596,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a2__openai-gpt-6-luna__ana-held-out__success.result.json"
+    },
+    {
+      "pipeline": "a2",
+      "model": "openai/gpt-6-luna",
+      "caseId": "ana-held-out",
+      "scenario": "stale",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result 957b65c7-bb72-49a1-8af8-a8f607a5c35c.",
+      "durationMs": 26081,
+      "llmCalls": 3,
+      "toolCallCount": 27,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 0,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 6747,
+        "outputTokens": 2798
+      },
+      "observedUsd": 0.002005,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "stale_approval": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.027,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage2.Extraction",
+          "acao": "extraiu prazos e preferências faltantes",
+          "detalhe": "deadlines=2, conflicts=1",
+          "segundos": 10.604,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage3.Gate",
+          "acao": "avaliou citações e lacunas de preferências",
+          "detalhe": "perguntas=2, alertas_citacao=0",
+          "segundos": 0.001,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.SynthesisVerifier",
+          "acao": "validou em código e submeteu propose_planning_context",
+          "detalhe": "courses=1, through=2026-11-15, retries=0",
+          "segundos": 11.566,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.047,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.PlannerBridge",
+          "acao": "gerou proposta revisável via draft_study_plan (0 LLM)",
+          "detalhe": "weeks=2, near=4, future=4",
+          "segundos": 0.021,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.019,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.Revision",
+          "acao": "aplicou revisão avoidDates diretamente em draft_study_plan",
+          "detalhe": "avoidDates=['2026-11-04'], near=4, future=4",
+          "segundos": 2.226,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a2__openai-gpt-6-luna__ana-held-out__stale.result.json"
+    },
+    {
+      "pipeline": "a2",
+      "model": "meta/muse-ember",
+      "caseId": "bruno",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result 86b7a9e4-1695-45c2-b24c-b118549b103d.",
+      "durationMs": 37329,
+      "llmCalls": 3,
+      "toolCallCount": 36,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 0,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 7744,
+        "outputTokens": 15774
+      },
+      "observedUsd": 0.008421,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.03,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage2.Extraction",
+          "acao": "extraiu prazos e preferências faltantes",
+          "detalhe": "deadlines=3, conflicts=1",
+          "segundos": 10.598,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage3.Gate",
+          "acao": "avaliou citações e lacunas de preferências",
+          "detalhe": "perguntas=2, alertas_citacao=0",
+          "segundos": 0.001,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.SynthesisVerifier",
+          "acao": "validou em código e submeteu propose_planning_context",
+          "detalhe": "courses=2, through=2026-11-15, retries=0",
+          "segundos": 10.744,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.047,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.PlannerBridge",
+          "acao": "gerou proposta revisável via draft_study_plan (0 LLM)",
+          "detalhe": "weeks=2, near=5, future=5",
+          "segundos": 0.028,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.022,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.Revision",
+          "acao": "validou e propôs contexto atualizado via propose_planning_context",
+          "detalhe": "windows=3, avoidDates=[]",
+          "segundos": 13.592,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.058,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.PlannerBridge",
+          "acao": "gerou proposta revisável via draft_study_plan (0 LLM)",
+          "detalhe": "weeks=2, near=5, future=5",
+          "segundos": 0.021,
+          "llm_calls": 0
+        }
+      ],
+      "resultFile": "a2__meta-muse-ember__bruno__success.result.json"
+    },
+    {
+      "pipeline": "a2",
+      "model": "meta/muse-ember",
+      "caseId": "bruno",
+      "scenario": "stale",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result f36439c2-7861-4f82-a8f3-aac4bdd8c5af.",
+      "durationMs": 20323,
+      "llmCalls": 3,
+      "toolCallCount": 36,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 0,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 7737,
+        "outputTokens": 8858
+      },
+      "observedUsd": 0.004962,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "stale_approval": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.03,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage2.Extraction",
+          "acao": "extraiu prazos e preferências faltantes",
+          "detalhe": "deadlines=6, conflicts=1",
+          "segundos": 7.734,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage3.Gate",
+          "acao": "avaliou citações e lacunas de preferências",
+          "detalhe": "perguntas=2, alertas_citacao=0",
+          "segundos": 0.001,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.SynthesisVerifier",
+          "acao": "validou em código e submeteu propose_planning_context",
+          "detalhe": "courses=2, through=2026-11-15, retries=0",
+          "segundos": 6.363,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.054,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.PlannerBridge",
+          "acao": "gerou proposta revisável via draft_study_plan (0 LLM)",
+          "detalhe": "weeks=2, near=5, future=5",
+          "segundos": 0.027,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.028,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.Revision",
+          "acao": "validou e propôs contexto atualizado via propose_planning_context",
+          "detalhe": "windows=3, avoidDates=[]",
+          "segundos": 4.355,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=146",
+          "segundos": 0.044,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.PlannerBridge",
+          "acao": "gerou proposta revisável via draft_study_plan (0 LLM)",
+          "detalhe": "weeks=2, near=5, future=5",
+          "segundos": 0.033,
+          "llm_calls": 0
+        }
+      ],
+      "resultFile": "a2__meta-muse-ember__bruno__stale.result.json"
+    },
+    {
+      "pipeline": "a2",
+      "model": "meta/muse-ember",
+      "caseId": "ana-held-out",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result 7688cbc7-b06f-441e-a8b5-12d585cd6f0f.",
+      "durationMs": 26809,
+      "llmCalls": 4,
+      "toolCallCount": 27,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 1,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 9695,
+        "outputTokens": 10563
+      },
+      "observedUsd": 0.005767,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.03,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage2.Extraction",
+          "acao": "extraiu prazos e preferências faltantes",
+          "detalhe": "deadlines=2, conflicts=1",
+          "segundos": 9.546,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage3.Gate",
+          "acao": "avaliou citações e lacunas de preferências",
+          "detalhe": "perguntas=2, alertas_citacao=0",
+          "segundos": 0.001,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.SynthesisVerifier",
+          "acao": "validou em código e submeteu propose_planning_context",
+          "detalhe": "courses=1, through=2026-11-15, retries=1",
+          "segundos": 12.316,
+          "llm_calls": 2
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.033,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.PlannerBridge",
+          "acao": "gerou proposta revisável via draft_study_plan (0 LLM)",
+          "detalhe": "weeks=2, near=4, future=4",
+          "segundos": 0.021,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.019,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.Revision",
+          "acao": "aplicou revisão avoidDates diretamente em draft_study_plan",
+          "detalhe": "avoidDates=['2026-11-04'], near=4, future=4",
+          "segundos": 3.177,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a2__meta-muse-ember__ana-held-out__success.result.json"
+    },
+    {
+      "pipeline": "a2",
+      "model": "meta/muse-ember",
+      "caseId": "ana-held-out",
+      "scenario": "stale",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-25T23:28:27.452Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result 384b28cd-8304-4128-b7ff-75418c5c6ab9.",
+      "durationMs": 24230,
+      "llmCalls": 4,
+      "toolCallCount": 27,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "validationRetries": 1,
+      "questionsAsked": 2,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 9857,
+        "outputTokens": 9779
+      },
+      "observedUsd": 0.005341,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "stale_approval": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "rastro": [
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.028,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage2.Extraction",
+          "acao": "extraiu prazos e preferências faltantes",
+          "detalhe": "deadlines=1, conflicts=1",
+          "segundos": 8.766,
+          "llm_calls": 1
+        },
+        {
+          "agente": "Stage3.Gate",
+          "acao": "avaliou citações e lacunas de preferências",
+          "detalhe": "perguntas=2, alertas_citacao=0",
+          "segundos": 0.001,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.SynthesisVerifier",
+          "acao": "validou em código e submeteu propose_planning_context",
+          "detalhe": "courses=1, through=2026-11-15, retries=1",
+          "segundos": 11.488,
+          "llm_calls": 2
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.037,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.PlannerBridge",
+          "acao": "gerou proposta revisável via draft_study_plan (0 LLM)",
+          "detalhe": "weeks=2, near=4, future=4",
+          "segundos": 0.027,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage1.Ingestion",
+          "acao": "coletou arquivos e calendário via toolBridge",
+          "detalhe": "arquivos=3, eventos=108",
+          "segundos": 0.016,
+          "llm_calls": 0
+        },
+        {
+          "agente": "Stage4.Revision",
+          "acao": "aplicou revisão avoidDates diretamente em draft_study_plan",
+          "detalhe": "avoidDates=['2026-11-04'], near=4, future=4",
+          "segundos": 2.356,
+          "llm_calls": 1
+        }
+      ],
+      "resultFile": "a2__meta-muse-ember__ana-held-out__stale.result.json"
+    }
+  ],
+  "baselineApproachB": [
+    {
+      "model": "openai/gpt-6-luna",
+      "caseId": "bruno",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-24T23:27:42.972Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result 2bb1da2c-f6e4-4949-9c09-c87dec8ffa82.",
+      "durationMs": 51208,
+      "llmSteps": 16,
+      "toolCallCount": 15,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "questionsAsked": 4,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 229160,
+        "outputTokens": 3886
+      },
+      "observedUsd": 0.006846,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "resultFile": "openai-gpt-6-luna__bruno.result.json"
+    },
+    {
+      "model": "openai/gpt-6-luna",
+      "caseId": "ana-held-out",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-24T23:27:42.972Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result 18b2d0cf-decc-4c79-b6bd-1a983fc33662.",
+      "durationMs": 56550,
+      "llmSteps": 16,
+      "toolCallCount": 16,
+      "toolErrorCount": 1,
+      "toolErrors": [
+        {
+          "name": "draft_study_plan",
+          "error": "Choose course coverage or a single-course focus for this proposal"
+        }
+      ],
+      "questionsAsked": 3,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 198663,
+        "outputTokens": 5299
+      },
+      "observedUsd": 0.006858,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "resultFile": "openai-gpt-6-luna__ana-held-out.result.json"
+    },
+    {
+      "model": "meta/muse-ember",
+      "caseId": "bruno",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-24T23:27:42.972Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result f8626f16-5ee3-40ea-8866-cbcbbaa0ef96.",
+      "durationMs": 44617,
+      "llmSteps": 14,
+      "toolCallCount": 14,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "questionsAsked": 4,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 266943,
+        "outputTokens": 10026
+      },
+      "observedUsd": 0.008959,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "resultFile": "meta-muse-ember__bruno.result.json"
+    },
+    {
+      "model": "meta/muse-ember",
+      "caseId": "ana-held-out",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-24T23:27:42.972Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result f085da49-d35e-4678-9ea6-33f87f52cc78.",
+      "durationMs": 47325,
+      "llmSteps": 15,
+      "toolCallCount": 15,
+      "toolErrorCount": 1,
+      "toolErrors": [
+        {
+          "name": "draft_study_plan",
+          "error": "Choose course coverage or a single-course focus for this proposal"
+        }
+      ],
+      "questionsAsked": 4,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 244170,
+        "outputTokens": 9635
+      },
+      "observedUsd": 0.008247,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "resultFile": "meta-muse-ember__ana-held-out.result.json"
+    }
+  ]
+}

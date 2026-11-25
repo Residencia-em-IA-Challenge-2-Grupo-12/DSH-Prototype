@@ -1,0 +1,414 @@
+{
+  "version": 1,
+  "caseId": "bruno",
+  "inputSha256": "00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7",
+  "runId": "13757e60-dc94-4dab-b979-05583cced694",
+  "engine": {
+    "name": "StudyBuddy A1 (openai/gpt-6-luna)",
+    "revision": "studybuddy-pipeline-0.1.0",
+    "mode": "live",
+    "model": "openai/gpt-6-luna",
+    "harness": "studybuddy-pipeline-a1-v1",
+    "tools": [
+      "draft_study_plan",
+      "list_calendar",
+      "list_synthetic_files",
+      "propose_planning_context",
+      "read_planning_context",
+      "read_synthetic_file"
+    ],
+    "simulator": "ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96"
+  },
+  "durationMs": 99255,
+  "usage": {
+    "availability": "available",
+    "inputTokens": 19750,
+    "outputTokens": 11512
+  },
+  "timeline": [
+    {
+      "kind": "observation",
+      "phase": "initial",
+      "value": {
+        "availability": "available",
+        "eventCount": 146,
+        "added": [],
+        "removed": [],
+        "changed": []
+      }
+    },
+    {
+      "kind": "request",
+      "text": "Ajude-me a planejar meus estudos para a prova escrita de Algoritmos e o projeto final de Banco de Dados. Confira meus materiais e o calendário e me pergunte sobre disponibilidade se precisar."
+    },
+    {
+      "kind": "question",
+      "id": "availability",
+      "groupId": "a1-intake",
+      "text": "Além dos compromissos já listados, em quais dias e janelas de horário você pode ou prefere estudar? Informe também se sua disponibilidade muda depois de 22/11.",
+      "choices": []
+    },
+    {
+      "kind": "question",
+      "id": "workload",
+      "groupId": "a1-intake",
+      "text": "Qual meta semanal de estudo você quer, qual o máximo de blocos de 1 hora por dia, quantos minutos de pausa entre blocos e até que data devo planejar?",
+      "choices": []
+    },
+    {
+      "kind": "answer",
+      "questionId": "availability",
+      "text": "Use 5 horas por semana até 15/11. Posso estudar segundas e quartas das 19:00 às 21:15, sábado das 14:00 às 16:15 e domingo das 10:00 às 12:15, conforme o calendário. Limite de dois blocos de uma hora por dia e pausa de 15 minutos. Sem prioridade entre as disciplinas."
+    },
+    {
+      "kind": "answer",
+      "questionId": "workload",
+      "text": "Use 5 horas por semana até 15/11. Posso estudar segundas e quartas das 19:00 às 21:15, sábado das 14:00 às 16:15 e domingo das 10:00 às 12:15, conforme o calendário. Limite de dois blocos de uma hora por dia e pausa de 15 minutos. Sem prioridade entre as disciplinas."
+    },
+    {
+      "kind": "context_review",
+      "revisionId": "f33d6e66-fbe9-482b-9f0e-aa59fb74705d"
+    },
+    {
+      "kind": "request",
+      "text": "Gere a proposta revisável para as duas semanas usando os dados confirmados."
+    },
+    {
+      "kind": "proposal",
+      "revisionId": "dadc88c2-bb75-4f45-a947-1c762aae6799",
+      "replaces": null,
+      "sources": [
+        {
+          "course": "Algoritmos e Estruturas de Dados",
+          "deadline": "2026-12-14T09:00:00-03:00",
+          "citation": {
+            "path": "notices/aviso-turma-n02.md",
+            "quote": "A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo."
+          }
+        },
+        {
+          "course": "Banco de Dados",
+          "deadline": "2026-12-14T18:00:00-03:00",
+          "citation": {
+            "path": "courses/banco-de-dados.md",
+            "quote": "Envio final do projeto de modelagem: 14/12/2026 às 18:00, horário de São Paulo, na área de trabalhos do LMS."
+          }
+        }
+      ],
+      "assumptions": [
+        "Study blocks are suggestions; ask before writing.",
+        "Hours are goals, not evidence of actual study.",
+        "Study windows are stated possibilities; confirm they still suit the student.",
+        "Confirmed availability applies through 2026-11-15."
+      ],
+      "sections": {
+        "near": [
+          {
+            "kind": "add",
+            "eventId": "34f2210c96914ffa85a26cce1da93a61",
+            "label": "Study: Algoritmos e Estruturas de Dados",
+            "course": "Algoritmos e Estruturas de Dados",
+            "start": "2026-11-02T19:00:00-03:00",
+            "end": "2026-11-02T20:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "0eef3819cc374cb4b235bec3e7f3e433",
+            "label": "Study: Algoritmos e Estruturas de Dados",
+            "course": "Algoritmos e Estruturas de Dados",
+            "start": "2026-11-04T20:00:00-03:00",
+            "end": "2026-11-04T21:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "a1122c6494c0492b99c4a469124d1864",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-07T14:00:00-03:00",
+            "end": "2026-11-07T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "c1aeac24e62d47f89c3fba560ad6affc",
+            "label": "Study: Algoritmos e Estruturas de Dados",
+            "course": "Algoritmos e Estruturas de Dados",
+            "start": "2026-11-08T10:00:00-03:00",
+            "end": "2026-11-08T11:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "51975083fc324fa2ad17246b817d7389",
+            "label": "Study: Algoritmos e Estruturas de Dados",
+            "course": "Algoritmos e Estruturas de Dados",
+            "start": "2026-11-02T20:15:00-03:00",
+            "end": "2026-11-02T21:15:00-03:00"
+          }
+        ],
+        "future": [
+          {
+            "kind": "add",
+            "eventId": "aef6945872b945acb01532d0904b9455",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-09T19:00:00-03:00",
+            "end": "2026-11-09T20:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "6616191ca7b04c8ba47daf69c033c95b",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-11T20:00:00-03:00",
+            "end": "2026-11-11T21:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "71e07eb5e9d741ac89c0b9c034b08755",
+            "label": "Study: Algoritmos e Estruturas de Dados",
+            "course": "Algoritmos e Estruturas de Dados",
+            "start": "2026-11-14T14:00:00-03:00",
+            "end": "2026-11-14T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "42bf2a7a95734ce7919883c3ab654c66",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-15T10:00:00-03:00",
+            "end": "2026-11-15T11:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "3fb5c51a71124aaaa2e0f290be0d038a",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-09T20:15:00-03:00",
+            "end": "2026-11-09T21:15:00-03:00"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "request",
+      "text": "Deixe as duas segundas-feiras, 2 e 9 de novembro, livres. Mantenha as demais janelas, carga e prazos."
+    },
+    {
+      "kind": "proposal",
+      "revisionId": "b7d5a22d-c94c-410b-970e-f00c9239b50b",
+      "replaces": "dadc88c2-bb75-4f45-a947-1c762aae6799",
+      "sources": [
+        {
+          "course": "Algoritmos e Estruturas de Dados",
+          "deadline": "2026-12-14T09:00:00-03:00",
+          "citation": {
+            "path": "notices/aviso-turma-n02.md",
+            "quote": "A prova escrita de grafos de Algoritmos foi transferida de 07/12/2026 para 14/12/2026 às 09:00, horário de São Paulo."
+          }
+        },
+        {
+          "course": "Banco de Dados",
+          "deadline": "2026-12-14T18:00:00-03:00",
+          "citation": {
+            "path": "courses/banco-de-dados.md",
+            "quote": "Envio final do projeto de modelagem: 14/12/2026 às 18:00, horário de São Paulo, na área de trabalhos do LMS."
+          }
+        }
+      ],
+      "assumptions": [
+        "Study blocks are suggestions; ask before writing.",
+        "Hours are goals, not evidence of actual study.",
+        "Study windows are stated possibilities; confirm they still suit the student.",
+        "Confirmed availability applies through 2026-11-15."
+      ],
+      "sections": {
+        "near": [
+          {
+            "kind": "add",
+            "eventId": "11fb3851741a4be4827e18b6897358ab",
+            "label": "Study: Algoritmos e Estruturas de Dados",
+            "course": "Algoritmos e Estruturas de Dados",
+            "start": "2026-11-04T20:00:00-03:00",
+            "end": "2026-11-04T21:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "3f436ef06ecb46968f7b9985da17f5ca",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-07T14:00:00-03:00",
+            "end": "2026-11-07T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "4ef5171d19c64e97967ac0b242e57ad4",
+            "label": "Study: Algoritmos e Estruturas de Dados",
+            "course": "Algoritmos e Estruturas de Dados",
+            "start": "2026-11-08T10:00:00-03:00",
+            "end": "2026-11-08T11:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "3976428f689d49c39f6d915d497048a2",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-07T15:15:00-03:00",
+            "end": "2026-11-07T16:15:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "03299374dbec4d1b9394700fc612356d",
+            "label": "Study: Algoritmos e Estruturas de Dados",
+            "course": "Algoritmos e Estruturas de Dados",
+            "start": "2026-11-08T11:15:00-03:00",
+            "end": "2026-11-08T12:15:00-03:00"
+          }
+        ],
+        "future": [
+          {
+            "kind": "add",
+            "eventId": "3ab61dd9eb7649d2a3c05d3f3915d16a",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-11T20:00:00-03:00",
+            "end": "2026-11-11T21:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "321ce7a34d3f4001bee06264b8b28c29",
+            "label": "Study: Algoritmos e Estruturas de Dados",
+            "course": "Algoritmos e Estruturas de Dados",
+            "start": "2026-11-14T14:00:00-03:00",
+            "end": "2026-11-14T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "470a1099d5184d7198bb5f0a6cefe8da",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-15T10:00:00-03:00",
+            "end": "2026-11-15T11:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "5ef3b6fc4c3a4e53922b5fb3292d534d",
+            "label": "Study: Algoritmos e Estruturas de Dados",
+            "course": "Algoritmos e Estruturas de Dados",
+            "start": "2026-11-14T15:15:00-03:00",
+            "end": "2026-11-14T16:15:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "4b231696e4bd4e608beee7c9cf877e85",
+            "label": "Study: Banco de Dados",
+            "course": "Banco de Dados",
+            "start": "2026-11-15T11:15:00-03:00",
+            "end": "2026-11-15T12:15:00-03:00"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "observation",
+      "phase": "review",
+      "value": {
+        "availability": "available",
+        "eventCount": 146,
+        "added": [],
+        "removed": [],
+        "changed": []
+      }
+    },
+    {
+      "kind": "validation",
+      "revisionId": "b7d5a22d-c94c-410b-970e-f00c9239b50b",
+      "passed": true,
+      "findings": []
+    },
+    {
+      "kind": "observation",
+      "phase": "before_approval",
+      "value": {
+        "availability": "available",
+        "eventCount": 146,
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bruno-work-am-0-1"
+        ]
+      }
+    },
+    {
+      "kind": "decision",
+      "revisionId": "b7d5a22d-c94c-410b-970e-f00c9239b50b",
+      "section": "near",
+      "approved": true
+    },
+    {
+      "kind": "write",
+      "revisionId": "b7d5a22d-c94c-410b-970e-f00c9239b50b",
+      "section": "near",
+      "outcome": "rejected",
+      "intended": [
+        "11fb3851741a4be4827e18b6897358ab",
+        "3f436ef06ecb46968f7b9985da17f5ca",
+        "4ef5171d19c64e97967ac0b242e57ad4",
+        "3976428f689d49c39f6d915d497048a2",
+        "03299374dbec4d1b9394700fc612356d"
+      ],
+      "acknowledged": [],
+      "unresolved": [],
+      "reason": "calendar_changed"
+    },
+    {
+      "kind": "observation",
+      "phase": "after_approval",
+      "value": {
+        "availability": "available",
+        "eventCount": 146,
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bruno-work-am-0-1"
+        ]
+      }
+    }
+  ],
+  "checks": [
+    {
+      "id": "initial_event_ids",
+      "outcome": "pass",
+      "detail": "Independent provider read contains the fixture event IDs"
+    },
+    {
+      "id": "no_write_before_approval",
+      "outcome": "pass",
+      "detail": "Question, two input reviews and both proposal revisions leave the starting calendar untouched"
+    },
+    {
+      "id": "authoritative_deadline",
+      "outcome": "pass",
+      "detail": "Deadline timestamp and authoritative source both match the operator expectation"
+    },
+    {
+      "id": "revision",
+      "outcome": "pass",
+      "detail": "A distinct proposal replaces the earlier proposal containing one of the excluded dates"
+    },
+    {
+      "id": "feasibility",
+      "outcome": "pass",
+      "detail": "Both sections have study blocks and the revision meets the reviewed windows, targets, limits, deadlines and breaks"
+    },
+    {
+      "id": "future_pending",
+      "outcome": "pass",
+      "detail": "Future review stays pending; observations are checked for its event IDs when available"
+    },
+    {
+      "id": "stale_approval",
+      "outcome": "pass",
+      "detail": "The intervening edit is preserved and the stale proposal caused no write"
+    }
+  ],
+  "retirement": "verified"
+}

@@ -5,6 +5,8 @@ node_modules/
 .DS_Store
 __pycache__/
 .pytest_cache/
+.venv/
+*.egg-info/
 .runtime/
 .gateway-control/
 coverage/
