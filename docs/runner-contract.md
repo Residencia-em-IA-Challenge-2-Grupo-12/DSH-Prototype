@@ -71,6 +71,10 @@ For each run, the Foundation starts an ephemeral loopback bridge at `toolBridge.
 
      ./node_modules/.bin/node scripts/paired-replay.mjs run /tmp/bruno-bundle /tmp/result.json success \
        --runner-url http://127.0.0.1:4180 --mode live
+
+     # Multi-model budgeted OpenRouter baseline (runs gateway + single-agent + Docker Calendarpit + Python probe):
+     TMPDIR=/tmp ./node_modules/.bin/node scripts/compare-live-models.mjs \
+       --out-dir /tmp/live-baseline --models openai/gpt-6-luna,meta/muse-ember --cases bruno,ana-held-out --budget-usd 0.25
      ```
   2. **StudyBuddy FastAPI `/replay` adapter (`#47`):** implements the same 6 endpoints above in Python FastAPI and connects via `--runner-url`.
 

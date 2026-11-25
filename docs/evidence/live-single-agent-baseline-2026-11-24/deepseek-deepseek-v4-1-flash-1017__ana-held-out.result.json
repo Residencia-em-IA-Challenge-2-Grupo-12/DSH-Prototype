@@ -1,0 +1,248 @@
+{
+  "version": 1,
+  "caseId": "ana-held-out",
+  "inputSha256": "ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b",
+  "runId": "606835b1-7562-4a2a-83d9-7a869e0843e1",
+  "engine": {
+    "name": "Single-agent HTTP (deepseek/deepseek-v4.1-flash-1017)",
+    "revision": "1",
+    "mode": "live",
+    "model": "deepseek/deepseek-v4.1-flash-1017",
+    "harness": "single-agent-http-v1",
+    "tools": [
+      "draft_study_plan",
+      "list_calendar",
+      "list_synthetic_files",
+      "propose_planning_context",
+      "read_synthetic_file"
+    ],
+    "simulator": "ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96"
+  },
+  "durationMs": 243306,
+  "usage": {
+    "availability": "available",
+    "inputTokens": 220876,
+    "outputTokens": 38140
+  },
+  "timeline": [
+    {
+      "kind": "observation",
+      "phase": "initial",
+      "value": {
+        "availability": "available",
+        "eventCount": 108,
+        "added": [],
+        "removed": [],
+        "changed": []
+      }
+    },
+    {
+      "kind": "request",
+      "text": "Help me plan my study time for the Applied Data Ethics case memo over the next two weeks. Which deadline should we plan around? I have a module outline and a learning platform export. Check my calendar and ask what times work for me before making a proposal."
+    },
+    {
+      "kind": "question",
+      "id": "horizon",
+      "groupId": "planning",
+      "text": "The case memo is authoritatively due 1 December 2026, 17:30 São Paulo (four weeks out), not 24 November. You asked for 'the next two weeks.' Which horizon should I build the plan around?",
+      "choices": [
+        "Through the 1 Dec deadline",
+        "Two weeks only (through 15 Nov)",
+        "Other end date"
+      ]
+    },
+    {
+      "kind": "question",
+      "id": "days",
+      "groupId": "availability",
+      "text": "Which days should study blocks use? (Weekday 08:00–12:00 work and 12:00–13:00 lunch are fixed; Mon/Wed/Thu evenings have class 18:30–21:30 with commuting on some weeks.)",
+      "choices": [
+        "Weekdays + weekends",
+        "Weekdays only (Mon–Fri)",
+        "Weekends only",
+        "Weekdays, skip Fridays"
+      ]
+    },
+    {
+      "kind": "question",
+      "id": "timeOfDay",
+      "groupId": "availability",
+      "text": "Which time of day works best for study blocks?",
+      "choices": [
+        "Weekday afternoons (13:00–17:30)",
+        "Weekday evenings",
+        "Weekend mornings/early afternoons",
+        "Mix of afternoon and weekend"
+      ]
+    },
+    {
+      "kind": "question",
+      "id": "intensity",
+      "groupId": "workload",
+      "text": "How much study should I schedule (total over the plan and per-day cap)? Each block is 1 hour.",
+      "choices": [
+        "Light — ~10 h total, max 1 h/day",
+        "Moderate — ~16 h total, max 2 h/day",
+        "Focused — ~20 h total, max 3 h/day",
+        "Other"
+      ]
+    },
+    {
+      "kind": "answer",
+      "questionId": "horizon",
+      "text": "I picked a case but haven't written an outline. I don't know how much time it will take yet."
+    },
+    {
+      "kind": "answer",
+      "questionId": "days",
+      "text": "For these two weeks, Wednesday, Thursday and Friday from 14:00 to 16:15 can work when the calendar is clear. I prefer to keep the weekend open."
+    },
+    {
+      "kind": "answer",
+      "questionId": "timeOfDay",
+      "text": "Four study hours a week feels workable, with no more than two sessions a day and a 15-minute break between them."
+    },
+    {
+      "kind": "answer",
+      "questionId": "intensity",
+      "text": "For these two weeks, Wednesday, Thursday and Friday from 14:00 to 16:15 can work when the calendar is clear. I prefer to keep the weekend open."
+    },
+    {
+      "kind": "context_review",
+      "revisionId": "de8e32f6-a459-4a02-93f7-bda66c33dde0"
+    },
+    {
+      "kind": "request",
+      "text": "Draft the reviewable two-week study proposal using the confirmed inputs."
+    },
+    {
+      "kind": "proposal",
+      "revisionId": "da1075d7-bcda-4623-8cfd-2f75e9edac13",
+      "replaces": null,
+      "sources": [
+        {
+          "course": "Applied Data Ethics",
+          "deadline": "2026-12-01T17:30:00-03:00",
+          "citation": {
+            "path": "lms/assessment-export.json",
+            "quote": "\"revision\": 2,\n      \"status\": \"published\",\n      \"updatedAt\": \"2026-10-30T18:00:00Z\",\n      \"publishedBy\": \"Course coordination\",\n      \"opensAt\": \"2026-11-23T11:00:00Z\",\n      \"dueAt\": \"2026-12-01T20:30:00Z\",\n      \"closesAt\": \"2026-12-02T02:59:00Z\""
+          }
+        }
+      ],
+      "assumptions": [
+        "Study blocks are suggestions; ask before writing.",
+        "Hours are goals, not evidence of actual study.",
+        "Study windows are stated possibilities; confirm they still suit the student.",
+        "Confirmed availability applies through 2026-11-15.",
+        "Course focus: Applied Data Ethics; other courses may still receive blocks."
+      ],
+      "sections": {
+        "near": [
+          {
+            "kind": "add",
+            "eventId": "f8fb9af0c5954a0bb8342a017ffcb4c2",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-04T14:00:00-03:00",
+            "end": "2026-11-04T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "033bfa9f4c5643b8adc428ca4efa6ebb",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-05T14:00:00-03:00",
+            "end": "2026-11-05T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "6daab8c069294ee88e72830d576bed3c",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-06T14:00:00-03:00",
+            "end": "2026-11-06T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "dc02cfed81894648a653246cc6a89c0e",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-04T15:15:00-03:00",
+            "end": "2026-11-04T16:15:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "7a02737e052f4c5aad26419bc8fbfba9",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-05T15:15:00-03:00",
+            "end": "2026-11-05T16:15:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "fe19b29373134c0ab4eb93164c950d12",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-06T15:15:00-03:00",
+            "end": "2026-11-06T16:15:00-03:00"
+          }
+        ],
+        "future": [
+          {
+            "kind": "add",
+            "eventId": "f1369133b58344a3b8d4a1eeda55c4b8",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-12T14:00:00-03:00",
+            "end": "2026-11-12T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "351666ed9a4040248ea52ed464c5cca3",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-13T14:00:00-03:00",
+            "end": "2026-11-13T15:00:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "30e01fd8fc7d4f0a8d08dde27ee01e53",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-12T15:15:00-03:00",
+            "end": "2026-11-12T16:15:00-03:00"
+          },
+          {
+            "kind": "add",
+            "eventId": "7a51c15584674d7ba665fc63dd5d66e9",
+            "label": "Study: Applied Data Ethics",
+            "course": "Applied Data Ethics",
+            "start": "2026-11-13T15:15:00-03:00",
+            "end": "2026-11-13T16:15:00-03:00"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "request",
+      "text": "Keep Wednesday, 4 November, free for family logistics. Keep Thursday and Friday as candidates. Leave the following week tentative and preserve my existing appointments."
+    },
+    {
+      "kind": "request",
+      "text": "Draft the reviewable two-week study proposal using the confirmed inputs."
+    }
+  ],
+  "checks": [
+    {
+      "id": "initial_event_ids",
+      "outcome": "pass",
+      "detail": "Independent provider read contains the fixture event IDs"
+    },
+    {
+      "id": "execution",
+      "outcome": "fail",
+      "detail": "The replay run did not complete. Inspect the private runtime and local diagnostic."
+    }
+  ],
+  "retirement": "verified"
+}

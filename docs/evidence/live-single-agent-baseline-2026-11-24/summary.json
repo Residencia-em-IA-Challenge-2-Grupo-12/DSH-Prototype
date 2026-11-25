@@ -1,0 +1,277 @@
+{
+  "generatedAt": "2026-11-24T23:38:49.031Z",
+  "scenario": "success",
+  "budgetPerRunUsd": 0.25,
+  "rows": [
+    {
+      "model": "openai/gpt-6-luna",
+      "caseId": "bruno",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-24T23:27:42.972Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result 2bb1da2c-f6e4-4949-9c09-c87dec8ffa82.",
+      "durationMs": 51208,
+      "llmSteps": 16,
+      "toolCallCount": 15,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "questionsAsked": 4,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 229160,
+        "outputTokens": 3886
+      },
+      "observedUsd": 0.006846,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "resultFile": "openai-gpt-6-luna__bruno.result.json"
+    },
+    {
+      "model": "openai/gpt-6-luna",
+      "caseId": "ana-held-out",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-24T23:27:42.972Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result 18b2d0cf-decc-4c79-b6bd-1a983fc33662.",
+      "durationMs": 56550,
+      "llmSteps": 16,
+      "toolCallCount": 16,
+      "toolErrorCount": 1,
+      "toolErrors": [
+        {
+          "name": "draft_study_plan",
+          "error": "Choose course coverage or a single-course focus for this proposal"
+        }
+      ],
+      "questionsAsked": 3,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 198663,
+        "outputTokens": 5299
+      },
+      "observedUsd": 0.006858,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "resultFile": "openai-gpt-6-luna__ana-held-out.result.json"
+    },
+    {
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "caseId": "bruno",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.03,
+        "outputPerMillion": 0.2,
+        "verifiedAt": "2026-11-24T23:33:18.916Z"
+      },
+      "passed": false,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result 69d81a87-56c5-4d71-93ac-85272726adad.",
+      "durationMs": 86247,
+      "llmSteps": 15,
+      "toolCallCount": 13,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "questionsAsked": 5,
+      "questionTurns": 2,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 301624,
+        "outputTokens": 13602
+      },
+      "observedUsd": 0.014014,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "fail",
+        "execution": "fail"
+      },
+      "failedCheckDetails": [
+        {
+          "id": "feasibility",
+          "outcome": "fail",
+          "detail": "Study time differs from the reviewed target in week 2"
+        },
+        {
+          "id": "execution",
+          "outcome": "fail",
+          "detail": "The replay run did not complete. Inspect the private runtime and local diagnostic."
+        }
+      ],
+      "failureMessages": [
+        "The operator withheld approval because a precondition failed"
+      ],
+      "resultFile": "deepseek-deepseek-v4-1-flash-1017__bruno.result.json",
+      "providerOnly": [
+        "fireworks"
+      ]
+    },
+    {
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "caseId": "ana-held-out",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.03,
+        "outputPerMillion": 0.2,
+        "verifiedAt": "2026-11-24T23:33:18.916Z"
+      },
+      "passed": false,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result 606835b1-7562-4a2a-83d9-7a869e0843e1.",
+      "durationMs": 243306,
+      "llmSteps": 11,
+      "toolCallCount": 10,
+      "toolErrorCount": 1,
+      "toolErrors": [
+        {
+          "name": "draft_study_plan",
+          "error": "Choose course coverage or a single-course focus for this proposal"
+        }
+      ],
+      "questionsAsked": 4,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 220876,
+        "outputTokens": 38140
+      },
+      "observedUsd": 0.029982,
+      "checks": {
+        "initial_event_ids": "pass",
+        "execution": "fail"
+      },
+      "failedCheckDetails": [
+        {
+          "id": "execution",
+          "outcome": "fail",
+          "detail": "The replay run did not complete. Inspect the private runtime and local diagnostic."
+        }
+      ],
+      "failureMessages": [
+        "Runner did not draft a reviewable study proposal"
+      ],
+      "resultFile": "deepseek-deepseek-v4-1-flash-1017__ana-held-out.result.json",
+      "providerOnly": [
+        "fireworks"
+      ]
+    },
+    {
+      "model": "meta/muse-ember",
+      "caseId": "bruno",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-24T23:27:42.972Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case bruno (00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7), result f8626f16-5ee3-40ea-8866-cbcbbaa0ef96.",
+      "durationMs": 44617,
+      "llmSteps": 14,
+      "toolCallCount": 14,
+      "toolErrorCount": 0,
+      "toolErrors": [],
+      "questionsAsked": 4,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 266943,
+        "outputTokens": 10026
+      },
+      "observedUsd": 0.008959,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "resultFile": "meta-muse-ember__bruno.result.json"
+    },
+    {
+      "model": "meta/muse-ember",
+      "caseId": "ana-held-out",
+      "scenario": "success",
+      "pricing": {
+        "inputPerMillion": 0.1,
+        "outputPerMillion": 0.5,
+        "verifiedAt": "2026-11-24T23:27:42.972Z"
+      },
+      "passed": true,
+      "retirement": "verified",
+      "probeOk": true,
+      "probeOutput": "Checked case ana-held-out (ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b), result f085da49-d35e-4678-9ea6-33f87f52cc78.",
+      "durationMs": 47325,
+      "llmSteps": 15,
+      "toolCallCount": 15,
+      "toolErrorCount": 1,
+      "toolErrors": [
+        {
+          "name": "draft_study_plan",
+          "error": "Choose course coverage or a single-course focus for this proposal"
+        }
+      ],
+      "questionsAsked": 4,
+      "questionTurns": 1,
+      "usage": {
+        "availability": "available",
+        "inputTokens": 244170,
+        "outputTokens": 9635
+      },
+      "observedUsd": 0.008247,
+      "checks": {
+        "initial_event_ids": "pass",
+        "no_write_before_approval": "pass",
+        "authoritative_deadline": "pass",
+        "revision": "pass",
+        "feasibility": "pass",
+        "future_pending": "pass",
+        "near_only_observed": "pass"
+      },
+      "failedCheckDetails": [],
+      "failureMessages": [],
+      "resultFile": "meta-muse-ember__ana-held-out.result.json"
+    }
+  ]
+}
