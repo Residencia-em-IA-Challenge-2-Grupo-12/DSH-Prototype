@@ -1,0 +1,4765 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-26T23:54:50.536Z",
+  "environment": {
+    "nodeVersion": "v24.11.1",
+    "pythonVersion": "3.13.16",
+    "ortoolsVersion": "9.14.6206",
+    "cpSatAvailable": true,
+    "pythonBinary": "experiments/planner-comparison/.venv/bin/python",
+    "gitHeadAtGeneration": "1e3316beb08836d7c418e9accf463f6d9baa0e69",
+    "solverParams": {
+      "workers": 1,
+      "seed": 0,
+      "maxTimeSeconds": 5,
+      "hostTimeoutMs": 15000,
+      "repeats": 3
+    }
+  },
+  "hashes": {
+    "readinessCasesSha256": "410f75aecfd236f96c9f15a361607b90c076ed1be97ba91ae0afc1870a02181d",
+    "brunoCalendarSha256": "8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1",
+    "anaCalendarSha256": "d8b30692464396d7f1a02fc1291ce0a8c217ef4b5ed1d75d9d20e2035f0a7913",
+    "brunoReplayCaseSha256": "00039caab6d88f06c56dc1bb93e601ab24b16d85e7bb3ec1a99792ea8afbc5c7",
+    "anaReplayCaseSha256": "ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b",
+    "heuristicPlannerSha256": "48cf77510dc14c42e8e92ddc784f21c1e1c7670268de3c79f0c83f272b581715",
+    "cpsatPlannerSha256": "990a641bd0d33cf5c5b4eeee9c40b3d5e72908772f7cdf9751375478ab729a92"
+  },
+  "objectiveDisclosure": {
+    "summary": "6-tier lexicographic integer maximization; Tier 1 (W_BLOCK = 10,000,000) strictly dominates the worst-case marginal penalty of Tiers 2-6 (~111,671), so CP-SAT never trades scheduled study minutes for balance, spread, or timing bonuses.",
+    "weights": {
+      "W_BLOCK": 10000000,
+      "W_PREF_PERIOD": 200000,
+      "W_COVERAGE_DEFAULT": 50000,
+      "W_COVERAGE_OPTION": 500000,
+      "W_COVERAGE_FOCUS": 10000,
+      "W_BALANCE": 20000,
+      "W_DAILY_SPREAD": 1000,
+      "W_TIME": 1,
+      "W_COURSE_RANK": 1
+    }
+  },
+  "aggregates": {
+    "frozen": {
+      "heuristic": {
+        "caseCount": 6,
+        "variantCount": 12,
+        "availableVariantCount": 12,
+        "hardConstraintPassCount": 12,
+        "deterministicCount": 12,
+        "strictTargetMetCount": 6,
+        "totalTargetMinutes": 9120,
+        "totalScheduledMinutes": 8160,
+        "totalShortfallMinutes": 960,
+        "totalAvoidableShortfallMinutes": 0,
+        "multiCourseDefaultCount": 5,
+        "multiCourseFullCoverageCount": 2,
+        "avgMultiCourseImbalanceMinutes": 396,
+        "medianLatencyMs": 1.488,
+        "maxLatencyMs": 21.575
+      },
+      "cpsat": {
+        "caseCount": 6,
+        "variantCount": 12,
+        "availableVariantCount": 12,
+        "hardConstraintPassCount": 12,
+        "deterministicCount": 12,
+        "strictTargetMetCount": 6,
+        "totalTargetMinutes": 9120,
+        "totalScheduledMinutes": 8160,
+        "totalShortfallMinutes": 960,
+        "totalAvoidableShortfallMinutes": 0,
+        "multiCourseDefaultCount": 5,
+        "multiCourseFullCoverageCount": 4,
+        "avgMultiCourseImbalanceMinutes": 132,
+        "medianLatencyMs": 4.061,
+        "maxLatencyMs": 4542.089
+      }
+    },
+    "pairedReplay": {
+      "heuristic": {
+        "caseCount": 4,
+        "variantCount": 8,
+        "availableVariantCount": 8,
+        "hardConstraintPassCount": 8,
+        "deterministicCount": 8,
+        "strictTargetMetCount": 8,
+        "totalTargetMinutes": 4320,
+        "totalScheduledMinutes": 4320,
+        "totalShortfallMinutes": 0,
+        "totalAvoidableShortfallMinutes": 0,
+        "multiCourseDefaultCount": 2,
+        "multiCourseFullCoverageCount": 2,
+        "avgMultiCourseImbalanceMinutes": 0,
+        "medianLatencyMs": 2.108,
+        "maxLatencyMs": 4.579
+      },
+      "cpsat": {
+        "caseCount": 4,
+        "variantCount": 8,
+        "availableVariantCount": 8,
+        "hardConstraintPassCount": 8,
+        "deterministicCount": 8,
+        "strictTargetMetCount": 8,
+        "totalTargetMinutes": 4320,
+        "totalScheduledMinutes": 4320,
+        "totalShortfallMinutes": 0,
+        "totalAvoidableShortfallMinutes": 0,
+        "multiCourseDefaultCount": 2,
+        "multiCourseFullCoverageCount": 2,
+        "avgMultiCourseImbalanceMinutes": 0,
+        "medianLatencyMs": 10.898,
+        "maxLatencyMs": 16.867
+      }
+    },
+    "coreCombined": {
+      "heuristic": {
+        "caseCount": 10,
+        "variantCount": 20,
+        "availableVariantCount": 20,
+        "hardConstraintPassCount": 20,
+        "deterministicCount": 20,
+        "strictTargetMetCount": 14,
+        "totalTargetMinutes": 13440,
+        "totalScheduledMinutes": 12480,
+        "totalShortfallMinutes": 960,
+        "totalAvoidableShortfallMinutes": 0,
+        "multiCourseDefaultCount": 7,
+        "multiCourseFullCoverageCount": 4,
+        "avgMultiCourseImbalanceMinutes": 282.9,
+        "medianLatencyMs": 1.881,
+        "maxLatencyMs": 21.575
+      },
+      "cpsat": {
+        "caseCount": 10,
+        "variantCount": 20,
+        "availableVariantCount": 20,
+        "hardConstraintPassCount": 20,
+        "deterministicCount": 20,
+        "strictTargetMetCount": 14,
+        "totalTargetMinutes": 13440,
+        "totalScheduledMinutes": 12480,
+        "totalShortfallMinutes": 960,
+        "totalAvoidableShortfallMinutes": 0,
+        "multiCourseDefaultCount": 7,
+        "multiCourseFullCoverageCount": 6,
+        "avgMultiCourseImbalanceMinutes": 94.3,
+        "medianLatencyMs": 5.796,
+        "maxLatencyMs": 4542.089
+      }
+    },
+    "diagnostic": {
+      "heuristic": {
+        "caseCount": 2,
+        "variantCount": 2,
+        "availableVariantCount": 2,
+        "hardConstraintPassCount": 2,
+        "deterministicCount": 2,
+        "strictTargetMetCount": 0,
+        "totalTargetMinutes": 240,
+        "totalScheduledMinutes": 60,
+        "totalShortfallMinutes": 180,
+        "totalAvoidableShortfallMinutes": 60,
+        "multiCourseDefaultCount": 0,
+        "multiCourseFullCoverageCount": 0,
+        "avgMultiCourseImbalanceMinutes": null,
+        "medianLatencyMs": 0.042,
+        "maxLatencyMs": 0.132
+      },
+      "cpsat": {
+        "caseCount": 2,
+        "variantCount": 2,
+        "availableVariantCount": 2,
+        "hardConstraintPassCount": 2,
+        "deterministicCount": 2,
+        "strictTargetMetCount": 1,
+        "totalTargetMinutes": 240,
+        "totalScheduledMinutes": 120,
+        "totalShortfallMinutes": 120,
+        "totalAvoidableShortfallMinutes": 0,
+        "multiCourseDefaultCount": 0,
+        "multiCourseFullCoverageCount": 0,
+        "avgMultiCourseImbalanceMinutes": null,
+        "medianLatencyMs": 1.865,
+        "maxLatencyMs": 2.912
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "bruno-equal-cutoff",
+      "group": "frozen",
+      "heldOut": false,
+      "purpose": "Same exact authored cutoff, no course priority. Test horizon imbalance and input-order sensitivity.",
+      "weeks": 6,
+      "knownFeasibleMinutes": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "expectShortfall": false,
+      "orderSensitivity": {
+        "heuristic": {
+          "defaultPerCourse": {
+            "Banco de Dados": 1140,
+            "Algoritmos": 660
+          },
+          "reversedPerCourse": {
+            "Banco de Dados": 660,
+            "Algoritmos": 1140
+          },
+          "courseOrderInvariant": false
+        },
+        "cpsat": {
+          "defaultPerCourse": {
+            "Banco de Dados": 900,
+            "Algoritmos": 900
+          },
+          "reversedPerCourse": {
+            "Banco de Dados": 900,
+            "Algoritmos": 900
+          },
+          "courseOrderInvariant": true
+        }
+      },
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 7.959,
+            "maxLatencyMs": 21.575,
+            "latenciesMs": [
+              21.575,
+              7.959,
+              7.546
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300,
+              300,
+              300,
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 1800,
+            "targetTotalMinutes": 1800,
+            "knownFeasibleTotalMinutes": 1800,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 1140,
+              "Algoritmos": 660
+            },
+            "feasibleCourses": [
+              "Banco de Dados",
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 480,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-18T19:00:00-03:00",
+                "end": "2026-11-18T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-18T20:15:00-03:00",
+                "end": "2026-11-18T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T14:00:00-03:00",
+                "end": "2026-11-21T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T15:15:00-03:00",
+                "end": "2026-11-21T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-22T10:00:00-03:00",
+                "end": "2026-11-22T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-25T19:00:00-03:00",
+                "end": "2026-11-25T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-25T20:15:00-03:00",
+                "end": "2026-11-25T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-28T14:00:00-03:00",
+                "end": "2026-11-28T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-28T15:15:00-03:00",
+                "end": "2026-11-28T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-29T10:00:00-03:00",
+                "end": "2026-11-29T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-02T19:00:00-03:00",
+                "end": "2026-12-02T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-02T20:15:00-03:00",
+                "end": "2026-12-02T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-05T14:00:00-03:00",
+                "end": "2026-12-05T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-05T15:15:00-03:00",
+                "end": "2026-12-05T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-06T10:00:00-03:00",
+                "end": "2026-12-06T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-09T19:00:00-03:00",
+                "end": "2026-12-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-09T20:15:00-03:00",
+                "end": "2026-12-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-12T14:00:00-03:00",
+                "end": "2026-12-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-12T15:15:00-03:00",
+                "end": "2026-12-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-13T10:00:00-03:00",
+                "end": "2026-12-13T11:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 96.884,
+            "maxLatencyMs": 126.29,
+            "medianCpSatSearchMs": 89.505,
+            "medianHostRoundTripMs": 396.23,
+            "peakRssKb": 97824,
+            "objectiveValue": 299954259,
+            "bestObjectiveBound": 299954259,
+            "numVariables": 312,
+            "numSlots": 104,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300,
+              300,
+              300,
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 1800,
+            "targetTotalMinutes": 1800,
+            "knownFeasibleTotalMinutes": 1800,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 900,
+              "Algoritmos": 900
+            },
+            "feasibleCourses": [
+              "Banco de Dados",
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-18T19:00:00-03:00",
+                "end": "2026-11-18T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-18T20:15:00-03:00",
+                "end": "2026-11-18T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T14:00:00-03:00",
+                "end": "2026-11-21T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T15:15:00-03:00",
+                "end": "2026-11-21T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-22T10:00:00-03:00",
+                "end": "2026-11-22T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-25T19:00:00-03:00",
+                "end": "2026-11-25T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-25T20:15:00-03:00",
+                "end": "2026-11-25T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T14:00:00-03:00",
+                "end": "2026-11-28T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T15:15:00-03:00",
+                "end": "2026-11-28T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-29T10:00:00-03:00",
+                "end": "2026-11-29T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-02T19:00:00-03:00",
+                "end": "2026-12-02T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-02T20:15:00-03:00",
+                "end": "2026-12-02T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-05T14:00:00-03:00",
+                "end": "2026-12-05T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-05T15:15:00-03:00",
+                "end": "2026-12-05T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-06T10:00:00-03:00",
+                "end": "2026-12-06T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-09T19:00:00-03:00",
+                "end": "2026-12-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-09T20:15:00-03:00",
+                "end": "2026-12-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-12T14:00:00-03:00",
+                "end": "2026-12-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-12T15:15:00-03:00",
+                "end": "2026-12-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-13T10:00:00-03:00",
+                "end": "2026-12-13T11:00:00-03:00"
+              }
+            ]
+          }
+        },
+        "coverageOption": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 6.825,
+            "maxLatencyMs": 9.22,
+            "latenciesMs": [
+              9.22,
+              6.825,
+              6.739
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300,
+              300,
+              300,
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 1800,
+            "targetTotalMinutes": 1800,
+            "knownFeasibleTotalMinutes": 1800,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 1140,
+              "Algoritmos": 660
+            },
+            "feasibleCourses": [
+              "Banco de Dados",
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 480,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-18T19:00:00-03:00",
+                "end": "2026-11-18T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-18T20:15:00-03:00",
+                "end": "2026-11-18T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T14:00:00-03:00",
+                "end": "2026-11-21T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T15:15:00-03:00",
+                "end": "2026-11-21T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-22T10:00:00-03:00",
+                "end": "2026-11-22T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-25T19:00:00-03:00",
+                "end": "2026-11-25T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-25T20:15:00-03:00",
+                "end": "2026-11-25T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-28T14:00:00-03:00",
+                "end": "2026-11-28T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-28T15:15:00-03:00",
+                "end": "2026-11-28T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-29T10:00:00-03:00",
+                "end": "2026-11-29T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-02T19:00:00-03:00",
+                "end": "2026-12-02T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-02T20:15:00-03:00",
+                "end": "2026-12-02T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-05T14:00:00-03:00",
+                "end": "2026-12-05T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-05T15:15:00-03:00",
+                "end": "2026-12-05T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-06T10:00:00-03:00",
+                "end": "2026-12-06T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-09T19:00:00-03:00",
+                "end": "2026-12-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-09T20:15:00-03:00",
+                "end": "2026-12-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-12T14:00:00-03:00",
+                "end": "2026-12-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-12T15:15:00-03:00",
+                "end": "2026-12-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-13T10:00:00-03:00",
+                "end": "2026-12-13T11:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 98.058,
+            "maxLatencyMs": 99.082,
+            "medianCpSatSearchMs": 90.646,
+            "medianHostRoundTripMs": 427.023,
+            "peakRssKb": 97596,
+            "objectiveValue": 300854259,
+            "bestObjectiveBound": 300854259,
+            "numVariables": 312,
+            "numSlots": 104,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300,
+              300,
+              300,
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 1800,
+            "targetTotalMinutes": 1800,
+            "knownFeasibleTotalMinutes": 1800,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 900,
+              "Algoritmos": 900
+            },
+            "feasibleCourses": [
+              "Banco de Dados",
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-18T19:00:00-03:00",
+                "end": "2026-11-18T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-18T20:15:00-03:00",
+                "end": "2026-11-18T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T14:00:00-03:00",
+                "end": "2026-11-21T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T15:15:00-03:00",
+                "end": "2026-11-21T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-22T10:00:00-03:00",
+                "end": "2026-11-22T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-25T19:00:00-03:00",
+                "end": "2026-11-25T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-25T20:15:00-03:00",
+                "end": "2026-11-25T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T14:00:00-03:00",
+                "end": "2026-11-28T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T15:15:00-03:00",
+                "end": "2026-11-28T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-29T10:00:00-03:00",
+                "end": "2026-11-29T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-02T19:00:00-03:00",
+                "end": "2026-12-02T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-02T20:15:00-03:00",
+                "end": "2026-12-02T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-05T14:00:00-03:00",
+                "end": "2026-12-05T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-05T15:15:00-03:00",
+                "end": "2026-12-05T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-06T10:00:00-03:00",
+                "end": "2026-12-06T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-09T19:00:00-03:00",
+                "end": "2026-12-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-09T20:15:00-03:00",
+                "end": "2026-12-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-12T14:00:00-03:00",
+                "end": "2026-12-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-12T15:15:00-03:00",
+                "end": "2026-12-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-13T10:00:00-03:00",
+                "end": "2026-12-13T11:00:00-03:00"
+              }
+            ]
+          }
+        },
+        "reversedCourseOrder": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 8.829,
+            "maxLatencyMs": 11.221,
+            "latenciesMs": [
+              8.829,
+              11.221,
+              7.448
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300,
+              300,
+              300,
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 1800,
+            "targetTotalMinutes": 1800,
+            "knownFeasibleTotalMinutes": 1800,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 660,
+              "Algoritmos": 1140
+            },
+            "feasibleCourses": [
+              "Algoritmos",
+              "Banco de Dados"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 480,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-18T19:00:00-03:00",
+                "end": "2026-11-18T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-18T20:15:00-03:00",
+                "end": "2026-11-18T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-21T14:00:00-03:00",
+                "end": "2026-11-21T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-21T15:15:00-03:00",
+                "end": "2026-11-21T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-22T10:00:00-03:00",
+                "end": "2026-11-22T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-25T19:00:00-03:00",
+                "end": "2026-11-25T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-25T20:15:00-03:00",
+                "end": "2026-11-25T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T14:00:00-03:00",
+                "end": "2026-11-28T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T15:15:00-03:00",
+                "end": "2026-11-28T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-29T10:00:00-03:00",
+                "end": "2026-11-29T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-02T19:00:00-03:00",
+                "end": "2026-12-02T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-02T20:15:00-03:00",
+                "end": "2026-12-02T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-05T14:00:00-03:00",
+                "end": "2026-12-05T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-05T15:15:00-03:00",
+                "end": "2026-12-05T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-06T10:00:00-03:00",
+                "end": "2026-12-06T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-09T19:00:00-03:00",
+                "end": "2026-12-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-09T20:15:00-03:00",
+                "end": "2026-12-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-12T14:00:00-03:00",
+                "end": "2026-12-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-12T15:15:00-03:00",
+                "end": "2026-12-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-13T10:00:00-03:00",
+                "end": "2026-12-13T11:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 94.809,
+            "maxLatencyMs": 101.029,
+            "medianCpSatSearchMs": 87.996,
+            "medianHostRoundTripMs": 397.742,
+            "peakRssKb": 97988,
+            "objectiveValue": 299954259,
+            "bestObjectiveBound": 299954259,
+            "numVariables": 312,
+            "numSlots": 104,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300,
+              300,
+              300,
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 1800,
+            "targetTotalMinutes": 1800,
+            "knownFeasibleTotalMinutes": 1800,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 900,
+              "Algoritmos": 900
+            },
+            "feasibleCourses": [
+              "Algoritmos",
+              "Banco de Dados"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-18T19:00:00-03:00",
+                "end": "2026-11-18T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-18T20:15:00-03:00",
+                "end": "2026-11-18T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T14:00:00-03:00",
+                "end": "2026-11-21T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T15:15:00-03:00",
+                "end": "2026-11-21T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-22T10:00:00-03:00",
+                "end": "2026-11-22T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-25T19:00:00-03:00",
+                "end": "2026-11-25T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-25T20:15:00-03:00",
+                "end": "2026-11-25T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T14:00:00-03:00",
+                "end": "2026-11-28T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T15:15:00-03:00",
+                "end": "2026-11-28T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-29T10:00:00-03:00",
+                "end": "2026-11-29T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-02T19:00:00-03:00",
+                "end": "2026-12-02T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-02T20:15:00-03:00",
+                "end": "2026-12-02T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-05T14:00:00-03:00",
+                "end": "2026-12-05T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-05T15:15:00-03:00",
+                "end": "2026-12-05T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-06T10:00:00-03:00",
+                "end": "2026-12-06T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-09T19:00:00-03:00",
+                "end": "2026-12-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-09T20:15:00-03:00",
+                "end": "2026-12-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-12T14:00:00-03:00",
+                "end": "2026-12-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-12T15:15:00-03:00",
+                "end": "2026-12-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-13T10:00:00-03:00",
+                "end": "2026-12-13T11:00:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "ana-earlier-deadline",
+      "group": "frozen",
+      "heldOut": false,
+      "purpose": "The resolved noon cutoff precedes Statistics. Compare coverage and assess whether the explanation supports concentration.",
+      "weeks": 1,
+      "knownFeasibleMinutes": [
+        240
+      ],
+      "expectShortfall": false,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 0.947,
+            "maxLatencyMs": 1.083,
+            "latenciesMs": [
+              1.083,
+              0.947,
+              0.877
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240
+            ],
+            "totalScheduledMinutes": 240,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 240,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Machine Learning": 240,
+              "Statistics": 0
+            },
+            "feasibleCourses": [
+              "Machine Learning",
+              "Statistics"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 0.5,
+            "courseImbalanceMinutes": 240,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-04T14:00:00-03:00",
+                "end": "2026-11-04T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-04T15:15:00-03:00",
+                "end": "2026-11-04T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-06T15:15:00-03:00",
+                "end": "2026-11-06T16:15:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 5.253,
+            "maxLatencyMs": 5.754,
+            "medianCpSatSearchMs": 3.232,
+            "medianHostRoundTripMs": 305.491,
+            "peakRssKb": 94820,
+            "objectiveValue": 40096616,
+            "bestObjectiveBound": 40096616,
+            "numVariables": 36,
+            "numSlots": 12,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240
+            ],
+            "totalScheduledMinutes": 240,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 240,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Machine Learning": 120,
+              "Statistics": 120
+            },
+            "feasibleCourses": [
+              "Machine Learning",
+              "Statistics"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-04T14:00:00-03:00",
+                "end": "2026-11-04T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Statistics",
+                "start": "2026-11-04T15:15:00-03:00",
+                "end": "2026-11-04T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Statistics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-06T15:15:00-03:00",
+                "end": "2026-11-06T16:15:00-03:00"
+              }
+            ]
+          }
+        },
+        "coverageOption": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 1.035,
+            "maxLatencyMs": 1.18,
+            "latenciesMs": [
+              1.18,
+              0.976,
+              1.035
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240
+            ],
+            "totalScheduledMinutes": 240,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 240,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Machine Learning": 180,
+              "Statistics": 60
+            },
+            "feasibleCourses": [
+              "Machine Learning",
+              "Statistics"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 120,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-04T14:00:00-03:00",
+                "end": "2026-11-04T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-04T15:15:00-03:00",
+                "end": "2026-11-04T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Statistics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-06T15:15:00-03:00",
+                "end": "2026-11-06T16:15:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 5.49,
+            "maxLatencyMs": 5.889,
+            "medianCpSatSearchMs": 3.442,
+            "medianHostRoundTripMs": 307.576,
+            "peakRssKb": 94852,
+            "objectiveValue": 40996616,
+            "bestObjectiveBound": 40996616,
+            "numVariables": 36,
+            "numSlots": 12,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240
+            ],
+            "totalScheduledMinutes": 240,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 240,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Machine Learning": 120,
+              "Statistics": 120
+            },
+            "feasibleCourses": [
+              "Machine Learning",
+              "Statistics"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-04T14:00:00-03:00",
+                "end": "2026-11-04T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Statistics",
+                "start": "2026-11-04T15:15:00-03:00",
+                "end": "2026-11-04T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Statistics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Machine Learning",
+                "start": "2026-11-06T15:15:00-03:00",
+                "end": "2026-11-06T16:15:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "bruno-explicit-priority",
+      "group": "frozen",
+      "heldOut": false,
+      "purpose": "Same schedule as the equal-cutoff case with an explicit course priority.",
+      "weeks": 6,
+      "knownFeasibleMinutes": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "expectShortfall": false,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 7.95,
+            "maxLatencyMs": 11.8,
+            "latenciesMs": [
+              11.8,
+              7.95,
+              7.645
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300,
+              300,
+              300,
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 1800,
+            "targetTotalMinutes": 1800,
+            "knownFeasibleTotalMinutes": 1800,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 360,
+              "Algoritmos": 1440
+            },
+            "feasibleCourses": [
+              "Banco de Dados",
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 1080,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-18T19:00:00-03:00",
+                "end": "2026-11-18T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-18T20:15:00-03:00",
+                "end": "2026-11-18T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T14:00:00-03:00",
+                "end": "2026-11-21T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-21T15:15:00-03:00",
+                "end": "2026-11-21T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-22T10:00:00-03:00",
+                "end": "2026-11-22T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-25T19:00:00-03:00",
+                "end": "2026-11-25T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-25T20:15:00-03:00",
+                "end": "2026-11-25T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T14:00:00-03:00",
+                "end": "2026-11-28T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T15:15:00-03:00",
+                "end": "2026-11-28T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-29T10:00:00-03:00",
+                "end": "2026-11-29T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-02T19:00:00-03:00",
+                "end": "2026-12-02T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-02T20:15:00-03:00",
+                "end": "2026-12-02T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-05T14:00:00-03:00",
+                "end": "2026-12-05T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-05T15:15:00-03:00",
+                "end": "2026-12-05T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-06T10:00:00-03:00",
+                "end": "2026-12-06T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-09T19:00:00-03:00",
+                "end": "2026-12-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-09T20:15:00-03:00",
+                "end": "2026-12-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-12T14:00:00-03:00",
+                "end": "2026-12-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-12T15:15:00-03:00",
+                "end": "2026-12-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-13T10:00:00-03:00",
+                "end": "2026-12-13T11:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 4503.722,
+            "maxLatencyMs": 4542.089,
+            "medianCpSatSearchMs": 4495.25,
+            "medianHostRoundTripMs": 4827.371,
+            "peakRssKb": 102868,
+            "objectiveValue": 299834264,
+            "bestObjectiveBound": 299834264,
+            "numVariables": 312,
+            "numSlots": 104,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300,
+              300,
+              300,
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 1800,
+            "targetTotalMinutes": 1800,
+            "knownFeasibleTotalMinutes": 1800,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 600,
+              "Algoritmos": 1200
+            },
+            "feasibleCourses": [
+              "Banco de Dados",
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 600,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-18T19:00:00-03:00",
+                "end": "2026-11-18T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-18T20:15:00-03:00",
+                "end": "2026-11-18T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-21T14:00:00-03:00",
+                "end": "2026-11-21T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-21T15:15:00-03:00",
+                "end": "2026-11-21T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-22T10:00:00-03:00",
+                "end": "2026-11-22T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-25T19:00:00-03:00",
+                "end": "2026-11-25T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-25T20:15:00-03:00",
+                "end": "2026-11-25T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-28T14:00:00-03:00",
+                "end": "2026-11-28T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-28T15:15:00-03:00",
+                "end": "2026-11-28T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-29T10:00:00-03:00",
+                "end": "2026-11-29T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-02T19:00:00-03:00",
+                "end": "2026-12-02T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-02T20:15:00-03:00",
+                "end": "2026-12-02T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-05T14:00:00-03:00",
+                "end": "2026-12-05T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-05T15:15:00-03:00",
+                "end": "2026-12-05T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-06T10:00:00-03:00",
+                "end": "2026-12-06T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-09T19:00:00-03:00",
+                "end": "2026-12-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-09T20:15:00-03:00",
+                "end": "2026-12-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-12T14:00:00-03:00",
+                "end": "2026-12-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-12-12T15:15:00-03:00",
+                "end": "2026-12-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-12-13T10:00:00-03:00",
+                "end": "2026-12-13T11:00:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "bruno-tight-capacity",
+      "group": "frozen",
+      "heldOut": false,
+      "purpose": "Shortfall with a date exclusion. One remaining window fits exactly one session.",
+      "weeks": 1,
+      "knownFeasibleMinutes": [
+        60
+      ],
+      "expectShortfall": true,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 0.819,
+            "maxLatencyMs": 1.011,
+            "latenciesMs": [
+              1.011,
+              0.819,
+              0.785
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              60
+            ],
+            "totalScheduledMinutes": 60,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 60,
+            "shortfallMinutes": 180,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 0,
+              "Algoritmos": 60
+            },
+            "feasibleCourses": [
+              "Banco de Dados",
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 0.5,
+            "courseImbalanceMinutes": 60,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "proved_shortfall",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 2.203,
+            "maxLatencyMs": 10.299,
+            "medianCpSatSearchMs": 0.692,
+            "medianHostRoundTripMs": 314.74,
+            "peakRssKb": 93688,
+            "objectiveValue": 9989465,
+            "bestObjectiveBound": 9989465,
+            "numVariables": 3,
+            "numSlots": 1,
+            "strictTargetProbe": {
+              "status": "INFEASIBLE",
+              "targetFeasibility": "proved_infeasible",
+              "wallMs": 2.238,
+              "cpSatSearchMs": 0.381
+            },
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              60
+            ],
+            "totalScheduledMinutes": 60,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 60,
+            "shortfallMinutes": 180,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 0,
+              "Algoritmos": 60
+            },
+            "feasibleCourses": [
+              "Banco de Dados",
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 0.5,
+            "courseImbalanceMinutes": 60,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              }
+            ]
+          }
+        },
+        "coverageOption": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 0.946,
+            "maxLatencyMs": 7.605,
+            "latenciesMs": [
+              7.605,
+              0.795,
+              0.946
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              60
+            ],
+            "totalScheduledMinutes": 60,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 60,
+            "shortfallMinutes": 180,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 60,
+              "Algoritmos": 0
+            },
+            "feasibleCourses": [
+              "Banco de Dados",
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 0.5,
+            "courseImbalanceMinutes": 60,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "proved_shortfall",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 2.094,
+            "maxLatencyMs": 2.272,
+            "medianCpSatSearchMs": 0.612,
+            "medianHostRoundTripMs": 336.007,
+            "peakRssKb": 93404,
+            "objectiveValue": 10439465,
+            "bestObjectiveBound": 10439465,
+            "numVariables": 3,
+            "numSlots": 1,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              60
+            ],
+            "totalScheduledMinutes": 60,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 60,
+            "shortfallMinutes": 180,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 0,
+              "Algoritmos": 60
+            },
+            "feasibleCourses": [
+              "Banco de Dados",
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 0.5,
+            "courseImbalanceMinutes": 60,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "bruno-expired-course",
+      "group": "frozen",
+      "heldOut": false,
+      "purpose": "An expired course is ineligible. The active assessment ends at the one feasible block boundary.",
+      "weeks": 1,
+      "knownFeasibleMinutes": [
+        60
+      ],
+      "expectShortfall": true,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 1.996,
+            "maxLatencyMs": 2.062,
+            "latenciesMs": [
+              1.996,
+              1.82,
+              2.062
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              60
+            ],
+            "totalScheduledMinutes": 60,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 60,
+            "shortfallMinutes": 180,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 0,
+              "Algoritmos": 60
+            },
+            "feasibleCourses": [
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "proved_shortfall",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 1.918,
+            "maxLatencyMs": 1.942,
+            "medianCpSatSearchMs": 0.43,
+            "medianHostRoundTripMs": 339.563,
+            "peakRssKb": 93400,
+            "objectiveValue": 10049732,
+            "bestObjectiveBound": 10049732,
+            "numVariables": 2,
+            "numSlots": 1,
+            "strictTargetProbe": {
+              "status": "INFEASIBLE",
+              "targetFeasibility": "proved_infeasible",
+              "wallMs": 1.795,
+              "cpSatSearchMs": 0.116
+            },
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              60
+            ],
+            "totalScheduledMinutes": 60,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 60,
+            "shortfallMinutes": 180,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 0,
+              "Algoritmos": 60
+            },
+            "feasibleCourses": [
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              }
+            ]
+          }
+        },
+        "coverageOption": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 1.942,
+            "maxLatencyMs": 2.689,
+            "latenciesMs": [
+              1.942,
+              1.679,
+              2.689
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              60
+            ],
+            "totalScheduledMinutes": 60,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 60,
+            "shortfallMinutes": 180,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 0,
+              "Algoritmos": 60
+            },
+            "feasibleCourses": [
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "proved_shortfall",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 1.804,
+            "maxLatencyMs": 1.946,
+            "medianCpSatSearchMs": 0.38,
+            "medianHostRoundTripMs": 306.001,
+            "peakRssKb": 93796,
+            "objectiveValue": 10499732,
+            "bestObjectiveBound": 10499732,
+            "numVariables": 2,
+            "numSlots": 1,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              60
+            ],
+            "totalScheduledMinutes": 60,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 60,
+            "shortfallMinutes": 180,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Banco de Dados": 0,
+              "Algoritmos": 60
+            },
+            "feasibleCourses": [
+              "Algoritmos"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "ravi-shift-exception",
+      "group": "frozen",
+      "heldOut": true,
+      "purpose": "Hold out from tuning. Employed exam candidate with a shift extension, protected all-day care and travel.",
+      "weeks": 1,
+      "knownFeasibleMinutes": [
+        120
+      ],
+      "expectShortfall": true,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 0.155,
+            "maxLatencyMs": 0.375,
+            "latenciesMs": [
+              0.375,
+              0.155,
+              0.134
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              120
+            ],
+            "totalScheduledMinutes": 120,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 120,
+            "shortfallMinutes": 120,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Writing": 120,
+              "Quantitative reasoning": 0
+            },
+            "feasibleCourses": [
+              "Writing",
+              "Quantitative reasoning"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 0.5,
+            "courseImbalanceMinutes": 120,
+            "preferredPeriodMatches": null,
+            "baseHash": "ba945345330b75c4e81a91377acee08e28923d08d8eac70e4fe56237438e607f",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Writing",
+                "start": "2026-11-05T20:00:00-03:00",
+                "end": "2026-11-05T21:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Writing",
+                "start": "2026-11-08T15:00:00-03:00",
+                "end": "2026-11-08T16:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "proved_shortfall",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 2.868,
+            "maxLatencyMs": 3.197,
+            "medianCpSatSearchMs": 1.488,
+            "medianHostRoundTripMs": 316.796,
+            "peakRssKb": 94228,
+            "objectiveValue": 20098997,
+            "bestObjectiveBound": 20098997,
+            "numVariables": 12,
+            "numSlots": 4,
+            "strictTargetProbe": {
+              "status": "INFEASIBLE",
+              "targetFeasibility": "proved_infeasible",
+              "wallMs": 1.581,
+              "cpSatSearchMs": 0.246
+            },
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              120
+            ],
+            "totalScheduledMinutes": 120,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 120,
+            "shortfallMinutes": 120,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Writing": 60,
+              "Quantitative reasoning": 60
+            },
+            "feasibleCourses": [
+              "Writing",
+              "Quantitative reasoning"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "ba945345330b75c4e81a91377acee08e28923d08d8eac70e4fe56237438e607f",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Quantitative reasoning",
+                "start": "2026-11-05T20:00:00-03:00",
+                "end": "2026-11-05T21:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Writing",
+                "start": "2026-11-08T15:00:00-03:00",
+                "end": "2026-11-08T16:00:00-03:00"
+              }
+            ]
+          }
+        },
+        "coverageOption": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 0.206,
+            "maxLatencyMs": 0.337,
+            "latenciesMs": [
+              0.337,
+              0.18,
+              0.206
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              120
+            ],
+            "totalScheduledMinutes": 120,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 120,
+            "shortfallMinutes": 120,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Writing": 60,
+              "Quantitative reasoning": 60
+            },
+            "feasibleCourses": [
+              "Writing",
+              "Quantitative reasoning"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "ba945345330b75c4e81a91377acee08e28923d08d8eac70e4fe56237438e607f",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Writing",
+                "start": "2026-11-05T20:00:00-03:00",
+                "end": "2026-11-05T21:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Quantitative reasoning",
+                "start": "2026-11-08T15:00:00-03:00",
+                "end": "2026-11-08T16:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "proved_shortfall",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 2.864,
+            "maxLatencyMs": 3.62,
+            "medianCpSatSearchMs": 1.495,
+            "medianHostRoundTripMs": 302.922,
+            "peakRssKb": 94388,
+            "objectiveValue": 20998997,
+            "bestObjectiveBound": 20998997,
+            "numVariables": 12,
+            "numSlots": 4,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              120
+            ],
+            "totalScheduledMinutes": 120,
+            "targetTotalMinutes": 240,
+            "knownFeasibleTotalMinutes": 120,
+            "shortfallMinutes": 120,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Writing": 60,
+              "Quantitative reasoning": 60
+            },
+            "feasibleCourses": [
+              "Writing",
+              "Quantitative reasoning"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "ba945345330b75c4e81a91377acee08e28923d08d8eac70e4fe56237438e607f",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Quantitative reasoning",
+                "start": "2026-11-05T20:00:00-03:00",
+                "end": "2026-11-05T21:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Writing",
+                "start": "2026-11-08T15:00:00-03:00",
+                "end": "2026-11-08T16:00:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "bruno-replay-initial",
+      "group": "paired-replay",
+      "heldOut": false,
+      "purpose": "Bruno paired-replay initial confirmed context (before Monday removal / avoidDates correction).",
+      "weeks": 2,
+      "knownFeasibleMinutes": [
+        300,
+        300
+      ],
+      "expectShortfall": false,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 2.397,
+            "maxLatencyMs": 3.265,
+            "latenciesMs": [
+              2.397,
+              3.265,
+              2.144
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 600,
+            "targetTotalMinutes": 600,
+            "knownFeasibleTotalMinutes": 600,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Algoritmos": 300,
+              "Banco de Dados": 300
+            },
+            "feasibleCourses": [
+              "Algoritmos",
+              "Banco de Dados"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-02T19:00:00-03:00",
+                "end": "2026-11-02T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-02T20:15:00-03:00",
+                "end": "2026-11-02T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-09T19:00:00-03:00",
+                "end": "2026-11-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-09T20:15:00-03:00",
+                "end": "2026-11-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 15.804,
+            "maxLatencyMs": 16.374,
+            "medianCpSatSearchMs": 11.669,
+            "medianHostRoundTripMs": 320.708,
+            "peakRssKb": 95836,
+            "objectiveValue": 100054847,
+            "bestObjectiveBound": 100054847,
+            "numVariables": 132,
+            "numSlots": 44,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 600,
+            "targetTotalMinutes": 600,
+            "knownFeasibleTotalMinutes": 600,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Algoritmos": 300,
+              "Banco de Dados": 300
+            },
+            "feasibleCourses": [
+              "Algoritmos",
+              "Banco de Dados"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-02T19:00:00-03:00",
+                "end": "2026-11-02T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-02T20:15:00-03:00",
+                "end": "2026-11-02T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-09T19:00:00-03:00",
+                "end": "2026-11-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-09T20:15:00-03:00",
+                "end": "2026-11-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              }
+            ]
+          }
+        },
+        "coverageOption": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 2.717,
+            "maxLatencyMs": 4.579,
+            "latenciesMs": [
+              2.717,
+              4.579,
+              2.173
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 600,
+            "targetTotalMinutes": 600,
+            "knownFeasibleTotalMinutes": 600,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Algoritmos": 240,
+              "Banco de Dados": 360
+            },
+            "feasibleCourses": [
+              "Algoritmos",
+              "Banco de Dados"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 120,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-02T19:00:00-03:00",
+                "end": "2026-11-02T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-02T20:15:00-03:00",
+                "end": "2026-11-02T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-09T19:00:00-03:00",
+                "end": "2026-11-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-09T20:15:00-03:00",
+                "end": "2026-11-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 15.252,
+            "maxLatencyMs": 16.187,
+            "medianCpSatSearchMs": 11.404,
+            "medianHostRoundTripMs": 332.384,
+            "peakRssKb": 96208,
+            "objectiveValue": 100954847,
+            "bestObjectiveBound": 100954847,
+            "numVariables": 132,
+            "numSlots": 44,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 600,
+            "targetTotalMinutes": 600,
+            "knownFeasibleTotalMinutes": 600,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Algoritmos": 300,
+              "Banco de Dados": 300
+            },
+            "feasibleCourses": [
+              "Algoritmos",
+              "Banco de Dados"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-02T19:00:00-03:00",
+                "end": "2026-11-02T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-02T20:15:00-03:00",
+                "end": "2026-11-02T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-09T19:00:00-03:00",
+                "end": "2026-11-09T20:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-09T20:15:00-03:00",
+                "end": "2026-11-09T21:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "bruno-replay-post-correction",
+      "group": "paired-replay",
+      "heldOut": false,
+      "purpose": "Bruno paired-replay after Monday correction (weekday 1 window dropped + avoidDates applied).",
+      "weeks": 2,
+      "knownFeasibleMinutes": [
+        300,
+        300
+      ],
+      "expectShortfall": false,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 3.184,
+            "maxLatencyMs": 3.836,
+            "latenciesMs": [
+              2.862,
+              3.836,
+              3.184
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 600,
+            "targetTotalMinutes": 600,
+            "knownFeasibleTotalMinutes": 600,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Algoritmos": 300,
+              "Banco de Dados": 300
+            },
+            "feasibleCourses": [
+              "Algoritmos",
+              "Banco de Dados"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 15.887,
+            "maxLatencyMs": 16.286,
+            "medianCpSatSearchMs": 12.797,
+            "medianHostRoundTripMs": 343.35,
+            "peakRssKb": 95504,
+            "objectiveValue": 100051185,
+            "bestObjectiveBound": 100051185,
+            "numVariables": 96,
+            "numSlots": 32,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 600,
+            "targetTotalMinutes": 600,
+            "knownFeasibleTotalMinutes": 600,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Algoritmos": 300,
+              "Banco de Dados": 300
+            },
+            "feasibleCourses": [
+              "Algoritmos",
+              "Banco de Dados"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              }
+            ]
+          }
+        },
+        "coverageOption": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 2.973,
+            "maxLatencyMs": 3.382,
+            "latenciesMs": [
+              2.973,
+              3.382,
+              2.769
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 600,
+            "targetTotalMinutes": 600,
+            "knownFeasibleTotalMinutes": 600,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Algoritmos": 300,
+              "Banco de Dados": 300
+            },
+            "feasibleCourses": [
+              "Algoritmos",
+              "Banco de Dados"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 15.447,
+            "maxLatencyMs": 16.867,
+            "medianCpSatSearchMs": 12.347,
+            "medianHostRoundTripMs": 316.961,
+            "peakRssKb": 95832,
+            "objectiveValue": 100951185,
+            "bestObjectiveBound": 100951185,
+            "numVariables": 96,
+            "numSlots": 32,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              300,
+              300
+            ],
+            "totalScheduledMinutes": 600,
+            "targetTotalMinutes": 600,
+            "knownFeasibleTotalMinutes": 600,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Algoritmos": 300,
+              "Banco de Dados": 300
+            },
+            "feasibleCourses": [
+              "Algoritmos",
+              "Banco de Dados"
+            ],
+            "coveredFeasibleCourses": 2,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "98048b5db022f5285f2bcfd0f4e911ed4bfbb39310d9b57fb4413e7ffd850bb6",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Banco de Dados",
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Algoritmos",
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-11T20:00:00-03:00",
+                "end": "2026-11-11T21:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Algoritmos",
+                "start": "2026-11-14T14:00:00-03:00",
+                "end": "2026-11-14T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-14T15:15:00-03:00",
+                "end": "2026-11-14T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T10:00:00-03:00",
+                "end": "2026-11-15T11:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Banco de Dados",
+                "start": "2026-11-15T11:15:00-03:00",
+                "end": "2026-11-15T12:15:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "ana-held-out-initial",
+      "group": "paired-replay",
+      "heldOut": true,
+      "purpose": "Ana held-out paired-replay initial context before Wednesday 2026-11-04 exclusion.",
+      "weeks": 2,
+      "knownFeasibleMinutes": [
+        240,
+        240
+      ],
+      "expectShortfall": false,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 1.502,
+            "maxLatencyMs": 1.55,
+            "latenciesMs": [
+              1.492,
+              1.502,
+              1.55
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240,
+              240
+            ],
+            "totalScheduledMinutes": 480,
+            "targetTotalMinutes": 480,
+            "knownFeasibleTotalMinutes": 480,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Applied Data Ethics": 480
+            },
+            "feasibleCourses": [
+              "Applied Data Ethics"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-04T14:00:00-03:00",
+                "end": "2026-11-04T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-04T15:15:00-03:00",
+                "end": "2026-11-04T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T14:00:00-03:00",
+                "end": "2026-11-05T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-11T15:00:00-03:00",
+                "end": "2026-11-11T16:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T14:00:00-03:00",
+                "end": "2026-11-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T15:15:00-03:00",
+                "end": "2026-11-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-13T14:00:00-03:00",
+                "end": "2026-11-13T15:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 5.088,
+            "maxLatencyMs": 5.143,
+            "medianCpSatSearchMs": 2.61,
+            "medianHostRoundTripMs": 305.944,
+            "peakRssKb": 95232,
+            "objectiveValue": 80045330,
+            "bestObjectiveBound": 80045330,
+            "numVariables": 64,
+            "numSlots": 32,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240,
+              240
+            ],
+            "totalScheduledMinutes": 480,
+            "targetTotalMinutes": 480,
+            "knownFeasibleTotalMinutes": 480,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Applied Data Ethics": 480
+            },
+            "feasibleCourses": [
+              "Applied Data Ethics"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-04T14:00:00-03:00",
+                "end": "2026-11-04T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-04T15:15:00-03:00",
+                "end": "2026-11-04T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T14:00:00-03:00",
+                "end": "2026-11-05T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-11T15:00:00-03:00",
+                "end": "2026-11-11T16:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T14:00:00-03:00",
+                "end": "2026-11-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T15:15:00-03:00",
+                "end": "2026-11-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-13T14:00:00-03:00",
+                "end": "2026-11-13T15:00:00-03:00"
+              }
+            ]
+          }
+        },
+        "coverageOption": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 1.483,
+            "maxLatencyMs": 1.547,
+            "latenciesMs": [
+              1.547,
+              1.356,
+              1.483
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240,
+              240
+            ],
+            "totalScheduledMinutes": 480,
+            "targetTotalMinutes": 480,
+            "knownFeasibleTotalMinutes": 480,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Applied Data Ethics": 480
+            },
+            "feasibleCourses": [
+              "Applied Data Ethics"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-04T14:00:00-03:00",
+                "end": "2026-11-04T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-04T15:15:00-03:00",
+                "end": "2026-11-04T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T14:00:00-03:00",
+                "end": "2026-11-05T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-11T15:00:00-03:00",
+                "end": "2026-11-11T16:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T14:00:00-03:00",
+                "end": "2026-11-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T15:15:00-03:00",
+                "end": "2026-11-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-13T14:00:00-03:00",
+                "end": "2026-11-13T15:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 6.102,
+            "maxLatencyMs": 6.762,
+            "medianCpSatSearchMs": 3.122,
+            "medianHostRoundTripMs": 325.314,
+            "peakRssKb": 95084,
+            "objectiveValue": 80495330,
+            "bestObjectiveBound": 80495330,
+            "numVariables": 64,
+            "numSlots": 32,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240,
+              240
+            ],
+            "totalScheduledMinutes": 480,
+            "targetTotalMinutes": 480,
+            "knownFeasibleTotalMinutes": 480,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Applied Data Ethics": 480
+            },
+            "feasibleCourses": [
+              "Applied Data Ethics"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-04T14:00:00-03:00",
+                "end": "2026-11-04T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-04T15:15:00-03:00",
+                "end": "2026-11-04T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T14:00:00-03:00",
+                "end": "2026-11-05T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-11T15:00:00-03:00",
+                "end": "2026-11-11T16:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T14:00:00-03:00",
+                "end": "2026-11-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T15:15:00-03:00",
+                "end": "2026-11-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-13T14:00:00-03:00",
+                "end": "2026-11-13T15:00:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "ana-held-out-post-correction",
+      "group": "paired-replay",
+      "heldOut": true,
+      "purpose": "Ana held-out paired-replay after 2026-11-04 family-logistics exclusion.",
+      "weeks": 2,
+      "knownFeasibleMinutes": [
+        240,
+        240
+      ],
+      "expectShortfall": false,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 1.82,
+            "maxLatencyMs": 1.936,
+            "latenciesMs": [
+              1.641,
+              1.82,
+              1.936
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240,
+              240
+            ],
+            "totalScheduledMinutes": 480,
+            "targetTotalMinutes": 480,
+            "knownFeasibleTotalMinutes": 480,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Applied Data Ethics": 480
+            },
+            "feasibleCourses": [
+              "Applied Data Ethics"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T14:00:00-03:00",
+                "end": "2026-11-05T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T15:15:00-03:00",
+                "end": "2026-11-05T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T15:15:00-03:00",
+                "end": "2026-11-06T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-11T15:00:00-03:00",
+                "end": "2026-11-11T16:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T14:00:00-03:00",
+                "end": "2026-11-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T15:15:00-03:00",
+                "end": "2026-11-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-13T14:00:00-03:00",
+                "end": "2026-11-13T15:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 6.543,
+            "maxLatencyMs": 7.48,
+            "medianCpSatSearchMs": 3.9,
+            "medianHostRoundTripMs": 323.46,
+            "peakRssKb": 94920,
+            "objectiveValue": 80044037,
+            "bestObjectiveBound": 80044037,
+            "numVariables": 52,
+            "numSlots": 26,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240,
+              240
+            ],
+            "totalScheduledMinutes": 480,
+            "targetTotalMinutes": 480,
+            "knownFeasibleTotalMinutes": 480,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Applied Data Ethics": 480
+            },
+            "feasibleCourses": [
+              "Applied Data Ethics"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T14:00:00-03:00",
+                "end": "2026-11-05T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T15:15:00-03:00",
+                "end": "2026-11-05T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T15:15:00-03:00",
+                "end": "2026-11-06T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-11T15:00:00-03:00",
+                "end": "2026-11-11T16:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T14:00:00-03:00",
+                "end": "2026-11-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T15:15:00-03:00",
+                "end": "2026-11-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-13T14:00:00-03:00",
+                "end": "2026-11-13T15:00:00-03:00"
+              }
+            ]
+          }
+        },
+        "coverageOption": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 1.571,
+            "maxLatencyMs": 2.46,
+            "latenciesMs": [
+              1.571,
+              1.306,
+              2.46
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240,
+              240
+            ],
+            "totalScheduledMinutes": 480,
+            "targetTotalMinutes": 480,
+            "knownFeasibleTotalMinutes": 480,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Applied Data Ethics": 480
+            },
+            "feasibleCourses": [
+              "Applied Data Ethics"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T14:00:00-03:00",
+                "end": "2026-11-05T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T15:15:00-03:00",
+                "end": "2026-11-05T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T15:15:00-03:00",
+                "end": "2026-11-06T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-11T15:00:00-03:00",
+                "end": "2026-11-11T16:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T14:00:00-03:00",
+                "end": "2026-11-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T15:15:00-03:00",
+                "end": "2026-11-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-13T14:00:00-03:00",
+                "end": "2026-11-13T15:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 5.48,
+            "maxLatencyMs": 5.942,
+            "medianCpSatSearchMs": 3.265,
+            "medianHostRoundTripMs": 307.181,
+            "peakRssKb": 95000,
+            "objectiveValue": 80494037,
+            "bestObjectiveBound": 80494037,
+            "numVariables": 52,
+            "numSlots": 26,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              240,
+              240
+            ],
+            "totalScheduledMinutes": 480,
+            "targetTotalMinutes": 480,
+            "knownFeasibleTotalMinutes": 480,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Applied Data Ethics": 480
+            },
+            "feasibleCourses": [
+              "Applied Data Ethics"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "03404c030f26b4be0b6f1515532033987e0db585f3a98e8bafe1b77910b226b5",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T14:00:00-03:00",
+                "end": "2026-11-05T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-05T15:15:00-03:00",
+                "end": "2026-11-05T16:15:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T14:00:00-03:00",
+                "end": "2026-11-06T15:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-06T15:15:00-03:00",
+                "end": "2026-11-06T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-11T15:00:00-03:00",
+                "end": "2026-11-11T16:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T14:00:00-03:00",
+                "end": "2026-11-12T15:00:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-12T15:15:00-03:00",
+                "end": "2026-11-12T16:15:00-03:00"
+              },
+              {
+                "section": "future",
+                "course": "Applied Data Ethics",
+                "start": "2026-11-13T14:00:00-03:00",
+                "end": "2026-11-13T15:00:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "preferred-period-boundary-packing",
+      "group": "diagnostic",
+      "heldOut": false,
+      "purpose": "Diagnostic boundary packing: 11:00-13:15 fits two 1h sessions (11:00-12:00 + 12:15-13:15) when preferredPeriod=afternoon, testing whether greedy period preference causes avoidable shortfall.",
+      "weeks": 1,
+      "knownFeasibleMinutes": [
+        120
+      ],
+      "expectShortfall": false,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 0.041,
+            "maxLatencyMs": 0.132,
+            "latenciesMs": [
+              0.132,
+              0.039,
+              0.041
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              60
+            ],
+            "totalScheduledMinutes": 60,
+            "targetTotalMinutes": 120,
+            "knownFeasibleTotalMinutes": 120,
+            "shortfallMinutes": 60,
+            "avoidableShortfallMinutes": 60,
+            "perCourse": {
+              "Calculus": 60
+            },
+            "feasibleCourses": [
+              "Calculus"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": 1,
+            "baseHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Calculus",
+                "start": "2026-11-04T12:00:00-03:00",
+                "end": "2026-11-04T13:00:00-03:00"
+              }
+            ]
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "target_met",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 2.521,
+            "maxLatencyMs": 2.912,
+            "medianCpSatSearchMs": 1.153,
+            "medianHostRoundTripMs": 305.801,
+            "peakRssKb": 94640,
+            "objectiveValue": 20248523,
+            "bestObjectiveBound": 20248523,
+            "numVariables": 12,
+            "numSlots": 6,
+            "strictTargetProbe": null,
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [],
+            "scheduledMinutesByWeek": [
+              120
+            ],
+            "totalScheduledMinutes": 120,
+            "targetTotalMinutes": 120,
+            "knownFeasibleTotalMinutes": 120,
+            "shortfallMinutes": 0,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Calculus": 120
+            },
+            "feasibleCourses": [
+              "Calculus"
+            ],
+            "coveredFeasibleCourses": 1,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": 1,
+            "baseHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "blocks": [
+              {
+                "section": "near",
+                "course": "Calculus",
+                "start": "2026-11-04T11:00:00-03:00",
+                "end": "2026-11-04T12:00:00-03:00"
+              },
+              {
+                "section": "near",
+                "course": "Calculus",
+                "start": "2026-11-04T12:15:00-03:00",
+                "end": "2026-11-04T13:15:00-03:00"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "zero-capacity-infeasible-target",
+      "group": "diagnostic",
+      "heldOut": false,
+      "purpose": "Diagnostic infeasibility separation: single window fully blocked by an opaque event; verifies proved shortfall + strict-target INFEASIBLE proof.",
+      "weeks": 1,
+      "knownFeasibleMinutes": [
+        0
+      ],
+      "expectShortfall": true,
+      "orderSensitivity": null,
+      "variants": {
+        "default": {
+          "heuristic": {
+            "status": "FEASIBLE",
+            "deterministic": true,
+            "medianLatencyMs": 0.043,
+            "maxLatencyMs": 0.131,
+            "latenciesMs": [
+              0.131,
+              0.043,
+              0.036
+            ],
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "No study blocks in the proposal",
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              0
+            ],
+            "totalScheduledMinutes": 0,
+            "targetTotalMinutes": 120,
+            "knownFeasibleTotalMinutes": 0,
+            "shortfallMinutes": 120,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Linear Algebra": 0
+            },
+            "feasibleCourses": [],
+            "coveredFeasibleCourses": 0,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "cfc4f7b6809d83ed9b9ad53f32e1fdc4fc32e7a3958a976e2fe8468c067fdbfe",
+            "blocks": []
+          },
+          "cpsat": {
+            "status": "OPTIMAL",
+            "targetFeasibility": "proved_shortfall",
+            "reason": null,
+            "deterministic": true,
+            "medianLatencyMs": 1.209,
+            "maxLatencyMs": 1.294,
+            "medianCpSatSearchMs": 0.3,
+            "medianHostRoundTripMs": 305.822,
+            "peakRssKb": 92528,
+            "objectiveValue": 0,
+            "bestObjectiveBound": 0,
+            "numVariables": 0,
+            "numSlots": 0,
+            "strictTargetProbe": {
+              "status": "INFEASIBLE",
+              "targetFeasibility": "proved_infeasible",
+              "wallMs": 0.968,
+              "cpSatSearchMs": 0.078
+            },
+            "validHardConstraints": true,
+            "findings": [],
+            "strictTargetFindings": [
+              "No study blocks in the proposal",
+              "Study time differs from the reviewed target in week 1"
+            ],
+            "scheduledMinutesByWeek": [
+              0
+            ],
+            "totalScheduledMinutes": 0,
+            "targetTotalMinutes": 120,
+            "knownFeasibleTotalMinutes": 0,
+            "shortfallMinutes": 120,
+            "avoidableShortfallMinutes": 0,
+            "perCourse": {
+              "Linear Algebra": 0
+            },
+            "feasibleCourses": [],
+            "coveredFeasibleCourses": 0,
+            "courseCoverageRate": 1,
+            "courseImbalanceMinutes": 0,
+            "preferredPeriodMatches": null,
+            "baseHash": "cfc4f7b6809d83ed9b9ad53f32e1fdc4fc32e7a3958a976e2fe8468c067fdbfe",
+            "blocks": []
+          }
+        }
+      }
+    }
+  ]
+}
