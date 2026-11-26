@@ -28,9 +28,13 @@ WEEK_MS = 7 * DAY_MS
 SESSION_MINUTES = 60
 SLOT_STEP_MINUTES = 15
 
-# Frozen lexicographic integer objective weights (explicitly disclosed in evidence docs).
-# W_BLOCK strictly dominates the worst-case marginal penalty of Tiers 2-6 (~111,671),
-# ensuring the solver NEVER omits a feasible study block to improve balance, spread, or timing.
+# Frozen base integer objective weights (explicitly disclosed in evidence docs).
+# The solver combines Tiers 1-6 into a weighted integer objective. To guarantee
+# mathematically that Tier 1 (total scheduled 1h blocks) strictly dominates the
+# full global span of Tiers 2-6 on every instance — even with many weeks,
+# preferred-period bonuses, or course-coverage bonuses — solve_plan computes
+# `max_lower_tier_span` for the instance and sets
+# `block_weight = max(W_BLOCK, max_lower_tier_span + 1)`.
 W_BLOCK = 10_000_000
 W_PREF_PERIOD = 200_000
 W_COVERAGE_DEFAULT = 50_000
@@ -407,19 +411,6 @@ def solve_plan(
         else:
             model.Add(week_sum <= target)
 
-    # Objective construction.
-    objective_terms: list[Any] = []
-
-    # Tier 1: maximize total scheduled 1-hour blocks.
-    for slot in slots:
-        objective_terms.append(W_BLOCK * y_vars[slot.index])
-
-    # Tier 2: preferred period bonus.
-    if preferred_period:
-        for slot in slots:
-            if slot.period == preferred_period:
-                objective_terms.append(W_PREF_PERIOD * y_vars[slot.index])
-
     # Eligible courses globally and per week.
     eligible_global = sorted(
         {ci for slot in slots for ci in slot.eligible_courses},
@@ -431,8 +422,9 @@ def solve_plan(
             course_total_vars[ci].append(x_vars[(slot.index, ci)])
 
     max_horizon_blocks = max(1, count * target)
+    num_courses = len(courses)
 
-    # Tier 3: distinct course coverage across the horizon.
+    # Tier 3 weight (distinct course coverage across the horizon).
     if allocation == "course-coverage":
         w_coverage = W_COVERAGE_OPTION
     elif focus_idx is not None:
@@ -440,6 +432,50 @@ def solve_plan(
     else:
         w_coverage = W_COVERAGE_DEFAULT
 
+    # Exact global upper bound on the swing of Tiers 2-6 across any two feasible
+    # schedules for this instance, so Tier 1 strictly dominates block count.
+    lower_tier_max_pos = (
+        (max_horizon_blocks * W_PREF_PERIOD if preferred_period else 0)
+        + len(eligible_global) * w_coverage
+        + max_horizon_blocks * max(0, num_courses - 1) * W_COURSE_RANK
+    )
+    if focus_idx is not None and focus_idx in course_total_vars:
+        other_count = len([ci for ci in eligible_global if ci != focus_idx])
+        lower_tier_balance_neg = (
+            W_BALANCE * 3 * max_horizon_blocks
+            + W_BALANCE * count * 3 * max(1, target)
+            + (W_BALANCE * max_horizon_blocks if other_count >= 2 else 0)
+        )
+    elif len(eligible_global) >= 2:
+        lower_tier_balance_neg = (
+            2 * W_BALANCE * max_horizon_blocks
+            + W_BALANCE * count * max(1, target)
+        )
+    else:
+        lower_tier_balance_neg = 0
+    lower_tier_max_neg = (
+        lower_tier_balance_neg
+        + max_horizon_blocks * W_DAILY_SPREAD
+        + max_horizon_blocks * (6 * 96 + 95) * W_TIME
+    )
+    max_lower_tier_span = lower_tier_max_pos + lower_tier_max_neg
+    block_weight = max(W_BLOCK, max_lower_tier_span + 1)
+    block_dominance_guaranteed = block_weight > max_lower_tier_span
+
+    # Objective construction.
+    objective_terms: list[Any] = []
+
+    # Tier 1: maximize total scheduled 1-hour blocks.
+    for slot in slots:
+        objective_terms.append(block_weight * y_vars[slot.index])
+
+    # Tier 2: preferred period bonus.
+    if preferred_period:
+        for slot in slots:
+            if slot.period == preferred_period:
+                objective_terms.append(W_PREF_PERIOD * y_vars[slot.index])
+
+    # Tier 3: distinct course coverage across the horizon.
     for ci in eligible_global:
         cov = model.NewBoolVar(f"cov_r{canonical_rank[ci]}")
         c_sum = sum(course_total_vars[ci])
@@ -666,8 +702,10 @@ def solve_plan(
     total_scheduled = sum(weekly_counts)
     if all(w_cnt == target for w_cnt in weekly_counts):
         feasibility_label = "target_met"
-    elif status_name == "OPTIMAL" and total_scheduled < total_target:
+    elif status_name == "OPTIMAL" and total_scheduled < total_target and block_dominance_guaranteed:
         feasibility_label = "proved_shortfall"
+    elif status_name == "OPTIMAL" and total_scheduled < total_target:
+        feasibility_label = "weighted_optimal_shortfall"
     else:
         feasibility_label = "unproved_shortfall"
 
@@ -681,6 +719,9 @@ def solve_plan(
             "targetFeasibility": feasibility_label,
             "objectiveValue": int(round(solver.ObjectiveValue())),
             "bestObjectiveBound": int(round(solver.BestObjectiveBound())),
+            "blockWeight": block_weight,
+            "maxLowerTierSpan": max_lower_tier_span,
+            "blockDominanceGuaranteed": block_dominance_guaranteed,
             "wallMs": wall_ms,
             "cpSatSearchMs": cpsat_search_ms,
             "peakRssKb": _peak_rss_kb(),

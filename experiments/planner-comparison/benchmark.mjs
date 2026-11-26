@@ -515,20 +515,20 @@ export function renderMarkdownReport(summary) {
   lines.push('');
   lines.push('## 2. Objective Disclosure & Feasibility Semantics');
   lines.push('');
-  lines.push('CP-SAT maximizes a **6-tier lexicographic integer objective** (disclosed explicitly so no hidden penalty trades away study minutes):');
+  lines.push('CP-SAT maximizes a **6-tier weighted integer objective** (disclosed explicitly so no hidden penalty trades away study minutes):');
   lines.push('');
-  lines.push('1. **Tier 1 — Total Scheduled Study Minutes (`W_BLOCK = 10,000,000` per 1h block):** Strictly larger than the worst-case marginal penalty of Tiers 2–6 (`<= 111,671`), guaranteeing CP-SAT **never** sacrifices feasible minutes for balance, daily spread, or period bonuses.');
+  lines.push('1. **Tier 1 — Total Scheduled Study Minutes (`blockWeight = max(10,000,000, maxLowerTierSpan + 1)` per 1h block):** Dynamically computed per instance to strictly exceed the exact global span of Tiers 2–6 across any two feasible schedules, guaranteeing CP-SAT **never** sacrifices a feasible study block for preferred-period, coverage, balance, or spread terms.');
   lines.push('2. **Tier 2 — Preferred Period (`W_PREF_PERIOD = 200,000` per matching block):** Used only when `preferredPeriod` is supplied.');
-  lines.push('3. **Tier 3 — Distinct Eligible Course Coverage (`W_COVERAGE = 500,000` for `course-coverage`, `50,000` default, `10,000` with `focusCourse`):** Rewards covering every eligible course at least once without starving secondary courses when multiple blocks exist.');
+  lines.push('3. **Tier 3 — Distinct Eligible Course Coverage (`W_COVERAGE = 500,000` for `course-coverage`, `50,000` default, `10,000` with `focusCourse`):** Rewards covering every eligible course at least once. Note that coverage and balance are explicit product preferences encoded into CP-SAT, not universal correctness rules.');
   lines.push('4. **Tier 4 — Horizon & Weekly Course Balance (`W_BALANCE = 20,000`):** Minimizes `max - min` spread across eligible courses (or deviation from ~2:1 target split when `focusCourse` is set).');
   lines.push('5. **Tier 5 — Daily Spread (`W_DAILY_SPREAD = 1,000`):** Prefers spreading blocks across days over stacking multiple sessions on a single day.');
   lines.push('6. **Tier 6 — Deterministic Canonical Tie-Breakers (`W_TIME = 1`, `W_COURSE_RANK = 1`):** Prefers earlier day/slot in week and orders ties by `(deadline, course.name)`, independent of input course array order.');
   lines.push('');
   lines.push('**Status & Feasibility Semantics:**');
   lines.push('- `OPTIMAL` + `target_met`: CP-SAT met 100% of every weekly target.');
-  lines.push('- `OPTIMAL` + `proved_shortfall`: CP-SAT proved no legal schedule can place more minutes under the reviewed windows, caps, breaks, commitments, and deadlines (cross-checked with `strictTarget: true` returning `INFEASIBLE`).');
+  lines.push('- `OPTIMAL` + `proved_shortfall`: CP-SAT reached `OPTIMAL` with `blockDominanceGuaranteed = true` (`blockWeight > maxLowerTierSpan`), proving no legal schedule places more blocks under the modeled constraints (additionally cross-checked with `strictTarget: true` returning `INFEASIBLE` to confirm the full target is unattainable).');
   lines.push('- `FEASIBLE`: legal schedule found within time cap, optimality not proved.');
-  lines.push('- `INFEASIBLE`: proved no legal schedule satisfies hard constraints (when `strictTarget: true`).');
+  lines.push('- `INFEASIBLE`: proved no legal schedule satisfies hard constraints (when `strictTarget: true`, proves the full weekly target is unattainable under the modeled constraints).');
   lines.push('- `UNKNOWN` / `HOST_TIMEOUT`: time budget hit without proof; never treated as infeasibility.');
   lines.push('- `UNAVAILABLE`: OR-Tools missing; never falls back to a heuristic.');
   lines.push('');
@@ -640,6 +640,14 @@ export function renderMarkdownReport(summary) {
   }
 
   const allPairs = cases.flatMap(c => Object.entries(c.variants).map(([vName, pair]) => ({ id: c.id, vName, ...pair })));
+  const totalAttempted = allPairs.length;
+  const hEval = allPairs.filter(p => p.heuristic && p.heuristic.status !== 'UNAVAILABLE');
+  const hPass = hEval.filter(p => Array.isArray(p.heuristic.findings) && p.heuristic.findings.length === 0);
+  const cEval = allPairs.filter(p => p.cpsat && p.cpsat.status !== 'UNAVAILABLE' && p.cpsat.status !== 'ERROR' && p.cpsat.status !== 'HOST_TIMEOUT');
+  const cPass = cEval.filter(p => Array.isArray(p.cpsat.findings) && p.cpsat.findings.length === 0);
+  const hRate = hEval.length ? `${((hPass.length / hEval.length) * 100).toFixed(1)}%` : 'N/A';
+  const cRate = cEval.length ? `${((cPass.length / cEval.length) * 100).toFixed(1)}%` : 'N/A';
+
   const hLatencies = allPairs.map(p => p.heuristic.medianLatencyMs).filter(v => typeof v === 'number');
   const cWallLatencies = allPairs.map(p => p.cpsat.medianLatencyMs).filter(v => typeof v === 'number');
   const cRtLatencies = allPairs.map(p => p.cpsat.medianHostRoundTripMs).filter(v => typeof v === 'number');
@@ -649,35 +657,57 @@ export function renderMarkdownReport(summary) {
     .map(p => p.cpsat.medianLatencyMs)
     .filter(v => typeof v === 'number');
   const focusRow = allPairs.find(p => p.id === 'bruno-explicit-priority');
+  const anaRow = cases.find(c => c.id === 'ana-earlier-deadline')?.variants?.default;
+  const raviRow = cases.find(c => c.id === 'ravi-shift-exception')?.variants?.default;
+  const boundaryRow = cases.find(c => c.id === 'preferred-period-boundary-packing')?.variants?.default;
 
   lines.push('## 6. Complexity, Runtime & Dependency Tradeoff');
   lines.push('');
-  lines.push(`- **Hard-Constraint Safety:** Both Heuristic (\`src/domain/planner.mjs\`) and CP-SAT achieved **100% pass rate** (\`0\` \`validateSchedule\` findings) across all ${allPairs.length} variants (20 core + 2 diagnostic).`);
-  lines.push('- **Where Heuristic Struggles vs Where CP-SAT Wins:**');
-  lines.push('  1. **Equal-deadline input-order sensitivity (`bruno-equal-cutoff`):** Heuristic swings 1140m/660m ↔ 660m/1140m (8h shift) when `courses` is reversed; CP-SAT achieves an exact 900m/900m split invariant to input order.');
-  lines.push('  2. **Multi-course starvation (`ana-earlier-deadline`, `ravi-shift-exception`):** Without `allocation: "course-coverage"`, Heuristic puts 100% of blocks on the first course (`Machine Learning: 240m / Statistics: 0m` for Ana; `Writing: 120m / Quantitative reasoning: 0m` for Ravi). CP-SAT automatically balances (`120m/120m` for Ana, `60m/60m` for Ravi) while still honoring `focusCourse` (`1200m/600m` 2:1 split on `bruno-explicit-priority`).');
-  lines.push('  3. **Avoidable shortfall under `preferredPeriod` (`preferred-period-boundary-packing`):** Greedy slot sorting can lose a feasible block (60m vs 120m feasible) when a preferred-period slot straddles a break boundary; CP-SAT maximizes scheduled hours first (120m, 0 shortfall).');
-  lines.push('  4. **Optimality & infeasibility proof:** CP-SAT distinguishes `proved_shortfall` (`OPTIMAL` + `INFEASIBLE` under `strictTarget`) from timeouts.');
+  lines.push(
+    `- **Hard-Constraint Safety (derived from outcomes):** Heuristic (\`src/domain/planner.mjs\`) passed \`validateSchedule\` on **${hPass.length}/${hEval.length}** evaluated variants (${hRate}; ${totalAttempted} attempted). CP-SAT passed on **${cPass.length}/${cEval.length}** evaluated variants (${cRate}; ${totalAttempted} attempted${cEval.length < totalAttempted ? `, ${totalAttempted - cEval.length} unavailable/errored` : ''}).`,
+  );
+  lines.push('- **Observed Differences & Verified Root Causes:**');
+  if (brunoOrder) {
+    lines.push(
+      `  1. **Equal-deadline input-order sensitivity (\`bruno-equal-cutoff\`):** Heuristic (\`src/domain/planner.mjs:134\`) sorts only by deadline and preserves JSON input order on ties: \`default\` = ${fmtCourses(brunoOrder.heuristic.defaultPerCourse)} vs \`reversedCourseOrder\` = ${fmtCourses(brunoOrder.heuristic.reversedPerCourse)} (\`courseOrderInvariant=${brunoOrder.heuristic.courseOrderInvariant}\`). CP-SAT: ${brunoOrder.cpsat.defaultPerCourse ? `${fmtCourses(brunoOrder.cpsat.defaultPerCourse)} (\`courseOrderInvariant=${brunoOrder.cpsat.courseOrderInvariant}\`)` : 'unavailable'}.`,
+    );
+  }
+  if (anaRow && raviRow) {
+    lines.push(
+      `  2. **Heuristic course-rotation & urgency bugs (\`ana-earlier-deadline\`, \`ravi-shift-exception\`):** Without \`allocation: "course-coverage"\`, Heuristic produces ${fmtCourses(anaRow.heuristic.perCourse)} on \`ana-earlier-deadline\` and ${fmtCourses(raviRow.heuristic.perCourse)} on \`ravi-shift-exception\`, whereas CP-SAT produces ${anaRow.cpsat.status === 'UNAVAILABLE' ? 'UNAVAILABLE' : fmtCourses(anaRow.cpsat.perCourse)} and ${raviRow.cpsat.status === 'UNAVAILABLE' ? 'UNAVAILABLE' : fmtCourses(raviRow.cpsat.perCourse)}. **Root-cause correction:** \`ana-earlier-deadline\` is *not* missing a balance objective — it is a weekday-parity rotation bug at \`src/domain/planner.mjs:182\` (\`eligible[(w + candidate.d) % eligible.length]\` picks index \`0\` on both Wed \`d=2\` and Fri \`d=4\`, and would assign 100% to the *later*-deadline course on Tue+Thu \`(1,3)\`). \`ravi-shift-exception\` is caused by the \`<= 14\`-day urgency rule picking \`eligible[0]\` (\`:180-181\`) with input-order tie-breaking (\`:134\`). Note also that the Coverage/Imbalance columns mirror CP-SAT's own objective tiers 3–4; whether default scheduling should favor urgency or cross-course balance is a **product preference**, not a solver defect.`,
+    );
+  }
+  if (boundaryRow) {
+    lines.push(
+      `  3. **Avoidable shortfall under \`preferredPeriod\` (\`preferred-period-boundary-packing\`):** Heuristic placed ${boundaryRow.heuristic.totalScheduledMinutes}m (avoidable shortfall ${boundaryRow.heuristic.avoidableShortfallMinutes}m) vs CP-SAT ${boundaryRow.cpsat.status === 'UNAVAILABLE' ? 'UNAVAILABLE' : `${boundaryRow.cpsat.totalScheduledMinutes}m (avoidable shortfall ${boundaryRow.cpsat.avoidableShortfallMinutes}m)`} when a preferred-period slot straddles a break boundary.`,
+    );
+  }
+  lines.push('  4. **Feasibility & shortfall proofs:** With dynamic `blockWeight > maxLowerTierSpan`, CP-SAT `OPTIMAL` proves maximum block count under the modeled constraints (`proved_shortfall`), and `strictTarget: true` returning `INFEASIBLE` independently proves the full weekly target is unattainable.');
   lines.push('- **Dependency & Latency Cost:**');
-  lines.push(`  - \`src/domain/planner.mjs\` is ~230 lines of zero-dependency synchronous JavaScript running in **${Math.min(...hLatencies).toFixed(3)}–${Math.max(...hLatencies).toFixed(3)} ms** (median per variant) inside Node.`);
+  if (hLatencies.length) {
+    lines.push(`  - \`src/domain/planner.mjs\` is ~230 lines of zero-dependency synchronous JavaScript running in **${Math.min(...hLatencies).toFixed(3)}–${Math.max(...hLatencies).toFixed(3)} ms** (median per variant) inside Node.`);
+  }
   if (cWallLatencies.length) {
     const focusNote = focusRow?.cpsat?.medianLatencyMs
       ? `; \`bruno-explicit-priority\` reached **${focusRow.cpsat.medianLatencyMs} ms** due to \`focusCourse\` 2:1 symmetry exploration near the 5s single-worker limit`
       : '';
     lines.push(
-      `  - CP-SAT requires Python + \`ortools==${env.ortoolsVersion}\` (native C++ binaries + \`numpy\`/\`pandas\`/\`protobuf\`, peak RSS **${Math.min(...cRssMib).toFixed(1)}–${Math.max(...cRssMib).toFixed(1)} MiB**, **${Math.min(...cNonFocusWall).toFixed(3)}–${Math.max(...cNonFocusWall).toFixed(3)} ms** in-process across ${cNonFocusWall.length}/${allPairs.length} variants${focusNote}; **${Math.min(...cRtLatencies).toFixed(1)}–${Math.max(...cRtLatencies).toFixed(1)} ms** cold subprocess round-trip per call).`,
+      `  - CP-SAT requires Python + \`ortools==${env.ortoolsVersion}\` (native C++ binaries + \`numpy\`/\`pandas\`/\`protobuf\`, peak RSS **${Math.min(...cRssMib).toFixed(1)}–${Math.max(...cRssMib).toFixed(1)} MiB**, **${Math.min(...cNonFocusWall).toFixed(3)}–${Math.max(...cNonFocusWall).toFixed(3)} ms** in-process across ${cNonFocusWall.length}/${totalAttempted} variants${focusNote}; **${Math.min(...cRtLatencies).toFixed(1)}–${Math.max(...cRtLatencies).toFixed(1)} ms** cold subprocess round-trip per call).`,
     );
   }
   lines.push('');
   lines.push('## 7. Headline Recommendation (For User Decision Gate)');
   lines.push('');
-  lines.push('**Do NOT bundle OR-Tools into the Node runtime yet.** Keep `src/domain/planner.mjs` as the lightweight default planner and consider one of two clean paths at the `#45` review gate:');
-  lines.push('1. **Port CP-SAT’s objective lessons into `src/domain/planner.mjs` (recommended if staying Node-native):** Canonicalize course tie-breaking by `(deadline, name)` (eliminates the 8h order swing), adopt balanced multi-course rotation / soft coverage when `focusCourse` is absent, and keep `preferredPeriod` as a secondary tie-breaker or run a two-pass / bounded local swap so period preference never causes avoidable shortfall.');
-  lines.push('2. **Adopt CP-SAT as an optional Python domain service:** Only worthwhile if future requirements introduce coupled cross-day dependencies, variable-length/splittable tasks, or larger multi-constraint schedules where greedy + swap cannot guarantee optimality.');
+  lines.push('**Do NOT bundle OR-Tools into the Node runtime.** Keep `src/domain/planner.mjs` as the zero-dependency default planner and keep CP-SAT offline in `experiments/` as a reference / property-test oracle:');
+  lines.push('1. **Fix the two 1–2 line `src/domain/planner.mjs` bugs + make `preferredPeriod` non-blocking (recommended):** Replace the weekday-parity rotation at `planner.mjs:182`, canonicalize equal-deadline tie-breaking by `(deadline, name)` at `planner.mjs:134`, and ensure `preferredPeriod` never reduces scheduled minutes (generate baseline first and accept the preferred-period variant only if total minutes do not drop). Treat default multi-course balance vs. earliest-deadline urgency as an explicit **product decision**, not an automatic CP-SAT objective port.');
+  lines.push('2. **Adopt CP-SAT as an optional Python domain service only if requirements change:** Only worthwhile if future requirements introduce coupled cross-day dependencies, variable-length/splittable tasks, or larger multi-constraint schedules where greedy + swap cannot guarantee feasibility.');
   lines.push('');
   lines.push('## 8. Limitations');
   lines.push('');
-  lines.push('- All fixtures (`bruno`, `ana`, `ravi`) are synthetic calendars and course deadlines.');
+  lines.push('- All fixtures (`bruno`, `ana`, `ravi`) are synthetic calendars and course deadlines. Because this PR reads `ana-held-out` expected answers and evaluates `ravi`, treat both as **public regression / `dev` fixtures** rather than blind holdouts for future evaluations.');
+  lines.push('- **Shared horizon-clamp blind spot:** Both `planner.mjs:106-112` and `cpsat_planner.py:277-292` cap the entire multi-course planning horizon at the earliest upcoming deadline, so one course due in 5 days shrinks every other course\'s plan to one week. This benchmark does not test alternative per-course horizon policies.');
+  lines.push('- **Circular soft metrics & ungraded explanations:** The Coverage and Imbalance columns reflect CP-SAT\'s own objective tiers 3–4. `ana-earlier-deadline`\'s original readiness purpose ("assess whether the explanation supports concentration") is not graded here.');
+  lines.push('- **Host-speed sensitivity & timezone fallback:** `bruno-explicit-priority` approaches the 5s single-worker cap (`maxTimeSeconds=5.0`), so slower CI hosts could return `FEASIBLE` instead of `OPTIMAL`; `cpsat_planner.py` also defaults missing timezone offsets to `-03:00`.');
   lines.push('- Conflict-free schedule satisfaction (`validateSchedule` passing) does **not** establish personal student feasibility, cognitive sustainability, or learning benefit.');
   lines.push('- Diagnostic edge cases (`preferred-period-boundary-packing`, `zero-capacity-infeasible-target`) were constructed specifically to isolate boundary/infeasibility behavior and are excluded from the core 10-case aggregate.');
   lines.push('');

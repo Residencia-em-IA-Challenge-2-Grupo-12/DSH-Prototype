@@ -7,6 +7,7 @@ import { digest, makePlan } from '../src/domain/planner.mjs';
 import {
   evaluatePlan,
   invokeCpSat,
+  renderMarkdownReport,
   resolvePythonBinary,
   runComparison,
 } from '../experiments/planner-comparison/benchmark.mjs';
@@ -149,4 +150,16 @@ test('CP-SAT prototype matches planner.mjs contract, beats order/coverage/bounda
     assert.equal(row.variants.default.cpsat.strictTargetProbe?.status, 'INFEASIBLE', shortfallId);
     assert.equal(row.variants.default.cpsat.strictTargetProbe?.targetFeasibility, 'proved_infeasible', shortfallId);
   }
+});
+
+test('renderMarkdownReport derives pass counts dynamically on failed or unavailable runs', () => {
+  const summaryPath = resolve(ROOT, 'docs/evidence/planner-heuristic-vs-cpsat-2026-11-25/summary.json');
+  const synthetic = JSON.parse(readFileSync(summaryPath, 'utf8'));
+  synthetic.cases[0].variants.default.heuristic.findings = ['synthetic_violation'];
+  synthetic.cases[0].variants.default.cpsat.status = 'UNAVAILABLE';
+  synthetic.cases[0].variants.default.cpsat.findings = [];
+
+  const md = renderMarkdownReport(synthetic);
+  assert.doesNotMatch(md, /100% pass rate/);
+  assert.match(md, /1 unavailable\/errored/);
 });

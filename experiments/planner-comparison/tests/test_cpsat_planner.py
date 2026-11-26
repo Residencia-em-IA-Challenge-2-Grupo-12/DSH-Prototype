@@ -224,6 +224,26 @@ class TestCpSatSolver(unittest.TestCase):
         ).hexdigest()
         self.assertEqual(plan["baseHash"], expected_hash)
 
+    def test_block_weight_scales_above_global_lower_tier_span(self):
+        student = make_student(
+            targetHours=10,
+            maxDailyStudyHours=4,
+            availabilityThrough="2026-12-20",
+            studyWindows=[
+                {"weekday": w, "start": "14:00", "end": "19:00"}
+                for w in (1, 2, 3, 4, 5)
+            ],
+        )
+        res = cpsat_planner.solve_plan(
+            student,
+            [],
+            {"weeks": 6, "preferredPeriod": "afternoon", "allocation": "course-coverage"},
+        )
+        solver = res["solver"]
+        self.assertTrue(solver["blockDominanceGuaranteed"])
+        self.assertGreater(solver["maxLowerTierSpan"], cpsat_planner.W_BLOCK)
+        self.assertGreater(solver["blockWeight"], solver["maxLowerTierSpan"])
+
 
 if __name__ == "__main__":
     unittest.main()
