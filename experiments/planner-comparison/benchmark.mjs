@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { makePlan } from '../../src/domain/planner.mjs';
+import { digest, makePlan } from '../../src/domain/planner.mjs';
 import { validateSchedule } from '../../src/paired-replay/schedule.mjs';
 import { measurePlan } from '../planner-readiness/baseline.mjs';
 import { ROOT, loadComparisonSuite } from './cases.mjs';
@@ -10,6 +10,16 @@ import { ROOT, loadComparisonSuite } from './cases.mjs';
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const CPSAT_SCRIPT = resolve(THIS_DIR, 'cpsat_planner.py');
 const VENV_PYTHON = resolve(THIS_DIR, '.venv/bin/python');
+
+const OBJECTIVE_DISCLOSURE_SUMMARY =
+  '6-tier weighted integer maximization with block-count dominance; solve_plan computes a conservative global upper bound `maxLowerTierSpan` on the swing of Tiers 2–6 and sets `blockWeight = max(10,000,000, maxLowerTierSpan + 1)` so CP-SAT never sacrifices a feasible study block for preferred-period, coverage, balance, or spread terms (lower tiers trade off via explicit weights).';
+
+export function isEvaluatedResult(entry) {
+  if (!entry || typeof entry !== 'object') return false;
+  if (['UNAVAILABLE', 'ERROR', 'HOST_TIMEOUT', 'INFEASIBLE', 'UNKNOWN'].includes(entry.status)) return false;
+  if (entry.hasPlan === false) return false;
+  return true;
+}
 
 export function resolvePythonBinary(explicitPython) {
   if (explicitPython) return explicitPython;
@@ -29,6 +39,9 @@ export function invokeCpSat(payload, { pythonBin, hostTimeoutMs = 15_000 } = {})
     });
     const hostRoundTripMs = Number((performance.now() - started).toFixed(3));
     const parsed = JSON.parse(stdout);
+    if (parsed?.plan && Array.isArray(payload?.events)) {
+      parsed.plan.baseHash = digest(payload.events);
+    }
     return { ...parsed, hostRoundTripMs };
   } catch (error) {
     const hostRoundTripMs = Number((performance.now() - started).toFixed(3));
@@ -114,6 +127,7 @@ export function evaluatePlan(plan, scenario, profile, options, { clock, sessionM
   const feasibleCourses = countFeasibleCourses(scenario, profile, clock);
   if (!plan) {
     return {
+      hasPlan: false,
       validHardConstraints: false,
       findings: ['No plan returned'],
       strictTargetFindings: ['No plan returned'],
@@ -129,6 +143,7 @@ export function evaluatePlan(plan, scenario, profile, options, { clock, sessionM
       courseCoverageRate: feasibleCourses.length ? 0 : 1,
       courseImbalanceMinutes: 0,
       preferredPeriodMatches: 0,
+      baseHash: null,
       blocks: [],
     };
   }
@@ -170,6 +185,7 @@ export function evaluatePlan(plan, scenario, profile, options, { clock, sessionM
     : null;
 
   return {
+    hasPlan: true,
     validHardConstraints: measured.findings.length === 0,
     findings: measured.findings,
     strictTargetFindings,
@@ -201,10 +217,11 @@ function median(values) {
 
 function summarizeGroup(rows, engineKey) {
   const variants = rows.flatMap(row => Object.values(row.variants).map(v => v[engineKey]));
-  const availableVariants = variants.filter(v => v.status !== 'UNAVAILABLE' && v.status !== 'ERROR');
+  const availableVariants = variants.filter(isEvaluatedResult);
   const multiCourseDefaults = rows
-    .filter(row => row.variants.default?.[engineKey]?.feasibleCourses?.length >= 2 && !row.focusCourse)
-    .map(row => row.variants.default[engineKey]);
+    .filter(row => !row.focusCourse)
+    .map(row => row.variants.default?.[engineKey])
+    .filter(v => isEvaluatedResult(v) && v.feasibleCourses?.length >= 2);
 
   return {
     caseCount: rows.length,
@@ -301,16 +318,19 @@ export function runComparison({
         if (i === 0) cFirstResp = resp;
         if (resp.solver?.ortoolsVersion) ortoolsVersion = resp.solver.ortoolsVersion;
         if (resp.solver?.pythonVersion) pythonVersion = resp.solver.pythonVersion;
-        if (resp.solver?.status && !['UNAVAILABLE', 'ERROR', 'HOST_TIMEOUT'].includes(resp.solver.status)) {
-          cpSatAvailable = true;
-        }
-        if (typeof resp.solver?.wallMs === 'number') cWallLatencies.push(resp.solver.wallMs);
-        if (typeof resp.solver?.cpSatSearchMs === 'number') cSearchLatencies.push(resp.solver.cpSatSearchMs);
-        if (typeof resp.hostRoundTripMs === 'number') cRoundTrips.push(resp.hostRoundTripMs);
-        if (typeof resp.solver?.peakRssKb === 'number') cRss.push(resp.solver.peakRssKb);
-        cSignatures.push(
-          resp.plan ? JSON.stringify(canonicalBlocks(resp.plan)) : String(resp.solver?.status || 'NONE'),
+        const solved = Boolean(
+          resp.plan &&
+            resp.solver?.status &&
+            !['UNAVAILABLE', 'ERROR', 'HOST_TIMEOUT'].includes(resp.solver.status),
         );
+        if (solved) {
+          cpSatAvailable = true;
+          if (typeof resp.solver?.wallMs === 'number') cWallLatencies.push(resp.solver.wallMs);
+          if (typeof resp.solver?.cpSatSearchMs === 'number') cSearchLatencies.push(resp.solver.cpSatSearchMs);
+          if (typeof resp.hostRoundTripMs === 'number') cRoundTrips.push(resp.hostRoundTripMs);
+          if (typeof resp.solver?.peakRssKb === 'number') cRss.push(resp.solver.peakRssKb);
+          cSignatures.push(JSON.stringify(canonicalBlocks(resp.plan)));
+        }
         if (resp.solver?.status === 'UNAVAILABLE') break;
       }
 
@@ -347,7 +367,7 @@ export function runComparison({
           status: cFirstResp?.solver?.status || 'UNKNOWN',
           targetFeasibility: cFirstResp?.solver?.targetFeasibility || 'unknown',
           reason: cFirstResp?.solver?.reason || null,
-          deterministic: new Set(cSignatures).size === 1,
+          deterministic: cSignatures.length ? new Set(cSignatures).size === 1 : null,
           medianLatencyMs: median(cWallLatencies),
           maxLatencyMs: cWallLatencies.length ? Math.max(...cWallLatencies) : null,
           medianCpSatSearchMs: median(cSearchLatencies),
@@ -355,6 +375,9 @@ export function runComparison({
           peakRssKb: cRss.length ? Math.max(...cRss) : null,
           objectiveValue: cFirstResp?.solver?.objectiveValue ?? null,
           bestObjectiveBound: cFirstResp?.solver?.bestObjectiveBound ?? null,
+          blockWeight: cFirstResp?.solver?.blockWeight ?? null,
+          maxLowerTierSpan: cFirstResp?.solver?.maxLowerTierSpan ?? null,
+          blockDominanceGuaranteed: cFirstResp?.solver?.blockDominanceGuaranteed ?? null,
           numVariables: cFirstResp?.solver?.numVariables ?? null,
           numSlots: cFirstResp?.solver?.numSlots ?? null,
           strictTargetProbe,
@@ -365,6 +388,9 @@ export function runComparison({
 
     let orderSensitivity = null;
     if (scenario.id === 'bruno-equal-cutoff' && variantsOut.default && variantsOut.reversedCourseOrder) {
+      const cDef = variantsOut.default.cpsat;
+      const cRev = variantsOut.reversedCourseOrder.cpsat;
+      const cBothEvaluated = isEvaluatedResult(cDef) && isEvaluatedResult(cRev);
       orderSensitivity = {
         heuristic: {
           defaultPerCourse: variantsOut.default.heuristic.perCourse,
@@ -374,13 +400,12 @@ export function runComparison({
             JSON.stringify(variantsOut.reversedCourseOrder.heuristic.perCourse),
         },
         cpsat: {
-          defaultPerCourse: variantsOut.default.cpsat.perCourse,
-          reversedPerCourse: variantsOut.reversedCourseOrder.cpsat.perCourse,
-          courseOrderInvariant:
-            JSON.stringify(variantsOut.default.cpsat.perCourse) ===
-              JSON.stringify(variantsOut.reversedCourseOrder.cpsat.perCourse) &&
-            JSON.stringify(variantsOut.default.cpsat.blocks) ===
-              JSON.stringify(variantsOut.reversedCourseOrder.cpsat.blocks),
+          defaultPerCourse: cBothEvaluated ? cDef.perCourse : null,
+          reversedPerCourse: cBothEvaluated ? cRev.perCourse : null,
+          courseOrderInvariant: cBothEvaluated
+            ? JSON.stringify(cDef.perCourse) === JSON.stringify(cRev.perCourse) &&
+              JSON.stringify(cDef.blocks) === JSON.stringify(cRev.blocks)
+            : null,
         },
       };
     }
@@ -423,10 +448,17 @@ export function runComparison({
   };
 
   let gitBaseCommit = null;
+  let gitDirtyAtGeneration = null;
   try {
     gitBaseCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim();
+    const trackedStatus = execFileSync('git', ['status', '--porcelain', '--untracked-files=no'], {
+      cwd: ROOT,
+      encoding: 'utf8',
+    }).trim();
+    gitDirtyAtGeneration = trackedStatus.length > 0;
   } catch {
     gitBaseCommit = null;
+    gitDirtyAtGeneration = null;
   }
 
   return {
@@ -439,6 +471,7 @@ export function runComparison({
       cpSatAvailable,
       pythonBinary: python === VENV_PYTHON ? 'experiments/planner-comparison/.venv/bin/python' : python,
       gitHeadAtGeneration: gitBaseCommit,
+      gitDirtyAtGeneration,
       solverParams: {
         workers: 1,
         seed: 0,
@@ -449,10 +482,9 @@ export function runComparison({
     },
     hashes: suite.hashes,
     objectiveDisclosure: {
-      summary:
-        '6-tier lexicographic integer maximization; Tier 1 (W_BLOCK = 10,000,000) strictly dominates the worst-case marginal penalty of Tiers 2-6 (~111,671), so CP-SAT never trades scheduled study minutes for balance, spread, or timing bonuses.',
+      summary: OBJECTIVE_DISCLOSURE_SUMMARY,
       weights: {
-        W_BLOCK: 10_000_000,
+        W_BLOCK_MIN: 10_000_000,
         W_PREF_PERIOD: 200_000,
         W_COVERAGE_DEFAULT: 50_000,
         W_COVERAGE_OPTION: 500_000,
@@ -493,11 +525,14 @@ export function renderMarkdownReport(summary) {
   lines.push('');
   lines.push(`- **Node:** \`${env.nodeVersion}\``);
   lines.push(`- **Python:** \`${env.pythonVersion || 'unavailable'}\` (\`${env.pythonBinary}\`)`);
-  lines.push(`- **OR-Tools:** \`ortools==${env.ortoolsVersion || 'unavailable'}\``);
+  lines.push(`- **OR-Tools:** \`${env.ortoolsVersion ? `ortools==${env.ortoolsVersion}` : 'unavailable'}\``);
+  lines.push(`- **Git HEAD at generation:** \`${env.gitHeadAtGeneration || 'unknown'}\` (tracked tree dirty: \`${env.gitDirtyAtGeneration ?? 'unknown'}\`)`);
   lines.push(`- **CP-SAT Settings:** \`num_search_workers=${env.solverParams.workers}\`, \`random_seed=${env.solverParams.seed}\`, \`max_time_in_seconds=${env.solverParams.maxTimeSeconds}\`, host timeout \`${env.solverParams.hostTimeoutMs}ms\`, \`repeats=${env.solverParams.repeats}\``);
   lines.push(`- **Artifact SHA-256 Hashes:**`);
   lines.push(`  - \`src/domain/planner.mjs\`: \`${hashes.heuristicPlannerSha256}\``);
   lines.push(`  - \`experiments/planner-comparison/cpsat_planner.py\`: \`${hashes.cpsatPlannerSha256}\``);
+  if (hashes.benchmarkSha256) lines.push(`  - \`experiments/planner-comparison/benchmark.mjs\`: \`${hashes.benchmarkSha256}\``);
+  if (hashes.casesLoaderSha256) lines.push(`  - \`experiments/planner-comparison/cases.mjs\`: \`${hashes.casesLoaderSha256}\``);
   lines.push(`  - \`experiments/planner-readiness/cases.json\`: \`${hashes.readinessCasesSha256}\``);
   lines.push(`  - \`fixtures/calendars/bruno.json\`: \`${hashes.brunoCalendarSha256}\``);
   lines.push(`  - \`fixtures/calendars/ana.json\`: \`${hashes.anaCalendarSha256}\``);
@@ -515,9 +550,9 @@ export function renderMarkdownReport(summary) {
   lines.push('');
   lines.push('## 2. Objective Disclosure & Feasibility Semantics');
   lines.push('');
-  lines.push('CP-SAT maximizes a **6-tier weighted integer objective** (disclosed explicitly so no hidden penalty trades away study minutes):');
+  lines.push(summary.objectiveDisclosure?.summary || OBJECTIVE_DISCLOSURE_SUMMARY);
   lines.push('');
-  lines.push('1. **Tier 1 — Total Scheduled Study Minutes (`blockWeight = max(10,000,000, maxLowerTierSpan + 1)` per 1h block):** Dynamically computed per instance to strictly exceed the exact global span of Tiers 2–6 across any two feasible schedules, guaranteeing CP-SAT **never** sacrifices a feasible study block for preferred-period, coverage, balance, or spread terms.');
+  lines.push('1. **Tier 1 — Total Scheduled Study Minutes (`blockWeight = max(10,000,000, maxLowerTierSpan + 1)` per 1h block):** Dynamically computed per instance to strictly exceed the conservative global upper bound (`maxLowerTierSpan`) on the swing of Tiers 2–6 across any two feasible schedules, guaranteeing CP-SAT **never** sacrifices a feasible study block for preferred-period, coverage, balance, or spread terms.');
   lines.push('2. **Tier 2 — Preferred Period (`W_PREF_PERIOD = 200,000` per matching block):** Used only when `preferredPeriod` is supplied.');
   lines.push('3. **Tier 3 — Distinct Eligible Course Coverage (`W_COVERAGE = 500,000` for `course-coverage`, `50,000` default, `10,000` with `focusCourse`):** Rewards covering every eligible course at least once. Note that coverage and balance are explicit product preferences encoded into CP-SAT, not universal correctness rules.');
   lines.push('4. **Tier 4 — Horizon & Weekly Course Balance (`W_BALANCE = 20,000`):** Minimizes `max - min` spread across eligible courses (or deviation from ~2:1 target split when `focusCourse` is set).');
@@ -572,10 +607,9 @@ export function renderMarkdownReport(summary) {
     for (const [vName, pair] of Object.entries(row.variants)) {
       const h = pair.heuristic;
       const c = pair.cpsat;
-      const cStr =
-        c.status === 'UNAVAILABLE'
-          ? 'UNAVAILABLE'
-          : `${c.totalScheduledMinutes}m / ${fmtCourses(c.perCourse)} / ${c.status} (${c.targetFeasibility}) / ${c.medianLatencyMs}ms / ${c.medianHostRoundTripMs}ms`;
+      const cStr = !isEvaluatedResult(c)
+        ? c?.status || 'UNAVAILABLE'
+        : `${c.totalScheduledMinutes}m / ${fmtCourses(c.perCourse)} / ${c.status} (${c.targetFeasibility}) / ${c.medianLatencyMs}ms / ${c.medianHostRoundTripMs}ms`;
       lines.push(
         `| \`${row.id}\` (${tag}) | \`${vName}\` | ${feasibleSum}m | ${h.totalScheduledMinutes}m / ${fmtCourses(h.perCourse)} / ${h.medianLatencyMs}ms | ${cStr} |`,
       );
@@ -592,8 +626,11 @@ export function renderMarkdownReport(summary) {
     const h = pair.heuristic;
     const c = pair.cpsat;
     const probe = c.strictTargetProbe ? `strictTarget=${c.strictTargetProbe.status}` : '—';
+    const cDiagStr = !isEvaluatedResult(c)
+      ? c?.status || 'UNAVAILABLE'
+      : `${c.totalScheduledMinutes}m / ${c.status} (${c.targetFeasibility}) / ${probe} / ${c.medianLatencyMs}ms`;
     lines.push(
-      `| \`${row.id}\` | ${feasibleSum}m | ${h.totalScheduledMinutes}m / avoidable ${h.avoidableShortfallMinutes}m / ${h.medianLatencyMs}ms | ${c.totalScheduledMinutes}m / ${c.status} (${c.targetFeasibility}) / ${probe} / ${c.medianLatencyMs}ms |`,
+      `| \`${row.id}\` | ${feasibleSum}m | ${h.totalScheduledMinutes}m / avoidable ${h.avoidableShortfallMinutes}m / ${h.medianLatencyMs}ms | ${cDiagStr} |`,
     );
   }
   lines.push('');
@@ -603,7 +640,11 @@ export function renderMarkdownReport(summary) {
     lines.push('### 4.3 Input-Order Sensitivity (`bruno-equal-cutoff`)');
     lines.push('');
     lines.push(`- **Heuristic (` + '`src/domain/planner.mjs`' + `):** \`default\` = ${fmtCourses(brunoOrder.heuristic.defaultPerCourse)} → \`reversedCourseOrder\` = ${fmtCourses(brunoOrder.heuristic.reversedPerCourse)} (**Order invariant:** \`${brunoOrder.heuristic.courseOrderInvariant}\` — flips by 480 minutes / 8 hours based purely on JSON array order).`);
-    lines.push(`- **CP-SAT (` + '`cpsat_planner.py`' + `):** \`default\` = ${fmtCourses(brunoOrder.cpsat.defaultPerCourse)} → \`reversedCourseOrder\` = ${fmtCourses(brunoOrder.cpsat.reversedPerCourse)} (**Order invariant:** \`${brunoOrder.cpsat.courseOrderInvariant}\` — identical split and identical blocks).`);
+    if (brunoOrder.cpsat.defaultPerCourse && brunoOrder.cpsat.reversedPerCourse) {
+      lines.push(`- **CP-SAT (` + '`cpsat_planner.py`' + `):** \`default\` = ${fmtCourses(brunoOrder.cpsat.defaultPerCourse)} → \`reversedCourseOrder\` = ${fmtCourses(brunoOrder.cpsat.reversedPerCourse)} (**Order invariant:** \`${brunoOrder.cpsat.courseOrderInvariant}\`).`);
+    } else {
+      lines.push('- **CP-SAT (`cpsat_planner.py`):** UNAVAILABLE (not evaluated).');
+    }
     lines.push('');
   }
 
@@ -635,28 +676,28 @@ export function renderMarkdownReport(summary) {
     const def = row.variants.default;
     lines.push(`### \`${id}\``);
     lines.push(`- **Heuristic:** ${fmtBlocks(def.heuristic.blocks)}`);
-    lines.push(`- **CP-SAT:** ${fmtBlocks(def.cpsat.blocks)}`);
+    lines.push(`- **CP-SAT:** ${isEvaluatedResult(def.cpsat) ? fmtBlocks(def.cpsat.blocks) : '_UNAVAILABLE_'}`);
     lines.push('');
   }
 
   const allPairs = cases.flatMap(c => Object.entries(c.variants).map(([vName, pair]) => ({ id: c.id, vName, ...pair })));
   const totalAttempted = allPairs.length;
-  const hEval = allPairs.filter(p => p.heuristic && p.heuristic.status !== 'UNAVAILABLE');
+  const hEval = allPairs.filter(p => isEvaluatedResult(p.heuristic));
   const hPass = hEval.filter(p => Array.isArray(p.heuristic.findings) && p.heuristic.findings.length === 0);
-  const cEval = allPairs.filter(p => p.cpsat && p.cpsat.status !== 'UNAVAILABLE' && p.cpsat.status !== 'ERROR' && p.cpsat.status !== 'HOST_TIMEOUT');
+  const cEval = allPairs.filter(p => isEvaluatedResult(p.cpsat));
   const cPass = cEval.filter(p => Array.isArray(p.cpsat.findings) && p.cpsat.findings.length === 0);
   const hRate = hEval.length ? `${((hPass.length / hEval.length) * 100).toFixed(1)}%` : 'N/A';
   const cRate = cEval.length ? `${((cPass.length / cEval.length) * 100).toFixed(1)}%` : 'N/A';
 
-  const hLatencies = allPairs.map(p => p.heuristic.medianLatencyMs).filter(v => typeof v === 'number');
-  const cWallLatencies = allPairs.map(p => p.cpsat.medianLatencyMs).filter(v => typeof v === 'number');
-  const cRtLatencies = allPairs.map(p => p.cpsat.medianHostRoundTripMs).filter(v => typeof v === 'number');
-  const cRssMib = allPairs.map(p => p.cpsat.peakRssKb).filter(v => typeof v === 'number').map(kb => kb / 1024);
-  const cNonFocusWall = allPairs
+  const hLatencies = hEval.map(p => p.heuristic.medianLatencyMs).filter(v => typeof v === 'number');
+  const cWallLatencies = cEval.map(p => p.cpsat.medianLatencyMs).filter(v => typeof v === 'number');
+  const cRtLatencies = cEval.map(p => p.cpsat.medianHostRoundTripMs).filter(v => typeof v === 'number');
+  const cRssMib = cEval.map(p => p.cpsat.peakRssKb).filter(v => typeof v === 'number').map(kb => kb / 1024);
+  const cNonFocusWall = cEval
     .filter(p => p.id !== 'bruno-explicit-priority')
     .map(p => p.cpsat.medianLatencyMs)
     .filter(v => typeof v === 'number');
-  const focusRow = allPairs.find(p => p.id === 'bruno-explicit-priority');
+  const focusRow = cEval.find(p => p.id === 'bruno-explicit-priority');
   const anaRow = cases.find(c => c.id === 'ana-earlier-deadline')?.variants?.default;
   const raviRow = cases.find(c => c.id === 'ravi-shift-exception')?.variants?.default;
   const boundaryRow = cases.find(c => c.id === 'preferred-period-boundary-packing')?.variants?.default;
@@ -669,17 +710,17 @@ export function renderMarkdownReport(summary) {
   lines.push('- **Observed Differences & Verified Root Causes:**');
   if (brunoOrder) {
     lines.push(
-      `  1. **Equal-deadline input-order sensitivity (\`bruno-equal-cutoff\`):** Heuristic (\`src/domain/planner.mjs:134\`) sorts only by deadline and preserves JSON input order on ties: \`default\` = ${fmtCourses(brunoOrder.heuristic.defaultPerCourse)} vs \`reversedCourseOrder\` = ${fmtCourses(brunoOrder.heuristic.reversedPerCourse)} (\`courseOrderInvariant=${brunoOrder.heuristic.courseOrderInvariant}\`). CP-SAT: ${brunoOrder.cpsat.defaultPerCourse ? `${fmtCourses(brunoOrder.cpsat.defaultPerCourse)} (\`courseOrderInvariant=${brunoOrder.cpsat.courseOrderInvariant}\`)` : 'unavailable'}.`,
+      `  1. **Equal-deadline input-order sensitivity (\`bruno-equal-cutoff\`):** Heuristic (\`src/domain/planner.mjs:134\`) sorts only by deadline and preserves JSON input order on ties: \`default\` = ${fmtCourses(brunoOrder.heuristic.defaultPerCourse)} vs \`reversedCourseOrder\` = ${fmtCourses(brunoOrder.heuristic.reversedPerCourse)} (\`courseOrderInvariant=${brunoOrder.heuristic.courseOrderInvariant}\`). CP-SAT: ${brunoOrder.cpsat.defaultPerCourse ? `${fmtCourses(brunoOrder.cpsat.defaultPerCourse)} (\`courseOrderInvariant=${brunoOrder.cpsat.courseOrderInvariant}\`)` : 'UNAVAILABLE (not evaluated)'}.`,
     );
   }
   if (anaRow && raviRow) {
     lines.push(
-      `  2. **Heuristic course-rotation & urgency bugs (\`ana-earlier-deadline\`, \`ravi-shift-exception\`):** Without \`allocation: "course-coverage"\`, Heuristic produces ${fmtCourses(anaRow.heuristic.perCourse)} on \`ana-earlier-deadline\` and ${fmtCourses(raviRow.heuristic.perCourse)} on \`ravi-shift-exception\`, whereas CP-SAT produces ${anaRow.cpsat.status === 'UNAVAILABLE' ? 'UNAVAILABLE' : fmtCourses(anaRow.cpsat.perCourse)} and ${raviRow.cpsat.status === 'UNAVAILABLE' ? 'UNAVAILABLE' : fmtCourses(raviRow.cpsat.perCourse)}. **Root-cause correction:** \`ana-earlier-deadline\` is *not* missing a balance objective — it is a weekday-parity rotation bug at \`src/domain/planner.mjs:182\` (\`eligible[(w + candidate.d) % eligible.length]\` picks index \`0\` on both Wed \`d=2\` and Fri \`d=4\`, and would assign 100% to the *later*-deadline course on Tue+Thu \`(1,3)\`). \`ravi-shift-exception\` is caused by the \`<= 14\`-day urgency rule picking \`eligible[0]\` (\`:180-181\`) with input-order tie-breaking (\`:134\`). Note also that the Coverage/Imbalance columns mirror CP-SAT's own objective tiers 3–4; whether default scheduling should favor urgency or cross-course balance is a **product preference**, not a solver defect.`,
+      `  2. **Heuristic course-rotation & urgency bugs (\`ana-earlier-deadline\`, \`ravi-shift-exception\`):** Without \`allocation: "course-coverage"\`, Heuristic produces ${fmtCourses(anaRow.heuristic.perCourse)} on \`ana-earlier-deadline\` and ${fmtCourses(raviRow.heuristic.perCourse)} on \`ravi-shift-exception\`, whereas CP-SAT produces ${!isEvaluatedResult(anaRow.cpsat) ? 'UNAVAILABLE' : fmtCourses(anaRow.cpsat.perCourse)} and ${!isEvaluatedResult(raviRow.cpsat) ? 'UNAVAILABLE' : fmtCourses(raviRow.cpsat.perCourse)}. **Root-cause correction:** \`ana-earlier-deadline\` is *not* missing a balance objective — it is a weekday-parity rotation bug at \`src/domain/planner.mjs:182\` (\`eligible[(w + candidate.d) % eligible.length]\` picks index \`0\` on both Wed \`d=2\` and Fri \`d=4\`, and would assign 100% to the *later*-deadline course on Tue+Thu \`(1,3)\`). \`ravi-shift-exception\` is caused by the \`<= 14\`-day urgency rule picking \`eligible[0]\` (\`:180-181\`) with input-order tie-breaking (\`:134\`). Note also that the Coverage/Imbalance columns mirror CP-SAT's own objective tiers 3–4; whether default scheduling should favor urgency or cross-course balance is a **product preference**, not a solver defect.`,
     );
   }
   if (boundaryRow) {
     lines.push(
-      `  3. **Avoidable shortfall under \`preferredPeriod\` (\`preferred-period-boundary-packing\`):** Heuristic placed ${boundaryRow.heuristic.totalScheduledMinutes}m (avoidable shortfall ${boundaryRow.heuristic.avoidableShortfallMinutes}m) vs CP-SAT ${boundaryRow.cpsat.status === 'UNAVAILABLE' ? 'UNAVAILABLE' : `${boundaryRow.cpsat.totalScheduledMinutes}m (avoidable shortfall ${boundaryRow.cpsat.avoidableShortfallMinutes}m)`} when a preferred-period slot straddles a break boundary.`,
+      `  3. **Avoidable shortfall under \`preferredPeriod\` (\`preferred-period-boundary-packing\`):** Heuristic placed ${boundaryRow.heuristic.totalScheduledMinutes}m (avoidable shortfall ${boundaryRow.heuristic.avoidableShortfallMinutes}m) vs CP-SAT ${!isEvaluatedResult(boundaryRow.cpsat) ? 'UNAVAILABLE' : `${boundaryRow.cpsat.totalScheduledMinutes}m (avoidable shortfall ${boundaryRow.cpsat.avoidableShortfallMinutes}m)`} when a preferred-period slot straddles a break boundary.`,
     );
   }
   lines.push('  4. **Feasibility & shortfall proofs:** With dynamic `blockWeight > maxLowerTierSpan`, CP-SAT `OPTIMAL` proves maximum block count under the modeled constraints (`proved_shortfall`), and `strictTarget: true` returning `INFEASIBLE` independently proves the full weekly target is unattainable.');
@@ -687,13 +728,15 @@ export function renderMarkdownReport(summary) {
   if (hLatencies.length) {
     lines.push(`  - \`src/domain/planner.mjs\` is ~230 lines of zero-dependency synchronous JavaScript running in **${Math.min(...hLatencies).toFixed(3)}–${Math.max(...hLatencies).toFixed(3)} ms** (median per variant) inside Node.`);
   }
-  if (cWallLatencies.length) {
+  if (cWallLatencies.length && env.ortoolsVersion) {
     const focusNote = focusRow?.cpsat?.medianLatencyMs
       ? `; \`bruno-explicit-priority\` reached **${focusRow.cpsat.medianLatencyMs} ms** due to \`focusCourse\` 2:1 symmetry exploration near the 5s single-worker limit`
       : '';
     lines.push(
       `  - CP-SAT requires Python + \`ortools==${env.ortoolsVersion}\` (native C++ binaries + \`numpy\`/\`pandas\`/\`protobuf\`, peak RSS **${Math.min(...cRssMib).toFixed(1)}–${Math.max(...cRssMib).toFixed(1)} MiB**, **${Math.min(...cNonFocusWall).toFixed(3)}–${Math.max(...cNonFocusWall).toFixed(3)} ms** in-process across ${cNonFocusWall.length}/${totalAttempted} variants${focusNote}; **${Math.min(...cRtLatencies).toFixed(1)}–${Math.max(...cRtLatencies).toFixed(1)} ms** cold subprocess round-trip per call).`,
     );
+  } else {
+    lines.push('  - CP-SAT runtime metrics: **UNAVAILABLE** (OR-Tools not installed in the configured Python runtime; no CP-SAT plans evaluated).');
   }
   lines.push('');
   lines.push('## 7. Headline Recommendation (For User Decision Gate)');

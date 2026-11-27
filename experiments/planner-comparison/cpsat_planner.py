@@ -122,18 +122,22 @@ def _event_boundary_ms(event: dict[str, Any], side: str, all_day_offset: str = "
 
 
 def _significant(event: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "id": event["id"],
-        "summary": event.get("summary"),
-        "description": event.get("description") or "",
-        "start": event["start"],
-        "end": event["end"],
-        "location": event.get("location") or "",
-        "attendees": event.get("attendees") or [],
-        "status": event.get("status") or "confirmed",
-        "transparency": event.get("transparency") or "opaque",
-        "extendedProperties": event.get("extendedProperties") or {},
-    }
+    out: dict[str, Any] = {"id": event["id"]}
+    if "summary" in event:
+        out["summary"] = event["summary"]
+    out.update(
+        {
+            "description": event.get("description") or "",
+            "start": event["start"],
+            "end": event["end"],
+            "location": event.get("location") or "",
+            "attendees": event.get("attendees") or [],
+            "status": event.get("status") or "confirmed",
+            "transparency": event.get("transparency") or "opaque",
+            "extendedProperties": event.get("extendedProperties") or {},
+        }
+    )
+    return out
 
 
 def _digest_events(events: list[dict[str, Any]]) -> str:
@@ -167,9 +171,12 @@ def _unavailable_response(reason: str) -> dict[str, Any]:
             "reason": reason,
             "objectiveValue": None,
             "bestObjectiveBound": None,
-            "wallMs": 0.0,
+            "blockWeight": None,
+            "maxLowerTierSpan": None,
+            "blockDominanceGuaranteed": None,
+            "wallMs": None,
             "cpSatSearchMs": None,
-            "peakRssKb": _peak_rss_kb(),
+            "peakRssKb": None,
             "seed": None,
             "workers": None,
             "maxTimeSeconds": None,
