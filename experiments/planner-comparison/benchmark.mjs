@@ -368,11 +368,9 @@ export function runComparison({
           targetFeasibility: cFirstResp?.solver?.targetFeasibility || 'unknown',
           reason: cFirstResp?.solver?.reason || null,
           deterministic:
-            cSignatures.length === repeats
-              ? new Set(cSignatures).size === 1
-              : cSignatures.length > 0
-                ? false
-                : null,
+            cSignatures.length === 0
+              ? null
+              : cSignatures.length === repeats && new Set(cSignatures).size === 1,
           medianLatencyMs: median(cWallLatencies),
           maxLatencyMs: cWallLatencies.length ? Math.max(...cWallLatencies) : null,
           medianCpSatSearchMs: median(cSearchLatencies),
