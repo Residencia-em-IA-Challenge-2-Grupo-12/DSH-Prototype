@@ -12,7 +12,7 @@ const CPSAT_SCRIPT = resolve(THIS_DIR, 'cpsat_planner.py');
 const VENV_PYTHON = resolve(THIS_DIR, '.venv/bin/python');
 
 const OBJECTIVE_DISCLOSURE_SUMMARY =
-  '6-tier weighted integer maximization with block-count dominance; solve_plan computes a conservative global upper bound `maxLowerTierSpan` on the swing of Tiers 2–6 and sets `blockWeight = max(10,000,000, maxLowerTierSpan + 1)` so CP-SAT never sacrifices a feasible study block for preferred-period, coverage, balance, or spread terms (lower tiers trade off via explicit weights).';
+  '6-tier weighted integer maximization with block-count dominance for optimal solutions; solve_plan computes a conservative global upper bound `maxLowerTierSpan` on the swing of Tiers 2–6 and sets `blockWeight = max(10,000,000, maxLowerTierSpan + 1)` so every `OPTIMAL` solution maximizes scheduled study blocks (a time-limited `FEASIBLE` incumbent can still fall short, and lower tiers trade off via explicit weights).';
 
 export function isEvaluatedResult(entry) {
   if (!entry || typeof entry !== 'object') return false;
@@ -367,7 +367,12 @@ export function runComparison({
           status: cFirstResp?.solver?.status || 'UNKNOWN',
           targetFeasibility: cFirstResp?.solver?.targetFeasibility || 'unknown',
           reason: cFirstResp?.solver?.reason || null,
-          deterministic: cSignatures.length ? new Set(cSignatures).size === 1 : null,
+          deterministic:
+            cSignatures.length === repeats
+              ? new Set(cSignatures).size === 1
+              : cSignatures.length > 0
+                ? false
+                : null,
           medianLatencyMs: median(cWallLatencies),
           maxLatencyMs: cWallLatencies.length ? Math.max(...cWallLatencies) : null,
           medianCpSatSearchMs: median(cSearchLatencies),
@@ -552,7 +557,7 @@ export function renderMarkdownReport(summary) {
   lines.push('');
   lines.push(summary.objectiveDisclosure?.summary || OBJECTIVE_DISCLOSURE_SUMMARY);
   lines.push('');
-  lines.push('1. **Tier 1 — Total Scheduled Study Minutes (`blockWeight = max(10,000,000, maxLowerTierSpan + 1)` per 1h block):** Dynamically computed per instance to strictly exceed the conservative global upper bound (`maxLowerTierSpan`) on the swing of Tiers 2–6 across any two feasible schedules, guaranteeing CP-SAT **never** sacrifices a feasible study block for preferred-period, coverage, balance, or spread terms.');
+  lines.push('1. **Tier 1 — Total Scheduled Study Minutes (`blockWeight = max(10,000,000, maxLowerTierSpan + 1)` per 1h block):** Dynamically computed per instance to strictly exceed the conservative global upper bound (`maxLowerTierSpan`) on the swing of Tiers 2–6 across any two feasible schedules, guaranteeing every `OPTIMAL` solution maximizes scheduled study blocks (a time-limited `FEASIBLE` incumbent can still fall short).');
   lines.push('2. **Tier 2 — Preferred Period (`W_PREF_PERIOD = 200,000` per matching block):** Used only when `preferredPeriod` is supplied.');
   lines.push('3. **Tier 3 — Distinct Eligible Course Coverage (`W_COVERAGE = 500,000` for `course-coverage`, `50,000` default, `10,000` with `focusCourse`):** Rewards covering every eligible course at least once. Note that coverage and balance are explicit product preferences encoded into CP-SAT, not universal correctness rules.');
   lines.push('4. **Tier 4 — Horizon & Weekly Course Balance (`W_BALANCE = 20,000`):** Minimizes `max - min` spread across eligible courses (or deviation from ~2:1 target split when `focusCourse` is set).');
@@ -581,6 +586,10 @@ export function renderMarkdownReport(summary) {
       ['Heuristic (`planner.mjs`)', grp.heuristic],
       ['CP-SAT (`ortools 9.14`)', grp.cpsat],
     ]) {
+      if (stats.availableVariantCount === 0) {
+        lines.push(`| ${label} | ${engLabel} | 0/${stats.variantCount} (not evaluated) | — | — | — | — | — | — |`);
+        continue;
+      }
       const cov = stats.multiCourseDefaultCount
         ? `${stats.multiCourseFullCoverageCount}/${stats.multiCourseDefaultCount}`
         : '—';
@@ -736,7 +745,12 @@ export function renderMarkdownReport(summary) {
       `  - CP-SAT requires Python + \`ortools==${env.ortoolsVersion}\` (native C++ binaries + \`numpy\`/\`pandas\`/\`protobuf\`, peak RSS **${Math.min(...cRssMib).toFixed(1)}–${Math.max(...cRssMib).toFixed(1)} MiB**, **${Math.min(...cNonFocusWall).toFixed(3)}–${Math.max(...cNonFocusWall).toFixed(3)} ms** in-process across ${cNonFocusWall.length}/${totalAttempted} variants${focusNote}; **${Math.min(...cRtLatencies).toFixed(1)}–${Math.max(...cRtLatencies).toFixed(1)} ms** cold subprocess round-trip per call).`,
     );
   } else {
-    lines.push('  - CP-SAT runtime metrics: **UNAVAILABLE** (OR-Tools not installed in the configured Python runtime; no CP-SAT plans evaluated).');
+    const observedStatuses = [...new Set(allPairs.map(p => p.cpsat?.status || 'UNKNOWN'))];
+    const reason =
+      observedStatuses.length === 1 && observedStatuses[0] === 'UNAVAILABLE'
+        ? 'OR-Tools not installed in the configured Python runtime; no CP-SAT plans evaluated'
+        : `no CP-SAT plans evaluated; observed statuses: ${observedStatuses.join(', ')}`;
+    lines.push(`  - CP-SAT runtime metrics: **not evaluated** (${reason}).`);
   }
   lines.push('');
   lines.push('## 7. Headline Recommendation (For User Decision Gate)');

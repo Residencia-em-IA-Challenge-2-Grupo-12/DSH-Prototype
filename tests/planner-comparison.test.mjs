@@ -85,7 +85,9 @@ test('CP-SAT adapter reports UNAVAILABLE cleanly without heuristic fallback or p
   assert.equal(brunoEqual.orderSensitivity.cpsat.courseOrderInvariant, null);
   const md = renderMarkdownReport(summary);
   assert.doesNotMatch(md, /0\/7/);
+  assert.doesNotMatch(md, /\| 0\/0 \|/);
   assert.doesNotMatch(md, /ortools==null/);
+  assert.match(md, /not evaluated/);
   assert.match(md, /UNAVAILABLE/);
 });
 
@@ -217,14 +219,31 @@ test('CP-SAT prototype satisfies planner.mjs contract, order invariance, boundar
   }
 });
 
-test('renderMarkdownReport derives pass counts dynamically on failed or unavailable runs', () => {
+test('renderMarkdownReport derives pass counts dynamically and reports observed failure statuses without blaming missing OR-Tools', () => {
   const summaryPath = resolve(ROOT, 'docs/evidence/planner-heuristic-vs-cpsat-2026-11-25/summary.json');
   const synthetic = JSON.parse(readFileSync(summaryPath, 'utf8'));
   synthetic.cases[0].variants.default.heuristic.findings = ['synthetic_violation'];
   synthetic.cases[0].variants.default.cpsat.status = 'UNAVAILABLE';
+  synthetic.cases[0].variants.default.cpsat.hasPlan = false;
   synthetic.cases[0].variants.default.cpsat.findings = [];
 
   const md = renderMarkdownReport(synthetic);
   assert.doesNotMatch(md, /100% pass rate/);
   assert.match(md, /1 unavailable\/errored/);
+
+  const allTimeout = JSON.parse(readFileSync(summaryPath, 'utf8'));
+  allTimeout.environment.cpSatAvailable = false;
+  for (const grp of Object.values(allTimeout.aggregates)) {
+    grp.cpsat.availableVariantCount = 0;
+  }
+  for (const row of allTimeout.cases) {
+    for (const pair of Object.values(row.variants)) {
+      pair.cpsat.status = 'HOST_TIMEOUT';
+      pair.cpsat.hasPlan = false;
+    }
+  }
+  const mdTimeout = renderMarkdownReport(allTimeout);
+  assert.doesNotMatch(mdTimeout, /\| 0\/0 \|/);
+  assert.doesNotMatch(mdTimeout, /OR-Tools not installed/);
+  assert.match(mdTimeout, /observed statuses: HOST_TIMEOUT/);
 });
