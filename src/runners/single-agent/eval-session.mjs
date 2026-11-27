@@ -13,6 +13,11 @@ export const EVAL_ARM_LIMITS = Object.freeze({
   C3: Object.freeze({ completions: 4, toolAttempts: 3 }),
 });
 export const estimatedInputTokens = request => Math.ceil(Buffer.byteLength(JSON.stringify(request), 'utf8') / 3) + 512;
+export function parseActionJson(content) {
+  const trimmed = String(content ?? '').trim();
+  const fenced = /^```(?:json)?\s*\n?([\s\S]*?)\n?\s*```$/i.exec(trimmed);
+  return JSON.parse(fenced ? fenced[1].trim() : trimmed);
+}
 export const EVAL_MODES = Object.freeze(['single-completion', 'lookup-and-repair', 'tool-loop']);
 export const EVAL_TOOL_METHODS = Object.freeze([
   'list_synthetic_files', 'read_synthetic_file', 'list_calendar', 'preview_plan', 'propose_planning_context',
@@ -167,13 +172,14 @@ export function createEvalSession({
         const request = {
           model,
           messages: conversation,
-          ...(nativeTools ? { tools } : {}),
+          ...(nativeTools ? { tools } : { response_format: { type: 'json_object' } }),
           max_tokens: EVAL_LIMITS.generatedTokens - turn.generatedTokens,
         };
         // Bound the serialized input conservatively before dispatch. Provider
         // usage remains authoritative and is checked before acting on output.
         const inputUpperBound = estimatedInputTokens(request);
-        if (!request.max_tokens || inputUpperBound + turn.inputTokens > EVAL_LIMITS.inputTokens) {
+        if (!request.max_tokens || inputUpperBound > EVAL_LIMITS.inputTokens ||
+            turn.inputTokens + inputUpperBound > EVAL_LIMITS.inputTokens * completionLimit) {
           throw new TurnError('budget', 'remaining_token_limit');
         }
         turn.completions++;
@@ -189,7 +195,8 @@ export function createEvalSession({
         turn.inputTokens += usage.input;
         turn.generatedTokens += usage.generated;
         turn.spendUsd = turn.spendUsd === null || usage.spendUsd === null ? null : turn.spendUsd + usage.spendUsd;
-        if (turn.inputTokens > EVAL_LIMITS.inputTokens || turn.generatedTokens > EVAL_LIMITS.generatedTokens) {
+        if (usage.input > EVAL_LIMITS.inputTokens || turn.inputTokens > EVAL_LIMITS.inputTokens * completionLimit ||
+            turn.generatedTokens > EVAL_LIMITS.generatedTokens) {
           throw new TurnError('budget', 'reported_token_limit');
         }
         if (turn.toolAttempts > toolLimit || ((!Array.isArray(calls) || calls.length) && calls != null && !nativeTools)) {
@@ -234,7 +241,7 @@ export function createEvalSession({
 
         try {
           let raw;
-          try { raw = JSON.parse(content); }
+          try { raw = parseActionJson(content); }
           catch (error) {
             if (modeIndex === 1 && /"action"\s*:\s*"needs_lookup"/.test(content)) {
               turn.toolAttempts++;

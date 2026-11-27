@@ -1,6 +1,7 @@
 import { isDeepStrictEqual } from 'node:util';
 import {
   actionSchema, completionUsage, EVAL_ARM_LIMITS, EVAL_LIMITS, EVAL_TOOL_METHODS, estimatedInputTokens,
+  parseActionJson,
 } from '../runners/single-agent/eval-session.mjs';
 import { normalizeContent } from '../runners/single-agent/agent-loop.mjs';
 
@@ -27,6 +28,10 @@ export function createArmMeter(arm) {
     try { return JSON.parse(raw); }
     catch { return null; }
   }
+  function parseAction(raw) {
+    try { return parseActionJson(raw); }
+    catch { return null; }
+  }
   return {
     beginTurn() {
       if (turns.length >= EVAL_LIMITS.maxUserTurns || active) reject('server_user_turn_limit');
@@ -44,8 +49,11 @@ export function createArmMeter(arm) {
       allowed = [];
       finalAction = undefined;
       const remaining = EVAL_LIMITS.generatedTokens - active.generatedTokens;
+      const estimated = estimatedInputTokens(request);
       if (!Number.isSafeInteger(request.max_tokens) || request.max_tokens < 1 || request.max_tokens > remaining ||
-          active.inputTokens + estimatedInputTokens(request) > EVAL_LIMITS.inputTokens) reject('server_token_limit');
+          estimated > EVAL_LIMITS.inputTokens || active.inputTokens + estimated > EVAL_LIMITS.inputTokens * limits.completions) {
+        reject('server_token_limit');
+      }
       advertised = Array.isArray(request.tools) && request.tools.length > 0;
       if (advertised && (arm !== 'C3' || active.completions === limits.completions - 1 ||
           active.toolAttempts >= limits.toolAttempts)) reject('server_disabled_tools');
@@ -60,7 +68,7 @@ export function createArmMeter(arm) {
       const message = response?.choices?.[0]?.message;
       const calls = message?.tool_calls;
       const content = normalizeContent(message?.content);
-      const raw = parse(content);
+      const raw = parseAction(content);
       const lookup = arm === 'C1' && (raw?.action === 'needs_lookup' ||
         (!raw && /"action"\s*:\s*"needs_lookup"/.test(content)));
       const natives = calls == null ? 0 : Array.isArray(calls) ? calls.length : 1;
@@ -71,7 +79,8 @@ export function createArmMeter(arm) {
       catch { reject('server_missing_token_usage'); }
       active.inputTokens += usage.input;
       active.generatedTokens += usage.generated;
-      if (active.inputTokens > EVAL_LIMITS.inputTokens || active.generatedTokens > EVAL_LIMITS.generatedTokens) {
+      if (usage.input > EVAL_LIMITS.inputTokens || active.inputTokens > EVAL_LIMITS.inputTokens * limits.completions ||
+          active.generatedTokens > EVAL_LIMITS.generatedTokens) {
         reject('server_token_limit');
       }
       if (natives) {

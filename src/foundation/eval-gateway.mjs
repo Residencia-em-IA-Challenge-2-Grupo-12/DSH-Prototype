@@ -222,8 +222,8 @@ export function createEvalGateway({
     let body, estimate;
     try {
       if (role === 'judge' && route === routes.openrouter &&
-          (policy.providerOnly?.length !== 1 || input.reasoning_effort !== 'low' || input.max_tokens !== 1536)) {
-        throw new Error('Role B2 chat requires the pinned provider, low reasoning, and 1536 output tokens');
+          (policy.providerOnly?.length !== 1 || input.reasoning_effort !== 'low' || input.max_tokens !== 4096)) {
+        throw new Error('Role B2 chat requires the pinned provider, low reasoning, and 4096 output tokens');
       }
       if (role === 'agent') inspectRunnerRequest?.(input);
       body = prepareRequest(input, route, policy);
@@ -248,6 +248,10 @@ export function createEvalGateway({
       });
       if (!upstream.ok || !upstream.body) {
         await upstream.body?.cancel().catch(() => {});
+        if (!upstream.ok && upstream.status >= 400 && upstream.status < 600) {
+          await budget.settle(reservation.id, { actualUsd: 0, ...(route.decision ? { outputTokens: 0 } : {}) });
+          return send(res, 502, { error: 'Provider request failed' });
+        }
         throw new Error('Provider request failed');
       }
       const payload = await readJson(upstream.body, 5_000_000);

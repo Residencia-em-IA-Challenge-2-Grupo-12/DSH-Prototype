@@ -424,10 +424,24 @@ test('runner budgets include malformed and batched attempts, disable tools at fi
   assert.equal(gen.turns[0].generatedTokens, 4200);
   assert.equal(gen.failure.code, 'reported_token_limit');
 
-  const input = session('lookup-and-repair', async () => assistant('{broken', { input_tokens: 32_700, output_tokens: 40 }));
-  const inp = await input.prompt('Start');
-  assert.equal(inp.turns[0].completions, 1);
+  const oversizedPreload = createEvalSession({ student, clock, locale: 'en', mode: 'single-completion',
+    preload: 'x'.repeat(100_000), model: pin.model, completeChat: async () => assert.fail('Oversized prompt cannot dispatch'),
+    bridgeCall: async () => ({ isError: false, result: 'ok' }) });
+  const inp = await oversizedPreload.prompt('Start');
+  assert.equal(inp.turns[0].completions, 0);
   assert.equal(inp.failure.code, 'remaining_token_limit');
+
+  // C1 multi-completion turns allow 32,768 input tokens per completion (up to 32,768 * completions per turn).
+  let c1Calls = 0;
+  const multiInput = session('lookup-and-repair', async req => {
+    assert.deepEqual(req.response_format, { type: 'json_object' });
+    return ++c1Calls === 1
+      ? assistant('{broken', { input_tokens: 18_000, output_tokens: 40 })
+      : assistant('```json\n' + JSON.stringify(answer()) + '\n```', { input_tokens: 19_000, output_tokens: 40 });
+  });
+  const repaired = await multiInput.prompt('Start');
+  assert.equal(repaired.failure, null);
+  assert.equal(repaired.turns[0].inputTokens, 37_000);
 
   const missingUsage = session('single-completion', async () => ({ choices: assistant(answer()).choices }));
   assert.equal((await missingUsage.prompt('Start')).failure.kind, 'compatibility');
@@ -591,6 +605,7 @@ test('Role B2 blinds both revisions, uses named questions and calibrated isolate
     assert.ok(!JSON.stringify(body).includes('dev-bundle-020'));
     if (route === '/v1/systemone') {
       assert.deepEqual(new Set(Object.values(body.questions).map(item => item.type)), new Set(['noul', 'score', 'choice']));
+      assert.ok(Object.values(body.questions).every(item => typeof item.instructions === 'string' && item.instructions.trim().length > 0));
       assert.equal(body.questions.revision.criteria.length, 5);
       assert.equal(typeof body.questions.honesty.criteria.partial, 'string');
       assert.equal(typeof body.questions.supported.criteria.false, 'string');
@@ -599,7 +614,7 @@ test('Role B2 blinds both revisions, uses named questions and calibrated isolate
       assert.equal(body.model, JUDGE_MODELS[2]);
       assert.equal(body.temperature, 0);
       assert.equal(body.reasoning_effort, 'low');
-      assert.equal(body.max_tokens, 1536);
+      assert.equal(body.max_tokens, 4096);
     }
   }
   assert.deepEqual(results[0].answerMetadata.supported, { noul: 0.92, confidence: 0.8 });
@@ -928,4 +943,16 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
   const honest = { ...unread, message: 'I have not read page 5 of "notes/handbook.pdf" yet.' };
   const lookup = await runCase({ cell: cell(bundle), completeChat: async () => assistant(honest) });
   assert.equal(lookup.outcome, 'honest_abstention', JSON.stringify(lookup));
+
+  // Full official course title containing the required short course name still passes authoritative_deadlines.
+  const planned = (await makeBundle(t, archetypes[0])).bundle;
+  const fullTitle = { ...course, name: 'Field Methods and Applied Research' };
+  const titled = await runCase({
+    cell: cell(planned),
+    completeChat: async ({ messages }) => assistant('```json\n' + JSON.stringify(propose(
+      record([fullTitle]), { avoidDates: messages.at(-1).content.endsWith(friction) ? [clock.date] : [] },
+    )) + '\n```'),
+  });
+  assert.equal(titled.passed, true, JSON.stringify(titled));
+  assert.equal(titled.gates.authoritative_deadlines.passed, true);
 });

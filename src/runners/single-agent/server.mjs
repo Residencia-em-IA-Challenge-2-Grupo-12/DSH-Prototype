@@ -38,13 +38,14 @@ export function createOpenAICompatibleCompleter({
     message: 'Model gateway must be a loopback HTTP or explicit Compose chat endpoint',
   });
   const endpoint = `${base.href.replace(/\/+$/, '')}/chat/completions`;
-  return async function completeChat({ model, messages, tools, max_tokens }) {
+  return async function completeChat({ model, messages, tools, max_tokens, response_format }) {
     const requestBody = {
       model,
       messages,
       tools,
       max_tokens,
       stream: false,
+      ...(response_format ? { response_format } : {}),
       ...(reasoningEffort ? { reasoning_effort: reasoningEffort } : {}),
     };
     const response = await fetchImpl(endpoint, {

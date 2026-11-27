@@ -418,7 +418,7 @@ test('gateway binds model and route to each token and enforces separate OpenRout
   assert.equal(requests.length, 0);
   for (const [token, model, provider] of [[runnerToken, chatModel, 'arm-provider'], [operatorToken, operatorModel, 'operator-provider'], [judgeToken, judgeModel, 'judge-provider']]) {
     const response = await call(chat, token, { model, messages, temperature: 0, provider: { only: ['spoofed'] },
-      ...(model === judgeModel ? { reasoning_effort: 'low', max_tokens: 1536 } : {}) }, 'setup');
+      ...(model === judgeModel ? { reasoning_effort: 'low', max_tokens: 4096 } : {}) }, 'setup');
     assert.equal(response.status, 200);
     const { body, authorization } = requests.at(-1);
     assert.equal(authorization, 'Bearer stub-or');
@@ -758,4 +758,33 @@ test('inverse sol-loop R1 regressions (N1-N9): seed, requireParameters, freeTier
     startRun: async () => ({ id: 'r1', origin: 'http://calendarpit:4173', client: { id: 'c', secret: 's', redirectUris: [callback] }, close: async () => {} }),
   });
   assert.equal(typeof exp.provider('tok').listEvents, 'function');
+});
+
+test('eval gateway releases reservation on clean upstream HTTP 4xx/5xx without fencing subsequent runs', async t => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'slice1-http-err-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const budget = await createModelBudget({ directory: dir, targetUsd: 1 });
+  t.after(() => budget.close());
+  let calls = 0;
+  const gateway = createEvalGateway({
+    roleAModel: chatModel,
+    modelPolicies: { [chatModel]: { pricing: { inputPerMillion: 0.1, outputPerMillion: 0.5, verifiedAt: new Date().toISOString() }, providerOnly: ['openai'] } },
+    apiKeys: { OPENROUTER_API_KEY: 'stub-key' },
+    budget,
+    fetchImpl: async () => ++calls === 1
+      ? new Response('upstream overloaded', { status: 503 })
+      : Response.json({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 10, completion_tokens: 5, cost: 0.0001 } }),
+  });
+  await new Promise(done => gateway.server.listen(0, '127.0.0.1', done));
+  t.after(() => new Promise(done => { gateway.retire(); gateway.server.close(done); }));
+  const url = `http://127.0.0.1:${gateway.server.address().port}${chat}`;
+  const req = () => fetch(url, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${gateway.runnerToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ model: chatModel, messages }),
+  });
+  assert.equal((await req()).status, 502);
+  assert.equal((await budget.summary({ role: 'agent' })).unknownCount, 0);
+  assert.equal((await req()).status, 200);
+  assert.equal((await budget.summary({ role: 'agent' })).observedUsd, 0.0001);
 });
