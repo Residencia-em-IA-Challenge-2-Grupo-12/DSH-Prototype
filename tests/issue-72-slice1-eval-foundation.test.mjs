@@ -673,6 +673,22 @@ test('inverse sol-loop R1 regressions (N1-N9): seed, requireParameters, freeTier
   assert.equal(freeUsage.output_tokens, 200); // total_tokens(300) - prompt_tokens(100)
   assert.equal((await freeBudget.summary({ role: 'agent' })).observedUsd, 0);
 
+  // N2 guard: if a freeTier-configured route actually returns a positive provider cost, bill it instead of hiding it as $0.
+  const billedFreeBudget = await createModelBudget({ directory: await tempDir(t), targetUsd: 0.25 });
+  t.after(() => billedFreeBudget.close());
+  const billedFreeGw = createEvalGateway({
+    roleAModel: chatModel,
+    modelPolicies: { ...policies, [chatModel]: { pricing: { inputPerMillion: 0, outputPerMillion: 0, freeTier: true, verifiedAt: pricing.verifiedAt } } },
+    apiKeys, budget: billedFreeBudget, fetchImpl,
+  });
+  const billedFreeBase = await listen(t, billedFreeGw.server);
+  const billedFreeRes = await post(billedFreeBase + chat, { model: chatModel, messages }, { authorization: `Bearer ${billedFreeGw.runnerToken}` });
+  assert.equal(billedFreeRes.status, 200);
+  const billedFreeUsage = (await billedFreeRes.json()).usage;
+  assert.equal(billedFreeUsage.cost, 0.0003);
+  assert.equal(billedFreeUsage.cost_source, 'provider');
+  assert.equal((await billedFreeBudget.summary({ role: 'agent' })).observedUsd, 0.0003);
+
   const paidBudget = await createModelBudget({ directory: await tempDir(t), targetUsd: 0.25 });
   t.after(() => paidBudget.close());
   const paidGw = createEvalGateway({
@@ -716,16 +732,20 @@ test('inverse sol-loop R1 regressions (N1-N9): seed, requireParameters, freeTier
   assert.match(preview.plan.near[0].start.dateTime, /\+00:00$/);
   assert.equal(preview.plan.near[0].start.timeZone, 'UTC');
 
-  // N8: createClaimedCalendar and startCalendarExperiment forward transport & allowedStudents.
+  // N8: createClaimedCalendar and startCalendarExperiment forward transport & allowedStudents (and never widen allowlists).
+  const mutableAllowed = ['ravi'];
   const claimed = createClaimedCalendar({
     origin: 'http://calendarpit:4173', accessToken: 'tok', getClaim: async () => null,
-    transport, allowedStudents,
+    transport, allowedStudents: mutableAllowed,
     fetchImpl: async url => {
       assert.match(url, /^http:\/\/calendarpit:4173\/calendar\/v3\/calendars\/ravi-calendar\/events/);
       return Response.json({ items: [] });
     },
   });
+  mutableAllowed.push('ana');
   assert.deepEqual(await claimed.events('ravi'), []);
+  await assert.rejects(() => claimed.events('ana', { allowedStudents: ['ana'] }), /Unknown fixture/);
+  await assert.rejects(() => claimed.events('ana'), /Unknown fixture/);
   const exp = await startCalendarExperiment({
     fixture: { users: [{ id: 'ravi', email: 'ravi@example.test' }], calendars: [], events: [] },
     redirectUri: callback,

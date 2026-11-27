@@ -132,14 +132,16 @@ function usageFor(payload, route, pricing) {
     totalTokens !== null && totalTokens > inputTokens + outputTokens
     ? totalTokens - inputTokens
     : outputTokens;
+  const cost = usage?.cost ?? usage?.cost_usd;
+  if (dollars(cost) && (cost > 0 || pricing?.freeTier !== true)) {
+    return { inputTokens, outputTokens: billedOutput, actualUsd: cost, source: 'provider' };
+  }
   if (pricing?.freeTier === true) {
     if (inputTokens !== null && billedOutput !== null) {
       return { inputTokens, outputTokens: billedOutput, actualUsd: 0, source: 'free-tier' };
     }
     return { inputTokens, outputTokens: billedOutput, actualUsd: null, source: 'unknown' };
   }
-  const cost = usage?.cost ?? usage?.cost_usd;
-  if (dollars(cost)) return { inputTokens, outputTokens: billedOutput, actualUsd: cost, source: 'provider' };
   if ((route === routes.gemini || route.decision) && inputTokens !== null && billedOutput !== null) {
     return { inputTokens, outputTokens: billedOutput, actualUsd: priceFor(pricing, inputTokens, billedOutput), source: 'token-rates' };
   }

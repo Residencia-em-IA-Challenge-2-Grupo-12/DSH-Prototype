@@ -1,12 +1,21 @@
 import {assertStudent,significant} from '../core.mjs';
 import {CalendarpitApi} from './calendarpit-api.mjs';
 
+function narrowAllowed(base, extra) {
+  if (extra !== undefined && !Array.isArray(extra)) throw new Error('An explicit student allowlist is required');
+  if (base === undefined) return extra;
+  if (extra === undefined) return base;
+  return base.filter(student => extra.includes(student));
+}
+
 // Synthetic provider adapter. The enclosing application must enforce access
 // to the API and database; this module is not an authentication boundary.
 export function createClaimedCalendar({origin,accessToken,getClaim,fetchImpl,transport='loopback',allowedStudents}) {
   if(typeof getClaim!=='function')throw new Error('A claim reader is required');
+  if(allowedStudents!==undefined&&!Array.isArray(allowedStudents))throw new Error('An explicit student allowlist is required');
+  const pinnedStudents=allowedStudents===undefined?undefined:[...allowedStudents];
   async function claimed(student,actionId,claimId) {
-    assertStudent(student,allowedStudents);
+    assertStudent(student,pinnedStudents);
     const claim=await getClaim();
     const action=claim?.actions?.find(item=>item.actionId===actionId);
     const last=claim?.steps?.findLast(step=>step.actionId===actionId);
@@ -26,7 +35,7 @@ export function createClaimedCalendar({origin,accessToken,getClaim,fetchImpl,tra
   }});
   return {
     async events(student,options) {
-      assertStudent(student,options?.allowedStudents??allowedStudents);
+      assertStudent(student,narrowAllowed(pinnedStudents,options?.allowedStudents));
       const events=[],seen=new Set();let pageToken;
       do {
         const page=await client.listEvents(`${student}-calendar`,{maxResults:250,...(pageToken?{pageToken}:{})});
