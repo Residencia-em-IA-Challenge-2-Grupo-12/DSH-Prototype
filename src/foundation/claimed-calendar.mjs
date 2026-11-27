@@ -1,12 +1,21 @@
 import {assertStudent,significant} from '../core.mjs';
 import {CalendarpitApi} from './calendarpit-api.mjs';
 
+function narrowAllowed(base, extra) {
+  if (extra !== undefined && !Array.isArray(extra)) throw new Error('An explicit student allowlist is required');
+  if (base === undefined) return extra;
+  if (extra === undefined) return base;
+  return base.filter(student => extra.includes(student));
+}
+
 // Synthetic provider adapter. The enclosing application must enforce access
 // to the API and database; this module is not an authentication boundary.
-export function createClaimedCalendar({origin,accessToken,getClaim,fetchImpl}) {
+export function createClaimedCalendar({origin,accessToken,getClaim,fetchImpl,transport='loopback',allowedStudents}) {
   if(typeof getClaim!=='function')throw new Error('A claim reader is required');
+  if(allowedStudents!==undefined&&!Array.isArray(allowedStudents))throw new Error('An explicit student allowlist is required');
+  const pinnedStudents=allowedStudents===undefined?undefined:[...allowedStudents];
   async function claimed(student,actionId,claimId) {
-    assertStudent(student);
+    assertStudent(student,pinnedStudents);
     const claim=await getClaim();
     const action=claim?.actions?.find(item=>item.actionId===actionId);
     const last=claim?.steps?.findLast(step=>step.actionId===actionId);
@@ -14,7 +23,7 @@ export function createClaimedCalendar({origin,accessToken,getClaim,fetchImpl}) {
     if(action.type==='patch'?claim.kind!=='annotation':claim.kind!=='approval'||!['near','future'].includes(claim.section)||claim.decision.section!==claim.section)throw new Error('Approval claim does not match the action or section');
     return {claim,action};
   }
-  const client=new CalendarpitApi({origin,accessToken,fetchImpl,authorizeWrite:async(action,approval)=>{
+  const client=new CalendarpitApi({origin,accessToken,fetchImpl,transport,authorizeWrite:async(action,approval)=>{
     try {
       const {action:expected}=await claimed(approval.student,approval.actionId,approval.claimId);
       if(action.calendarId!==`${approval.student}-calendar`)return false;
@@ -25,8 +34,8 @@ export function createClaimedCalendar({origin,accessToken,getClaim,fetchImpl}) {
     } catch {return false;}
   }});
   return {
-    async events(student) {
-      assertStudent(student);
+    async events(student,options) {
+      assertStudent(student,narrowAllowed(pinnedStudents,options?.allowedStudents));
       const events=[],seen=new Set();let pageToken;
       do {
         const page=await client.listEvents(`${student}-calendar`,{maxResults:250,...(pageToken?{pageToken}:{})});

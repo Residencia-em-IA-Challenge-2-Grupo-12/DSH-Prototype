@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { planningContextSchema } from '../../cold-start-context.mjs';
+import { planningContextSchema, planningContextSchemaFor } from '../../cold-start-context.mjs';
 import { availabilityOptions } from '../../foundation/availability-preview.mjs';
 
 const askUserQuestionSchema = z.strictObject({
@@ -21,8 +21,12 @@ const BRIDGE_TOOL_SCHEMAS = {
     schema: z.strictObject({ path: z.string().max(180).optional() }),
   },
   read_synthetic_file: {
-    description: 'Read a text, JSON, Markdown, or PDF file from the selected synthetic workspace.',
-    schema: z.strictObject({ path: z.string().min(1).max(180) }),
+    description: 'Read a text, JSON, Markdown, or PDF file from the selected synthetic workspace. For a PDF range, supply both inclusive page numbers and request at most three pages. The response includes the total page count.',
+    schema: z.strictObject({
+      path: z.string().min(1).max(180),
+      pageStart: z.number().int().min(1).max(500).optional(),
+      pageEnd: z.number().int().min(1).max(500).optional(),
+    }),
   },
   list_calendar: {
     description: 'Read the synthetic calendar events and simulation clock. Never assume real accounts are connected.',
@@ -97,7 +101,8 @@ function toParameters(schema, schemaCompat = 'standard') {
   return schemaCompat === 'gemini' ? stripAdditionalProperties(jsonSchema) : jsonSchema;
 }
 
-export function buildOpenAITools(allowedMethods = [], { schemaCompat = 'standard' } = {}) {
+export function buildOpenAITools(allowedMethods = [], { schemaCompat = 'standard', schemaProfile = 'v1' } = {}) {
+  const contextSchema = planningContextSchemaFor(schemaProfile);
   const tools = [
     {
       type: 'function',
@@ -111,12 +116,15 @@ export function buildOpenAITools(allowedMethods = [], { schemaCompat = 'standard
   for (const method of allowedMethods) {
     const spec = BRIDGE_TOOL_SCHEMAS[method];
     if (!spec) continue;
+    let schema = spec.schema;
+    if (method === 'propose_planning_context') schema = schema.extend({ record: contextSchema });
+    if (method === 'preview_plan') schema = schema.extend({ record: contextSchema.optional() });
     tools.push({
       type: 'function',
       function: {
         name: method,
         description: spec.description,
-        parameters: toParameters(spec.schema, schemaCompat),
+        parameters: toParameters(schema, schemaCompat),
       },
     });
   }
@@ -127,13 +135,15 @@ export function parseAskUserQuestionArgs(rawArgs) {
   return askUserQuestionSchema.parse(rawArgs);
 }
 
-export function buildSystemPrompt({ student, clock, locale }) {
+export function buildSystemPrompt({ student, clock, locale, schemaProfile = 'v1' }) {
   const languageHint = locale === 'pt-BR' ? 'Brazilian Portuguese (pt-BR)' : 'English';
   return [
     `You are a collaborative study-planning assistant for synthetic student "${student}".`,
     `Simulation clock: today is ${clock.date} in timezone ${clock.timezone}. Interpret all dates relative to this clock, not the host clock.`,
     `Respond in ${languageHint}.`,
-    'Inspect the workspace files and synthetic calendar first before proposing a plan. Distinguish superseded dates from authoritative deadlines, quote the authoritative source verbatim (with PDF page when applicable), and keep optional clinics or context-only milestones in your explanation rather than courses.',
+    schemaProfile === 'eval-v2'
+      ? 'Review the available sources and synthetic calendar before proposing a plan. Quote authoritative deadlines verbatim and cite PDF page numbers. Request a bounded page range when more evidence is needed. Include planning targets as courses and explain context-only milestones separately.'
+      : 'Inspect the workspace files and synthetic calendar first before proposing a plan. Distinguish superseded dates from authoritative deadlines, quote the authoritative source verbatim (with PDF page when applicable), and keep optional clinics or context-only milestones in your explanation rather than courses.',
     'Ask only about material missing or conflicting decisions using ask_user_question. Study blocks are always 1 hour each (so N sessions/day corresponds to maxDailyStudyHours: N). Once sources and operator inputs determine a feasible plan, submit those normalized inputs directly via propose_planning_context (weekdays are 0=Sunday through 6=Saturday; use the exact course title for courses[].name without task suffixes; keep assumption concise and under 600 characters; its review is the confirmation step — skip extra yes/no questions about resolved facts).',
     'Wait for separate operator confirmation of the pending planning context before calling draft_study_plan. When the operator requests a correction (such as removing a weekday or changing availability/deadlines), reuse confirmed inputs for unchanged fields, submit the updated record via propose_planning_context for review, and wait for confirmation before drafting.',
     'Never attempt to write to the calendar directly; calendar approval happens through separate trusted controls.',

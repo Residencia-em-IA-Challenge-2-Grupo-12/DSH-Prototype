@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { buildOpenAITools, buildSystemPrompt, parseAskUserQuestionArgs } from './tool-definitions.mjs';
+import { EVAL_EVALUATOR_ORIGIN, syntheticHttpUrl, TOOL_BRIDGE_ROUTE } from '../../foundation/eval-transport.mjs';
 
 function normalizeContent(content) {
   if (typeof content === 'string') return content;
@@ -20,6 +21,7 @@ async function callToolBridge(toolBridge, method, args) {
       'x-study-run-token': toolBridge.token,
     },
     body: JSON.stringify({ method, args: args || {} }),
+    redirect: 'error',
     signal: AbortSignal.timeout(30_000),
   });
   const text = await response.text();
@@ -49,13 +51,19 @@ export function createSingleAgentSession({
   model,
   maxSteps = 24,
   schemaCompat = 'standard',
+  schemaProfile = 'v1',
+  transport = 'loopback',
   onEvent,
 } = {}) {
   if (typeof completeChat !== 'function') throw new Error('completeChat function is required');
   if (!toolBridge?.url || !toolBridge?.token) throw new Error('A valid toolBridge is required');
+  syntheticHttpUrl(toolBridge.url, {
+    transport, peer: EVAL_EVALUATOR_ORIGIN, routes: [TOOL_BRIDGE_ROUTE],
+    message: 'toolBridge.url must be a loopback HTTP or explicit Compose tool endpoint',
+  });
 
-  const tools = buildOpenAITools(toolBridge.methods || [], { schemaCompat });
-  const conversation = [{ role: 'system', content: buildSystemPrompt({ student, clock, locale }) }];
+  const tools = buildOpenAITools(toolBridge.methods || [], { schemaCompat, schemaProfile });
+  const conversation = [{ role: 'system', content: buildSystemPrompt({ student, clock, locale, schemaProfile }) }];
   const visibleMessages = [];
   let pendingQuestion = null; // { requestId, toolCallId, view, remainingToolCalls }
   let busy = false;

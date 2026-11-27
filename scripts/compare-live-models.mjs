@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { ROOT } from '../src/core.mjs';
-import { createModelBudget } from '../src/foundation/model-budget.mjs';
+import { createModelBudget, formatUsd } from '../src/foundation/model-budget.mjs';
 import { createOpenRouterGateway } from '../src/foundation/openrouter-gateway.mjs';
 import { packBundle, readBundle } from '../src/paired-replay/bundle.mjs';
 import { createHttpRunnerAdapter } from '../src/paired-replay/http-adapter.mjs';
@@ -75,12 +75,14 @@ export function extractCatalogPricing(catalog, modelId, verifiedAt = new Date().
 }
 
 export function formatSummaryMarkdown({ generatedAt, scenario, rows }) {
-  const totalUsd = rows.reduce((sum, row) => sum + (Number(row.observedUsd) || 0), 0);
+  const totalUsd = rows.every(row => Number.isFinite(row.observedUsd) && row.observedUsd >= 0)
+    ? rows.reduce((sum, row) => sum + row.observedUsd, 0)
+    : null;
   const lines = [
     `# Live Single-Agent Model Baseline (${generatedAt.slice(0, 10)})`,
     '',
     `- **Scenario:** \`${scenario}\` (real Docker Calendarpit + local SQLite budgeted OpenRouter gateway + independent Python probe)`,
-    `- **Total observed OpenRouter spend:** \`$${totalUsd.toFixed(4)}\` USD across ${rows.length} run(s)`,
+    `- **Total observed OpenRouter spend:** \`${formatUsd(totalUsd)}\` across ${rows.length} run(s)`,
     '',
     '| Model | Case | Overall | Probe | Duration | Steps / Tools | Tool Errs | Questions (Turns) | Input / Output Tokens | Observed USD | Notes |',
     '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
@@ -92,7 +94,7 @@ export function formatSummaryMarkdown({ generatedAt, scenario, rows }) {
     const tokens = row.usage?.availability === 'available'
       ? `${row.usage.inputTokens.toLocaleString('en-US')} / ${row.usage.outputTokens.toLocaleString('en-US')}`
       : 'unknown';
-    const cost = `$${Number(row.observedUsd || 0).toFixed(4)}`;
+    const cost = formatUsd(row.observedUsd);
     const notes = row.passed
       ? 'All replay checks passed; retirement verified'
       : [...row.failedCheckDetails.map(c => `${c.id}: ${c.detail}`), ...row.failureMessages]
@@ -241,7 +243,7 @@ async function main() {
           questionsAsked: questions.length,
           questionTurns,
           usage: result.usage,
-          observedUsd: budgetSummary.observedUsd,
+          observedUsd: budgetSummary.totalUsd,
           checks: Object.fromEntries(result.checks.map(c => [c.id, c.outcome])),
           failedCheckDetails: failedChecks,
           failureMessages: failures.map(f => f.message),

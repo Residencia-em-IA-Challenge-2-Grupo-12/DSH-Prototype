@@ -1,8 +1,9 @@
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import http from 'node:http';
 import { z } from 'zod';
-
-const LOOPBACK_HOSTS = new Set(['127.0.0.1', 'localhost', '::1', '[::1]']);
+import {
+  assertTransport, EVAL_EVALUATOR_ORIGIN, EVAL_RUNNER_ORIGIN, syntheticHttpUrl, TOOL_BRIDGE_ROUTE,
+} from '../foundation/eval-transport.mjs';
 
 const questionOptionSchema = z.object({
   label: z.string().min(1),
@@ -51,14 +52,6 @@ const sessionStartSchema = z.object({
   usage: usageSchema.optional(),
 });
 
-function assertLoopbackOrigin(rawUrl) {
-  const parsed = new URL(rawUrl);
-  if (parsed.protocol !== 'http:' || !LOOPBACK_HOSTS.has(parsed.hostname)) {
-    throw new Error('External runner URL must be loopback http://');
-  }
-  return parsed.origin + parsed.pathname.replace(/\/+$/, '');
-}
-
 async function readJsonBody(req, limit = 512_000) {
   let raw = '';
   for await (const chunk of req) {
@@ -82,16 +75,21 @@ function tokenMatches(actual, expected) {
  * files/calendar and propose plans/context without ever gaining approval or
  * calendar-write access.
  */
-export async function startTrustedToolBridge({ student, service }) {
+export async function startTrustedToolBridge({ student, service, transport = 'loopback', mountToolBridge }) {
+  assertTransport(transport);
+  if (mountToolBridge !== undefined && (transport !== 'compose-eval' || typeof mountToolBridge !== 'function')) {
+    throw new Error('Shared tool bridge requires Compose transport');
+  }
+  const compose = transport === 'compose-eval';
   const token = randomBytes(24).toString('hex');
   const calledTools = new Set();
-  const server = http.createServer(async (req, res) => {
+  const handle = async (req, res) => {
     const send = (status, payload) => {
       res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
       res.end(JSON.stringify(payload));
     };
     try {
-      if (req.method !== 'POST' || req.url !== '/tools/call') return send(404, { ok: false, error: 'Unknown tool bridge route' });
+      if (req.method !== 'POST' || req.url !== TOOL_BRIDGE_ROUTE) return send(404, { ok: false, error: 'Unknown tool bridge route' });
       if (!tokenMatches(req.headers['x-study-run-token'], token)) return send(401, { ok: false, error: 'Unauthorized tool bridge token' });
       const { method, args } = await readJsonBody(req);
       if (typeof method !== 'string' || !method) return send(400, { ok: false, error: 'Tool method is required' });
@@ -105,16 +103,20 @@ export async function startTrustedToolBridge({ student, service }) {
       const forbidden = /not available|does not match|outside synthetic workspace/i.test(error.message);
       return send(forbidden ? 403 : 400, { ok: false, error: error.message });
     }
-  });
+  };
+  const bridge = { token, calledTools: () => [...calledTools].sort() };
+  if (mountToolBridge) {
+    return { ...bridge, url: EVAL_EVALUATOR_ORIGIN + TOOL_BRIDGE_ROUTE, close: mountToolBridge(handle) };
+  }
+  const server = http.createServer(handle);
   await new Promise((resolve, reject) => {
     server.once('error', reject);
-    server.listen(0, '127.0.0.1', resolve);
+    server.listen(compose ? 4181 : 0, compose ? '0.0.0.0' : '127.0.0.1', resolve);
   });
   const { port } = server.address();
   return {
-    url: `http://127.0.0.1:${port}/tools/call`,
-    token,
-    calledTools: () => [...calledTools].sort(),
+    ...bridge,
+    url: (compose ? EVAL_EVALUATOR_ORIGIN : `http://127.0.0.1:${port}`) + TOOL_BRIDGE_ROUTE,
     close: () => new Promise(resolve => server.close(() => resolve())),
   };
 }
@@ -124,14 +126,24 @@ export async function startTrustedToolBridge({ student, service }) {
  * Compatible with any language/stack (Python FastAPI StudyBuddy, Node non-DSH
  * tool loops, or runtime-defined delegating agents).
  */
-export function createHttpRunnerAdapter({ url, engine = {}, timeoutMs, draftRequest } = {}) {
+export function createHttpRunnerAdapter({
+  url, engine = {}, timeoutMs, draftRequest, transport = 'loopback', fetchImpl = fetch, mountToolBridge, runnerToken,
+} = {}) {
   const effectiveTimeoutMs = timeoutMs ?? (engine.mode === 'live' ? 300_000 : 30_000);
-  const base = assertLoopbackOrigin(url);
+  const parsed = syntheticHttpUrl(url, {
+    transport, peer: EVAL_RUNNER_ORIGIN, routes: transport === 'compose-eval' ? ['/'] : undefined,
+    message: 'External runner URL must be loopback HTTP or the explicit Compose runner',
+  });
+  const base = parsed.origin + parsed.pathname.replace(/\/+$/, '');
+  if (runnerToken !== undefined && (transport !== 'compose-eval' || parsed.origin !== EVAL_RUNNER_ORIGIN)) {
+    throw new Error('A per-run model gateway token requires the fixed Compose runner');
+  }
   async function request(method, route, body) {
-    const response = await fetch(base + route, {
+    const response = await fetchImpl(base + route, {
       method,
       headers: body === undefined ? {} : { 'content-type': 'application/json' },
       body: body === undefined ? undefined : JSON.stringify(body),
+      redirect: 'error',
       signal: AbortSignal.timeout(effectiveTimeoutMs),
     });
     const text = await response.text();
@@ -151,7 +163,7 @@ export function createHttpRunnerAdapter({ url, engine = {}, timeoutMs, draftRequ
     draftRequest,
     async createSession({ bundle, service, runId }) {
       const { manifest } = bundle;
-      const bridge = await startTrustedToolBridge({ student: manifest.student, service });
+      const bridge = await startTrustedToolBridge({ student: manifest.student, service, transport, mountToolBridge });
       let sessionId = null;
       let reportedEngine = {};
       let reportedUsage = null;
@@ -162,7 +174,8 @@ export function createHttpRunnerAdapter({ url, engine = {}, timeoutMs, draftRequ
           student: manifest.student,
           locale: manifest.locale,
           clock: manifest.clock,
-          sources: manifest.sources,
+          ...(transport === 'loopback' ? { sources: manifest.sources } : {}),
+          ...(runnerToken !== undefined ? { runnerToken } : {}),
           toolBridge: {
             url: bridge.url,
             token: bridge.token,

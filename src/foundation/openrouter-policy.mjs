@@ -4,7 +4,7 @@ export const MAX_OUTPUT_TOKENS=8192;
 
 export function normalizeOpenRouterPolicy(policy){
   if(policy===undefined||policy===null){
-    return {allowedModels:new Set([OPENROUTER_MODEL]),providerOnly:DEFAULT_OPENROUTER_PROVIDER_ONLY};
+    return {allowedModels:new Set([OPENROUTER_MODEL]),providerOnly:DEFAULT_OPENROUTER_PROVIDER_ONLY,requireParameters:true};
   }
   if(typeof policy!=='object'||Array.isArray(policy))throw new Error('Invalid OpenRouter policy');
   const rawModels=policy.allowedModels??[OPENROUTER_MODEL];
@@ -17,7 +17,9 @@ export function normalizeOpenRouterPolicy(policy){
   if(providerOnly!==null&&(!Array.isArray(providerOnly)||!providerOnly.length||providerOnly.some(provider=>typeof provider!=='string'||!provider.trim()))){
     throw new Error('OpenRouter policy providerOnly must be a non-empty string array or null');
   }
-  return {allowedModels:new Set(rawModels),providerOnly};
+  const requireParameters=policy.requireParameters===undefined?true:policy.requireParameters;
+  if(typeof requireParameters!=='boolean')throw new Error('OpenRouter policy requireParameters must be a boolean');
+  return {allowedModels:new Set(rawModels),providerOnly,requireParameters};
 }
 
 // Shape only; this function does not make a request or handle credentials.
@@ -34,7 +36,7 @@ export function prepareOpenRouterRequest(input,policy){
   const provider={
     ...(resolved.providerOnly?{only:[...resolved.providerOnly]}:{}),
     allow_fallbacks:false,
-    require_parameters:true,
+    require_parameters:resolved.requireParameters,
   };
   const body={...input,max_tokens:Math.min(requested,MAX_OUTPUT_TOKENS),provider,usage:{include:true}};
   delete body.max_completion_tokens;

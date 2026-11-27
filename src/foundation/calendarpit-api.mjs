@@ -1,3 +1,5 @@
+import { EVAL_CALENDAR_ORIGIN, syntheticHttpUrl } from './eval-transport.mjs';
+
 // Google Calendar-compatible synthetic provider client. No administrative endpoints.
 export class CalendarApiError extends Error {
   constructor(status) {
@@ -18,7 +20,7 @@ const id = (value, name) => {
 };
 const listParameters = new Set(['timeMin', 'timeMax', 'singleEvents', 'showDeleted', 'orderBy', 'maxResults', 'pageToken', 'syncToken', 'timeZone']);
 
-/** Synthetic localhost Calendarpit only. This adapter is not connected to the prototype.
+/** Synthetic Calendarpit only. This adapter is not connected to the prototype.
  * The trusted caller supplies an access token obtained through synthetic OAuth and a verifier
  * that checks an approval against the complete write action. No secrets are returned or logged.
  */
@@ -28,13 +30,10 @@ export class CalendarpitApi {
   #fetch;
   #authorizeWrite;
 
-  constructor({ origin, accessToken, authorizeWrite, fetchImpl = fetch }) {
-    let url;
-    try { url = new URL(origin); } catch { throw new Error('Synthetic localhost origin required'); }
-    if (url.protocol !== 'http:' || !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) || !url.port || url.username || url.password || url.pathname !== '/' || url.search || url.hash) {
-      throw new Error('Synthetic localhost origin required');
-    }
-    this.#origin = url.origin;
+  constructor({ origin, accessToken, authorizeWrite, fetchImpl = fetch, transport = 'loopback' }) {
+    this.#origin = syntheticHttpUrl(origin, {
+      transport, peer: EVAL_CALENDAR_ORIGIN, routes: ['/'], requirePort: true, message: 'Synthetic localhost or explicit Compose origin required',
+    }).origin;
     this.#token = requiredString(accessToken, 'Synthetic access token');
     if (typeof fetchImpl !== 'function') throw new Error('A fetch implementation is required');
     if (authorizeWrite !== undefined && typeof authorizeWrite !== 'function') throw new Error('Approval verifier must be a function');
@@ -48,7 +47,7 @@ export class CalendarpitApi {
     const headers = { authorization: `Bearer ${this.#token}` };
     if (body !== undefined) headers['content-type'] = 'application/json';
     if (etag !== undefined) headers['if-match'] = etag;
-    const response = await this.#fetch(url.href, { method, headers, ...(body === undefined ? {} : { body: JSON.stringify(body) }), signal: AbortSignal.timeout(15_000) });
+    const response = await this.#fetch(url.href, { method, headers, ...(body === undefined ? {} : { body: JSON.stringify(body) }), redirect: 'error', signal: AbortSignal.timeout(15_000) });
     if (!response.ok) throw new CalendarApiError(response.status);
     return response.status === 204 ? undefined : response.json();
   }

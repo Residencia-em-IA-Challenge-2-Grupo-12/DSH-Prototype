@@ -5,12 +5,14 @@ import { coldStartStudents, validatePlanningContext, plannerProfileFromRecord, r
 import {
   ROOT,
   FIXED_TODAY,
+  KNOWN_STUDENTS,
   Calendarpit,
   assertStudent,
   disposeSyntheticRuntime,
   getRecoveryClaim,
   loadState,
   readJSON,
+  requiresStagedWorkspace,
   runtimeDir,
   saveState,
   snapshotForArchive,
@@ -20,7 +22,7 @@ import {
   withWriteLock,
   writeJSON,
 } from './domain/runtime.mjs';
-import { getStudent, listWorkspace, readWorkspace } from './domain/workspace.mjs';
+import { getStudent, inspectPdf, listWorkspace, readWorkspace, readWorkspacePageRange, workspaceRoot } from './domain/workspace.mjs';
 import { diffSnapshots, digest, makePlan, planScheduleDetails, significant, snapshot } from './domain/planner.mjs';
 import { addFeedback, report, saveNarrative, summarize, validateFeedback } from './domain/reports.mjs';
 
@@ -42,6 +44,8 @@ export {
   getStudent,
   listWorkspace,
   readWorkspace,
+  inspectPdf,
+  readWorkspacePageRange,
   diffSnapshots,
   digest,
   makePlan,
@@ -56,8 +60,14 @@ export {
 
 // Initializes an already-seeded, fresh synthetic run. It does not invoke the
 // simulator's administrative reset endpoint or overwrite an existing run.
-export async function initializeScenario(calendar, student, { coldStart, workspaceSource, expectedEvents } = {}) {
-  assertStudent(student);
+export async function initializeScenario(calendar, student, {
+  coldStart, workspaceSource, expectedEvents, calendarFixture, feedback, allowedStudents, requireStaged,
+} = {}) {
+  assertStudent(student, allowedStudents);
+  const stagedOnly = requiresStagedWorkspace(requireStaged);
+  if (stagedOnly && (!workspaceSource || (expectedEvents === undefined && calendarFixture === undefined))) {
+    throw new Error('Explicit workspace and calendar fixture required');
+  }
   if (coldStart !== undefined) {
     if (workspaceSource) {
       if (typeof coldStart !== 'boolean' && (typeof coldStart !== 'string' || !coldStart.trim() || coldStart.length > 128)) {
@@ -68,17 +78,23 @@ export async function initializeScenario(calendar, student, { coldStart, workspa
     }
   }
   try {
-    await loadState(student);
+    await loadState(student, allowedStudents);
     throw new Error('Synthetic scenario already initialized');
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
   }
-  const events = await calendar.events(student);
-  const expected = expectedEvents ?? (await readJSON(path.join(ROOT, 'fixtures/calendars', `${student}.json`))).events;
+  const events = await calendar.events(student, { allowedStudents });
+  const expected = expectedEvents !== undefined ? expectedEvents : calendarFixture !== undefined
+    ? calendarFixture?.events
+    : (await readJSON(path.join(ROOT, 'fixtures/calendars', `${student}.json`))).events;
+  if (!Array.isArray(expected)) throw new Error('An explicit calendar fixture must include events');
   if (digest(events) !== digest(expected)) throw new Error('Observed calendar does not match the synthetic fixture');
 
+  const initialFeedback = (feedback ?? (stagedOnly || calendarFixture !== undefined || !KNOWN_STUDENTS.includes(student)
+    ? [] : await readJSON(path.join(ROOT, 'fixtures/feedback', `${student}.json`)))).map(validateFeedback);
   const staged = path.join(runtimeDir(), 'workspaces', student);
   await fs.mkdir(path.dirname(staged), { recursive: true });
+  if (!(await fs.lstat(path.dirname(staged))).isDirectory()) throw new Error('Synthetic run workspace is unavailable');
   try {
     await fs.mkdir(staged);
   } catch (error) {
@@ -92,10 +108,7 @@ export async function initializeScenario(calendar, student, { coldStart, workspa
         ? path.join(ROOT, 'fixtures/students', student)
         : path.join(ROOT, 'fixtures/cold-start', coldStart)
   );
-  await fs.cp(source, staged, { recursive: true, force: false, errorOnExist: true });
-
-  const feedback = (await readJSON(path.join(ROOT, 'fixtures/feedback', `${student}.json`))).map(validateFeedback);
-  const state = { student, feedback, history: [], plan: null, lastSnapshot: snapshot(events), annotations: {}, protectedIds: [] };
+  const state = { student, feedback: initialFeedback, history: [], plan: null, lastSnapshot: snapshot(events), annotations: {}, protectedIds: [] };
   if (coldStart !== undefined) {
     state.planningContext = {
       ...(typeof coldStart === 'string' ? { caseId: coldStart } : {}),
@@ -103,12 +116,19 @@ export async function initializeScenario(calendar, student, { coldStart, workspa
       confirmed: null,
     };
   }
-  await stateStore.create(student, state);
+  try {
+    await fs.cp(source, staged, { recursive: true, force: false, errorOnExist: true });
+    await stateStore.create(student, state);
+  } catch (error) {
+    await fs.rm(staged, { recursive: true, force: true });
+    throw error;
+  }
   return state;
 }
 
 export async function resetScenario(calendar, student) {
   assertStudent(student);
+  if (requiresStagedWorkspace()) throw new Error('Development reset is unavailable in a staged synthetic runtime');
   const id = randomUUID();
   const actionId = `reset:${student}`;
   await stateStore.acquireCalendarClaim({ id, student, kind: 'reset', actions: [{ actionId }], startedAt: new Date().toISOString() });
@@ -133,15 +153,19 @@ export async function resetScenario(calendar, student) {
   }
 }
 
-export async function readPlanningContext(student) {
-  const context = (await loadState(student)).planningContext;
+export async function readPlanningContext(student, { allowedStudents } = {}) {
+  const context = (await loadState(student, allowedStudents)).planningContext;
   if (!context) throw new Error('Planning context review is available for cold-start exercises');
   return context;
 }
 
-export async function proposePlanningContext(student, value, { today = FIXED_TODAY } = {}) {
-  await readPlanningContext(student);
-  const record = await validatePlanningContext(value, file => readWorkspace(student, file, { requireStaged: true }), today);
+export async function proposePlanningContext(student, value, {
+  today = FIXED_TODAY, requireStaged = true, allowedStudents, disclosedSources, schemaProfile,
+} = {}) {
+  await readPlanningContext(student, { allowedStudents });
+  const workspace = { requireStaged: requireStaged || schemaProfile === 'eval-v2', allowedStudents };
+  if (requiresStagedWorkspace(workspace.requireStaged)) await workspaceRoot(student, workspace);
+  const record = await validatePlanningContext(value, file => readWorkspace(student, file, workspace), today, { disclosedSources, schemaProfile });
   const revision = { id: randomUUID(), record };
   return stateStore.update(student, state => {
     const context = state.planningContext;
@@ -184,21 +208,27 @@ function computeProtectedIds(state, events) {
   ];
 }
 
-function buildPlanOptions(options, { effectiveToday, protectedIds, enforcedHours }) {
+function buildPlanOptions(options, { effectiveToday, timezoneOffset, protectedIds, enforcedHours }) {
   const { record: _ignoredRecord, ...rest } = options || {};
   return {
     ...rest,
     today: options?.today ?? effectiveToday,
+    ...(timezoneOffset !== undefined ? { timezoneOffset: options?.timezoneOffset ?? timezoneOffset } : {}),
     ...(enforcedHours !== undefined ? { hours: enforcedHours } : {}),
     protectedIds,
   };
 }
 
-export async function previewPlan(calendar, student, options = {}, { requireStaged = false, today = FIXED_TODAY } = {}) {
-  const state = await loadState(assertStudent(student));
-  const events = await calendar.events(student);
+export async function previewPlan(calendar, student, options = {}, {
+  requireStaged = false, allowedStudents, today = FIXED_TODAY, timezone, timezoneOffset, disclosedSources, schemaProfile,
+} = {}) {
+  const workspace = { requireStaged: requireStaged || schemaProfile === 'eval-v2', allowedStudents };
+  if (requiresStagedWorkspace(workspace.requireStaged)) await workspaceRoot(student, workspace);
+  const state = await loadState(student, allowedStudents);
+  const events = await calendar.events(student, { allowedStudents });
   const context = state.planningContext;
   const effectiveToday = options?.today ?? today;
+  const clockProfile = { ...(timezone ? { timezone } : {}), ...(timezoneOffset ? { timezoneOffset } : {}) };
   const hasCandidateRecord = options?.record !== undefined;
   let profile;
   let planningContextRevisionId = null;
@@ -207,18 +237,19 @@ export async function previewPlan(calendar, student, options = {}, { requireStag
   if (hasCandidateRecord) {
     const record = await validatePlanningContext(
       options.record,
-      file => readWorkspace(student, file, { requireStaged }),
+      file => readWorkspace(student, file, workspace),
       effectiveToday,
+      { disclosedSources, schemaProfile },
     );
-    profile = plannerProfileFromRecord(student, record, effectiveToday);
+    profile = plannerProfileFromRecord(student, record, effectiveToday, clockProfile);
     enforceTargetHours = true;
   } else if (context) {
     if (context.pending) throw new Error('The operator must review the pending planning context revision');
-    profile = reviewedPlannerProfile(student, context, effectiveToday);
+    profile = reviewedPlannerProfile(student, context, effectiveToday, clockProfile);
     planningContextRevisionId = context.confirmed.id;
     enforceTargetHours = true;
   } else {
-    profile = await getStudent(student, { requireStaged });
+    profile = await getStudent(student, workspace);
   }
 
   if (enforceTargetHours && options?.hours !== undefined && options.hours !== profile.targetHours) {
@@ -231,6 +262,7 @@ export async function previewPlan(calendar, student, options = {}, { requireStag
     events,
     buildPlanOptions(options, {
       effectiveToday,
+      timezoneOffset,
       protectedIds,
       enforcedHours: enforceTargetHours ? profile.targetHours : undefined,
     }),
@@ -246,15 +278,20 @@ export async function previewPlan(calendar, student, options = {}, { requireStag
   };
 }
 
-export async function draft(calendar, student, options = {}, { requireStaged = false, today = FIXED_TODAY } = {}) {
-  const coldStart = (await loadState(student)).planningContext;
-  const events = await calendar.events(student);
-  const baseline = coldStart ? null : await getStudent(student, { requireStaged });
-  return stateStore.update(assertStudent(student), state => {
+export async function draft(calendar, student, options = {}, {
+  requireStaged = false, allowedStudents, today = FIXED_TODAY, timezone, timezoneOffset,
+} = {}) {
+  const workspace = { requireStaged, allowedStudents };
+  if (requiresStagedWorkspace(requireStaged)) await workspaceRoot(student, workspace);
+  const coldStart = (await loadState(student, allowedStudents)).planningContext;
+  const events = await calendar.events(student, { allowedStudents });
+  const baseline = coldStart ? null : await getStudent(student, workspace);
+  const clockProfile = { ...(timezone ? { timezone } : {}), ...(timezoneOffset ? { timezoneOffset } : {}) };
+  return stateStore.update(student, state => {
     const context = state.planningContext;
     if (context?.pending) throw new Error('The operator must review the pending planning context revision');
     const effectiveToday = options?.today ?? today;
-    const profile = context ? reviewedPlannerProfile(student, context, effectiveToday) : baseline;
+    const profile = context ? reviewedPlannerProfile(student, context, effectiveToday, clockProfile) : baseline;
     if (context && options.hours !== undefined && options.hours !== profile.targetHours) {
       throw new Error('Review a new planning context to change the confirmed hours');
     }
@@ -265,6 +302,7 @@ export async function draft(calendar, student, options = {}, { requireStaged = f
       events,
       buildPlanOptions(options, {
         effectiveToday,
+        timezoneOffset,
         protectedIds,
         enforcedHours: context ? profile.targetHours : undefined,
       }),

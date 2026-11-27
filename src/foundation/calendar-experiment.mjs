@@ -57,15 +57,16 @@ function verifyCheckpoint(checkpoint) {
 
 // Trusted developer tooling. Administrative reads stay inside this runner.
 async function start({ fixture, redirectUri, context, parentCheckpointId = null,
-  runId = randomUUID(), startRun = startCalendarpitRun, fetchState = fetch }) {
+  runId = randomUUID(), startRun = startCalendarpitRun, fetchState = fetch,
+  transport = 'loopback', allowedStudents }) {
   const info = metadata(context);
   const run = await startRun({ fixture, redirectUri, runId });
   return {
     runId: run.id,
     origin: run.origin,
-    authorize(student) { return authorizeSyntheticCalendar({ run, student, redirectUri }); },
+    authorize(student) { return authorizeSyntheticCalendar({ run, student, redirectUri, transport, allowedStudents }); },
     provider(accessToken, authorizeWrite) {
-      return new CalendarpitApi({ origin: run.origin, accessToken, authorizeWrite });
+      return new CalendarpitApi({ origin: run.origin, accessToken, authorizeWrite, transport });
     },
     async checkpoint() {
       const response = await fetchState(`${run.origin}/__calendarpit/state`, {

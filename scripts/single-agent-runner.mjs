@@ -22,22 +22,27 @@ async function main() {
   const maxSteps = Number(flags['max-steps'] || 24);
   const schemaCompat = flags['schema-compat'] || process.env.STUDY_RUNNER_SCHEMA_COMPAT || 'standard';
   const reasoningEffort = flags['reasoning-effort'] || process.env.STUDY_RUNNER_REASONING_EFFORT || undefined;
+  const transport = flags.transport ?? 'loopback';
+  const compose = transport === 'compose-eval';
   if (!baseUrl || !model) {
     throw new Error(
       'Usage: single-agent-runner.mjs --base-url <http://.../v1> --model <model-id> [--port 4180] [--mode live|scripted] [--schema-compat standard|gemini] [--reasoning-effort none|minimal|low|medium|high|xhigh]',
     );
   }
 
-  const completeChat = createOpenAICompatibleCompleter({
+  const makeCompleter = key => createOpenAICompatibleCompleter({
     baseUrl,
-    apiKey,
+    apiKey: key,
     reasoningEffort,
-    headers: process.env.STUDY_RUNNER_ROLE ? { 'x-study-role': process.env.STUDY_RUNNER_ROLE } : {},
+    transport,
+    headers: !compose && process.env.STUDY_RUNNER_ROLE ? { 'x-study-role': process.env.STUDY_RUNNER_ROLE } : {},
   });
+  const completeChat = makeCompleter(compose ? undefined : apiKey);
   const server = await startSingleAgentServer({
-    host: '127.0.0.1',
+    host: compose ? '0.0.0.0' : '127.0.0.1',
     port,
-    completeChat,
+    ...(compose ? { completeChatForRun: makeCompleter } : { completeChat }),
+    transport,
     model,
     mode,
     maxSteps,
