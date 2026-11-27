@@ -228,6 +228,7 @@ test('cross-language Python HTTP runner completes Bruno replay through Trusted T
   const resultPath = path.join(work, 'py-result.json');
   const { result, failures } = await runPortableReplay(bundle, 'success', {
     adapter: createHttpRunnerAdapter({ url: `http://127.0.0.1:${port}` }),
+    draftMode: 'runner',
     saveResult: async evidence => { await writeFile(resultPath, JSON.stringify(evidence, null, 2) + '\n'); },
     ...harness,
   });
@@ -353,6 +354,7 @@ test('manifest-driven operator runs ana-held-out with grouped + sequential quest
     const resultPath = path.join(work, `ana-${scenario}.json`);
     const { result, failures } = await runPortableReplay(bundle, scenario, {
       adapter: createAnaAdapter(),
+      draftMode: 'runner',
       saveResult: async evidence => { await writeFile(resultPath, JSON.stringify(evidence, null, 2) + '\n'); },
       ...harness,
     });
@@ -467,6 +469,7 @@ test('matchPreparedAnswer reuses topic/combined replies, deduplicates timeline I
   const resultPath = path.join(work, 'ana-single-date-rev.json');
   const { result, failures } = await runPortableReplay(bundle, 'success', {
     adapter,
+    draftMode: 'runner',
     saveResult: async evidence => { await writeFile(resultPath, JSON.stringify(evidence, null, 2) + '\n'); },
     ...harness,
   });

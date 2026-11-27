@@ -16,6 +16,7 @@ export function createDshBrunoAdapter(scenario = 'success') {
       harness: null,
       tools: scriptedTools,
     },
+    draftMode: 'runner',
     draftRequest,
     coldStartCase: () => 'bruno-text',
     async verifyInput(bundle) {

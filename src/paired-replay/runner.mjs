@@ -69,24 +69,26 @@ export function selectStaleEventId(fixture, manifest) {
 const TOPIC_PATTERNS = [
   {
     topic: 'workload',
-    pattern: /\b(hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|sessions?|sess[õo]es|blocos?|blocks?|meta)\b/i,
+    pattern: /\b(hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b/i,
   },
   {
     topic: 'availability',
-    pattern: /\b(windows?|janelas?|availab\w*|disponib\w*|days?|dias?|times|time\s+(?:slots?|windows?|blocks?|ranges?|of\s+day)|hor[aá]ri\w*|free|livre\w*|weekend\w*|fim de semana|mondays?|tuesdays?|wednesdays?|thursdays?|fridays?|saturdays?|sundays?|segundas?|ter[çc]as?|quartas?|quintas?|sextas?|s[áa]bados?|domingos?|morning|afternoon|evening|manh[ãa]|tarde|noite)\b/i,
+    pattern: /\b(windows?|janelas?|availab\w*|disponib\w*|which\s+days?|what\s+days?|quais\s+dias?|days?\s+and\s+times?|times|time\s+(?:slots?|windows?|blocks?|ranges?|of\s+day)|hor[aá]ri\w*|free|livre\w*|weekends?|fim de semana|weekdays?|mondays?|tuesdays?|wednesdays?|thursdays?|fridays?|saturdays?|sundays?|segundas?|ter[çc]as?|quartas?|quintas?|sextas?|s[áa]bados?|domingos?|mornings?|afternoons?|evenings?|manh[ãa]|tarde|noite)\b/i,
   },
   {
     topic: 'preparation',
-    pattern: /\b(prepar\w*|outline|esbo[cç]o|progress\w*|progresso|started|come[cç]\w*|case|caso)\b/i,
+    pattern: /\b(prepar\w*|outline|esbo[cç]o|progress\w*|progresso|started|come[cç]\w*|drafted|case\s+memo|estudo de caso)\b/i,
   },
 ];
 
 export function matchPreparedAnswer(asked, preparedAnswers, usedIds = new Set()) {
   if (!Array.isArray(preparedAnswers) || preparedAnswers.length === 0) return null;
-  const questionText = typeof asked?.question === 'string' ? asked.question.trim() : '';
+  const questionText = typeof asked === 'string'
+    ? asked.trim()
+    : (typeof asked?.question === 'string' ? asked.question.trim() : '');
   if (!questionText) return null;
 
-  // Match strictly against question text; asked.id is reserved for reply routing only.
+  // Classify strictly from question text; routing IDs are never consulted.
   const askedTopics = TOPIC_PATTERNS.filter(entry => entry.pattern.test(questionText)).map(entry => entry.topic);
   if (askedTopics.length === 0) return null;
 
@@ -147,7 +149,11 @@ async function drainQuestions(initialView, { api, runId, manifest, note, usedAns
         text: asked.question,
         choices: (asked.options || []).map(option => option.label),
       });
-      const reply = await matchAnswer(asked, manifest.operator.answers, usedAnswerIds);
+      const reply = await matchAnswer(
+        { question: asked.question, ...(asked.options ? { options: asked.options } : {}) },
+        manifest.operator.answers,
+        usedAnswerIds,
+      );
       if (!reply) throw new Error(`No prepared response for question ${asked.id}`);
       answers.push({ id: asked.id, custom: reply.text, selected: [] });
       noted.push({ questionId: timelineId, text: reply.text });
@@ -253,7 +259,7 @@ export async function runPortableReplay(bundle, scenario, {
   if (!adapter || typeof adapter.createSession !== 'function') throw new Error('A runner adapter with createSession is required');
   if (!scenarios.includes(scenario)) throw new Error('Unknown synthetic run scenario');
   if (typeof saveResult !== 'function') throw new Error('A replay evidence destination is required');
-  const effectiveDraftMode = draftMode ?? adapter.draftMode ?? (adapter.draftRequest === null ? 'trusted' : 'runner');
+  const effectiveDraftMode = draftMode ?? adapter.draftMode ?? (adapter.draftRequest ? 'runner' : 'trusted');
   if (!['runner', 'trusted'].includes(effectiveDraftMode)) throw new Error(`Unsupported draftMode: ${effectiveDraftMode}`);
 
   const { manifest, inputSha256, fixture, workspaceDir } = bundle;

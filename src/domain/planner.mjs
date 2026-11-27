@@ -139,9 +139,12 @@ export function planScheduleDetails(
   const outlook = [];
   const capacityPerWeek = [];
   let coveredCourses = new Set();
-  let courseCounts = new Map();
+  let rotationCursor = 0;
   const sorted = [...student.courses].sort(
-    (a, b) => Date.parse(a.deadline) - Date.parse(b.deadline) || a.name.localeCompare(b.name, 'en'),
+    (a, b) =>
+      Date.parse(a.deadline) - Date.parse(b.deadline) ||
+      a.name.localeCompare(b.name, 'en') ||
+      (a.name < b.name ? -1 : a.name > b.name ? 1 : 0),
   );
 
   function placeWeekBlocks({
@@ -150,13 +153,13 @@ export function planScheduleDetails(
     weekTarget,
     usePreferredPeriod,
     priorCoveredCourses,
-    priorCourseCounts,
+    priorRotationCursor,
   }) {
     let placed = 0;
     const daily = new Map();
     const weekBlocks = [];
     const covered = new Set(priorCoveredCourses);
-    const counts = new Map(priorCourseCounts);
+    let cursor = priorRotationCursor;
     const candidates = [...weekCandidates];
     while (placed < weekTarget && candidates.length) {
       candidates.sort(
@@ -179,19 +182,17 @@ export function planScheduleDetails(
       const focused = focus && eligible.includes(focus) ? focus : null;
       const other = focused ? eligible.find(course => course !== focused) : null;
       const uncovered = allocation === 'course-coverage' ? eligible.find(course => !covered.has(course.name)) : undefined;
-      const leastPlaced = eligible.reduce((best, item) =>
-        (counts.get(item.name) || 0) < (counts.get(best.name) || 0) ? item : best,
-      );
-      const normalCourse = focused
-        ? placed % 3 === 2 && other
-          ? other
-          : focused
-        : daysToDeadline <= 14 && placed % 3 !== 2
-          ? eligible[0]
-          : leastPlaced;
+      let normalCourse;
+      if (focused) {
+        normalCourse = placed % 3 === 2 && other ? other : focused;
+      } else if (daysToDeadline <= 14 && placed % 3 !== 2) {
+        normalCourse = eligible[0];
+      } else {
+        normalCourse = eligible[cursor % eligible.length];
+        if (!uncovered) cursor++;
+      }
       const course = uncovered || normalCourse;
       covered.add(course.name);
-      counts.set(course.name, (counts.get(course.name) || 0) + 1);
       const block = {
         id: randomUUID().replaceAll('-', ''),
         summary: `Study: ${course.name}`,
@@ -205,7 +206,7 @@ export function planScheduleDetails(
       daily.set(candidate.dayKey, (daily.get(candidate.dayKey) || 0) + 1);
       placed++;
     }
-    return { placed, weekBlocks, covered, counts };
+    return { placed, weekBlocks, covered, cursor };
   }
 
   for (let w = 0; w < count; w++) {
@@ -236,7 +237,7 @@ export function planScheduleDetails(
       weekTarget: target,
       usePreferredPeriod: undefined,
       priorCoveredCourses: coveredCourses,
-      priorCourseCounts: courseCounts,
+      priorRotationCursor: rotationCursor,
     });
     let chosen = baseline;
     if (preferredPeriod) {
@@ -246,7 +247,7 @@ export function planScheduleDetails(
         weekTarget: target,
         usePreferredPeriod: preferredPeriod,
         priorCoveredCourses: coveredCourses,
-        priorCourseCounts: courseCounts,
+        priorRotationCursor: rotationCursor,
       });
       if (preferred.placed >= baseline.placed) chosen = preferred;
     }
@@ -257,7 +258,7 @@ export function planScheduleDetails(
         weekTarget: Number.POSITIVE_INFINITY,
         usePreferredPeriod: undefined,
         priorCoveredCourses: coveredCourses,
-        priorCourseCounts: courseCounts,
+        priorRotationCursor: rotationCursor,
       });
       capacityPerWeek.push({
         week: w + 1,
@@ -270,7 +271,7 @@ export function planScheduleDetails(
     blocks.push(...chosen.weekBlocks);
     busy.push(...chosen.weekBlocks);
     coveredCourses = chosen.covered;
-    courseCounts = chosen.counts;
+    rotationCursor = chosen.cursor;
     outlook.push({ week: w + 1, targetHours: target, scheduledHours: chosen.placed, shortfall: Math.max(0, target - chosen.placed) });
   }
 
@@ -350,7 +351,7 @@ export function planScheduleDetails(
     });
   }
   for (const course of activeCourses) {
-    if ((courseCounts.get(course.name) || 0) === 0) {
+    if (!coveredCourses.has(course.name)) {
       findings.push({ code: 'UNCOVERED_ELIGIBLE_COURSE', severity: 'warning', course: course.name });
     }
   }

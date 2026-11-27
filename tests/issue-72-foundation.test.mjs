@@ -17,6 +17,7 @@ import {
   proposePlanningContext,
   confirmPlanningContext,
   runtimeDir,
+  withSyntheticRuntime,
 } from '../src/core.mjs';
 import { createStudyBoundary } from '../src/foundation/study-boundary.mjs';
 import { createTrustedStudyService } from '../src/foundation/trusted-study-service.mjs';
@@ -305,11 +306,20 @@ test('anti-leakage strips caseId from POST /sessions and read_planning_context, 
   await writeFile(path.join(sealedBundleDir, 'case.json'), JSON.stringify(sealedManifest, null, 2) + '\n', 'utf8');
   const sealedBundle = await readBundle(sealedBundleDir);
 
-  // Verify strict matchPreparedAnswer on sealed custom IDs:
+  // Verify strict matchPreparedAnswer on sealed custom IDs and Ana wording regression (S3):
   const used = new Set();
   assert.equal(matchPreparedAnswer({ id: 'slot_pref', question: 'Unrelated weather question?' }, sealedManifest.operator.answers, used), null);
   assert.equal(matchPreparedAnswer({ id: 'opaque_1', question: 'Which days and time windows work?' }, sealedManifest.operator.answers, used)?.id, 'slot_pref');
   assert.equal(matchPreparedAnswer({ id: 'opaque_2', question: 'How many hours per week and daily limit?' }, sealedManifest.operator.answers, used)?.id, 'load_pref');
+  const anaFixtureAnswers = [
+    { id: 'availability', text: 'Wednesday, Thursday, and Friday afternoons from 14:00 to 16:15 work.' },
+    { id: 'workload', text: 'Plan 4 hours per week, at most 2 sessions per day, with a 15-minute break.' },
+    { id: 'preparation', text: 'I have not started an outline yet.' },
+  ];
+  assert.equal(
+    matchPreparedAnswer({ id: 'q_avail', question: 'Which days and time windows work for your study sessions?' }, anaFixtureAnswers, new Set())?.id,
+    'availability',
+  );
 
   // Verify HTTP adapter never sends caseId on POST /sessions, read_planning_context strips caseId,
   // and 0-LLM trusted draftMode completes replay with zero draft prompts.
@@ -408,11 +418,15 @@ test('anti-leakage strips caseId from POST /sessions and read_planning_context, 
   t.after(() => new Promise(resolve => server.close(() => resolve())));
 
   let events = [];
+  let sawIdInMatcher = false;
   const resultPath = path.join(work, 'sealed-result.json');
   const { result, failures } = await runPortableReplay(sealedBundle, 'success', {
     adapter: createHttpRunnerAdapter({ url: `http://127.0.0.1:${server.address().port}` }),
-    draftMode: 'trusted',
     draftOptions: { weeks: 2 },
+    matchAnswer: (asked, answers, usedIds) => {
+      if (Object.hasOwn(asked, 'id')) sawIdInMatcher = true;
+      return matchPreparedAnswer(asked, answers, usedIds);
+    },
     saveResult: async evidence => { await writeFile(resultPath, JSON.stringify(evidence, null, 2) + '\n'); },
     async startExperiment({ fixture, runId }) {
       events = structuredClone(fixture.events);
@@ -436,8 +450,95 @@ test('anti-leakage strips caseId from POST /sessions and read_planning_context, 
   assert.deepEqual(seenContextFromBridge, { pending: null, confirmed: null, previous: null }, 'read_planning_context must omit caseId');
   assert.equal(Object.hasOwn(seenContextFromBridge, 'caseId'), false);
   assert.ok(seenSessionPayload.toolBridge.methods.includes('preview_plan'));
-  assert.deepEqual(promptTexts, [sealedManifest.request, sealedManifest.operator.correction], '0-LLM trusted draft mode must send zero draft prompts');
+  assert.equal(sawIdInMatcher, false, 'matchAnswer must not receive routing id');
+  assert.deepEqual(promptTexts, [sealedManifest.request, sealedManifest.operator.correction], 'default portable replay must use 0-LLM trusted draft mode');
 
   const probe = await exec('python3', [path.join(ROOT, 'scripts/paired-replay-probe.py'), '--check-result', sealedBundleDir, resultPath]);
   assert.match(probe.stdout, /Checked case sealed-case-99/);
+});
+
+test('planner round-robin cursor is unaffected by prior urgency placements and canonical sort distinguishes canonically equivalent Unicode forms', () => {
+  const urgentStudent = {
+    student: 'ana',
+    timezone: 'America/Sao_Paulo',
+    targetHours: 3,
+    maxDailyStudyHours: 2,
+    studyBreakMinutes: 15,
+    availabilityThrough: '2026-11-08',
+    courses: [
+      { name: 'Alpha', deadline: '2026-11-10T18:00:00-03:00', source: 's:a' },
+      { name: 'Beta', deadline: '2026-11-10T18:00:00-03:00', source: 's:b' },
+    ],
+    studyWindows: [
+      { weekday: 3, start: '14:00', end: '16:15' },
+      { weekday: 5, start: '14:00', end: '16:15' },
+    ],
+  };
+  const urgentPlan = makePlan(urgentStudent, [], { weeks: 1, today: '2026-11-02' });
+  // Blocks 0 and 1 hit <=14d urgency (Alpha); block 2 hits round-robin cursor 0 (Alpha), not least-placed balancing (Beta).
+  assert.deepEqual(
+    urgentPlan.near.map(b => b.extendedProperties.private.course),
+    ['Alpha', 'Alpha', 'Alpha'],
+  );
+
+  const nfc = 'Caf\u00e9';
+  const nfd = 'Cafe\u0301';
+  const unicodeBase = {
+    student: 'ana',
+    timezone: 'America/Sao_Paulo',
+    targetHours: 2,
+    maxDailyStudyHours: 2,
+    studyBreakMinutes: 15,
+    availabilityThrough: '2026-11-08',
+    studyWindows: [{ weekday: 3, start: '14:00', end: '16:15' }],
+  };
+  const p1 = makePlan(
+    { ...unicodeBase, courses: [{ name: nfc, deadline: '2026-12-01T18:00:00-03:00', source: 's:1' }, { name: nfd, deadline: '2026-12-01T18:00:00-03:00', source: 's:2' }] },
+    [],
+    { weeks: 1, today: '2026-11-02' },
+  );
+  const p2 = makePlan(
+    { ...unicodeBase, courses: [{ name: nfd, deadline: '2026-12-01T18:00:00-03:00', source: 's:2' }, { name: nfc, deadline: '2026-12-01T18:00:00-03:00', source: 's:1' }] },
+    [],
+    { weeks: 1, today: '2026-11-02' },
+  );
+  assert.deepEqual(
+    p1.near.map(b => b.extendedProperties.private.course),
+    p2.near.map(b => b.extendedProperties.private.course),
+  );
+});
+
+test('default non-coldStart study boundary forwards candidate record to preview_plan', async t => {
+  const work = await mkdtemp(path.join(tmpdir(), 'study-boundary-default-preview-'));
+  t.after(() => rm(work, { recursive: true, force: true }));
+  const events = JSON.parse(await readFile(path.join(ROOT, 'fixtures/calendars/bruno.json'), 'utf8')).events;
+  const calendar = {
+    events: async () => structuredClone(events),
+    create: async () => { throw new Error('preview_plan must not write'); },
+    remove: async () => { throw new Error('preview_plan must not remove'); },
+  };
+  await withSyntheticRuntime(work, async () => {
+    await initializeScenario(calendar, 'bruno');
+    const boundary = createStudyBoundary({ student: 'bruno', calendar, coldStart: false });
+    const res = await boundary.call('preview_plan', {
+      student: 'bruno',
+      weeks: 1,
+      record: {
+        courses: [{
+          name: 'Algoritmos',
+          date: '2026-11-30',
+          time: '18:00',
+          citation: { path: 'courses.json', quote: '"Algoritmos"' },
+        }],
+        studyWindows: [{ weekday: 3, start: '19:00', end: '21:15' }],
+        targetHours: 2,
+        maxDailyStudyHours: 2,
+        studyBreakMinutes: 15,
+        through: '2026-11-08',
+        assumption: 'Candidate record preview on default boundary.',
+      },
+    });
+    assert.equal(res.ok, true);
+    assert.deepEqual(res.plan.sources.map(c => c.name), ['Algoritmos']);
+  });
 });
