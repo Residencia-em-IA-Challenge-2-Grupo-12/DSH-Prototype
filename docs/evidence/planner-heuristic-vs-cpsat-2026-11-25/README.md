@@ -7,10 +7,13 @@
 - **Node:** `v24.11.1`
 - **Python:** `3.13.16` (`experiments/planner-comparison/.venv/bin/python`)
 - **OR-Tools:** `ortools==9.14.6206`
+- **Git HEAD at generation:** `96fa4258bc703bfa789df8dc6f2d66d0d2354c7f` (tracked tree dirty: `false`)
 - **CP-SAT Settings:** `num_search_workers=1`, `random_seed=0`, `max_time_in_seconds=5`, host timeout `15000ms`, `repeats=3`
 - **Artifact SHA-256 Hashes:**
   - `src/domain/planner.mjs`: `48cf77510dc14c42e8e92ddc784f21c1e1c7670268de3c79f0c83f272b581715`
-  - `experiments/planner-comparison/cpsat_planner.py`: `990a641bd0d33cf5c5b4eeee9c40b3d5e72908772f7cdf9751375478ab729a92`
+  - `experiments/planner-comparison/cpsat_planner.py`: `43ee153ce7266b8833be68ad3036d96da43ff457958f7ec0c5a0f32008afcaf0`
+  - `experiments/planner-comparison/benchmark.mjs`: `b95b3a92d7aa737890eb1b3919aceb9240ba569477329df5f90bdb8dfd241de9`
+  - `experiments/planner-comparison/cases.mjs`: `f7fd81b7303d2c0749ed83df12a96e66576f3c46f68d9c6e5e6beced2770f243`
   - `experiments/planner-readiness/cases.json`: `410f75aecfd236f96c9f15a361607b90c076ed1be97ba91ae0afc1870a02181d`
   - `fixtures/calendars/bruno.json`: `8b9d8359aef47fff5794c36ba8696ee59c742bf6d89d656136e1b16c2c3106f1`
   - `fixtures/calendars/ana.json`: `d8b30692464396d7f1a02fc1291ce0a8c217ef4b5ed1d75d9d20e2035f0a7913`
@@ -28,9 +31,9 @@ TMPDIR=/tmp ./node_modules/.bin/node experiments/planner-comparison/benchmark.mj
 
 ## 2. Objective Disclosure & Feasibility Semantics
 
-CP-SAT maximizes a **6-tier weighted integer objective** (disclosed explicitly so no hidden penalty trades away study minutes):
+6-tier weighted integer maximization with block-count dominance; solve_plan computes a conservative global upper bound `maxLowerTierSpan` on the swing of Tiers 2–6 and sets `blockWeight = max(10,000,000, maxLowerTierSpan + 1)` so CP-SAT never sacrifices a feasible study block for preferred-period, coverage, balance, or spread terms (lower tiers trade off via explicit weights).
 
-1. **Tier 1 — Total Scheduled Study Minutes (`blockWeight = max(10,000,000, maxLowerTierSpan + 1)` per 1h block):** Dynamically computed per instance to strictly exceed the exact global span of Tiers 2–6 across any two feasible schedules, guaranteeing CP-SAT **never** sacrifices a feasible study block for preferred-period, coverage, balance, or spread terms.
+1. **Tier 1 — Total Scheduled Study Minutes (`blockWeight = max(10,000,000, maxLowerTierSpan + 1)` per 1h block):** Dynamically computed per instance to strictly exceed the conservative global upper bound (`maxLowerTierSpan`) on the swing of Tiers 2–6 across any two feasible schedules, guaranteeing CP-SAT **never** sacrifices a feasible study block for preferred-period, coverage, balance, or spread terms.
 2. **Tier 2 — Preferred Period (`W_PREF_PERIOD = 200,000` per matching block):** Used only when `preferredPeriod` is supplied.
 3. **Tier 3 — Distinct Eligible Course Coverage (`W_COVERAGE = 500,000` for `course-coverage`, `50,000` default, `10,000` with `focusCourse`):** Rewards covering every eligible course at least once. Note that coverage and balance are explicit product preferences encoded into CP-SAT, not universal correctness rules.
 4. **Tier 4 — Horizon & Weekly Course Balance (`W_BALANCE = 20,000`):** Minimizes `max - min` spread across eligible courses (or deviation from ~2:1 target split when `focusCourse` is set).
@@ -49,14 +52,14 @@ CP-SAT maximizes a **6-tier weighted integer objective** (disclosed explicitly s
 
 | Scope | Engine | Variants Passed `validateSchedule` | Deterministic | Total Scheduled / Target (min) | Avoidable Shortfall (min) | Multi-Course Default Coverage | Avg Multi-Course Imbalance | Median Latency (ms) |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Frozen (6 cases) | Heuristic (`planner.mjs`) | 12/12 | 12/12 | 8160 / 9120 | 0 | 2/5 | 396m | 1.488 |
-| Frozen (6 cases) | CP-SAT (`ortools 9.14`) | 12/12 | 12/12 | 8160 / 9120 | 0 | 4/5 | 132m | 4.061 (in-proc) |
-| Paired-Replay (4 cases) | Heuristic (`planner.mjs`) | 8/8 | 8/8 | 4320 / 4320 | 0 | 2/2 | 0m | 2.108 |
-| Paired-Replay (4 cases) | CP-SAT (`ortools 9.14`) | 8/8 | 8/8 | 4320 / 4320 | 0 | 2/2 | 0m | 10.898 (in-proc) |
-| Core Combined (10 cases) | Heuristic (`planner.mjs`) | 20/20 | 20/20 | 12480 / 13440 | 0 | 4/7 | 282.9m | 1.881 |
-| Core Combined (10 cases) | CP-SAT (`ortools 9.14`) | 20/20 | 20/20 | 12480 / 13440 | 0 | 6/7 | 94.3m | 5.796 (in-proc) |
+| Frozen (6 cases) | Heuristic (`planner.mjs`) | 12/12 | 12/12 | 8160 / 9120 | 0 | 2/5 | 396m | 1.22 |
+| Frozen (6 cases) | CP-SAT (`ortools 9.14`) | 12/12 | 12/12 | 8160 / 9120 | 0 | 4/5 | 132m | 3.911 (in-proc) |
+| Paired-Replay (4 cases) | Heuristic (`planner.mjs`) | 8/8 | 8/8 | 4320 / 4320 | 0 | 2/2 | 0m | 1.966 |
+| Paired-Replay (4 cases) | CP-SAT (`ortools 9.14`) | 8/8 | 8/8 | 4320 / 4320 | 0 | 2/2 | 0m | 9.902 (in-proc) |
+| Core Combined (10 cases) | Heuristic (`planner.mjs`) | 20/20 | 20/20 | 12480 / 13440 | 0 | 4/7 | 282.9m | 1.541 |
+| Core Combined (10 cases) | CP-SAT (`ortools 9.14`) | 20/20 | 20/20 | 12480 / 13440 | 0 | 6/7 | 94.3m | 5.176 (in-proc) |
 | Diagnostic Edge Cases (2 cases) | Heuristic (`planner.mjs`) | 2/2 | 2/2 | 60 / 240 | 60 | — | — | 0.042 |
-| Diagnostic Edge Cases (2 cases) | CP-SAT (`ortools 9.14`) | 2/2 | 2/2 | 120 / 240 | 0 | — | — | 1.865 (in-proc) |
+| Diagnostic Edge Cases (2 cases) | CP-SAT (`ortools 9.14`) | 2/2 | 2/2 | 120 / 240 | 0 | — | — | 1.734 (in-proc) |
 
 ## 4. Per-Case Comparison
 
@@ -64,38 +67,38 @@ CP-SAT maximizes a **6-tier weighted integer objective** (disclosed explicitly s
 
 | Case (Group) | Variant | Feasible Target (min) | Heuristic (min / courses / ms) | CP-SAT (min / courses / status / wall ms / round-trip ms) |
 | --- | --- | ---: | --- | --- |
-| `bruno-equal-cutoff` (frozen) | `default` | 1800m | 1800m / Banco de Dados: 1140m, Algoritmos: 660m / 7.959ms | 1800m / Banco de Dados: 900m, Algoritmos: 900m / OPTIMAL (target_met) / 96.884ms / 396.23ms |
-| `bruno-equal-cutoff` (frozen) | `coverageOption` | 1800m | 1800m / Banco de Dados: 1140m, Algoritmos: 660m / 6.825ms | 1800m / Banco de Dados: 900m, Algoritmos: 900m / OPTIMAL (target_met) / 98.058ms / 427.023ms |
-| `bruno-equal-cutoff` (frozen) | `reversedCourseOrder` | 1800m | 1800m / Banco de Dados: 660m, Algoritmos: 1140m / 8.829ms | 1800m / Banco de Dados: 900m, Algoritmos: 900m / OPTIMAL (target_met) / 94.809ms / 397.742ms |
-| `ana-earlier-deadline` (frozen) | `default` | 240m | 240m / Machine Learning: 240m, Statistics: 0m / 0.947ms | 240m / Machine Learning: 120m, Statistics: 120m / OPTIMAL (target_met) / 5.253ms / 305.491ms |
-| `ana-earlier-deadline` (frozen) | `coverageOption` | 240m | 240m / Machine Learning: 180m, Statistics: 60m / 1.035ms | 240m / Machine Learning: 120m, Statistics: 120m / OPTIMAL (target_met) / 5.49ms / 307.576ms |
-| `bruno-explicit-priority` (frozen) | `default` | 1800m | 1800m / Banco de Dados: 360m, Algoritmos: 1440m / 7.95ms | 1800m / Banco de Dados: 600m, Algoritmos: 1200m / OPTIMAL (target_met) / 4503.722ms / 4827.371ms |
-| `bruno-tight-capacity` (frozen) | `default` | 60m | 60m / Banco de Dados: 0m, Algoritmos: 60m / 0.819ms | 60m / Banco de Dados: 0m, Algoritmos: 60m / OPTIMAL (proved_shortfall) / 2.203ms / 314.74ms |
-| `bruno-tight-capacity` (frozen) | `coverageOption` | 60m | 60m / Banco de Dados: 60m, Algoritmos: 0m / 0.946ms | 60m / Banco de Dados: 0m, Algoritmos: 60m / OPTIMAL (proved_shortfall) / 2.094ms / 336.007ms |
-| `bruno-expired-course` (frozen) | `default` | 60m | 60m / Banco de Dados: 0m, Algoritmos: 60m / 1.996ms | 60m / Banco de Dados: 0m, Algoritmos: 60m / OPTIMAL (proved_shortfall) / 1.918ms / 339.563ms |
-| `bruno-expired-course` (frozen) | `coverageOption` | 60m | 60m / Banco de Dados: 0m, Algoritmos: 60m / 1.942ms | 60m / Banco de Dados: 0m, Algoritmos: 60m / OPTIMAL (proved_shortfall) / 1.804ms / 306.001ms |
-| `ravi-shift-exception` (frozen, held-out) | `default` | 120m | 120m / Writing: 120m, Quantitative reasoning: 0m / 0.155ms | 120m / Writing: 60m, Quantitative reasoning: 60m / OPTIMAL (proved_shortfall) / 2.868ms / 316.796ms |
-| `ravi-shift-exception` (frozen, held-out) | `coverageOption` | 120m | 120m / Writing: 60m, Quantitative reasoning: 60m / 0.206ms | 120m / Writing: 60m, Quantitative reasoning: 60m / OPTIMAL (proved_shortfall) / 2.864ms / 302.922ms |
-| `bruno-replay-initial` (paired-replay) | `default` | 600m | 600m / Algoritmos: 300m, Banco de Dados: 300m / 2.397ms | 600m / Algoritmos: 300m, Banco de Dados: 300m / OPTIMAL (target_met) / 15.804ms / 320.708ms |
-| `bruno-replay-initial` (paired-replay) | `coverageOption` | 600m | 600m / Algoritmos: 240m, Banco de Dados: 360m / 2.717ms | 600m / Algoritmos: 300m, Banco de Dados: 300m / OPTIMAL (target_met) / 15.252ms / 332.384ms |
-| `bruno-replay-post-correction` (paired-replay) | `default` | 600m | 600m / Algoritmos: 300m, Banco de Dados: 300m / 3.184ms | 600m / Algoritmos: 300m, Banco de Dados: 300m / OPTIMAL (target_met) / 15.887ms / 343.35ms |
-| `bruno-replay-post-correction` (paired-replay) | `coverageOption` | 600m | 600m / Algoritmos: 300m, Banco de Dados: 300m / 2.973ms | 600m / Algoritmos: 300m, Banco de Dados: 300m / OPTIMAL (target_met) / 15.447ms / 316.961ms |
-| `ana-held-out-initial` (paired-replay, held-out) | `default` | 480m | 480m / Applied Data Ethics: 480m / 1.502ms | 480m / Applied Data Ethics: 480m / OPTIMAL (target_met) / 5.088ms / 305.944ms |
-| `ana-held-out-initial` (paired-replay, held-out) | `coverageOption` | 480m | 480m / Applied Data Ethics: 480m / 1.483ms | 480m / Applied Data Ethics: 480m / OPTIMAL (target_met) / 6.102ms / 325.314ms |
-| `ana-held-out-post-correction` (paired-replay, held-out) | `default` | 480m | 480m / Applied Data Ethics: 480m / 1.82ms | 480m / Applied Data Ethics: 480m / OPTIMAL (target_met) / 6.543ms / 323.46ms |
-| `ana-held-out-post-correction` (paired-replay, held-out) | `coverageOption` | 480m | 480m / Applied Data Ethics: 480m / 1.571ms | 480m / Applied Data Ethics: 480m / OPTIMAL (target_met) / 5.48ms / 307.181ms |
+| `bruno-equal-cutoff` (frozen) | `default` | 1800m | 1800m / Banco de Dados: 1140m, Algoritmos: 660m / 7.199ms | 1800m / Banco de Dados: 900m, Algoritmos: 900m / OPTIMAL (target_met) / 92.648ms / 383.789ms |
+| `bruno-equal-cutoff` (frozen) | `coverageOption` | 1800m | 1800m / Banco de Dados: 1140m, Algoritmos: 660m / 5.997ms | 1800m / Banco de Dados: 900m, Algoritmos: 900m / OPTIMAL (target_met) / 91.356ms / 384.484ms |
+| `bruno-equal-cutoff` (frozen) | `reversedCourseOrder` | 1800m | 1800m / Banco de Dados: 660m, Algoritmos: 1140m / 7.569ms | 1800m / Banco de Dados: 900m, Algoritmos: 900m / OPTIMAL (target_met) / 92.602ms / 384.679ms |
+| `ana-earlier-deadline` (frozen) | `default` | 240m | 240m / Machine Learning: 240m, Statistics: 0m / 1.075ms | 240m / Machine Learning: 120m, Statistics: 120m / OPTIMAL (target_met) / 5.009ms / 297.062ms |
+| `ana-earlier-deadline` (frozen) | `coverageOption` | 240m | 240m / Machine Learning: 180m, Statistics: 60m / 0.895ms | 240m / Machine Learning: 120m, Statistics: 120m / OPTIMAL (target_met) / 5.135ms / 302.519ms |
+| `bruno-explicit-priority` (frozen) | `default` | 1800m | 1800m / Banco de Dados: 360m, Algoritmos: 1440m / 7.039ms | 1800m / Banco de Dados: 600m, Algoritmos: 1200m / OPTIMAL (target_met) / 4007.968ms / 4301.468ms |
+| `bruno-tight-capacity` (frozen) | `default` | 60m | 60m / Banco de Dados: 0m, Algoritmos: 60m / 0.884ms | 60m / Banco de Dados: 0m, Algoritmos: 60m / OPTIMAL (proved_shortfall) / 1.924ms / 293.114ms |
+| `bruno-tight-capacity` (frozen) | `coverageOption` | 60m | 60m / Banco de Dados: 60m, Algoritmos: 0m / 0.735ms | 60m / Banco de Dados: 0m, Algoritmos: 60m / OPTIMAL (proved_shortfall) / 1.931ms / 295.242ms |
+| `bruno-expired-course` (frozen) | `default` | 60m | 60m / Banco de Dados: 0m, Algoritmos: 60m / 1.365ms | 60m / Banco de Dados: 0m, Algoritmos: 60m / OPTIMAL (proved_shortfall) / 1.746ms / 310.092ms |
+| `bruno-expired-course` (frozen) | `coverageOption` | 60m | 60m / Banco de Dados: 0m, Algoritmos: 60m / 1.475ms | 60m / Banco de Dados: 0m, Algoritmos: 60m / OPTIMAL (proved_shortfall) / 1.762ms / 300.223ms |
+| `ravi-shift-exception` (frozen, held-out) | `default` | 120m | 120m / Writing: 120m, Quantitative reasoning: 0m / 0.102ms | 120m / Writing: 60m, Quantitative reasoning: 60m / OPTIMAL (proved_shortfall) / 2.797ms / 295.958ms |
+| `ravi-shift-exception` (frozen, held-out) | `coverageOption` | 120m | 120m / Writing: 60m, Quantitative reasoning: 60m / 0.177ms | 120m / Writing: 60m, Quantitative reasoning: 60m / OPTIMAL (proved_shortfall) / 2.813ms / 303.643ms |
+| `bruno-replay-initial` (paired-replay) | `default` | 600m | 600m / Algoritmos: 300m, Banco de Dados: 300m / 2.059ms | 600m / Algoritmos: 300m, Banco de Dados: 300m / OPTIMAL (target_met) / 14.945ms / 315.056ms |
+| `bruno-replay-initial` (paired-replay) | `coverageOption` | 600m | 600m / Algoritmos: 240m, Banco de Dados: 360m / 2.434ms | 600m / Algoritmos: 300m, Banco de Dados: 300m / OPTIMAL (target_met) / 14.546ms / 321.617ms |
+| `bruno-replay-post-correction` (paired-replay) | `default` | 600m | 600m / Algoritmos: 300m, Banco de Dados: 300m / 3.132ms | 600m / Algoritmos: 300m, Banco de Dados: 300m / OPTIMAL (target_met) / 15.489ms / 310.845ms |
+| `bruno-replay-post-correction` (paired-replay) | `coverageOption` | 600m | 600m / Algoritmos: 300m, Banco de Dados: 300m / 2.485ms | 600m / Algoritmos: 300m, Banco de Dados: 300m / OPTIMAL (target_met) / 15.107ms / 313.194ms |
+| `ana-held-out-initial` (paired-replay, held-out) | `default` | 480m | 480m / Applied Data Ethics: 480m / 1.425ms | 480m / Applied Data Ethics: 480m / OPTIMAL (target_met) / 5.167ms / 303.203ms |
+| `ana-held-out-initial` (paired-replay, held-out) | `coverageOption` | 480m | 480m / Applied Data Ethics: 480m / 1.606ms | 480m / Applied Data Ethics: 480m / OPTIMAL (target_met) / 5.042ms / 300.648ms |
+| `ana-held-out-post-correction` (paired-replay, held-out) | `default` | 480m | 480m / Applied Data Ethics: 480m / 1.38ms | 480m / Applied Data Ethics: 480m / OPTIMAL (target_met) / 5.258ms / 301.105ms |
+| `ana-held-out-post-correction` (paired-replay, held-out) | `coverageOption` | 480m | 480m / Applied Data Ethics: 480m / 1.873ms | 480m / Applied Data Ethics: 480m / OPTIMAL (target_met) / 5.185ms / 301.287ms |
 
 ### 4.2 Diagnostic Edge Cases (Reported Separately)
 
 | Case | Known Feasible (min) | Heuristic (min / shortfall / ms) | CP-SAT (min / status / strictTarget probe / wall ms) |
 | --- | ---: | --- | --- |
-| `preferred-period-boundary-packing` | 120m | 60m / avoidable 60m / 0.041ms | 120m / OPTIMAL (target_met) / — / 2.521ms |
-| `zero-capacity-infeasible-target` | 0m | 0m / avoidable 0m / 0.043ms | 0m / OPTIMAL (proved_shortfall) / strictTarget=INFEASIBLE / 1.209ms |
+| `preferred-period-boundary-packing` | 120m | 60m / avoidable 60m / 0.033ms | 120m / OPTIMAL (target_met) / — / 2.253ms |
+| `zero-capacity-infeasible-target` | 0m | 0m / avoidable 0m / 0.051ms | 0m / OPTIMAL (proved_shortfall) / strictTarget=INFEASIBLE / 1.215ms |
 
 ### 4.3 Input-Order Sensitivity (`bruno-equal-cutoff`)
 
 - **Heuristic (`src/domain/planner.mjs`):** `default` = Banco de Dados: 1140m, Algoritmos: 660m → `reversedCourseOrder` = Banco de Dados: 660m, Algoritmos: 1140m (**Order invariant:** `false` — flips by 480 minutes / 8 hours based purely on JSON array order).
-- **CP-SAT (`cpsat_planner.py`):** `default` = Banco de Dados: 900m, Algoritmos: 900m → `reversedCourseOrder` = Banco de Dados: 900m, Algoritmos: 900m (**Order invariant:** `true` — identical split and identical blocks).
+- **CP-SAT (`cpsat_planner.py`):** `default` = Banco de Dados: 900m, Algoritmos: 900m → `reversedCourseOrder` = Banco de Dados: 900m, Algoritmos: 900m (**Order invariant:** `true`).
 
 ### 4.4 Strict-Target Infeasibility Proofs (`strictTarget: true`)
 
@@ -137,8 +140,8 @@ CP-SAT maximizes a **6-tier weighted integer objective** (disclosed explicitly s
   3. **Avoidable shortfall under `preferredPeriod` (`preferred-period-boundary-packing`):** Heuristic placed 60m (avoidable shortfall 60m) vs CP-SAT 120m (avoidable shortfall 0m) when a preferred-period slot straddles a break boundary.
   4. **Feasibility & shortfall proofs:** With dynamic `blockWeight > maxLowerTierSpan`, CP-SAT `OPTIMAL` proves maximum block count under the modeled constraints (`proved_shortfall`), and `strictTarget: true` returning `INFEASIBLE` independently proves the full weekly target is unattainable.
 - **Dependency & Latency Cost:**
-  - `src/domain/planner.mjs` is ~230 lines of zero-dependency synchronous JavaScript running in **0.041–8.829 ms** (median per variant) inside Node.
-  - CP-SAT requires Python + `ortools==9.14.6206` (native C++ binaries + `numpy`/`pandas`/`protobuf`, peak RSS **90.4–100.5 MiB**, **1.209–98.058 ms** in-process across 21/22 variants; `bruno-explicit-priority` reached **4503.722 ms** due to `focusCourse` 2:1 symmetry exploration near the 5s single-worker limit; **302.9–4827.4 ms** cold subprocess round-trip per call).
+  - `src/domain/planner.mjs` is ~230 lines of zero-dependency synchronous JavaScript running in **0.033–7.569 ms** (median per variant) inside Node.
+  - CP-SAT requires Python + `ortools==9.14.6206` (native C++ binaries + `numpy`/`pandas`/`protobuf`, peak RSS **90.6–103.5 MiB**, **1.215–92.648 ms** in-process across 21/22 variants; `bruno-explicit-priority` reached **4007.968 ms** due to `focusCourse` 2:1 symmetry exploration near the 5s single-worker limit; **293.1–4301.5 ms** cold subprocess round-trip per call).
 
 ## 7. Headline Recommendation (For User Decision Gate)
 
