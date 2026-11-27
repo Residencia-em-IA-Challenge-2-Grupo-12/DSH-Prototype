@@ -54,6 +54,11 @@ export function createManagedStudyApi({manager,driver}={}){
       const replies=view.messages.filter(message=>message.type==='user').slice(-20).map(message=>message.text.trim().slice(0,2000)).filter(Boolean);
       return active.service.confirmPlanningContext(revisionId,replies);
     },
+    async draft(runId,options={}){
+      const active=await selected(runId);
+      if(typeof active.service.draftPlan!=='function')throw new Error('Trusted draft action is unavailable');
+      return active.service.draftPlan(options);
+    },
     async approve(runId,planId,section){return (await selected(runId)).service.approvePlan(planId,section);},
     async agentRead(runId,method,args){
       const active=await selected(runId);

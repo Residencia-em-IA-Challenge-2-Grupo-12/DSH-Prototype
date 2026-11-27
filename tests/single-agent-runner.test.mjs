@@ -381,6 +381,7 @@ test('non-DSH single-agent HTTP runner handles ana-held-out grouped + sequential
   const resultPath = path.join(work, 'single-ana.json');
   const { result, failures } = await runPortableReplay(bundle, 'success', {
     adapter: createHttpRunnerAdapter({ url: runnerServer.url }),
+    draftMode: 'runner',
     saveResult: async evidence => { await writeFile(resultPath, JSON.stringify(evidence, null, 2) + '\n'); },
     ...harness,
   });

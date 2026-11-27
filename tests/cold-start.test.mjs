@@ -38,7 +38,8 @@ test('cold-start planner uses confirmed cited facts and retains an operator answ
   const packet=await readWorkspace('bruno','courses/algoritmos.pdf');
   assert.match(packet.split('\f')[1],/07\/12\/2026/);
   assert.match(await readWorkspace('bruno','notices/aviso-turma-n02.md'),/14\/12\/2026 às 09:00/);
-  assert.deepEqual(await call(first,'read_planning_context'),{caseId:'bruno',pending:null,confirmed:null});
+  assert.deepEqual(await call(first,'read_planning_context'),{pending:null,confirmed:null,previous:null});
+  assert.equal((await first.status()).state.planningContext.caseId,'bruno');
   await assert.rejects(()=>call(first,'draft_study_plan'),/Review the planning context/);
   const invalid=structuredClone(brunoRecord);
   invalid.courses[0].citation.quote='The exam happens on Mars';

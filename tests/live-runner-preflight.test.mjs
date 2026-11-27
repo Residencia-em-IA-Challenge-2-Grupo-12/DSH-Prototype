@@ -81,6 +81,7 @@ test('single-agent tool definitions support gemini schema compatibility and reas
     'list_calendar',
     'read_planning_context',
     'propose_planning_context',
+    'preview_plan',
     'draft_study_plan',
     'preview_study_options',
     'inspect_checkpoint',

@@ -144,6 +144,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         body = self.read_json()
         if self.path == "/sessions":
+            assert "caseId" not in body, f"POST /sessions must not leak caseId: {body}"
             sid = "py-session-1"
             SESSIONS[sid] = {"bridge": body["toolBridge"], "messages": [], "question": None, "phase": "initial"}
             # Probe security boundaries on the Trusted Tool Bridge:
@@ -227,6 +228,7 @@ test('cross-language Python HTTP runner completes Bruno replay through Trusted T
   const resultPath = path.join(work, 'py-result.json');
   const { result, failures } = await runPortableReplay(bundle, 'success', {
     adapter: createHttpRunnerAdapter({ url: `http://127.0.0.1:${port}` }),
+    draftMode: 'runner',
     saveResult: async evidence => { await writeFile(resultPath, JSON.stringify(evidence, null, 2) + '\n'); },
     ...harness,
   });
@@ -352,6 +354,7 @@ test('manifest-driven operator runs ana-held-out with grouped + sequential quest
     const resultPath = path.join(work, `ana-${scenario}.json`);
     const { result, failures } = await runPortableReplay(bundle, scenario, {
       adapter: createAnaAdapter(),
+      draftMode: 'runner',
       saveResult: async evidence => { await writeFile(resultPath, JSON.stringify(evidence, null, 2) + '\n'); },
       ...harness,
     });
@@ -389,7 +392,8 @@ test('matchPreparedAnswer reuses topic/combined replies, deduplicates timeline I
   ];
   const usedAna = new Set(['availability', 'workload', 'preparation']);
   assert.equal(matchPreparedAnswer({ id: 'study_break_minutes', question: 'How long a break?' }, anaAnswers, usedAna)?.id, 'workload');
-  assert.equal(matchPreparedAnswer({ id: 'extra_q', question: 'Any other preferences?' }, anaAnswers, usedAna)?.id, 'combined');
+  assert.equal(matchPreparedAnswer({ id: 'extra_q', question: 'Any other preferences?' }, anaAnswers, usedAna), null);
+  assert.equal(matchPreparedAnswer({ id: 'availability', question: 'What is the weather today?' }, anaAnswers, new Set()), null);
 
   // End-to-end replay: duplicate/non-identifier question IDs + single-date avoidDates revision without redundant context proposal:
   const work = await mkdtemp(path.join(tmpdir(), 'portable-live-parity-'));
@@ -465,6 +469,7 @@ test('matchPreparedAnswer reuses topic/combined replies, deduplicates timeline I
   const resultPath = path.join(work, 'ana-single-date-rev.json');
   const { result, failures } = await runPortableReplay(bundle, 'success', {
     adapter,
+    draftMode: 'runner',
     saveResult: async evidence => { await writeFile(resultPath, JSON.stringify(evidence, null, 2) + '\n'); },
     ...harness,
   });

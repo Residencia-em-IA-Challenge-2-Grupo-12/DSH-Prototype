@@ -66,42 +66,64 @@ export function selectStaleEventId(fixture, manifest) {
   return (preferred || inWeek1[0] || candidates[0] || fixture.events[0])?.id || null;
 }
 
-const ANSWER_HINTS = [
-  { id: 'workload', pattern: /\b(hours|horas|workload|carga|break|pausa|daily|di[aá]ri|limit|limite|sessions?)\b/i },
-  { id: 'availability', pattern: /\b(window|janela|availab|disponib|days?|dias?|times?|hor[aá]ri|free|livre|weekend|fim de semana)\b/i },
-  { id: 'preparation', pattern: /\b(prepar|outline|esbo[cç]o|progress|progresso|started|come[cç]ou|case|caso)\b/i },
+const WORKLOAD_QUANTITY_PATTERN =
+  /\b(?:how\s+many|quant[oa]s|number\s+of|n[uú]mero\s+de)\b.{0,30}\b(?:sessions?|sess[õo]es|blocks?|blocos?|hours?|horas?)\b/i;
+
+const TOPIC_PATTERNS = [
+  {
+    topic: 'workload',
+    pattern: /\b(?:hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b/i,
+    answerPattern: /\b(?:hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b|\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|um|uma|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\s+(?:[a-zà-ÿ-]+\s+){0,2}(?:sessions?|sess[õo]es|blocks?|blocos?)\b/i,
+  },
+  {
+    topic: 'availability',
+    pattern: /\b(windows?|janelas?|availab\w*|disponib\w*|which\s+days?|what\s+days?|quais\s+dias?|days?\s+and\s+times?|times|time\s+(?:slots?|windows?|blocks?|ranges?|of\s+day)|hor[aá]ri\w*|free|livre\w*|weekends?|fim de semana|weekdays?|mondays?|tuesdays?|wednesdays?|thursdays?|fridays?|saturdays?|sundays?|segundas?|ter[çc]as?|quartas?|quintas?|sextas?|s[áa]bados?|domingos?|mornings?|afternoons?|evenings?|manh[ãa]|tarde|noite)\b/i,
+  },
+  {
+    topic: 'preparation',
+    pattern: /\b(prepar\w*|outline|esbo[cç]o|progress\w*|progresso|started|come[cç]\w*|drafted|case\s+memo|estudo de caso)\b/i,
+  },
 ];
 
-export function matchPreparedAnswer(asked, preparedAnswers, usedIds) {
+export function matchPreparedAnswer(asked, preparedAnswers, usedIds = new Set()) {
   if (!Array.isArray(preparedAnswers) || preparedAnswers.length === 0) return null;
-  const exact = preparedAnswers.find(answer => answer.id === asked.id);
-  if (exact) {
-    usedIds.add(exact.id);
-    return exact;
-  }
-  const unused = preparedAnswers.filter(answer => !usedIds.has(answer.id));
-  const text = `${asked.id || ''} ${asked.question || ''}`;
-  for (const hint of ANSWER_HINTS) {
-    if (hint.pattern.test(text)) {
-      const hinted = unused.find(answer => answer.id === hint.id);
-      if (hinted) {
-        usedIds.add(hinted.id);
-        return hinted;
-      }
+  const questionText = typeof asked === 'string'
+    ? asked.trim()
+    : (typeof asked?.question === 'string' ? asked.question.trim() : '');
+  if (!questionText) return null;
+
+  // Classify strictly from question text; routing IDs are never consulted.
+  // Explicit quantity asks (e.g. "How many time blocks each week?") take priority as workload.
+  const askedTopics = WORKLOAD_QUANTITY_PATTERN.test(questionText)
+    ? ['workload']
+    : TOPIC_PATTERNS.filter(entry => entry.pattern.test(questionText)).map(entry => entry.topic);
+  if (askedTopics.length === 0) return null;
+
+  let best = null;
+  let bestScore = 0;
+  let bestUnused = false;
+
+  for (const answer of preparedAnswers) {
+    const answerText = typeof answer?.text === 'string' ? answer.text : '';
+    let score = 0;
+    for (const topic of askedTopics) {
+      if (answer.id === topic) score += 2;
+      const entry = TOPIC_PATTERNS.find(item => item.topic === topic);
+      const answerMatcher = entry?.answerPattern || entry?.pattern;
+      if (answerMatcher && answerMatcher.test(answerText)) score += 1;
+    }
+    if (score === 0) continue;
+    const isUnused = !usedIds.has(answer.id);
+    if (score > bestScore || (score === bestScore && isUnused && !bestUnused)) {
+      best = answer;
+      bestScore = score;
+      bestUnused = isUnused;
     }
   }
-  if (unused.length) {
-    usedIds.add(unused[0].id);
-    return unused[0];
-  }
-  for (const hint of ANSWER_HINTS) {
-    if (hint.pattern.test(text)) {
-      const hinted = preparedAnswers.find(answer => answer.id === hint.id);
-      if (hinted) return hinted;
-    }
-  }
-  if (preparedAnswers.length === 1) return preparedAnswers[0];
-  return { id: 'combined', text: preparedAnswers.map(answer => answer.text).join(' ') };
+
+  if (!best) return null;
+  usedIds.add(best.id);
+  return best;
 }
 
 function uniqueTimelineQuestionId(rawId, seenIds) {
@@ -118,7 +140,7 @@ function uniqueTimelineQuestionId(rawId, seenIds) {
   return candidate;
 }
 
-async function drainQuestions(initialView, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns = 8 }) {
+async function drainQuestions(initialView, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns = 8, matchAnswer = matchPreparedAnswer }) {
   let view = initialView;
   let turns = 0;
   while (view?.question) {
@@ -135,7 +157,11 @@ async function drainQuestions(initialView, { api, runId, manifest, note, usedAns
         text: asked.question,
         choices: (asked.options || []).map(option => option.label),
       });
-      const reply = matchPreparedAnswer(asked, manifest.operator.answers, usedAnswerIds);
+      const reply = await matchAnswer(
+        { question: asked.question, ...(asked.options ? { options: asked.options } : {}) },
+        manifest.operator.answers,
+        usedAnswerIds,
+      );
       if (!reply) throw new Error(`No prepared response for question ${asked.id}`);
       answers.push({ id: asked.id, custom: reply.text, selected: [] });
       noted.push({ questionId: timelineId, text: reply.text });
@@ -234,10 +260,15 @@ export async function runPortableReplay(bundle, scenario, {
   editExistingEvent = defaultEditExistingCalendarEvent,
   clockOffset = '-03:00',
   maxQuestionTurns = 8,
+  matchAnswer = matchPreparedAnswer,
+  draftMode,
+  draftOptions,
 } = {}) {
   if (!adapter || typeof adapter.createSession !== 'function') throw new Error('A runner adapter with createSession is required');
   if (!scenarios.includes(scenario)) throw new Error('Unknown synthetic run scenario');
   if (typeof saveResult !== 'function') throw new Error('A replay evidence destination is required');
+  const effectiveDraftMode = draftMode ?? adapter.draftMode ?? (adapter.draftRequest ? 'runner' : 'trusted');
+  if (!['runner', 'trusted'].includes(effectiveDraftMode)) throw new Error(`Unsupported draftMode: ${effectiveDraftMode}`);
 
   const { manifest, inputSha256, fixture, workspaceDir } = bundle;
   const { student, clock } = manifest;
@@ -272,7 +303,7 @@ export async function runPortableReplay(bundle, scenario, {
   const check = (id, ok, detail) => result.checks.push({ id, outcome: ok ? 'pass' : 'fail', detail });
   const failures = [];
   const draftRequest = adapter.draftRequest || defaultDraftRequest(manifest.locale);
-  const coldStart = adapter.coldStartCase ? adapter.coldStartCase(bundle) : (manifest.id === 'bruno' ? 'bruno-text' : manifest.id);
+  const coldStart = adapter.coldStartCase ? adapter.coldStartCase(bundle) : manifest.id;
   const usedAnswerIds = new Set();
   const seenQuestionIds = new Set();
 
@@ -331,6 +362,7 @@ export async function runPortableReplay(bundle, scenario, {
     await withSyntheticRuntime(runtime, () => initializeScenario(calendar, student, {
       coldStart,
       ...(workspaceDir ? { workspaceSource: workspaceDir } : {}),
+      ...(Array.isArray(fixture?.events) ? { expectedEvents: fixture.events } : {}),
     }));
     await verifyWorkspace(path.join(runtime, 'workspaces', student), manifest.sources);
 
@@ -343,7 +375,7 @@ export async function runPortableReplay(bundle, scenario, {
 
     note({ kind: 'request', text: manifest.request });
     const firstTurn = await api.prompt(runId, manifest.request);
-    await drainQuestions(firstTurn, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns: maxQuestionTurns });
+    await drainQuestions(firstTurn, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns: maxQuestionTurns, matchAnswer });
 
     async function reviewAndDraft(previous) {
       const statusBefore = await api.status(runId);
@@ -356,12 +388,20 @@ export async function runPortableReplay(bundle, scenario, {
         throw new Error('Runner did not propose a pending planning context for review');
       }
 
-      let plan = (await api.status(runId)).state.plan;
+      let statusAfter = await api.status(runId);
+      let plan = statusAfter.state.plan;
       if (!plan || plan.id === previous) {
-        note({ kind: 'request', text: draftRequest });
-        const draftTurn = await api.prompt(runId, draftRequest);
-        await drainQuestions(draftTurn, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns: maxQuestionTurns });
-        plan = (await api.status(runId)).state.plan;
+        if (effectiveDraftMode === 'trusted') {
+          const resolvedOptions = typeof draftOptions === 'function'
+            ? await draftOptions({ bundle, previous, state: statusAfter.state })
+            : (draftOptions ?? adapter.draftOptions ?? {});
+          plan = await api.draft(runId, resolvedOptions);
+        } else {
+          note({ kind: 'request', text: draftRequest });
+          const draftTurn = await api.prompt(runId, draftRequest);
+          await drainQuestions(draftTurn, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns: maxQuestionTurns, matchAnswer });
+          plan = (await api.status(runId)).state.plan;
+        }
       }
       if (!plan || plan.id === previous) throw new Error('Runner did not draft a reviewable study proposal');
       const proposal = projectProposal(plan, previous);
@@ -372,7 +412,7 @@ export async function runPortableReplay(bundle, scenario, {
     const first = await reviewAndDraft(null);
     note({ kind: 'request', text: manifest.operator.correction });
     const correctionTurn = await api.prompt(runId, manifest.operator.correction);
-    await drainQuestions(correctionTurn, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns: maxQuestionTurns });
+    await drainQuestions(correctionTurn, { api, runId, manifest, note, usedAnswerIds, seenQuestionIds, maxTurns: maxQuestionTurns, matchAnswer });
     const revised = await reviewAndDraft(first.revisionId);
 
     const review = compareObservations(initial, await readObserved());

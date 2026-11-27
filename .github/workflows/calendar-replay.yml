@@ -29,6 +29,8 @@ jobs:
       - run: npm ci
       - name: Verify portable approval records
         run: python3 -B tests/paired-replay-probe.test.py
+      - name: Pull pinned Calendarpit image
+        run: docker pull ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96
       - name: Run the scripted Bruno smoke case
         run: |
           mkdir "$RUNNER_TEMP/study-replay"

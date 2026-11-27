@@ -61,7 +61,8 @@ for(const [student,port] of [['bruno',startPort],['ana',startPort+1]]){
       await wait("document.querySelector('#proposal .course-coverage')");
       ev.coverage=await evaluate("document.querySelector('#proposal .course-coverage').innerText");
       if(student==='ana'){
-        assert.match(ev.coverage,/Statistics · 0 h/);
+        assert.match(ev.coverage,/Machine Learning · 2 h/);
+        assert.match(ev.coverage,/Statistics · 2 h/);
         await click('#nav-review');
         await shot('scripted-ana-coverage');
         await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
@@ -70,8 +71,8 @@ for(const [student,port] of [['bruno',startPort],['ana',startPort+1]]){
         await send('Show a course coverage alternative');
         await wait("document.querySelector('#proposal').innerText.includes('Course coverage alternative')");
         ev.alternative=await evaluate("document.querySelector('#proposal .course-coverage').innerText");
-        assert.match(ev.alternative,/Machine Learning · 3 h/);
-        assert.match(ev.alternative,/Statistics · 1 h/);
+        assert.match(ev.alternative,/Machine Learning · 2 h/);
+        assert.match(ev.alternative,/Statistics · 2 h/);
         await click('#nav-review');
         await shot('scripted-ana-coverage-alternative');
       }else{

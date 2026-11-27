@@ -49,8 +49,7 @@ export async function validatePlanningContext(value, readSource, today) {
   return record;
 }
 
-export function reviewedPlannerProfile(student, context, today) {
-  const record = context.confirmed?.record;
+export function plannerProfileFromRecord(student, record, today) {
   if (!record || record.through < today) throw new Error('Review the planning context before generating a proposal');
   return {
     student, timezone:'America/Sao_Paulo', availabilityThrough:record.through,
@@ -62,4 +61,8 @@ export function reviewedPlannerProfile(student, context, today) {
       ...(course.resolution?{resolution:course.resolution}:{}),
     })),
   };
+}
+
+export function reviewedPlannerProfile(student, context, today) {
+  return plannerProfileFromRecord(student, context.confirmed?.record, today);
 }

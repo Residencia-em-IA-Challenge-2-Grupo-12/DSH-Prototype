@@ -22,7 +22,7 @@ All five safety scenarios (`success`, `stale`, `duplicate`, `unknown`, `unknown-
 
 | Method & Path | Request JSON | Response JSON |
 | --- | --- | --- |
-| `POST /sessions` | `{ version: 1, runId, caseId, student, locale, clock, sources, toolBridge: { url, token, methods } }` | `{ sessionId, engine?: { name, revision, mode, model, harness }, usage? }` |
+| `POST /sessions` | `{ version: 1, runId, student, locale, clock, sources, toolBridge: { url, token, methods } }` | `{ sessionId, engine?: { name, revision, mode, model, harness }, usage? }` |
 | `POST /sessions/:sessionId/prompt` | `{ text }` | `{ messages, question, busy, error, usage? }` |
 | `POST /sessions/:sessionId/answer` | `{ requestId, answers }` | `{ messages, question, busy, error, usage? }` |
 | `POST /sessions/:sessionId/cancel-question` | `{ requestId }` | `{ messages, question, busy, error, usage? }` |
@@ -48,14 +48,14 @@ Set `"question": null` when no user clarification is pending.
 For each run, the Foundation starts an ephemeral loopback bridge at `toolBridge.url` protected by header `x-study-run-token: <toolBridge.token>`.
 
 - **Request:** `POST <toolBridge.url>` with `{ "method": "<tool_name>", "args": { ... } }`
-- **Allowed methods (derived dynamically from `StudyBoundary`):** `list_synthetic_files`, `read_synthetic_file`, `list_calendar`, `read_planning_context`, `propose_planning_context`, `draft_study_plan`, `preview_study_options` (plus `inspect_checkpoint`, `routine_report`, `save_report_interpretation`).
+- **Allowed methods (derived dynamically from `StudyBoundary`):** `list_synthetic_files`, `read_synthetic_file`, `list_calendar`, `read_planning_context`, `propose_planning_context`, `preview_plan`, `draft_study_plan`, `preview_study_options` (plus `inspect_checkpoint`, `routine_report`, `save_report_interpretation`). `read_planning_context` exposes `{ pending, confirmed, previous }` only and omits internal evaluator `caseId`.
 - **Compact `list_calendar` projection:** `StudyBoundary` projects agent-facing calendar events to `{ id, summary, start, end }` plus non-default `status`/`transparency`, `description`, `location`, and `{ studyBlock: true, course }` for Study Atlas demo blocks. This reduces calendar tool payload size by ~61–62% on the Bruno and Ana fixtures while keeping internal planner and diffing logic on raw calendar records.
 - **Forbidden:** Calendar writes, approvals, and resets are absent from the bridge and return `403`. Only the trusted Foundation operator confirms context and approves calendar writes.
 
 ## Multi-turn & Live Runner Notes (for Slice 3 Runners)
 
-- **Grouped and sequential questions:** `runner.mjs` answers any pending `question.questions` array in one `POST /sessions/:id/answer` call and loops across follow-up question turns (up to `maxQuestionTurns = 8`). Questions are matched to `manifest.operator.answers` first by exact `id`, then by topic keywords (`availability`, `workload`, `preparation`), and finally by next unused prepared answer.
-- **Locale-aware draft prompt:** After confirming a pending planning context revision, `runner.mjs` sends the locale-matched draft prompt (`pt-BR` or `en`) unless the runner has already drafted a new plan revision.
+- **Grouped and sequential questions:** `runner.mjs` answers any pending `question.questions` array in one `POST /sessions/:id/answer` call and loops across follow-up question turns (up to `maxQuestionTurns = 8`). Questions are matched strictly by `asked.question` text against topic keywords (`availability`, `workload`, `preparation`) with `asked.id` reserved for reply routing only (no exact-ID matching or blind fallback; callers may also pass a custom `matchAnswer` callback).
+- **Locale-aware draft prompt or 0-LLM trusted draft:** After confirming a pending planning context revision, `runner.mjs` either sends the locale-matched draft prompt (`pt-BR` or `en`) or, when configured with `draftMode: 'trusted'` (or `adapter.draftRequest === null`), invokes the trusted Foundation `api.draft` path directly with zero LLM calls unless the runner has already drafted a new plan revision.
 - **Dynamic stale-write target:** In the `stale` scenario, `runner.mjs` selects a non-study week-1 commitment relative to `manifest.clock.date` rather than assuming a fixed date.
 - **Expected Slice 3 runners:**
   1. **Standalone non-DSH single-agent runner (included):** `scripts/single-agent-runner.mjs` runs a plain OpenAI-compatible tool-calling loop over `http-runner-v1` with zero dependency on `@deepseek-ai/dsh` or `@modelcontextprotocol/sdk`. It supports `--schema-compat standard|gemini` (stripping `additionalProperties` for Google's OpenAI-compatible Gemini endpoint) and `--reasoning-effort none|minimal|low|medium|high|xhigh`:
