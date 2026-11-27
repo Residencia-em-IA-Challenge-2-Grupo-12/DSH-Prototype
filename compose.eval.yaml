@@ -1,0 +1,59 @@
+services:
+  evaluator:
+    build:
+      context: .
+      dockerfile: Dockerfile.eval-evaluator
+    user: node
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp]
+    environment:
+      - OPENROUTER_API_KEY
+      - GEMINI_API_KEY
+      - TYPESAFE_API_KEY
+    volumes:
+      - ${STUDY_SEALED_EVAL_DIR:?set STUDY_SEALED_EVAL_DIR}:/sealed-eval:ro
+    networks:
+      net_calendar: {}
+      net_eval: {}
+      net_egress:
+        gw_priority: 1
+
+  runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.eval-runner
+    user: node
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp]
+    environment:
+      STUDY_RUNNER_MODEL: ${STUDY_EVAL_ROLE_A_MODEL:-openai/gpt-6-luna}
+      STUDY_RUNNER_BASE_URL: ${STUDY_EVAL_GATEWAY_BASE_URL:-http://evaluator:4181/v1}
+      STUDY_RUNNER_SCHEMA_COMPAT: ${STUDY_EVAL_SCHEMA_COMPAT:-standard}
+      STUDY_RUNNER_REASONING_EFFORT: ${STUDY_EVAL_REASONING_EFFORT:-}
+    networks: [net_eval]
+
+  # The host launcher supplies exactly one seed and starts a fresh instance per run.
+  calendarpit:
+    profiles: [per-run-calendar]
+    image: ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96
+    pull_policy: never
+    environment:
+      CALENDARPIT_DATABASE: ":memory:"
+      CALENDARPIT_CONFIG: /fixtures/startup.json
+    mem_limit: 512m
+    cpus: 1
+    pids_limit: 128
+    # Override the image's /data volume so a run leaves no persistent data.
+    tmpfs: [/data]
+    networks: [net_calendar]
+
+networks:
+  net_calendar:
+    internal: true
+  net_eval:
+    internal: true
+  net_egress: {}

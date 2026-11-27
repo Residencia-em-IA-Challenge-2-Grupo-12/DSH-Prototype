@@ -1,20 +1,9 @@
 import http from 'node:http';
 import { createSingleAgentSession } from './agent-loop.mjs';
 import { SCHEMA_COMPAT_MODES } from './tool-definitions.mjs';
+import { assertTransport, EVAL_EVALUATOR_ORIGIN, EVAL_RUNNER_ORIGIN, syntheticHttpUrl } from '../../foundation/eval-transport.mjs';
 
-const LOOPBACK_HOSTS = new Set(['127.0.0.1', 'localhost', '::1', '[::1]']);
 const REASONING_EFFORT_LEVELS = new Set(['none', 'minimal', 'low', 'medium', 'high', 'xhigh']);
-
-function assertLoopbackHost(host) {
-  if (!LOOPBACK_HOSTS.has(host)) throw new Error('Single-agent HTTP runner must bind to loopback only');
-}
-
-function assertLoopbackUrl(rawUrl, label) {
-  const parsed = new URL(rawUrl);
-  if (parsed.protocol !== 'http:' || !LOOPBACK_HOSTS.has(parsed.hostname)) {
-    throw new Error(`${label} must be loopback http://`);
-  }
-}
 
 async function readJsonBody(req, limit = 512_000) {
   let raw = '';
@@ -27,8 +16,7 @@ async function readJsonBody(req, limit = 512_000) {
 
 /**
  * Standard OpenAI-compatible `/chat/completions` client.
- * Works against `createOpenRouterGateway` (loopback), local Ollama/vLLM, or
- * any OpenAI-compatible API endpoint without depending on DSH.
+ * Works against a loopback OpenAI-compatible endpoint or the fixed evaluator gateway.
  */
 export function createOpenAICompatibleCompleter({
   baseUrl,
@@ -37,12 +25,18 @@ export function createOpenAICompatibleCompleter({
   reasoningEffort,
   timeoutMs = 120_000,
   fetchImpl = fetch,
+  transport = 'loopback',
 } = {}) {
   if (typeof baseUrl !== 'string' || !baseUrl.trim()) throw new Error('baseUrl is required');
   if (reasoningEffort !== undefined && !REASONING_EFFORT_LEVELS.has(reasoningEffort)) {
     throw new Error(`Unsupported reasoningEffort: ${reasoningEffort} (expected one of ${[...REASONING_EFFORT_LEVELS].join(', ')})`);
   }
-  const endpoint = `${baseUrl.replace(/\/+$/, '')}/chat/completions`;
+  const base = syntheticHttpUrl(baseUrl, {
+    transport, peer: EVAL_EVALUATOR_ORIGIN,
+    routes: transport === 'compose-eval' ? ['/v1', '/v1/gemini'] : undefined,
+    message: 'Model gateway must be a loopback HTTP or explicit Compose chat endpoint',
+  });
+  const endpoint = `${base.href.replace(/\/+$/, '')}/chat/completions`;
   return async function completeChat({ model, messages, tools }) {
     const requestBody = {
       model,
@@ -59,6 +53,7 @@ export function createOpenAICompatibleCompleter({
         ...headers,
       },
       body: JSON.stringify(requestBody),
+      redirect: 'error',
       signal: AbortSignal.timeout(timeoutMs),
     });
     const text = await response.text();
@@ -75,6 +70,7 @@ export async function startSingleAgentServer({
   host = '127.0.0.1',
   port = 0,
   completeChat,
+  completeChatForRun,
   model = 'unspecified-model',
   revision = '1',
   mode = 'live',
@@ -82,10 +78,18 @@ export async function startSingleAgentServer({
   engineName,
   maxSteps = 24,
   schemaCompat = 'standard',
+  transport = 'loopback',
+  schemaProfile = transport === 'compose-eval' ? 'eval-v2' : 'v1',
   onEvent,
 } = {}) {
-  assertLoopbackHost(host);
-  if (typeof completeChat !== 'function') throw new Error('completeChat function is required');
+  assertTransport(transport);
+  const composeBind = transport === 'compose-eval' && host === '0.0.0.0' && port === 4180;
+  if (!composeBind && !['127.0.0.1', 'localhost', '::1', '[::1]'].includes(host)) {
+    throw new Error('Single-agent HTTP runner must bind to loopback or the explicit Compose socket');
+  }
+  if (typeof completeChat !== 'function' && !(transport === 'compose-eval' && typeof completeChatForRun === 'function')) {
+    throw new Error('completeChat function is required');
+  }
   if (!SCHEMA_COMPAT_MODES.includes(schemaCompat)) {
     throw new Error(`Unsupported schemaCompat mode: ${schemaCompat} (expected one of ${SCHEMA_COMPAT_MODES.join(', ')})`);
   }
@@ -105,16 +109,22 @@ export async function startSingleAgentServer({
       }
       if (req.method === 'POST' && parts.length === 1 && parts[0] === 'sessions') {
         const body = await readJsonBody(req);
-        assertLoopbackUrl(body?.toolBridge?.url, 'toolBridge.url');
+        let complete = completeChat;
+        if (transport === 'compose-eval' && completeChatForRun) {
+          if (typeof body.runnerToken !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(body.runnerToken)) throw new Error('A per-run model gateway token is required');
+          complete = completeChatForRun(body.runnerToken);
+        }
         const session = createSingleAgentSession({
           student: body.student,
           locale: body.locale || 'en',
           clock: body.clock,
           toolBridge: body.toolBridge,
-          completeChat,
+          completeChat: complete,
           model,
           maxSteps,
           schemaCompat,
+          schemaProfile,
+          transport,
           onEvent,
         });
         sessions.set(session.sessionId, session);
@@ -163,10 +173,10 @@ export async function startSingleAgentServer({
 
   await new Promise((resolve, reject) => {
     server.once('error', reject);
-    server.listen(port, host, resolve);
+    server.listen(port, host === '[::1]' ? '::1' : host, resolve);
   });
   const address = server.address();
-  const baseUrl = `http://${host}:${address.port}`;
+  const baseUrl = composeBind ? EVAL_RUNNER_ORIGIN : `http://${host === '::1' ? '[::1]' : host}:${address.port}`;
   return {
     url: baseUrl,
     port: address.port,

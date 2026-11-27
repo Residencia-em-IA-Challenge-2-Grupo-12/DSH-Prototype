@@ -4,6 +4,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createStateStore } from '../state-store.mjs';
+import { EVAL_CALENDAR_ORIGIN, syntheticHttpUrl } from '../foundation/eval-transport.mjs';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 export const FIXED_TODAY = '2026-11-02';
@@ -18,10 +19,14 @@ const stores = new Map();
 // Trusted services may bind operations to a per-run runtime without changing
 // process-wide environment; the legacy baseline keeps its existing override.
 export function runtimeDir() {
-  return path.resolve(runtimeContext.getStore() || process.env.STUDY_ATLAS_RUNTIME_DIR || path.join(ROOT, '.runtime'));
+  return path.resolve(runtimeContext.getStore()?.directory || process.env.STUDY_ATLAS_RUNTIME_DIR || path.join(ROOT, '.runtime'));
 }
 
-export function withSyntheticRuntime(directory, operation) {
+export function requiresStagedWorkspace(required = false) {
+  return runtimeContext.getStore()?.requireStaged === true || required;
+}
+
+export function withSyntheticRuntime(directory, operation, { allowedStudents, requireStaged } = {}) {
   if (
     typeof directory !== 'string' ||
     !path.isAbsolute(directory) ||
@@ -31,7 +36,14 @@ export function withSyntheticRuntime(directory, operation) {
   ) {
     throw new Error('A valid synthetic runtime and operation are required');
   }
-  return runtimeContext.run(directory, operation);
+  if (allowedStudents !== undefined && !Array.isArray(allowedStudents)) throw new Error('An explicit student allowlist is required');
+  if (requireStaged !== undefined && typeof requireStaged !== 'boolean') throw new Error('Workspace policy must be explicit');
+  const parent = runtimeContext.getStore();
+  return runtimeContext.run({
+    directory,
+    allowedStudents: allowedStudents === undefined ? parent?.allowedStudents : Object.freeze([...allowedStudents]),
+    requireStaged: requiresStagedWorkspace(requireStaged),
+  }, operation);
 }
 
 export async function withWriteLock(student, fn) {
@@ -44,8 +56,9 @@ export async function withWriteLock(student, fn) {
   }
 }
 
-export function assertStudent(id, allowed = KNOWN_STUDENTS) {
-  if (typeof id !== 'string' || !allowed.includes(id)) throw new Error('Unknown fixture');
+export function assertStudent(id, allowed = runtimeContext.getStore()?.allowedStudents ?? KNOWN_STUDENTS) {
+  if (typeof id !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(id) ||
+      !Array.isArray(allowed) || !allowed.includes(id)) throw new Error('Unknown fixture');
   return id;
 }
 
@@ -89,8 +102,8 @@ export async function disposeSyntheticRuntime(directory) {
   return true;
 }
 
-export async function loadState(student) {
-  return stateStore.load(assertStudent(student));
+export async function loadState(student, allowedStudents) {
+  return stateStore.load(assertStudent(student, allowedStudents));
 }
 
 export async function saveState(student, state) {
@@ -124,17 +137,38 @@ export function localTime(date, offset = DEFAULT_TIMEZONE_OFFSET) {
 
 // Calendarpit management endpoints are deliberately local-only and synthetic.
 export class Calendarpit {
-  constructor(base = process.env.CALENDARPIT_URL || 'http://127.0.0.1:4173') {
-    const u = new URL(base);
-    if (u.protocol !== 'http:' || !['127.0.0.1', 'localhost', '::1', '[::1]'].includes(u.hostname)) {
-      throw new Error('Calendarpit must be on loopback');
-    }
-    this.base = u.origin;
+  #origin;
+  #allowedStudents;
+  #fixture;
+  #requiresFixture;
+  #fetch;
+
+  constructor(base = process.env.CALENDARPIT_URL || 'http://127.0.0.1:4173', {
+    transport = 'loopback', allowedStudents, fixture, fetchImpl = fetch,
+  } = {}) {
+    this.#origin = syntheticHttpUrl(base, {
+      transport, peer: EVAL_CALENDAR_ORIGIN, routes: ['/'], message: 'Calendarpit must be on loopback or an explicit Compose peer',
+    }).origin;
+    if (allowedStudents !== undefined && !Array.isArray(allowedStudents)) throw new Error('An explicit student allowlist is required');
+    if (fixture !== undefined && (!fixture || !Array.isArray(fixture.events))) throw new Error('Invalid synthetic calendar fixture');
+    this.#allowedStudents = allowedStudents === undefined ? undefined : [...allowedStudents];
+    this.#fixture = fixture === undefined ? undefined : structuredClone(fixture);
+    this.#requiresFixture = transport === 'compose-eval';
+    this.#fetch = fetchImpl;
   }
 
+  get base() { return this.#origin; }
+
   async request(method, route, body) {
-    const res = await fetch(`${this.base}/__calendarpit${route}`, {
+    const eventRoute = /^\/calendars\/[A-Za-z0-9_-]+-calendar\/events(?:\/([^/?#]+))?$/.exec(route);
+    const validEventRoute = eventRoute && (eventRoute[1]
+      ? ['PATCH', 'DELETE'].includes(method) && !/^(?:\.|%2e){1,2}$/i.test(eventRoute[1]) && !eventRoute[1].includes('\\')
+      : ['GET', 'POST'].includes(method));
+    if (!validEventRoute && !(method === 'POST' && route === '/fixtures')) throw new Error('Unknown Calendarpit management route');
+    const res = await this.#fetch(`${this.#origin}/__calendarpit${route}`, {
       method,
+      redirect: 'error',
+      signal: AbortSignal.timeout(15_000),
       headers: body === undefined ? {} : { 'content-type': 'application/json' },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
@@ -147,23 +181,31 @@ export class Calendarpit {
     return text ? JSON.parse(text) : null;
   }
 
-  async events(student) {
-    return (await this.request('GET', `/calendars/${assertStudent(student)}-calendar/events`)).items;
+  async events(student, { allowedStudents } = {}) {
+    return (await this.request('GET', this.#eventsRoute(student, allowedStudents))).items;
   }
 
   async reset(student) {
-    return this.request('POST', '/fixtures', await readJSON(path.join(ROOT, 'fixtures/calendars', `${assertStudent(student)}.json`)));
+    assertStudent(student, this.#allowedStudents);
+    if (this.#fixture === undefined && (this.#requiresFixture || requiresStagedWorkspace())) {
+      throw new Error('Explicit synthetic calendar fixture required');
+    }
+    return this.request('POST', '/fixtures', this.#fixture ?? await readJSON(path.join(ROOT, 'fixtures/calendars', `${student}.json`)));
+  }
+
+  #eventsRoute(student, allowedStudents) {
+    return `/calendars/${assertStudent(student, this.#allowedStudents ?? allowedStudents)}-calendar/events`;
   }
 
   async create(student, event) {
-    return this.request('POST', `/calendars/${assertStudent(student)}-calendar/events`, event);
+    return this.request('POST', this.#eventsRoute(student), event);
   }
 
   async patch(student, id, event) {
-    return this.request('PATCH', `/calendars/${assertStudent(student)}-calendar/events/${encodeURIComponent(id)}`, event);
+    return this.request('PATCH', `${this.#eventsRoute(student)}/${encodeURIComponent(id)}`, event);
   }
 
   async remove(student, id) {
-    return this.request('DELETE', `/calendars/${assertStudent(student)}-calendar/events/${encodeURIComponent(id)}`, {});
+    return this.request('DELETE', `${this.#eventsRoute(student)}/${encodeURIComponent(id)}`, {});
   }
 }

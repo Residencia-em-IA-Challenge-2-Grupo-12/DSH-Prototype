@@ -1,0 +1,14 @@
+FROM node:24.11.1-bookworm-slim@sha256:48abc13a19400ca3985071e287bd405a1d99306770eb81d61202fb6b65cf0b57 AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts
+
+FROM node:24.11.1-bookworm-slim@sha256:48abc13a19400ca3985071e287bd405a1d99306770eb81d61202fb6b65cf0b57
+WORKDIR /app
+COPY --from=deps /app/node_modules/zod ./node_modules/zod/
+COPY scripts/single-agent-runner.mjs ./scripts/
+COPY src/cold-start-context.mjs src/calendar-time.mjs ./src/
+COPY src/foundation/availability-preview.mjs src/foundation/eval-transport.mjs ./src/foundation/
+COPY src/runners/single-agent/ ./src/runners/single-agent/
+USER node
+CMD ["node", "scripts/single-agent-runner.mjs", "--transport", "compose-eval"]

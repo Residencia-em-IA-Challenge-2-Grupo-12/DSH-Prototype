@@ -1,10 +1,14 @@
 // Local test orchestrator. Never expose Docker access or the management port to agent workers.
 import { randomBytes, randomUUID } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 import { execFile } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
+import { digest } from '../domain/planner.mjs';
+import { EVAL_CALENDAR_ORIGIN, syntheticHttpUrl } from './eval-transport.mjs';
 
 export const CALENDARPIT_IMAGE = 'ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96';
 const execFileAsync = promisify(execFile);
@@ -111,6 +115,87 @@ export async function startCalendarpitRun({ fixture, redirectUri, runId = random
     return { id, origin, client: prepared.client, controlDirectory:directory, close };
   } catch (error) {
     try { await close(); } catch (cleanupError) { throw new AggregateError([error, cleanupError], 'Calendarpit startup and cleanup failed'); }
+    throw error;
+  }
+}
+
+const evalComposeFile = fileURLToPath(new URL('../../compose.eval.yaml', import.meta.url));
+
+async function inspectEvalCalendarNetwork(runDocker, project) {
+  const info = JSON.parse(await runDocker('network', 'inspect', '--format', '{{json .}}', `${project}_net_calendar`));
+  if (info.Internal !== true || info.Labels?.['com.docker.compose.project'] !== project ||
+      info.Labels?.['com.docker.compose.network'] !== 'net_calendar') {
+    throw new Error('An internal Compose calendar network is required');
+  }
+  return info;
+}
+
+function matchesSeed(observed, fixture) {
+  for (const key of ['users', 'calendars', 'events']) {
+    if (!Array.isArray(observed[key]) || !isDeepStrictEqual(
+      observed[key].map(item => item.id).sort(), fixture[key].map(item => item.id).sort(),
+    )) return false;
+  }
+  return digest(observed.events) === digest(fixture.events);
+}
+
+/** Host-side lifecycle for Compose Eval. The evaluator must already be running.
+ * The shared service alias admits one active calendar per Compose project.
+ */
+export async function startComposeCalendarpitRun({
+  project, fixture, redirectUri, runId = randomUUID(), runDocker = docker, wait = sleep, startupTimeoutMs = 15_000,
+} = {}) {
+  checkedRunId(runId);
+  if (typeof project !== 'string' || !/^[a-z0-9][a-z0-9_-]*$/.test(project)) throw new Error('A valid Compose project name is required');
+  const redirect = syntheticHttpUrl(redirectUri, { routes: ['/callback'], requirePort: true });
+  if (redirect.hostname !== '127.0.0.1') throw new Error('Compose calendar redirect must be on 127.0.0.1');
+  const prepared = syntheticSeed(fixture, redirect.href);
+  const network = await inspectEvalCalendarNetwork(runDocker, project);
+  const [evaluator] = Object.keys(network.Containers || {});
+  if (!evaluator || Object.keys(network.Containers).length !== 1 ||
+      await runDocker('inspect', '--format', '{{index .Config.Labels "com.docker.compose.service"}}', evaluator) !== 'evaluator') {
+    throw new Error('The Compose calendar network must contain only the evaluator before startup');
+  }
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'study-eval-calendar-'));
+  const filename = path.join(directory, 'fixture.json');
+  const container = `study-eval-calendar-${network.Id}`;
+  const ownerLabel = `study.eval.calendar.owner=${randomUUID()}`;
+  const ownedContainers = async () => (await runDocker('ps', '-aq', '--no-trunc', '--filter', `label=${ownerLabel}`))
+    .split('\n').filter(Boolean);
+  let closing;
+  const close = () => {
+    return closing ??= (async () => {
+      for (const id of await ownedContainers()) await runDocker('rm', '-f', '-v', id);
+      if ((await ownedContainers()).length) throw new Error('Compose Calendarpit retirement could not be verified');
+      await fs.rm(directory, { recursive: true, force: true });
+    })().catch(error => { closing = undefined; throw error; });
+  };
+  try {
+    await fs.writeFile(filename, JSON.stringify(prepared.fixture), { mode: 0o644 });
+    await runDocker('compose', '--env-file', '/dev/null', '-p', project, '-f', evalComposeFile, 'run',
+      '--detach', '--no-deps', '--use-aliases', '--name', container, '--label', ownerLabel, '--label', `study.run.id=${runId}`,
+      '--volume', `${filename}:/fixtures/startup.json:ro`, 'calendarpit');
+    const url = EVAL_CALENDAR_ORIGIN + '/__calendarpit/state';
+    const probe = `const response = await fetch(${JSON.stringify(url)}, { redirect: 'error', signal: AbortSignal.timeout(1000) });
+      if (!response.ok) process.exit(1);
+      const { users, calendars, events } = await response.json();
+      console.log(JSON.stringify({ users, calendars, events }));`;
+    const deadline = Date.now() + startupTimeoutMs;
+    let observed;
+    while (!observed && Date.now() < deadline) {
+      try { observed = JSON.parse(await runDocker('exec', evaluator, 'node', '--input-type=module', '-e', probe)); }
+      catch { await wait(100); }
+    }
+    if (!observed || !matchesSeed(observed, prepared.fixture)) throw new Error('Compose Calendarpit did not expose the expected seed');
+    const [calendar] = await ownedContainers();
+    const attached = await inspectEvalCalendarNetwork(runDocker, project);
+    if (!calendar || Object.keys(attached.Containers || {}).length !== 2 || !attached.Containers[evaluator] || !attached.Containers[calendar]) {
+      throw new Error('Compose Calendarpit network membership could not be verified');
+    }
+    return { id: runId, origin: EVAL_CALENDAR_ORIGIN, client: prepared.client, close };
+  } catch (error) {
+    try { await close(); }
+    catch (cleanupError) { throw new AggregateError([error, cleanupError], 'Compose Calendarpit startup and cleanup failed'); }
     throw error;
   }
 }

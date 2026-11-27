@@ -3,6 +3,9 @@ import {
   FIXED_TODAY,
   listWorkspace,
   readWorkspace,
+  readWorkspacePageRange,
+  runtimeDir,
+  withSyntheticRuntime,
   draft,
   previewPlan,
   checkpoint,
@@ -12,6 +15,7 @@ import {
   proposePlanningContext,
 } from '../core.mjs';
 import { compactCalendarEvents } from './calendar-view.mjs';
+import { createDisclosedSources, planningContextSchemaFor } from '../cold-start-context.mjs';
 
 // Trusted application side of a single synthetic run. It deliberately exposes
 // no approval, reset, raw provider, administration or calendar-write method.
@@ -19,23 +23,46 @@ export function createStudyBoundary({
   student,
   calendar,
   requireStaged = true,
+  allowedStudents,
+  schemaProfile = 'v1',
+  disclosedSources = schemaProfile === 'eval-v2' ? createDisclosedSources() : undefined,
   coldStart = false,
   availabilityPreview,
   clock = { date: FIXED_TODAY, timezone: 'America/Sao_Paulo' },
 } = {}) {
-  assertStudent(student);
+  assertStudent(student, allowedStudents);
+  planningContextSchemaFor(schemaProfile);
   if (typeof requireStaged !== 'boolean') throw new Error('Workspace policy must be explicit');
   if (!calendar || typeof calendar.events !== 'function') throw new Error('A synthetic calendar is required');
   const simulationToday = clock?.date || FIXED_TODAY;
   const timezone = clock?.timezone || 'America/Sao_Paulo';
+  const workspace = { requireStaged: requireStaged || schemaProfile === 'eval-v2', allowedStudents };
+  const planning = { ...workspace, today: simulationToday, disclosedSources, schemaProfile };
 
   const methods = new Map([
-    ['list_synthetic_files', args => listWorkspace(student, args.path || '', { requireStaged })],
-    ['read_synthetic_file', args => readWorkspace(student, args.path, { requireStaged })],
+    ['list_synthetic_files', args => listWorkspace(student, args.path || '', workspace)],
+    ['read_synthetic_file', async ({ path, pageStart, pageEnd }) => {
+      if (pageStart !== undefined || pageEnd !== undefined) {
+        const result = await readWorkspacePageRange(student, path, { ...workspace, pageStart, pageEnd });
+        for (const { page, text } of result.pages) disclosedSources?.disclose(path, text, page);
+        return result;
+      }
+      const text = await readWorkspace(student, path, workspace);
+      if (disclosedSources) {
+        if (/\.pdf$/i.test(path)) {
+          const pages = text.split('\f');
+          if (pages.at(-1) === '') pages.pop();
+          pages.forEach((body, index) => disclosedSources.disclose(path, body, index + 1));
+        } else {
+          disclosedSources.disclose(path, text);
+        }
+      }
+      return text;
+    }],
     ['list_calendar', async () => ({
       simulationToday,
       timezone,
-      events: compactCalendarEvents(await calendar.events(student)),
+      events: compactCalendarEvents(await calendar.events(student, { allowedStudents })),
     })],
     [
       'draft_study_plan',
@@ -51,7 +78,7 @@ export function createStudyBoundary({
             focusCourse: args.focusCourse,
             ...(coldStart ? { allocation: args.allocation } : {}),
           },
-          { requireStaged, today: simulationToday },
+          planning,
         ),
     ],
     [
@@ -69,7 +96,7 @@ export function createStudyBoundary({
             record: args.record,
             ...(coldStart ? { allocation: args.allocation } : {}),
           },
-          { requireStaged, today: simulationToday },
+          planning,
         ),
     ],
     ['inspect_checkpoint', args => checkpoint(calendar, student, args.reason || '')],
@@ -86,7 +113,7 @@ export function createStudyBoundary({
         previous: context.previous ?? null,
       };
     });
-    methods.set('propose_planning_context', args => proposePlanningContext(student, args.record, { today: simulationToday }));
+    methods.set('propose_planning_context', args => proposePlanningContext(student, args.record, planning));
   }
 
   return {
@@ -96,7 +123,7 @@ export function createStudyBoundary({
       if (!args || typeof args !== 'object' || Array.isArray(args) || args.student !== student) {
         throw new Error('Request does not match the selected synthetic student');
       }
-      return methods.get(method)(args);
+      return withSyntheticRuntime(runtimeDir(), () => methods.get(method)(args), workspace);
     },
   };
 }
