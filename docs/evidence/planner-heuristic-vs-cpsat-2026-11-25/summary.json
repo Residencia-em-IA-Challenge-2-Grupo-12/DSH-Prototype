@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-27T00:17:55.565Z",
+  "generatedAt": "2026-11-27T00:21:25.636Z",
   "environment": {
     "nodeVersion": "v24.11.1",
     "pythonVersion": "3.13.16",
     "ortoolsVersion": "9.14.6206",
     "cpSatAvailable": true,
     "pythonBinary": "experiments/planner-comparison/.venv/bin/python",
-    "gitHeadAtGeneration": "e6c421fc7fac498d3ae26f29996a06c8f91ae2e8",
+    "gitHeadAtGeneration": "b9bb30c2a70367af89afa50be4c1635979b0c55c",
     "gitDirtyAtGeneration": false,
     "solverParams": {
       "workers": 1,
@@ -25,7 +25,7 @@
     "anaReplayCaseSha256": "ee11252f4d1961396325e950aab4cfb771239659eec6d8eea87990e57dd7011b",
     "heuristicPlannerSha256": "48cf77510dc14c42e8e92ddc784f21c1e1c7670268de3c79f0c83f272b581715",
     "cpsatPlannerSha256": "43ee153ce7266b8833be68ad3036d96da43ff457958f7ec0c5a0f32008afcaf0",
-    "benchmarkSha256": "728047414fa196b6b33ec0ab0fa835efce0d74b39474061dd6f4318d94bf865a",
+    "benchmarkSha256": "5db6d6fd6b962ab0acbca8e2a2d57b3d7454f4c48fbf20792605bd2d8594d24f",
     "casesLoaderSha256": "f7fd81b7303d2c0749ed83df12a96e66576f3c46f68d9c6e5e6beced2770f243"
   },
   "objectiveDisclosure": {
@@ -58,15 +58,15 @@
         "multiCourseDefaultCount": 5,
         "multiCourseFullCoverageCount": 2,
         "avgMultiCourseImbalanceMinutes": 396,
-        "medianLatencyMs": 1.545,
-        "maxLatencyMs": 17.819
+        "medianLatencyMs": 1.78,
+        "maxLatencyMs": 15.727
       },
       "cpsat": {
         "caseCount": 6,
         "variantCount": 12,
         "availableVariantCount": 12,
         "hardConstraintPassCount": 12,
-        "deterministicCount": 11,
+        "deterministicCount": 12,
         "strictTargetMetCount": 6,
         "totalTargetMinutes": 9120,
         "totalScheduledMinutes": 8160,
@@ -75,8 +75,8 @@
         "multiCourseDefaultCount": 5,
         "multiCourseFullCoverageCount": 4,
         "avgMultiCourseImbalanceMinutes": 132,
-        "medianLatencyMs": 4.497,
-        "maxLatencyMs": 5007.895
+        "medianLatencyMs": 4.008,
+        "maxLatencyMs": 4605.227
       }
     },
     "pairedReplay": {
@@ -94,8 +94,8 @@
         "multiCourseDefaultCount": 2,
         "multiCourseFullCoverageCount": 2,
         "avgMultiCourseImbalanceMinutes": 0,
-        "medianLatencyMs": 2.074,
-        "maxLatencyMs": 3.825
+        "medianLatencyMs": 2.235,
+        "maxLatencyMs": 3.687
       },
       "cpsat": {
         "caseCount": 4,
@@ -111,8 +111,8 @@
         "multiCourseDefaultCount": 2,
         "multiCourseFullCoverageCount": 2,
         "avgMultiCourseImbalanceMinutes": 0,
-        "medianLatencyMs": 10.383,
-        "maxLatencyMs": 17.38
+        "medianLatencyMs": 11.014,
+        "maxLatencyMs": 16.738
       }
     },
     "coreCombined": {
@@ -130,15 +130,15 @@
         "multiCourseDefaultCount": 7,
         "multiCourseFullCoverageCount": 4,
         "avgMultiCourseImbalanceMinutes": 282.9,
-        "medianLatencyMs": 1.745,
-        "maxLatencyMs": 17.819
+        "medianLatencyMs": 1.982,
+        "maxLatencyMs": 15.727
       },
       "cpsat": {
         "caseCount": 10,
         "variantCount": 20,
         "availableVariantCount": 20,
         "hardConstraintPassCount": 20,
-        "deterministicCount": 19,
+        "deterministicCount": 20,
         "strictTargetMetCount": 14,
         "totalTargetMinutes": 13440,
         "totalScheduledMinutes": 12480,
@@ -147,8 +147,8 @@
         "multiCourseDefaultCount": 7,
         "multiCourseFullCoverageCount": 6,
         "avgMultiCourseImbalanceMinutes": 94.3,
-        "medianLatencyMs": 5.764,
-        "maxLatencyMs": 5007.895
+        "medianLatencyMs": 5.492,
+        "maxLatencyMs": 4605.227
       }
     },
     "diagnostic": {
@@ -166,8 +166,8 @@
         "multiCourseDefaultCount": 0,
         "multiCourseFullCoverageCount": 0,
         "avgMultiCourseImbalanceMinutes": null,
-        "medianLatencyMs": 0.041,
-        "maxLatencyMs": 0.138
+        "medianLatencyMs": 0.037,
+        "maxLatencyMs": 0.136
       },
       "cpsat": {
         "caseCount": 2,
@@ -183,8 +183,8 @@
         "multiCourseDefaultCount": 0,
         "multiCourseFullCoverageCount": 0,
         "avgMultiCourseImbalanceMinutes": null,
-        "medianLatencyMs": 1.877,
-        "maxLatencyMs": 2.793
+        "medianLatencyMs": 1.841,
+        "maxLatencyMs": 2.444
       }
     }
   },
@@ -233,12 +233,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 8.503,
-            "maxLatencyMs": 17.819,
+            "medianLatencyMs": 7.27,
+            "maxLatencyMs": 15.727,
             "latenciesMs": [
-              17.819,
-              8.503,
-              7.503
+              15.727,
+              7.27,
+              7.17
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -458,11 +458,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 100.157,
-            "maxLatencyMs": 110.695,
-            "medianCpSatSearchMs": 92.041,
-            "medianHostRoundTripMs": 434.241,
-            "peakRssKb": 97720,
+            "medianLatencyMs": 97.254,
+            "maxLatencyMs": 102.773,
+            "medianCpSatSearchMs": 90.344,
+            "medianHostRoundTripMs": 419.431,
+            "peakRssKb": 98100,
             "objectiveValue": 299954259,
             "bestObjectiveBound": 299954259,
             "blockWeight": 10000000,
@@ -689,12 +689,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 8.195,
-            "maxLatencyMs": 10.083,
+            "medianLatencyMs": 7.806,
+            "maxLatencyMs": 9.107,
             "latenciesMs": [
-              10.083,
-              8.195,
-              7.167
+              9.107,
+              7.806,
+              7.352
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -914,11 +914,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 100.212,
-            "maxLatencyMs": 106.819,
-            "medianCpSatSearchMs": 92.825,
-            "medianHostRoundTripMs": 415.982,
-            "peakRssKb": 97968,
+            "medianLatencyMs": 100.516,
+            "maxLatencyMs": 100.737,
+            "medianCpSatSearchMs": 93.541,
+            "medianHostRoundTripMs": 409.548,
+            "peakRssKb": 98076,
             "objectiveValue": 300854259,
             "bestObjectiveBound": 300854259,
             "blockWeight": 10000000,
@@ -1145,12 +1145,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 7.64,
-            "maxLatencyMs": 9.873,
+            "medianLatencyMs": 8.754,
+            "maxLatencyMs": 11.548,
             "latenciesMs": [
-              7.64,
-              9.873,
-              6.94
+              8.754,
+              11.548,
+              7.978
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -1370,11 +1370,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 118.965,
-            "maxLatencyMs": 134.809,
-            "medianCpSatSearchMs": 110.227,
-            "medianHostRoundTripMs": 471.98,
-            "peakRssKb": 97908,
+            "medianLatencyMs": 101.013,
+            "maxLatencyMs": 104.667,
+            "medianCpSatSearchMs": 93.938,
+            "medianHostRoundTripMs": 413.125,
+            "peakRssKb": 98072,
             "objectiveValue": 299954259,
             "bestObjectiveBound": 299954259,
             "blockWeight": 10000000,
@@ -1615,12 +1615,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 1.3,
-            "maxLatencyMs": 1.638,
+            "medianLatencyMs": 1.076,
+            "maxLatencyMs": 1.203,
             "latenciesMs": [
-              1.638,
-              1.3,
-              1.298
+              1.203,
+              1.076,
+              1.046
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -1679,11 +1679,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 8.281,
-            "maxLatencyMs": 8.774,
-            "medianCpSatSearchMs": 5.313,
-            "medianHostRoundTripMs": 392.82,
-            "peakRssKb": 94952,
+            "medianLatencyMs": 5.162,
+            "maxLatencyMs": 5.612,
+            "medianCpSatSearchMs": 3.239,
+            "medianHostRoundTripMs": 310.649,
+            "peakRssKb": 95088,
             "objectiveValue": 40096616,
             "bestObjectiveBound": 40096616,
             "blockWeight": 10000000,
@@ -1749,12 +1749,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 1.132,
-            "maxLatencyMs": 4.909,
+            "medianLatencyMs": 1.412,
+            "maxLatencyMs": 4.508,
             "latenciesMs": [
-              1.132,
-              1.095,
-              4.909
+              1.412,
+              1.181,
+              4.508
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -1813,11 +1813,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 5.929,
-            "maxLatencyMs": 9.056,
-            "medianCpSatSearchMs": 3.619,
-            "medianHostRoundTripMs": 380.396,
-            "peakRssKb": 94716,
+            "medianLatencyMs": 5.448,
+            "maxLatencyMs": 5.485,
+            "medianCpSatSearchMs": 3.38,
+            "medianHostRoundTripMs": 313.909,
+            "peakRssKb": 94872,
             "objectiveValue": 40996616,
             "bestObjectiveBound": 40996616,
             "blockWeight": 10000000,
@@ -1902,12 +1902,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 8.568,
-            "maxLatencyMs": 8.862,
+            "medianLatencyMs": 7.58,
+            "maxLatencyMs": 8.794,
             "latenciesMs": [
-              8.502,
-              8.568,
-              8.862
+              7.208,
+              7.58,
+              8.794
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -2123,17 +2123,17 @@
             ]
           },
           "cpsat": {
-            "status": "FEASIBLE",
+            "status": "OPTIMAL",
             "targetFeasibility": "target_met",
             "reason": null,
-            "deterministic": false,
-            "medianLatencyMs": 4941.836,
-            "maxLatencyMs": 5007.895,
-            "medianCpSatSearchMs": 4934.098,
-            "medianHostRoundTripMs": 5250.414,
-            "peakRssKb": 102892,
-            "objectiveValue": 299834184,
-            "bestObjectiveBound": 299834286,
+            "deterministic": true,
+            "medianLatencyMs": 4547.262,
+            "maxLatencyMs": 4605.227,
+            "medianCpSatSearchMs": 4540.571,
+            "medianHostRoundTripMs": 4850.417,
+            "peakRssKb": 103196,
+            "objectiveValue": 299834264,
+            "bestObjectiveBound": 299834264,
             "blockWeight": 10000000,
             "maxLowerTierSpan": 3670160,
             "blockDominanceGuaranteed": true,
@@ -2197,13 +2197,13 @@
               },
               {
                 "section": "near",
-                "course": "Algoritmos",
+                "course": "Banco de Dados",
                 "start": "2026-11-08T10:00:00-03:00",
                 "end": "2026-11-08T11:00:00-03:00"
               },
               {
                 "section": "future",
-                "course": "Algoritmos",
+                "course": "Banco de Dados",
                 "start": "2026-11-11T20:00:00-03:00",
                 "end": "2026-11-11T21:00:00-03:00"
               },
@@ -2215,7 +2215,7 @@
               },
               {
                 "section": "future",
-                "course": "Banco de Dados",
+                "course": "Algoritmos",
                 "start": "2026-11-14T15:15:00-03:00",
                 "end": "2026-11-14T16:15:00-03:00"
               },
@@ -2251,15 +2251,15 @@
               },
               {
                 "section": "future",
-                "course": "Algoritmos",
-                "start": "2026-11-22T10:00:00-03:00",
-                "end": "2026-11-22T11:00:00-03:00"
+                "course": "Banco de Dados",
+                "start": "2026-11-21T15:15:00-03:00",
+                "end": "2026-11-21T16:15:00-03:00"
               },
               {
                 "section": "future",
-                "course": "Banco de Dados",
-                "start": "2026-11-22T11:15:00-03:00",
-                "end": "2026-11-22T12:15:00-03:00"
+                "course": "Algoritmos",
+                "start": "2026-11-22T10:00:00-03:00",
+                "end": "2026-11-22T11:00:00-03:00"
               },
               {
                 "section": "future",
@@ -2323,7 +2323,7 @@
               },
               {
                 "section": "future",
-                "course": "Banco de Dados",
+                "course": "Algoritmos",
                 "start": "2026-12-09T19:00:00-03:00",
                 "end": "2026-12-09T20:00:00-03:00"
               },
@@ -2335,13 +2335,13 @@
               },
               {
                 "section": "future",
-                "course": "Banco de Dados",
+                "course": "Algoritmos",
                 "start": "2026-12-12T14:00:00-03:00",
                 "end": "2026-12-12T15:00:00-03:00"
               },
               {
                 "section": "future",
-                "course": "Algoritmos",
+                "course": "Banco de Dados",
                 "start": "2026-12-12T15:15:00-03:00",
                 "end": "2026-12-12T16:15:00-03:00"
               },
@@ -2372,12 +2372,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 0.828,
-            "maxLatencyMs": 5.114,
+            "medianLatencyMs": 3.504,
+            "maxLatencyMs": 5.156,
             "latenciesMs": [
-              5.114,
-              0.828,
-              0.699
+              5.156,
+              0.771,
+              3.504
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -2420,11 +2420,11 @@
             "targetFeasibility": "proved_shortfall",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 2.049,
-            "maxLatencyMs": 2.216,
-            "medianCpSatSearchMs": 0.601,
-            "medianHostRoundTripMs": 307.773,
-            "peakRssKb": 93440,
+            "medianLatencyMs": 1.968,
+            "maxLatencyMs": 2.172,
+            "medianCpSatSearchMs": 0.591,
+            "medianHostRoundTripMs": 322.657,
+            "peakRssKb": 93740,
             "objectiveValue": 9989465,
             "bestObjectiveBound": 9989465,
             "blockWeight": 10000000,
@@ -2435,8 +2435,8 @@
             "strictTargetProbe": {
               "status": "INFEASIBLE",
               "targetFeasibility": "proved_infeasible",
-              "wallMs": 1.576,
-              "cpSatSearchMs": 0.122
+              "wallMs": 1.498,
+              "cpSatSearchMs": 0.107
             },
             "hasPlan": true,
             "validHardConstraints": true,
@@ -2479,12 +2479,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 0.716,
-            "maxLatencyMs": 0.816,
+            "medianLatencyMs": 0.784,
+            "maxLatencyMs": 1.092,
             "latenciesMs": [
-              0.816,
-              0.716,
-              0.673
+              0.784,
+              0.783,
+              1.092
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -2527,11 +2527,11 @@
             "targetFeasibility": "proved_shortfall",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 1.994,
-            "maxLatencyMs": 2.188,
-            "medianCpSatSearchMs": 0.565,
-            "medianHostRoundTripMs": 300.357,
-            "peakRssKb": 93732,
+            "medianLatencyMs": 2.1,
+            "maxLatencyMs": 2.109,
+            "medianCpSatSearchMs": 0.589,
+            "medianHostRoundTripMs": 335.266,
+            "peakRssKb": 93716,
             "objectiveValue": 10439465,
             "bestObjectiveBound": 10439465,
             "blockWeight": 10000000,
@@ -2595,12 +2595,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 1.79,
-            "maxLatencyMs": 2.708,
+            "medianLatencyMs": 1.945,
+            "maxLatencyMs": 2.557,
             "latenciesMs": [
-              1.579,
-              1.79,
-              2.708
+              1.838,
+              2.557,
+              1.945
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -2642,11 +2642,11 @@
             "targetFeasibility": "proved_shortfall",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 1.907,
-            "maxLatencyMs": 2.163,
-            "medianCpSatSearchMs": 0.397,
-            "medianHostRoundTripMs": 303.641,
-            "peakRssKb": 93512,
+            "medianLatencyMs": 2.067,
+            "maxLatencyMs": 2.106,
+            "medianCpSatSearchMs": 0.408,
+            "medianHostRoundTripMs": 307.363,
+            "peakRssKb": 93584,
             "objectiveValue": 10049732,
             "bestObjectiveBound": 10049732,
             "blockWeight": 10000000,
@@ -2657,8 +2657,8 @@
             "strictTargetProbe": {
               "status": "INFEASIBLE",
               "targetFeasibility": "proved_infeasible",
-              "wallMs": 1.649,
-              "cpSatSearchMs": 0.127
+              "wallMs": 1.57,
+              "cpSatSearchMs": 0.11
             },
             "hasPlan": true,
             "validHardConstraints": true,
@@ -2700,12 +2700,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 1.95,
-            "maxLatencyMs": 2.488,
+            "medianLatencyMs": 1.616,
+            "maxLatencyMs": 2.841,
             "latenciesMs": [
-              1.95,
-              2.488,
-              1.808
+              2.841,
+              1.616,
+              1.531
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -2747,11 +2747,11 @@
             "targetFeasibility": "proved_shortfall",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 1.944,
-            "maxLatencyMs": 2.337,
-            "medianCpSatSearchMs": 0.423,
-            "medianHostRoundTripMs": 318.43,
-            "peakRssKb": 93492,
+            "medianLatencyMs": 1.875,
+            "maxLatencyMs": 2.015,
+            "medianCpSatSearchMs": 0.405,
+            "medianHostRoundTripMs": 332.341,
+            "peakRssKb": 93656,
             "objectiveValue": 10499732,
             "bestObjectiveBound": 10499732,
             "blockWeight": 10000000,
@@ -2814,12 +2814,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 0.113,
-            "maxLatencyMs": 0.282,
+            "medianLatencyMs": 0.142,
+            "maxLatencyMs": 0.736,
             "latenciesMs": [
-              0.282,
-              0.113,
-              0.113
+              0.736,
+              0.142,
+              0.106
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -2868,11 +2868,11 @@
             "targetFeasibility": "proved_shortfall",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 3.064,
-            "maxLatencyMs": 3.327,
-            "medianCpSatSearchMs": 1.673,
-            "medianHostRoundTripMs": 335.176,
-            "peakRssKb": 94616,
+            "medianLatencyMs": 2.853,
+            "maxLatencyMs": 2.944,
+            "medianCpSatSearchMs": 1.496,
+            "medianHostRoundTripMs": 300.997,
+            "peakRssKb": 94252,
             "objectiveValue": 20098997,
             "bestObjectiveBound": 20098997,
             "blockWeight": 10000000,
@@ -2883,8 +2883,8 @@
             "strictTargetProbe": {
               "status": "INFEASIBLE",
               "targetFeasibility": "proved_infeasible",
-              "wallMs": 1.713,
-              "cpSatSearchMs": 0.277
+              "wallMs": 1.636,
+              "cpSatSearchMs": 0.265
             },
             "hasPlan": true,
             "validHardConstraints": true,
@@ -2933,12 +2933,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 0.136,
-            "maxLatencyMs": 0.293,
+            "medianLatencyMs": 0.269,
+            "maxLatencyMs": 0.341,
             "latenciesMs": [
-              0.293,
-              0.136,
-              0.108
+              0.269,
+              0.132,
+              0.341
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -2987,11 +2987,11 @@
             "targetFeasibility": "proved_shortfall",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 2.802,
-            "maxLatencyMs": 3.082,
-            "medianCpSatSearchMs": 1.484,
-            "medianHostRoundTripMs": 302.694,
-            "peakRssKb": 94524,
+            "medianLatencyMs": 2.821,
+            "maxLatencyMs": 2.863,
+            "medianCpSatSearchMs": 1.475,
+            "medianHostRoundTripMs": 299.842,
+            "peakRssKb": 94428,
             "objectiveValue": 20998997,
             "bestObjectiveBound": 20998997,
             "blockWeight": 10000000,
@@ -3062,12 +3062,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 2.447,
-            "maxLatencyMs": 3.248,
+            "medianLatencyMs": 2.473,
+            "maxLatencyMs": 2.623,
             "latenciesMs": [
-              3.248,
-              1.946,
-              2.447
+              2.473,
+              2.455,
+              2.623
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -3163,11 +3163,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 15.167,
-            "maxLatencyMs": 16.314,
-            "medianCpSatSearchMs": 11.545,
-            "medianHostRoundTripMs": 316.929,
-            "peakRssKb": 95932,
+            "medianLatencyMs": 15.857,
+            "maxLatencyMs": 16.738,
+            "medianCpSatSearchMs": 12.019,
+            "medianHostRoundTripMs": 341.308,
+            "peakRssKb": 95744,
             "objectiveValue": 100054847,
             "bestObjectiveBound": 100054847,
             "blockWeight": 10000000,
@@ -3270,12 +3270,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 2.977,
-            "maxLatencyMs": 3.666,
+            "medianLatencyMs": 2.45,
+            "maxLatencyMs": 3.356,
             "latenciesMs": [
-              3.666,
-              2.977,
-              2.171
+              3.356,
+              2.117,
+              2.45
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -3371,11 +3371,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 15.496,
-            "maxLatencyMs": 16.225,
-            "medianCpSatSearchMs": 11.813,
-            "medianHostRoundTripMs": 324.81,
-            "peakRssKb": 95776,
+            "medianLatencyMs": 16.027,
+            "maxLatencyMs": 16.695,
+            "medianCpSatSearchMs": 12.072,
+            "medianHostRoundTripMs": 345.084,
+            "peakRssKb": 95912,
             "objectiveValue": 100954847,
             "bestObjectiveBound": 100954847,
             "blockWeight": 10000000,
@@ -3493,12 +3493,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 2.978,
-            "maxLatencyMs": 3.042,
+            "medianLatencyMs": 2.559,
+            "maxLatencyMs": 2.786,
             "latenciesMs": [
-              2.978,
-              3.042,
-              2.668
+              2.531,
+              2.559,
+              2.786
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -3594,11 +3594,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 15.673,
-            "maxLatencyMs": 15.973,
-            "medianCpSatSearchMs": 12.337,
-            "medianHostRoundTripMs": 345.957,
-            "peakRssKb": 95532,
+            "medianLatencyMs": 15.381,
+            "maxLatencyMs": 15.738,
+            "medianCpSatSearchMs": 12.372,
+            "medianHostRoundTripMs": 315.012,
+            "peakRssKb": 95896,
             "objectiveValue": 100051185,
             "bestObjectiveBound": 100051185,
             "blockWeight": 10000000,
@@ -3701,12 +3701,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 2.968,
-            "maxLatencyMs": 3.825,
+            "medianLatencyMs": 3.166,
+            "maxLatencyMs": 3.687,
             "latenciesMs": [
-              2.615,
-              2.968,
-              3.825
+              3.687,
+              2.32,
+              3.166
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -3802,11 +3802,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 16.182,
-            "maxLatencyMs": 17.38,
-            "medianCpSatSearchMs": 12.845,
-            "medianHostRoundTripMs": 330.647,
-            "peakRssKb": 95820,
+            "medianLatencyMs": 15.679,
+            "maxLatencyMs": 16.424,
+            "medianCpSatSearchMs": 12.56,
+            "medianHostRoundTripMs": 316.375,
+            "peakRssKb": 95632,
             "objectiveValue": 100951185,
             "bestObjectiveBound": 100951185,
             "blockWeight": 10000000,
@@ -3924,12 +3924,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 1.544,
-            "maxLatencyMs": 2.644,
+            "medianLatencyMs": 1.616,
+            "maxLatencyMs": 1.874,
             "latenciesMs": [
-              2.644,
-              1.544,
-              1.365
+              1.513,
+              1.616,
+              1.874
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -4012,10 +4012,10 @@
             "reason": null,
             "deterministic": true,
             "medianLatencyMs": 5.352,
-            "maxLatencyMs": 5.42,
+            "maxLatencyMs": 5.401,
             "medianCpSatSearchMs": 2.74,
-            "medianHostRoundTripMs": 348.042,
-            "peakRssKb": 95044,
+            "medianHostRoundTripMs": 313.164,
+            "peakRssKb": 95256,
             "objectiveValue": 80045330,
             "bestObjectiveBound": 80045330,
             "blockWeight": 10000000,
@@ -4104,12 +4104,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 1.386,
-            "maxLatencyMs": 1.421,
+            "medianLatencyMs": 1.435,
+            "maxLatencyMs": 2.039,
             "latenciesMs": [
-              1.359,
-              1.421,
-              1.386
+              1.251,
+              2.039,
+              1.435
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -4191,11 +4191,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 5.08,
-            "maxLatencyMs": 5.268,
-            "medianCpSatSearchMs": 2.645,
-            "medianHostRoundTripMs": 320.723,
-            "peakRssKb": 94932,
+            "medianLatencyMs": 6.647,
+            "maxLatencyMs": 6.8,
+            "medianCpSatSearchMs": 3.467,
+            "medianHostRoundTripMs": 327.906,
+            "peakRssKb": 95088,
             "objectiveValue": 80495330,
             "bestObjectiveBound": 80495330,
             "blockWeight": 10000000,
@@ -4299,12 +4299,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 1.651,
-            "maxLatencyMs": 1.706,
+            "medianLatencyMs": 2.019,
+            "maxLatencyMs": 2.225,
             "latenciesMs": [
-              1.706,
-              1.651,
-              1.607
+              2.225,
+              1.784,
+              2.019
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -4386,11 +4386,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 5.6,
-            "maxLatencyMs": 6.871,
-            "medianCpSatSearchMs": 3.31,
-            "medianHostRoundTripMs": 334.996,
-            "peakRssKb": 95288,
+            "medianLatencyMs": 5.537,
+            "maxLatencyMs": 7.083,
+            "medianCpSatSearchMs": 3.144,
+            "medianHostRoundTripMs": 308.491,
+            "peakRssKb": 95020,
             "objectiveValue": 80044037,
             "bestObjectiveBound": 80044037,
             "blockWeight": 10000000,
@@ -4479,12 +4479,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 1.7,
-            "maxLatencyMs": 2.891,
+            "medianLatencyMs": 1.53,
+            "maxLatencyMs": 1.556,
             "latenciesMs": [
-              1.7,
-              1.573,
-              2.891
+              1.556,
+              1.422,
+              1.53
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -4566,11 +4566,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 5.238,
-            "maxLatencyMs": 5.421,
-            "medianCpSatSearchMs": 3.047,
-            "medianHostRoundTripMs": 318.822,
-            "peakRssKb": 95024,
+            "medianLatencyMs": 5.241,
+            "maxLatencyMs": 5.747,
+            "medianCpSatSearchMs": 3.07,
+            "medianHostRoundTripMs": 305.937,
+            "peakRssKb": 94992,
             "objectiveValue": 80494037,
             "bestObjectiveBound": 80494037,
             "blockWeight": 10000000,
@@ -4673,12 +4673,12 @@
           "heuristic": {
             "status": "FEASIBLE",
             "deterministic": true,
-            "medianLatencyMs": 0.046,
-            "maxLatencyMs": 0.138,
+            "medianLatencyMs": 0.039,
+            "maxLatencyMs": 0.136,
             "latenciesMs": [
-              0.138,
-              0.046,
-              0.038
+              0.136,
+              0.039,
+              0.033
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -4719,11 +4719,11 @@
             "targetFeasibility": "target_met",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 2.507,
-            "maxLatencyMs": 2.793,
-            "medianCpSatSearchMs": 1.151,
-            "medianHostRoundTripMs": 310.915,
-            "peakRssKb": 94492,
+            "medianLatencyMs": 2.415,
+            "maxLatencyMs": 2.444,
+            "medianCpSatSearchMs": 1.164,
+            "medianHostRoundTripMs": 307.176,
+            "peakRssKb": 94524,
             "objectiveValue": 20248523,
             "bestObjectiveBound": 20248523,
             "blockWeight": 10000000,
@@ -4790,11 +4790,11 @@
             "status": "FEASIBLE",
             "deterministic": true,
             "medianLatencyMs": 0.035,
-            "maxLatencyMs": 0.093,
+            "maxLatencyMs": 0.095,
             "latenciesMs": [
-              0.093,
-              0.033,
-              0.035
+              0.095,
+              0.035,
+              0.03
             ],
             "hasPlan": true,
             "validHardConstraints": true,
@@ -4827,11 +4827,11 @@
             "targetFeasibility": "proved_shortfall",
             "reason": null,
             "deterministic": true,
-            "medianLatencyMs": 1.247,
-            "maxLatencyMs": 1.348,
-            "medianCpSatSearchMs": 0.303,
-            "medianHostRoundTripMs": 315.23,
-            "peakRssKb": 92652,
+            "medianLatencyMs": 1.268,
+            "maxLatencyMs": 1.839,
+            "medianCpSatSearchMs": 0.317,
+            "medianHostRoundTripMs": 346.685,
+            "peakRssKb": 93104,
             "objectiveValue": 0,
             "bestObjectiveBound": 0,
             "blockWeight": 10000000,
@@ -4842,8 +4842,8 @@
             "strictTargetProbe": {
               "status": "INFEASIBLE",
               "targetFeasibility": "proved_infeasible",
-              "wallMs": 1.015,
-              "cpSatSearchMs": 0.087
+              "wallMs": 1.005,
+              "cpSatSearchMs": 0.091
             },
             "hasPlan": true,
             "validHardConstraints": true,
