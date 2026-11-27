@@ -69,7 +69,7 @@ export function selectStaleEventId(fixture, manifest) {
 const TOPIC_PATTERNS = [
   {
     topic: 'workload',
-    pattern: /\b(hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b/i,
+    pattern: /\b(?:hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b|\b(?:how\s+many|quant[oa]s|number\s+of|n[uú]mero\s+de)\b.{0,24}\b(?:sessions?|sess[õo]es|blocks?|blocos?)\b|\b(?:sessions?|sess[õo]es|blocks?|blocos?)\b.{0,16}\b(?:per|each|a|por)\s+(?:week|day|semana|dia)\b/i,
   },
   {
     topic: 'availability',

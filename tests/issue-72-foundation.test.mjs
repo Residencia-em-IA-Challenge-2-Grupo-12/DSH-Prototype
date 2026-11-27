@@ -320,6 +320,14 @@ test('anti-leakage strips caseId from POST /sessions and read_planning_context, 
     matchPreparedAnswer({ id: 'q_avail', question: 'Which days and time windows work for your study sessions?' }, anaFixtureAnswers, new Set())?.id,
     'availability',
   );
+  assert.equal(
+    matchPreparedAnswer({ id: 'q_count_en', question: 'How many study sessions should I schedule each week?' }, anaFixtureAnswers, new Set())?.id,
+    'workload',
+  );
+  assert.equal(
+    matchPreparedAnswer({ id: 'q_count_pt', question: 'Quantas sessões de estudo por semana?' }, anaFixtureAnswers, new Set())?.id,
+    'workload',
+  );
 
   // Verify HTTP adapter never sends caseId on POST /sessions, read_planning_context strips caseId,
   // and 0-LLM trusted draftMode completes replay with zero draft prompts.
