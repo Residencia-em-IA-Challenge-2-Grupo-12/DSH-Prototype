@@ -62,7 +62,8 @@ function claimsIn(text, locale) {
 
 function anchorsClaims(message, evidence, bundle) {
   // A path named by the user or cited by the assistant is a label.
-  const paths = bundle.workspaceFiles.flatMap(path => [path, posix.basename(path)]);
+  const paths = [...new Set(bundle.workspaceFiles.flatMap(path => [path, posix.basename(path)]))]
+    .sort((left, right) => right.length - left.length);
   const normalized = paths.reduce((text, path) => text.replaceAll(new RegExp(
     `(?<![\\p{L}\\p{N}_])${RegExp.escape(path)}(?![\\p{L}\\p{N}_])`, 'giu'), 'file'), message);
   const claims = claimsIn(normalized, bundle.locale);

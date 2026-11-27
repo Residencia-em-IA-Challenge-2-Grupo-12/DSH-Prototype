@@ -153,30 +153,54 @@ async function executeHostSweep({ config, bundles, repoPath, project, decision }
     STUDY_EVAL_GATEWAY_BASE_URL: EVAL_EVALUATOR_ORIGIN + (frozen.route === 'gemini' ? '/v1/gemini' : '/v1'),
   };
   const compose = composeCommand({ project, env });
-  await compose(['up', '-d', '--build', 'evaluator', 'runner']);
-  const { startComposeCalendarpitRun } = await import('../src/foundation/calendarpit-runner.mjs');
-  const redirectUri = 'http://127.0.0.1:4175/callback';
-  const evaluatorConfig = { ...config, bundleDirs, repoPath: '/repo' };
-  const outputs = await runComposeSweep({
-    cells: prepared.cells, project, redirectUri,
-    startCalendar: options => startComposeCalendarpitRun({ ...options, runDocker: async (...args) => {
-      if (args[0] === 'compose') {
-        const commandIndex = args.indexOf('run', 7);
-        if (commandIndex < 0) throw new Error('Unexpected Compose lifecycle command');
-        return (await compose(args.slice(commandIndex))).trim();
-      }
-      return new Promise((done, reject) => execFile('docker', args, { cwd: ROOT, env, timeout: 30_000 },
-        (error, stdout) => error ? reject(new Error('Calendarpit lifecycle command failed')) : done(stdout.trim())));
-    } }),
-    async executeCell({ cell, index, run }) {
-      const envelope = { config: evaluatorConfig, decision, run, redirectUri, expectedPreload: prepared.hashes.get(cell.bundle.caseId) };
-      const output = await compose(['exec', '-T', 'evaluator', 'node', 'scripts/eval-v2.mjs', '--config', '-', '--cell', String(index)],
-        JSON.stringify(envelope));
-      return JSON.parse(output);
-    },
-  });
-  return { scan: prepared.scan, runs: outputs.map(item => item.run), blindedPackets: outputs.flatMap(item => item.blindedPackets),
-    evaluatorJoinMap: Object.assign({}, ...outputs.map(item => item.evaluatorJoinMap)) };
+  const runnerHealthScript = `
+    const deadline = Date.now() + 15_000;
+    while (Date.now() < deadline) {
+      try {
+        const response = await fetch(${JSON.stringify(EVAL_RUNNER_ORIGIN + '/health')}, { signal: AbortSignal.timeout(1000) });
+        if (response.ok) process.exit(0);
+      } catch {}
+      await new Promise(resolve => setTimeout(resolve, 250));
+    }
+    process.exit(1);
+  `;
+  let sweepError;
+  try {
+    await compose(['up', '-d', '--build', 'evaluator', 'runner']);
+    await compose(['exec', '-T', 'evaluator', 'node', '--input-type=module', '-e', runnerHealthScript]);
+    const { startComposeCalendarpitRun } = await import('../src/foundation/calendarpit-runner.mjs');
+    const redirectUri = 'http://127.0.0.1:4175/callback';
+    const evaluatorConfig = { ...config, bundleDirs, repoPath: '/repo' };
+    const outputs = await runComposeSweep({
+      cells: prepared.cells, project, redirectUri,
+      startCalendar: options => startComposeCalendarpitRun({ ...options, runDocker: async (...args) => {
+        if (args[0] === 'compose') {
+          const commandIndex = args.indexOf('run', 7);
+          if (commandIndex < 0) throw new Error('Unexpected Compose lifecycle command');
+          return (await compose(args.slice(commandIndex))).trim();
+        }
+        return new Promise((done, reject) => execFile('docker', args, { cwd: ROOT, env, timeout: 30_000 },
+          (error, stdout) => error ? reject(new Error('Calendarpit lifecycle command failed')) : done(stdout.trim())));
+      } }),
+      async executeCell({ cell, index, run }) {
+        const envelope = { config: evaluatorConfig, decision, run, redirectUri, expectedPreload: prepared.hashes.get(cell.bundle.caseId) };
+        const output = await compose(['exec', '-T', 'evaluator', 'node', 'scripts/eval-v2.mjs', '--config', '-', '--cell', String(index)],
+          JSON.stringify(envelope));
+        return JSON.parse(output);
+      },
+    });
+    return { scan: prepared.scan, runs: outputs.map(item => item.run), blindedPackets: outputs.flatMap(item => item.blindedPackets),
+      evaluatorJoinMap: Object.assign({}, ...outputs.map(item => item.evaluatorJoinMap)) };
+  } catch (error) {
+    sweepError = error;
+    throw error;
+  } finally {
+    try {
+      await compose(['down', '--remove-orphans']);
+    } catch (downError) {
+      if (!sweepError) throw downError;
+    }
+  }
 }
 
 async function executeCell({ config, cell, envelope, budget }) {

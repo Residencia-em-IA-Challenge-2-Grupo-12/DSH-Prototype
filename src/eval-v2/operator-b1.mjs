@@ -22,11 +22,149 @@ const topicTerms = {
     'preparação', 'progresso', 'já começou', 'rascunho'],
 };
 
+const topicPatterns = {
+  availability: [
+    /\b(?:availab\w*|disponib\w*|study\s+windows?|schedule\s+windows?|time\s+(?:windows?|slots?)|janelas?\s+de\s+estudo|dias?\s+livres?|hor[áa]rios?\s+livres?)\b/iu,
+    /\b(?:when\s+(?:can|could|are|do)\s+you\s+(?:study|free|available)|when\s+are\s+you\s+free|quando\s+(?:voc[êe]\s+)?(?:pode|consegue|tem\s+disponibilidade|prefere)\s+estudar)\b/iu,
+    /(?=.*(?:(?<!\b(?:per|a|each)\s+)(?<!\/)\bdays?\b|(?<!\b(?:por|cada)\s+)(?<!\/)\bdias?\b|\b(?:times|evenings?|mornings?|afternoons?|weekends?|weekdays?|windows?|slots?|hor[áa]rios?|turnos?|noites?|manh[ãa]s?|tardes?|fins?\s+de\s+semana|janelas?|segundas?|ter[çc]as?|quartas?|quintas?|sextas?|s[áa]bados?|domingos?|mondays?|tuesdays?|wednesdays?|thursdays?|fridays?|saturdays?|sundays?)\b))(?=.*\b(?:study|estudar|estudo|free|work|prefer\w*|can\s+you|pode|poderia|livres?|dispon[íi]ve\w*|melhor\w*|quando|which|what|quais)\b)/iu,
+    /\b\d{1,2}:\d{2}\s*(?:-|–|to|[àa]s?)\s*\d{1,2}:\d{2}\b/iu,
+  ],
+  workload: [
+    /\b(?:workload|carga(?:\s+hor[áa]ria)?|study\s+hours?|hours?\s*(?:\/|per|a|each)\s*week|weekly\s+(?:hours?|target|goal|limit|study)|horas?\s*(?:\/|por|na|a\s+cada)\s*semana|meta\s+semanal|horas?\s+semanais|how\s+many\s+hours?|how\s+much\s+time|quantas?\s+horas?|quanto\s+tempo)\b/iu,
+    /\b(?:daily\s+(?:cap|limit|max\w*|hours?|sessions?|blocks?)|max(?:imum)?\s+(?:daily|per\s+day|sessions?|blocks?|hours?)|sessions?\s*(?:\/|per)\s*day|blocks?\s*(?:\/|per)\s*day|limite\s+di[áa]rio|m[áa]ximo\s+(?:por\s+dia|di[áa]rio)|sess[õo]es?\s*(?:\/|por)\s*dia|blocos?\s*(?:\/|por)\s*dia)\b/iu,
+    /\b(?:breaks?|study\s+breaks?|pausas?|intervalos?)\b/iu,
+  ],
+  preparation: [
+    /\b(?:preparat\w*|prepar[aá]\w*|how\s+far\s+along|progress\w*|what\s+have\s+you\s+done|started|outline|draft|j[áa]\s+come[çc]\w*|rascunho|andamento)\b/iu,
+  ],
+};
+
+const canonicalTokenMap = {
+  zero: '0', one: '1', um: '1', uma: '1', two: '2', dois: '2', duas: '2', three: '3', tres: '3',
+  four: '4', quatro: '4', five: '5', cinco: '5', six: '6', seis: '6', seven: '7', sete: '7',
+  eight: '8', oito: '8', nine: '9', nove: '9', ten: '10', dez: '10', eleven: '11', onze: '11',
+  twelve: '12', doze: '12', fifteen: '15', quinze: '15', twenty: '20', vinte: '20',
+  thirty: '30', trinta: '30', forty: '40', quarenta: '40', sixty: '60', sessenta: '60',
+  hour: 'h', hours: 'h', hr: 'h', hrs: 'h', hora: 'h', horas: 'h', h: 'h',
+  minute: 'min', minutes: 'min', min: 'min', mins: 'min', minuto: 'min', minutos: 'min',
+  session: 'session', sessions: 'session', block: 'session', blocks: 'session',
+  sessao: 'session', sessoes: 'session', bloco: 'session', blocos: 'session',
+  break: 'break', breaks: 'break', pause: 'break', pausa: 'break', pausas: 'break',
+  intervalo: 'break', intervalos: 'break', rest: 'break', descanso: 'break',
+  monday: 'mon', mondays: 'mon', mon: 'mon', segunda: 'mon', segundas: 'mon', seg: 'mon',
+  tuesday: 'tue', tuesdays: 'tue', tue: 'tue', tues: 'tue', terca: 'tue', tercas: 'tue',
+  wednesday: 'wed', wednesdays: 'wed', wed: 'wed', quarta: 'wed', quartas: 'wed',
+  thursday: 'thu', thursdays: 'thu', thu: 'thu', thur: 'thu', thurs: 'thu', quinta: 'thu', quintas: 'thu',
+  friday: 'fri', fridays: 'fri', fri: 'fri', sexta: 'fri', sextas: 'fri',
+  saturday: 'sat', saturdays: 'sat', sabado: 'sat', sabados: 'sat', sab: 'sat',
+  sunday: 'sun', sundays: 'sun', domingo: 'sun', domingos: 'sun',
+};
+const optionalMarkerTokens = new Set(['study', 'estudo', 'estudos', 'de', 'per', 'a', 'the', 'feira', 'feiras']);
+const factStopwords = new Set([
+  'the', 'and', 'for', 'with', 'that', 'this', 'from', 'can', 'will', 'would', 'could', 'are', 'you',
+  'com', 'para', 'por', 'uma', 'uns', 'umas', 'dos', 'das', 'que', 'posso', 'pode', 'estudar',
+]);
+const unsureReply = /^\s*(?:i(?:'m| am)?\s+(?:unsure|not sure|don['’]t know)|unsure|not sure|n[ãa]o\s+(?:sei|tenho\s+certeza))[\s.!]*$/iu;
+
+function stripDiacritics(value) {
+  return String(value ?? '').normalize('NFKC').normalize('NFD').replace(/\p{M}+/gu, '').toLowerCase();
+}
+
+function canonicalTokens(value) {
+  const normalized = stripDiacritics(value)
+    .replace(/(?<!\b(?:das|as|a|ate)\s+)(\d+)\s*[-–]?\s*(?:hours?|hrs?|horas?|h)\b(?!\s*(?:as|a|ate|[-–])\s*\d)/gu, '$1 h')
+    .replace(/(\d+)\s*[-–]?\s*(?:minutes?|mins?|min|minutos?|minuto)\b/gu, '$1 min')
+    .replace(/(\d+)\s*[-–]?\s*(?:sessions?|blocks?|sessoes|sessao|blocos?|bloco)\b/gu, '$1 session');
+  return normalized.split(/[^\p{L}\p{N}]+/u).filter(Boolean).map(token => canonicalTokenMap[token] ?? token);
+}
+
+function extractNormalizedTimes(text) {
+  const times = new Set();
+  const add = (hour, minutes = '00', meridiem = null) => {
+    let h = Number(hour);
+    if (meridiem) {
+      if (h < 1 || h > 12) return;
+      h = (h % 12) + (meridiem === 'p' ? 12 : 0);
+    }
+    if (h >= 0 && h <= 23) times.add(`${String(h).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`);
+  };
+  const plain = stripDiacritics(text);
+  for (const [, hour, minutes, meridiem] of plain.matchAll(/\b([01]?\d|2[0-3]):([0-5]\d)(?:\s*([ap])\.?m\.?)?\b/gu)) {
+    add(hour, minutes, meridiem);
+  }
+  for (const [, hour, meridiem] of plain.matchAll(/\b(1[0-2]|0?[1-9])\s*([ap])\.?m\.?\b/gu)) {
+    add(hour, '00', meridiem);
+  }
+  for (const [, hour, minutes] of plain.matchAll(/\b([01]?\d|2[0-3])h([0-5]\d)\b/gu)) {
+    add(hour, minutes);
+  }
+  for (const [, hour] of plain.matchAll(/\b([01]?\d|2[0-3])hs?\b/gu)) {
+    add(hour, '00');
+  }
+  for (const [, hour] of plain.matchAll(/\b(?:das|de|from)\s+([01]?\d|2[0-3])\s+(?:as|a|to|[-–])\s*(?:[01]?\d|2[0-3])(?:[:h][0-5]\d|hs?\b)/gu)) {
+    add(hour, '00');
+  }
+  return times;
+}
+
+function windowContainsAll(tokens, required, maxWindow) {
+  if (!required.length) return false;
+  if (required.length === 1) return tokens.includes(required[0]);
+  const needed = new Map();
+  for (const token of required) needed.set(token, (needed.get(token) ?? 0) + 1);
+  for (let start = 0; start < tokens.length; start++) {
+    if (!needed.has(tokens[start])) continue;
+    const end = Math.min(tokens.length, start + maxWindow);
+    const seen = new Map();
+    let matched = 0;
+    for (let index = start; index < end; index++) {
+      const token = tokens[index];
+      const target = needed.get(token);
+      if (!target) continue;
+      const next = (seen.get(token) ?? 0) + 1;
+      seen.set(token, next);
+      if (next <= target) matched++;
+      if (matched === required.length) return true;
+    }
+  }
+  return false;
+}
+
+function matchesMarker(reply, marker) {
+  if (containsWords(reply, marker)) return true;
+  const timeMatch = /^\s*([01]?\d|2[0-3]):([0-5]\d)\s*$/.exec(marker);
+  if (timeMatch) {
+    return extractNormalizedTimes(reply).has(`${String(Number(timeMatch[1])).padStart(2, '0')}:${timeMatch[2]}`);
+  }
+  const markerTokens = canonicalTokens(marker);
+  const filtered = markerTokens.filter(token => !optionalMarkerTokens.has(token));
+  const core = filtered.length ? filtered : markerTokens;
+  if (!core.length) return false;
+  const replyTokens = canonicalTokens(reply);
+  return windowContainsAll(replyTokens, core, core.length + (core.length === 2 ? 2 : 3));
+}
+
+function canonicalFactOverlap(reply, fact) {
+  const factContent = [...new Set(canonicalTokens(fact).filter(token => token.length >= 3 && !factStopwords.has(token)))];
+  if (!factContent.length) return false;
+  const replySet = new Set(canonicalTokens(reply));
+  const matched = factContent.filter(token => replySet.has(token)).length;
+  return matched >= Math.max(1, Math.ceil(factContent.length / 2));
+}
+
 export function scopeOperatorFacts(bundle, question) {
   const entries = Object.entries(bundle.operatorFacts.disclosable).sort(([a], [b]) => a.localeCompare(b, 'en'));
-  const visibleQuestions = question.questions.map(item => item.question);
-  const scoped = entries.filter(([topic]) => [topic.replace(/[-_]/g, ' '), ...(topicTerms[topic] ?? []),
-    ...(bundle.operatorFacts.topicKeywords?.[topic] ?? [])].some(term => visibleQuestions.some(value => containsWords(value, term))));
+  const visibleItems = question.questions.map(item => [
+    item.question,
+    ...(item.options ?? []).flatMap(option => [option.label, option.description]),
+  ].filter(Boolean).join(' '));
+  const scoped = entries.filter(([topic]) => {
+    const phrases = [topic.replace(/[-_]/g, ' '), ...(topicTerms[topic] ?? []),
+      ...(bundle.operatorFacts.topicKeywords?.[topic] ?? [])];
+    const patterns = topicPatterns[topic] ?? [];
+    return phrases.some(term => visibleItems.some(value => containsWords(value, term))) ||
+      patterns.some(pattern => visibleItems.some(value => pattern.test(value)));
+  });
   return Object.fromEntries(scoped);
 }
 
@@ -38,10 +176,14 @@ function substantialOverlap(reply, fact) {
     containsWords(reply, tokens.slice(index, index + n).join(' ')));
 }
 
-export function disclosedOperatorTopics(bundle, question, reply) {
+export function disclosedOperatorTopics(bundle, question, reply, priorByTopic = null) {
   return Object.entries(scopeOperatorFacts(bundle, question)).filter(([topic, fact]) => {
+    const prior = priorByTopic?.get(topic);
+    const combined = prior?.length ? [...prior, reply].join('\n') : reply;
     const markers = bundle.operatorFacts.factMarkers?.[topic];
-    return markers ? markers.every(marker => containsWords(reply, marker)) : containsWords(reply, fact);
+    if (markers) return markers.every(marker => matchesMarker(combined, marker));
+    return !unsureReply.test(combined) &&
+      (containsWords(combined, fact) || substantialOverlap(combined, fact) || canonicalFactOverlap(combined, fact));
   }).map(([topic]) => topic);
 }
 

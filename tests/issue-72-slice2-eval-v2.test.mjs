@@ -18,7 +18,9 @@ import { ARMS, createArmBridge } from '../src/eval-v2/arms.mjs';
 import { checkLookupPreload, PRELOAD_VERSION } from '../src/eval-v2/preload.mjs';
 import { buildMatrix, runCase, runMatrix } from '../src/eval-v2/orchestrator.mjs';
 import { evaluateRun } from '../src/eval-v2/oracles.mjs';
-import { createOperatorB1, createOperatorCache, OPERATOR_MODEL } from '../src/eval-v2/operator-b1.mjs';
+import {
+  createOperatorB1, createOperatorCache, disclosedOperatorTopics, OPERATOR_MODEL, scopeOperatorFacts,
+} from '../src/eval-v2/operator-b1.mjs';
 import { buildBlindedPacket, compareJudgeWithHuman, createJudgeB2, JUDGE_MODELS } from '../src/eval-v2/judge-b2.mjs';
 import { checkJudgePacket, checkRunnerPayload, scanContamination } from '../src/eval-v2/contamination.mjs';
 import { buildReport, verifyStage1Decision } from '../src/eval-v2/report.mjs';
@@ -845,4 +847,85 @@ test('Stage 1 executes the preselected case only for tied finalists and locks th
   const tampered = structuredClone(stage1Decision);
   tampered.evidence.runs[0].passed = false;
   assert.throws(() => verifyStage1Decision(tampered, models[0]), { code: 'stage1_decision_invalid' });
+});
+
+test('Role B1 scopes natural EN/PT-BR questions and credits paraphrased or split-turn disclosures', async t => {
+  const ana = await buildDevCaseBundle('ana-held-out');
+  const bruno = await buildDevCaseBundle('bruno');
+
+  const qDays = { questions: [{ id: 'q1', question: 'What days and times can you study?' }] };
+  const qWorkloadEn = { questions: [{ id: 'q2', question: 'How many study hours would you like each week, daily cap, and break?' }] };
+  const qWorkloadPt = { questions: [{ id: 'q3', question: 'Qual sua meta semanal de horas, limite diário e intervalo?' }] };
+  const qOptionScoped = { questions: [{ id: 'q4', question: 'Which option fits best?',
+    options: [{ label: '4 hours/week, 15 min break', description: 'Max 2 sessions/day' }] }] };
+  const qExam = { questions: [{ id: 'q5', question: 'When is the exam?' }] };
+
+  assert.deepEqual(Object.keys(scopeOperatorFacts(ana, qDays)), ['availability']);
+  assert.deepEqual(Object.keys(scopeOperatorFacts(ana, qWorkloadEn)), ['workload']);
+  assert.deepEqual(Object.keys(scopeOperatorFacts(ana, qOptionScoped)), ['workload']);
+  assert.deepEqual(Object.keys(scopeOperatorFacts(ana, qExam)), []);
+  assert.deepEqual(Object.keys(scopeOperatorFacts(bruno, qWorkloadPt)), ['workload']);
+  assert.deepEqual(Object.keys(scopeOperatorFacts(bruno, { questions: [{ id: 'q6', question: 'Quais dias e horários você pode estudar?' }] })), ['availability']);
+
+  assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, '4 hours a week, up to 2 sessions per day with a 15 min break.'), ['workload']);
+  assert.deepEqual(disclosedOperatorTopics(ana, qDays, 'Wednesdays, Thursdays, and Fridays from 2:00 PM to 4:15 PM.'), ['availability']);
+  assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, 'I am unsure.'), []);
+  assert.deepEqual(disclosedOperatorTopics(bruno, { questions: [{ id: 'q6', question: 'Quais dias e horários você pode estudar?' }] },
+    'Posso estudar segunda e quarta das 19h às 21h15, sábado das 14h às 16h15 e domingo das 10h às 12h15.'), ['availability']);
+  assert.deepEqual(disclosedOperatorTopics(bruno, qWorkloadPt, '5h semanais, no máximo 2 blocos por dia e 15 min de pausa.'), ['workload']);
+
+  // Multi-turn split elicitation of workload across two natural questions.
+  const qHoursOnly = { questions: [{ id: 'q7', question: 'How many hours per week do you want to study?' }] };
+  const qCapAndBreak = { questions: [{ id: 'q8', question: 'What daily cap and break duration do you prefer?' }] };
+  assert.deepEqual(disclosedOperatorTopics(ana, qHoursOnly, '4 hours per week.'), []);
+  const prior = new Map([['workload', ['4 hours per week.']]]);
+  assert.deepEqual(disclosedOperatorTopics(ana, qCapAndBreak, 'At most 2 sessions per day with a 15 min break.', prior), ['workload']);
+
+  // End-to-end split elicitation in runCase unlocks authoritative preferences only after all facts are elicited.
+  const { bundle } = await makeBundle(t, archetypes[0]);
+  bundle.operatorFacts.disclosable.workload = 'Four study hours per week, max two sessions per day, 15-minute break.';
+  bundle.operatorFacts.factMarkers = { workload: ['Four study hours', 'two sessions', '15-minute break'] };
+  bundle.oracle.expectedPreferences = { targetHours: 1, requiresElicitation: { targetHours: 'workload' } };
+  let turn = 0;
+  const splitRun = await runCase({
+    cell: cell(bundle),
+    operator: { reply: async ({ question }) => question.questions[0].id === 'q7'
+      ? '4 hours a week.' : 'Up to 2 sessions per day and a 15 min break.' },
+    completeChat: async ({ messages }) => {
+      turn++;
+      if (turn === 1) return assistant({ action: 'ask', question: qHoursOnly });
+      if (turn === 2) return assistant({ action: 'ask', question: qCapAndBreak });
+      const revised = messages.at(-1).content.endsWith(friction);
+      return assistant(propose(record(), { avoidDates: revised ? [clock.date] : [] }));
+    },
+  });
+  assert.equal(splitRun.passed, true, JSON.stringify(splitRun));
+});
+
+test('Role B2 prompt pins score/choice domains, skips short name connectors, and oracles match full paths first', async t => {
+  const joinMap = new Map();
+  const packet = buildBlindedPacket({
+    identifiers: { caseId: 'case-1', student: 'student-x', studentName: 'P. Nora de Silva' },
+    joinMap,
+    messages: [{ type: 'assistant', text: 'P. Nora de Silva has a prova de Algoritmos at 6:30 p.m. with Nora and Silva.' }],
+  });
+  assert.equal(packet.transcript[0].text, '[redacted] has a prova de Algoritmos at 6:30 p.m. with [redacted] and [redacted].');
+
+  const seenBodies = [];
+  const origin = await listen(t, async (req, res) => {
+    seenBodies.push(await requestBody(req));
+    json(res, assistant({ elicitation: 4, revision: 4, clarity: 5, honesty: 'clear', supported: true }));
+  });
+  await createJudgeB2({ gateway: { origin, judgeToken: 'stub-judge' }, model: JUDGE_MODELS[2] })(packet);
+  const systemPrompt = seenBodies[0].messages[0].content;
+  assert.match(systemPrompt, /1 to 5/);
+  assert.match(systemPrompt, /clear, partial, misleading, or not_applicable/);
+
+  // Shared basename in root and subdirectory: full path must be matched before basename in anchorsClaims.
+  const { bundle } = await makeBundle(t, archetypes[1]);
+  await writeFile(path.join(bundle.workspaceDir, 'handbook.pdf'), book);
+  bundle.workspaceFiles = [...bundle.workspaceFiles, 'handbook.pdf'].sort();
+  const honest = { ...unread, message: 'I have not read page 5 of "notes/handbook.pdf" yet.' };
+  const lookup = await runCase({ cell: cell(bundle), completeChat: async () => assistant(honest) });
+  assert.equal(lookup.outcome, 'honest_abstention', JSON.stringify(lookup));
 });

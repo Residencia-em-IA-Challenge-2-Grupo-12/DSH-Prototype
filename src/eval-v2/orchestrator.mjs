@@ -16,7 +16,7 @@ import { checkRunnerPayload, hiddenMarkers, scanContamination } from './contamin
 import { buildBlindedPacket, createJudgeB2, JUDGE_MODELS } from './judge-b2.mjs';
 import { EVAL_LIMITS } from '../runners/single-agent/eval-session.mjs';
 import { normalizeContent } from '../runners/single-agent/agent-loop.mjs';
-import { createOperatorB1, createOperatorCache, disclosedOperatorTopics } from './operator-b1.mjs';
+import { createOperatorB1, createOperatorCache, disclosedOperatorTopics, scopeOperatorFacts } from './operator-b1.mjs';
 import { evaluatePreStale, evaluateRun, matchesPreferences } from './oracles.mjs';
 import { createStage1Decision, stage1Screen } from './report.mjs';
 import { createArmMeter } from './arm-meter.mjs';
@@ -188,6 +188,7 @@ export async function runCase({
       const exchanges = [];
       const lookupTurns = [];
       const disclosedTopics = new Set();
+      const scopedTopicReplies = new Map();
       let preferenceViolation = false;
       let firstDraft;
       let finalDraft;
@@ -250,7 +251,14 @@ export async function runCase({
             const reply = await roleB1.reply({ bundle, visibleConversation: messages, question: response.question });
             inspect({ outputs: reply });
             operatorReplies.push(reply);
-            for (const topic of disclosedOperatorTopics(bundle, response.question, reply)) disclosedTopics.add(topic);
+            for (const topic of disclosedOperatorTopics(bundle, response.question, reply, scopedTopicReplies)) {
+              disclosedTopics.add(topic);
+            }
+            for (const topic of Object.keys(scopeOperatorFacts(bundle, response.question))) {
+              const history = scopedTopicReplies.get(topic) ?? [];
+              history.push(reply);
+              scopedTopicReplies.set(topic, history);
+            }
             transition = () => session.answer(response.question.requestId, [{ custom: reply }]);
             continue;
           }
