@@ -159,7 +159,6 @@ export function createHttpRunnerAdapter({ url, engine = {}, timeoutMs, draftRequ
         const started = sessionStartSchema.parse(await request('POST', '/sessions', {
           version: 1,
           runId,
-          caseId: manifest.id,
           student: manifest.student,
           locale: manifest.locale,
           clock: manifest.clock,

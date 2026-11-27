@@ -73,7 +73,7 @@ test('the agent receives actual conflicts before asking about adjacent and overl
   assert.deepEqual(result.options[2].windows[0].conflicts.map(x=>x.summary),['Trabalho']);
 });
 
-test('Ana has a feasible coverage alternative at the cost of one Machine Learning block',async t=>{
+test('Ana rotates evenly across Wed+Fri without parity bias, and course-coverage still provides an alternative under <=14d urgency',async t=>{
   const {call,calendar,baseline}=await exercise('ana','ana-conflict',ana);
   const current=await call('draft_study_plan',{weeks:1});
   const alternative=await call('draft_study_plan',{weeks:1,allocation:'course-coverage'});
@@ -82,12 +82,22 @@ test('Ana has a feasible coverage alternative at the cost of one Machine Learnin
   assert.deepEqual(alternative.near.map(e=>e.start),current.near.map(e=>e.start));
   assert.deepEqual(alternative.near.map(e=>e.end),current.near.map(e=>e.end));
   const before=courseMinutes(current.sources,current.near),after=courseMinutes(alternative.sources,alternative.near);
-  assert.deepEqual(before,[['Machine Learning',240],['Statistics',0]]);
-  assert.deepEqual(after,[['Machine Learning',180],['Statistics',60]]);
+  assert.deepEqual(before,[['Machine Learning',120],['Statistics',120]]);
+  assert.deepEqual(after,[['Machine Learning',120],['Statistics',120]]);
   assert.equal(alternative.allocation,'course-coverage');
   await assert.rejects(()=>call('draft_study_plan',{weeks:1,allocation:'course-coverage',focusCourse:'Statistics'}),/single-course focus/);
   await assert.rejects(()=>applyApproved(calendar,'ana',current.id,'near'),/not pending/);
   assert.deepEqual(await calendar.events(),baseline);
+
+  // Under <=14-day urgency with 2 blocks, default concentrates on the earliest deadline while course-coverage covers both.
+  const urgentProfile={student:'ana',timezone:'America/Sao_Paulo',targetHours:2,maxDailyStudyHours:2,studyBreakMinutes:15,
+    availabilityThrough:'2026-11-08',studyWindows:[{weekday:3,start:'14:00',end:'16:15'}],
+    courses:[{name:'Machine Learning',deadline:'2026-11-10T12:00:00-03:00',source:'urgent.md'},
+      {name:'Statistics',deadline:'2026-12-14T09:00:00-03:00',source:'later.md'}]};
+  const urgentDefault=makePlan(urgentProfile,[],{weeks:1});
+  const urgentCoverage=makePlan(urgentProfile,[],{weeks:1,allocation:'course-coverage'});
+  assert.deepEqual(courseMinutes(urgentDefault.sources,urgentDefault.near),[['Machine Learning',120],['Statistics',0]]);
+  assert.deepEqual(courseMinutes(urgentCoverage.sources,urgentCoverage.near),[['Machine Learning',60],['Statistics',60]]);
   t.diagnostic(JSON.stringify({before,after,timeWindowsIdentical:true,calendarWrites:0}));
 });
 

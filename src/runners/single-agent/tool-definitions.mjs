@@ -46,6 +46,17 @@ const BRIDGE_TOOL_SCHEMAS = {
       allocation: z.enum(['course-coverage']).optional(),
     }),
   },
+  preview_plan: {
+    description: 'Run a side-effect-free Foundation schedule preview using either the confirmed planning context or an explicit candidate planning context record. Returns horizon, weekly capacity, plan blocks, and typed findings without mutating state or calendar.',
+    schema: z.strictObject({
+      weeks: z.number().int().min(1).max(16).optional(),
+      avoidDates: z.array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)).max(112).optional(),
+      preferredPeriod: z.enum(['morning', 'afternoon', 'evening']).optional(),
+      focusCourse: z.string().max(200).optional(),
+      allocation: z.enum(['course-coverage']).optional(),
+      record: planningContextSchema.optional(),
+    }),
+  },
   preview_study_options: {
     description: 'Check candidate study windows against existing calendar commitments before offering concrete time options.',
     schema: z.strictObject({ options: availabilityOptions }),

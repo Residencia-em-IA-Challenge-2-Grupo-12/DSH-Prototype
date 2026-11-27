@@ -1,4 +1,4 @@
-import {assertStudent,applyApproved,applyAnnotation,snapshotForArchive,withSyntheticRuntime,loadState,getRecoveryClaim,getStudent,readPlanningContext,confirmPlanningContext} from '../core.mjs';
+import {assertStudent,FIXED_TODAY,draft,applyApproved,applyAnnotation,snapshotForArchive,withSyntheticRuntime,loadState,getRecoveryClaim,getStudent,readPlanningContext,confirmPlanningContext} from '../core.mjs';
 import {createStudyBoundary} from './study-boundary.mjs';
 import {createAvailabilityPreview} from './availability-preview.mjs';
 import {createWriteGate} from './write-gate.mjs';
@@ -11,6 +11,7 @@ export function createTrustedStudyService({student,calendar,runtimeDirectory,tra
   if(trace!==undefined&&typeof trace?.append!=='function')throw new Error('Invalid synthetic evidence trace');
   if(runtimeDirectory!==undefined)withSyntheticRuntime(runtimeDirectory,()=>{});
   const inRuntime=operation=>runtimeDirectory===undefined?operation():withSyntheticRuntime(runtimeDirectory,operation);
+  const simulationToday=clock?.date||FIXED_TODAY;
   const availabilityPreview=browserStudy?createAvailabilityPreview(calendar,student):null;
   const boundary=createStudyBoundary({student,calendar,coldStart,availabilityPreview,clock}),gate=createWriteGate(),agentCalls=new Set();
   let retiring=false,drained=false;
@@ -34,6 +35,10 @@ export function createTrustedStudyService({student,calendar,runtimeDirectory,tra
       if(trace)await trace.append('decision',{operation:'confirm_planning_context',revisionId:id,operatorReplies:replies});
       return inRuntime(()=>confirmPlanningContext(student,id,replies));
     })}:{}),
+    draftPlan:(options={})=>gate.run(async()=>{
+      if(trace)await trace.append('decision',{operation:'draft_plan',options});
+      return inRuntime(()=>draft(calendar,student,options,{requireStaged:true,today:simulationToday}));
+    }),
     status:()=>inRuntime(async()=>{
       const [state,recovery,courses,observation]=await Promise.all([
         loadState(student),getRecoveryClaim(),coldStart?readPlanningContext(student):getStudent(student,{requireStaged:true}),

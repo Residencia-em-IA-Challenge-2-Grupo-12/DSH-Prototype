@@ -41,7 +41,7 @@ export function diffSnapshots(before, after) {
   return result;
 }
 
-export function makePlan(
+export function planScheduleDetails(
   student,
   events,
   {
@@ -54,6 +54,7 @@ export function makePlan(
     allocation,
     today: clockDate = FIXED_TODAY,
     timezoneOffset = DEFAULT_TIMEZONE_OFFSET,
+    includeDiagnostics = true,
   } = {},
 ) {
   validateClock(clockDate, timezoneOffset);
@@ -109,8 +110,20 @@ export function makePlan(
   const scopedEnd = student.availabilityThrough
     ? Date.parse(`${student.availabilityThrough}T00:00:00${timezoneOffset}`) + 86_400_000
     : Infinity;
-  const count = Math.min(requested, maxWeeks, 16, Math.ceil((scopedEnd - today) / (7 * 86_400_000)));
+  const scopedWeeks = Number.isFinite(scopedEnd) ? Math.ceil((scopedEnd - today) / (7 * 86_400_000)) : Infinity;
+  const count = Math.min(requested, maxWeeks, 16, scopedWeeks);
   const horizonEnd = Math.min(today + count * 7 * 86_400_000, scopedEnd);
+  const weekSpanThrough = addDaysIso(clockDate, count * 7 - 1);
+  const effectiveThrough =
+    student.availabilityThrough && student.availabilityThrough < weekSpanThrough
+      ? student.availabilityThrough
+      : weekSpanThrough;
+  let clampedBy = 'requested';
+  if (count < requested) {
+    clampedBy = scopedWeeks <= maxWeeks && scopedWeeks < requested ? 'availability_through' : 'earliest_deadline';
+  } else if (student.availabilityThrough && student.availabilityThrough < weekSpanThrough) {
+    clampedBy = 'availability_through';
+  }
 
   const replaceable = events.filter(
     event =>
@@ -124,14 +137,79 @@ export function makePlan(
   const busy = events.filter(event => isBusyCalendarEvent(event) && !replaceIds.has(event.id)).map(clone);
   const blocks = [];
   const outlook = [];
-  const coveredCourses = new Set();
+  const capacityPerWeek = [];
+  let coveredCourses = new Set();
+  let courseCounts = new Map();
+  const sorted = [...student.courses].sort(
+    (a, b) => Date.parse(a.deadline) - Date.parse(b.deadline) || a.name.localeCompare(b.name, 'en'),
+  );
 
-  for (let w = 0; w < count; w++) {
+  function placeWeekBlocks({
+    w,
+    weekCandidates,
+    weekTarget,
+    usePreferredPeriod,
+    priorCoveredCourses,
+    priorCourseCounts,
+  }) {
     let placed = 0;
     const daily = new Map();
     const weekBlocks = [];
+    const covered = new Set(priorCoveredCourses);
+    const counts = new Map(priorCourseCounts);
+    const candidates = [...weekCandidates];
+    while (placed < weekTarget && candidates.length) {
+      candidates.sort(
+        (a, b) =>
+          (daily.get(a.dayKey) || 0) - (daily.get(b.dayKey) || 0) ||
+          (usePreferredPeriod ? Number(a.period !== usePreferredPeriod) - Number(b.period !== usePreferredPeriod) : 0) ||
+          a.dt - b.dt,
+      );
+      const candidate = candidates.shift();
+      if ((daily.get(candidate.dayKey) || 0) >= maxDaily || busy.some(event => overlaps(event, candidate))) continue;
+      const cStart = millis(candidate, 'start');
+      const cEnd = millis(candidate, 'end');
+      const gap = breakMinutes * 60_000;
+      if (weekBlocks.some(event => cStart < millis(event, 'end') + gap && millis(event, 'start') < cEnd + gap)) continue;
+      // Choose among courses that can actually use this block. An expired
+      // course must not consume a candidate that another course can use.
+      const eligible = sorted.filter(course => cEnd <= Date.parse(course.deadline));
+      if (!eligible.length) continue;
+      const daysToDeadline = (Date.parse(eligible[0].deadline) - cStart) / 86_400_000;
+      const focused = focus && eligible.includes(focus) ? focus : null;
+      const other = focused ? eligible.find(course => course !== focused) : null;
+      const uncovered = allocation === 'course-coverage' ? eligible.find(course => !covered.has(course.name)) : undefined;
+      const leastPlaced = eligible.reduce((best, item) =>
+        (counts.get(item.name) || 0) < (counts.get(best.name) || 0) ? item : best,
+      );
+      const normalCourse = focused
+        ? placed % 3 === 2 && other
+          ? other
+          : focused
+        : daysToDeadline <= 14 && placed % 3 !== 2
+          ? eligible[0]
+          : leastPlaced;
+      const course = uncovered || normalCourse;
+      covered.add(course.name);
+      counts.set(course.name, (counts.get(course.name) || 0) + 1);
+      const block = {
+        id: randomUUID().replaceAll('-', ''),
+        summary: `Study: ${course.name}`,
+        start: candidate.start,
+        end: candidate.end,
+        status: w === 0 ? 'confirmed' : 'tentative',
+        description: `Study planning demo. ${w === 0 ? 'Near-term study block.' : 'Tentative; review at the next checkpoint.'} Source: ${course.source}`,
+        extendedProperties: { private: { studyDemo: 'true', student: student.student, course: course.name } },
+      };
+      weekBlocks.push(block);
+      daily.set(candidate.dayKey, (daily.get(candidate.dayKey) || 0) + 1);
+      placed++;
+    }
+    return { placed, weekBlocks, covered, counts };
+  }
+
+  for (let w = 0; w < count; w++) {
     const candidates = [];
-    const sorted = [...student.courses].sort((a, b) => Date.parse(a.deadline) - Date.parse(b.deadline));
     for (let d = 0; d < 7; d++) {
       const day = new Date(start.getTime() + (w * 7 + d) * 86_400_000);
       const dayKey = day.toISOString().slice(0, 10);
@@ -152,55 +230,51 @@ export function makePlan(
         }
       }
     }
-    while (placed < target && candidates.length) {
-      candidates.sort(
-        (a, b) =>
-          (daily.get(a.dayKey) || 0) - (daily.get(b.dayKey) || 0) ||
-          (preferredPeriod ? Number(a.period !== preferredPeriod) - Number(b.period !== preferredPeriod) : 0) ||
-          a.dt - b.dt,
-      );
-      const candidate = candidates.shift();
-      if ((daily.get(candidate.dayKey) || 0) >= maxDaily || busy.some(event => overlaps(event, candidate))) continue;
-      const cStart = millis(candidate, 'start');
-      const cEnd = millis(candidate, 'end');
-      const gap = breakMinutes * 60_000;
-      if (weekBlocks.some(event => cStart < millis(event, 'end') + gap && millis(event, 'start') < cEnd + gap)) continue;
-      // Choose among courses that can actually use this block. An expired
-      // course must not consume a candidate that another course can use.
-      const eligible = sorted.filter(course => cEnd <= Date.parse(course.deadline));
-      if (!eligible.length) continue;
-      const daysToDeadline = (Date.parse(eligible[0].deadline) - cStart) / 86_400_000;
-      const focused = focus && eligible.includes(focus) ? focus : null;
-      const other = focused ? eligible.find(course => course !== focused) : null;
-      const uncovered = allocation === 'course-coverage' ? eligible.find(course => !coveredCourses.has(course.name)) : undefined;
-      const normalCourse = focused
-        ? placed % 3 === 2 && other
-          ? other
-          : focused
-        : daysToDeadline <= 14 && placed % 3 !== 2
-          ? eligible[0]
-          : eligible[(w + candidate.d) % eligible.length];
-      const course = uncovered || normalCourse;
-      coveredCourses.add(course.name);
-      const block = {
-        id: randomUUID().replaceAll('-', ''),
-        summary: `Study: ${course.name}`,
-        start: candidate.start,
-        end: candidate.end,
-        status: w === 0 ? 'confirmed' : 'tentative',
-        description: `Study planning demo. ${w === 0 ? 'Near-term study block.' : 'Tentative; review at the next checkpoint.'} Source: ${course.source}`,
-        extendedProperties: { private: { studyDemo: 'true', student: student.student, course: course.name } },
-      };
-      blocks.push(block);
-      weekBlocks.push(block);
-      busy.push(block);
-      daily.set(candidate.dayKey, (daily.get(candidate.dayKey) || 0) + 1);
-      placed++;
+    const baseline = placeWeekBlocks({
+      w,
+      weekCandidates: candidates,
+      weekTarget: target,
+      usePreferredPeriod: undefined,
+      priorCoveredCourses: coveredCourses,
+      priorCourseCounts: courseCounts,
+    });
+    let chosen = baseline;
+    if (preferredPeriod) {
+      const preferred = placeWeekBlocks({
+        w,
+        weekCandidates: candidates,
+        weekTarget: target,
+        usePreferredPeriod: preferredPeriod,
+        priorCoveredCourses: coveredCourses,
+        priorCourseCounts: courseCounts,
+      });
+      if (preferred.placed >= baseline.placed) chosen = preferred;
     }
-    outlook.push({ week: w + 1, targetHours: target, scheduledHours: placed, shortfall: Math.max(0, target - placed) });
+    if (includeDiagnostics) {
+      const capacityRun = placeWeekBlocks({
+        w,
+        weekCandidates: candidates,
+        weekTarget: Number.POSITIVE_INFINITY,
+        usePreferredPeriod: undefined,
+        priorCoveredCourses: coveredCourses,
+        priorCourseCounts: courseCounts,
+      });
+      capacityPerWeek.push({
+        week: w + 1,
+        capacityHours: Math.max(capacityRun.placed, chosen.placed),
+        targetHours: target,
+        scheduledHours: chosen.placed,
+        shortfallHours: Math.max(0, target - chosen.placed),
+      });
+    }
+    blocks.push(...chosen.weekBlocks);
+    busy.push(...chosen.weekBlocks);
+    coveredCourses = chosen.covered;
+    courseCounts = chosen.counts;
+    outlook.push({ week: w + 1, targetHours: target, scheduledHours: chosen.placed, shortfall: Math.max(0, target - chosen.placed) });
   }
 
-  return {
+  const plan = {
     id: randomUUID(),
     student: student.student,
     createdAt: new Date().toISOString(),
@@ -226,4 +300,71 @@ export function makePlan(
     baseHash: digest(events),
     status: { near: 'pending', future: 'pending' },
   };
+
+  if (!includeDiagnostics) {
+    return { plan };
+  }
+
+  const findings = [];
+  if (windows.length === 0) {
+    findings.push({ code: 'NO_STUDY_WINDOWS', severity: 'error' });
+  }
+  const expiredCourses = sorted.filter(course => Date.parse(course.deadline) <= today);
+  const activeCourses = sorted.filter(course => Date.parse(course.deadline) > today);
+  if (activeCourses.length === 0) {
+    findings.push({ code: 'NO_ELIGIBLE_COURSES', severity: 'error' });
+  }
+  for (const course of expiredCourses) {
+    findings.push({ code: 'EXPIRED_COURSE', severity: 'warning', course: course.name });
+  }
+  if (target > 0 && blocks.length === 0) {
+    findings.push({ code: 'NO_SCHEDULED_BLOCKS', severity: 'error' });
+  }
+  for (const entry of capacityPerWeek) {
+    if (entry.shortfallHours > 0) {
+      findings.push({
+        code: 'WEEKLY_SHORTFALL',
+        severity: 'warning',
+        week: entry.week,
+        targetHours: entry.targetHours,
+        scheduledHours: entry.scheduledHours,
+        shortfallHours: entry.shortfallHours,
+        capacityHours: entry.capacityHours,
+      });
+    }
+  }
+  if (clampedBy === 'earliest_deadline') {
+    findings.push({
+      code: 'HORIZON_CLAMPED_BY_DEADLINE',
+      severity: 'info',
+      requestedWeeks: requested,
+      effectiveWeeks: count,
+    });
+  } else if (clampedBy === 'availability_through') {
+    findings.push({
+      code: 'HORIZON_CLAMPED_BY_AVAILABILITY',
+      severity: 'info',
+      requestedWeeks: requested,
+      effectiveWeeks: count,
+      through: effectiveThrough,
+    });
+  }
+  for (const course of activeCourses) {
+    if ((courseCounts.get(course.name) || 0) === 0) {
+      findings.push({ code: 'UNCOVERED_ELIGIBLE_COURSE', severity: 'warning', course: course.name });
+    }
+  }
+  const ok = !findings.some(item => item.severity === 'error' || item.code === 'WEEKLY_SHORTFALL');
+
+  return {
+    ok,
+    plan,
+    horizon: { weeks: count, through: effectiveThrough, clampedBy },
+    capacityPerWeek,
+    findings,
+  };
+}
+
+export function makePlan(student, events, options = {}) {
+  return planScheduleDetails(student, events, { ...options, includeDiagnostics: false }).plan;
 }

@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { coldStartStudents, validatePlanningContext, reviewedPlannerProfile } from './cold-start-context.mjs';
+import { coldStartStudents, validatePlanningContext, plannerProfileFromRecord, reviewedPlannerProfile } from './cold-start-context.mjs';
 import {
   ROOT,
   FIXED_TODAY,
@@ -21,7 +21,7 @@ import {
   writeJSON,
 } from './domain/runtime.mjs';
 import { getStudent, listWorkspace, readWorkspace } from './domain/workspace.mjs';
-import { diffSnapshots, digest, makePlan, significant, snapshot } from './domain/planner.mjs';
+import { diffSnapshots, digest, makePlan, planScheduleDetails, significant, snapshot } from './domain/planner.mjs';
 import { addFeedback, report, saveNarrative, summarize, validateFeedback } from './domain/reports.mjs';
 
 export {
@@ -56,10 +56,16 @@ export {
 
 // Initializes an already-seeded, fresh synthetic run. It does not invoke the
 // simulator's administrative reset endpoint or overwrite an existing run.
-export async function initializeScenario(calendar, student, { coldStart, workspaceSource } = {}) {
+export async function initializeScenario(calendar, student, { coldStart, workspaceSource, expectedEvents } = {}) {
   assertStudent(student);
-  if (coldStart !== undefined && (!Object.hasOwn(coldStartStudents, coldStart) || coldStartStudents[coldStart] !== student)) {
-    throw new Error('Unknown cold-start case for this student');
+  if (coldStart !== undefined) {
+    if (workspaceSource) {
+      if (typeof coldStart !== 'boolean' && (typeof coldStart !== 'string' || !coldStart.trim() || coldStart.length > 128)) {
+        throw new Error('Invalid cold-start case identifier');
+      }
+    } else if (!Object.hasOwn(coldStartStudents, coldStart) || coldStartStudents[coldStart] !== student) {
+      throw new Error('Unknown cold-start case for this student');
+    }
   }
   try {
     await loadState(student);
@@ -68,7 +74,7 @@ export async function initializeScenario(calendar, student, { coldStart, workspa
     if (error.code !== 'ENOENT') throw error;
   }
   const events = await calendar.events(student);
-  const expected = (await readJSON(path.join(ROOT, 'fixtures/calendars', `${student}.json`))).events;
+  const expected = expectedEvents ?? (await readJSON(path.join(ROOT, 'fixtures/calendars', `${student}.json`))).events;
   if (digest(events) !== digest(expected)) throw new Error('Observed calendar does not match the synthetic fixture');
 
   const staged = path.join(runtimeDir(), 'workspaces', student);
@@ -90,7 +96,13 @@ export async function initializeScenario(calendar, student, { coldStart, workspa
 
   const feedback = (await readJSON(path.join(ROOT, 'fixtures/feedback', `${student}.json`))).map(validateFeedback);
   const state = { student, feedback, history: [], plan: null, lastSnapshot: snapshot(events), annotations: {}, protectedIds: [] };
-  if (coldStart !== undefined) state.planningContext = { caseId: coldStart, pending: null, confirmed: null };
+  if (coldStart !== undefined) {
+    state.planningContext = {
+      ...(typeof coldStart === 'string' ? { caseId: coldStart } : {}),
+      pending: null,
+      confirmed: null,
+    };
+  }
   await stateStore.create(student, state);
   return state;
 }
@@ -162,6 +174,78 @@ export async function confirmPlanningContext(student, revisionId, operatorReplie
   }, { requiresIdle: true });
 }
 
+function computeProtectedIds(state, events) {
+  const unseen = diffSnapshots(state.lastSnapshot, events);
+  return [
+    ...new Set([
+      ...(state.protectedIds || []),
+      ...unseen.filter(change => change.before?.extendedProperties?.private?.studyDemo === 'true').map(change => change.id),
+    ]),
+  ];
+}
+
+function buildPlanOptions(options, { effectiveToday, protectedIds, enforcedHours }) {
+  const { record: _ignoredRecord, ...rest } = options || {};
+  return {
+    ...rest,
+    today: options?.today ?? effectiveToday,
+    ...(enforcedHours !== undefined ? { hours: enforcedHours } : {}),
+    protectedIds,
+  };
+}
+
+export async function previewPlan(calendar, student, options = {}, { requireStaged = false, today = FIXED_TODAY } = {}) {
+  const state = await loadState(assertStudent(student));
+  const events = await calendar.events(student);
+  const context = state.planningContext;
+  const effectiveToday = options?.today ?? today;
+  const hasCandidateRecord = options?.record !== undefined;
+  let profile;
+  let planningContextRevisionId = null;
+  let enforceTargetHours = false;
+
+  if (hasCandidateRecord) {
+    const record = await validatePlanningContext(
+      options.record,
+      file => readWorkspace(student, file, { requireStaged }),
+      effectiveToday,
+    );
+    profile = plannerProfileFromRecord(student, record, effectiveToday);
+    enforceTargetHours = true;
+  } else if (context) {
+    if (context.pending) throw new Error('The operator must review the pending planning context revision');
+    profile = reviewedPlannerProfile(student, context, effectiveToday);
+    planningContextRevisionId = context.confirmed.id;
+    enforceTargetHours = true;
+  } else {
+    profile = await getStudent(student, { requireStaged });
+  }
+
+  if (enforceTargetHours && options?.hours !== undefined && options.hours !== profile.targetHours) {
+    throw new Error('Review a new planning context to change the confirmed hours');
+  }
+
+  const protectedIds = computeProtectedIds(state, events);
+  const result = planScheduleDetails(
+    profile,
+    events,
+    buildPlanOptions(options, {
+      effectiveToday,
+      protectedIds,
+      enforcedHours: enforceTargetHours ? profile.targetHours : undefined,
+    }),
+  );
+  if (planningContextRevisionId) result.plan.planningContextRevisionId = planningContextRevisionId;
+  return {
+    ok: result.ok,
+    plan: result.plan,
+    horizon: result.horizon,
+    capacityPerWeek: result.capacityPerWeek,
+    planningContextRevisionId,
+    findings: result.findings,
+  };
+}
+
 export async function draft(calendar, student, options = {}, { requireStaged = false, today = FIXED_TODAY } = {}) {
   const coldStart = (await loadState(student)).planningContext;
   const events = await calendar.events(student);
@@ -169,23 +253,22 @@ export async function draft(calendar, student, options = {}, { requireStaged = f
   return stateStore.update(assertStudent(student), state => {
     const context = state.planningContext;
     if (context?.pending) throw new Error('The operator must review the pending planning context revision');
-    const profile = context ? reviewedPlannerProfile(student, context, today) : baseline;
+    const effectiveToday = options?.today ?? today;
+    const profile = context ? reviewedPlannerProfile(student, context, effectiveToday) : baseline;
     if (context && options.hours !== undefined && options.hours !== profile.targetHours) {
       throw new Error('Review a new planning context to change the confirmed hours');
     }
-    const unseen = diffSnapshots(state.lastSnapshot, events);
-    state.protectedIds = [
-      ...new Set([
-        ...(state.protectedIds || []),
-        ...unseen.filter(change => change.before?.extendedProperties?.private?.studyDemo === 'true').map(change => change.id),
-      ]),
-    ];
-    const plan = makePlan(profile, events, {
-      ...options,
-      today: options.today ?? today,
-      ...(context ? { hours: profile.targetHours } : {}),
-      protectedIds: state.protectedIds || [],
-    });
+    const protectedIds = computeProtectedIds(state, events);
+    state.protectedIds = protectedIds;
+    const plan = makePlan(
+      profile,
+      events,
+      buildPlanOptions(options, {
+        effectiveToday,
+        protectedIds,
+        enforcedHours: context ? profile.targetHours : undefined,
+      }),
+    );
     if (context) plan.planningContextRevisionId = context.confirmed.id;
     state.plan = plan;
     state.history.push({ type: 'proposal', at: new Date().toISOString(), planId: plan.id, options });

@@ -4,6 +4,7 @@ import {
   listWorkspace,
   readWorkspace,
   draft,
+  previewPlan,
   checkpoint,
   report,
   saveNarrative,
@@ -53,13 +54,37 @@ export function createStudyBoundary({
           { requireStaged, today: simulationToday },
         ),
     ],
+    [
+      'preview_plan',
+      args =>
+        previewPlan(
+          calendar,
+          student,
+          {
+            weeks: args.weeks,
+            hours: args.hours,
+            avoidDates: args.avoidDates,
+            preferredPeriod: args.preferredPeriod,
+            focusCourse: args.focusCourse,
+            ...(coldStart ? { allocation: args.allocation, record: args.record } : {}),
+          },
+          { requireStaged, today: simulationToday },
+        ),
+    ],
     ['inspect_checkpoint', args => checkpoint(calendar, student, args.reason || '')],
     ['routine_report', () => report(calendar, student, { today: simulationToday })],
     ['save_report_interpretation', args => saveNarrative(student, args.narrative)],
   ]);
   if (coldStart) {
     if (availabilityPreview) methods.set('preview_study_options', args => availabilityPreview.stage(args.options));
-    methods.set('read_planning_context', () => readPlanningContext(student));
+    methods.set('read_planning_context', async () => {
+      const context = await readPlanningContext(student);
+      return {
+        pending: context.pending ?? null,
+        confirmed: context.confirmed ?? null,
+        previous: context.previous ?? null,
+      };
+    });
     methods.set('propose_planning_context', args => proposePlanningContext(student, args.record, { today: simulationToday }));
   }
 
