@@ -116,7 +116,10 @@ const runnerSnapshot = z.object({
   question: z.object({ requestId: z.string(), questions: z.array(z.object({
     id: z.string(), question: z.string(), options: z.array(z.object({ label: z.string(), description: z.string().optional() })),
   })).min(1) }).nullable(),
-  failure: z.strictObject({ kind: z.enum(['budget', 'quality', 'infrastructure', 'compatibility']), code: z.string() }).nullable(),
+  failure: z.strictObject({
+    kind: z.enum(['budget', 'quality', 'infrastructure', 'compatibility']), code: z.string(),
+    detail: z.string().max(200).optional(),
+  }).nullable(),
   turns: turnCounts,
   action: z.record(z.string(), z.unknown()).nullable(),
 });

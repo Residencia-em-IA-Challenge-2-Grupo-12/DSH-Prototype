@@ -68,11 +68,24 @@ const CAPABILITIES = [
 ];
 
 class TurnError extends Error {
-  constructor(kind, code) {
+  constructor(kind, code, detail) {
     super(code);
     this.kind = kind;
     this.code = code;
+    if (detail) this.detail = detail;
   }
+}
+
+function safeFailureDetail(error) {
+  if (error instanceof SyntaxError) return 'json_parse';
+  if (error instanceof z.ZodError) {
+    return 'zod:' + error.issues.slice(0, 3).map(issue => `${issue.path.join('.') || 'root'}:${issue.code}`).join(',');
+  }
+  const msg = String(error?.message ?? '');
+  if (msg.includes('shortfall')) return 'preview_shortfall';
+  if (msg.includes('citation') || msg.includes('disclosed') || msg.includes('quote')) return 'citation_error';
+  if (msg.includes('PDF') || msg.includes('pages')) return 'lookup_error';
+  return 'validation_error';
 }
 
 export function completionUsage(usage) {
@@ -275,7 +288,7 @@ export function createEvalSession({
         } catch (error) {
           if (error instanceof TurnError) throw error;
           if (modeIndex !== 1 || repairUsed || turn.completions >= completionLimit) {
-            throw new TurnError('quality', 'invalid_action_or_preview');
+            throw new TurnError('quality', 'invalid_action_or_preview', safeFailureDetail(error));
           }
           repairUsed = true;
           conversation.push({ role: 'assistant', content: content || '{}', ...reasoning });
@@ -284,7 +297,8 @@ export function createEvalSession({
       }
       if (!action && !question) throw new TurnError('budget', 'no_final_response');
     } catch (error) {
-      failure = error instanceof TurnError ? { kind: error.kind, code: error.code }
+      failure = error instanceof TurnError
+        ? { kind: error.kind, code: error.code, ...(error.detail ? { detail: error.detail } : {}) }
         : { kind: 'infrastructure', code: 'session_failed' };
       if (error.code === 'missing_token_usage') turn.spendUsd = null;
     } finally {

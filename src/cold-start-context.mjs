@@ -28,9 +28,9 @@ const neutralPlanningContextSchema = z.strictObject({
     resolution:z.string().trim().min(1).max(450).optional(),
   })).min(1).max(8).describe('Study targets the operator wants time allocated to. Each entry can receive study blocks and cap the planning horizon. Keep context-only milestones in the explanation.'),
   studyWindows:z.array(window).min(1).max(14),
-  targetHours:z.number().int().min(1).max(20),
-  maxDailyStudyHours:z.number().int().min(1).max(8),
-  studyBreakMinutes:z.number().int().min(0).max(120),
+  targetHours:z.number().int().min(1).max(20).describe('Weekly target study hours per week (not total hours across multiple weeks).'),
+  maxDailyStudyHours:z.number().int().min(1).max(8).describe('Maximum one-hour study blocks per day.'),
+  studyBreakMinutes:z.number().int().min(0).max(120).describe('Break duration in minutes between consecutive study blocks on the same day.'),
   through:date.describe('Inclusive final date of these preferences. Respect an explicit end date. For a relative duration, count its start date as day one.'),
   assumption:z.string().trim().min(1).max(600).describe('Concise summary of key assumptions (strictly under 600 characters).'),
 });

@@ -883,6 +883,8 @@ test('Role B1 scopes natural EN/PT-BR questions and credits paraphrased or split
   assert.deepEqual(Object.keys(scopeOperatorFacts(bruno, { questions: [{ id: 'q6', question: 'Quais dias e horários você pode estudar?' }] })), ['availability']);
 
   assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, '4 hours a week, up to 2 sessions per day with a 15 min break.'), ['workload']);
+  assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, '4 hours per week, maximum of 2 hours per day, and a 15-minute break.'), ['workload']);
+  assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, '2 hours per week, max 1 hour per day, and a 15-minute break.'), []);
   assert.deepEqual(disclosedOperatorTopics(ana, qDays, 'Wednesdays, Thursdays, and Fridays from 2:00 PM to 4:15 PM.'), ['availability']);
   assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, 'I am unsure.'), []);
   assert.deepEqual(disclosedOperatorTopics(bruno, { questions: [{ id: 'q6', question: 'Quais dias e horários você pode estudar?' }] },
