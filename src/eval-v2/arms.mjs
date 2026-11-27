@@ -21,7 +21,7 @@ const toolSchemas = {
   propose_planning_context: candidateSchema.pick({ record: true }),
 };
 
-export function createArmBridge(service, student, arm, { inspect, disclosedSources } = {}) {
+export function createArmBridge(service, student, arm, { inspect, disclosedSources, meter } = {}) {
   if (!ARMS.includes(arm)) throw new Error('Unknown challenger');
   const allowed = EVAL_TOOL_METHODS.filter(method => arm === 'C3' || method === 'preview_plan' ||
     method === 'propose_planning_context' || (method === 'read_synthetic_file' && arm === 'C1'));
@@ -49,6 +49,7 @@ export function createArmBridge(service, student, arm, { inspect, disclosedSourc
         allowedMethods: () => [...allowedMethods],
         async call(method, { student: requestedStudent, ...input }) {
           if (!allowedMethods.includes(method) || requestedStudent !== student) throw new Error('Agent operation is not available');
+          meter?.bridge(method, input);
           inspect?.({ outputs: input });
           if (method === 'verify_source_citation') {
             invalidCitation = true;
@@ -107,7 +108,7 @@ export function createArmBridge(service, student, arm, { inspect, disclosedSourc
 
 export async function startArmSession({
   arm, bundle, bridge, preload, model, completeChat, gateway, runnerUrl,
-  transport = 'loopback', schemaCompat = 'standard', fetchImpl = fetch, inspect,
+  transport = 'loopback', schemaCompat = 'standard', fetchImpl = fetch, inspect, inspectCompletion, meter,
 }) {
   const mode = EVAL_MODES[ARMS.indexOf(arm)];
   if (!mode) throw new Error('Unknown challenger');
@@ -127,9 +128,15 @@ export async function startArmSession({
     }));
     return {
       ...createEvalSession({
-        ...common, completeChat: complete && (request => {
+        ...common, completeChat: complete && (async request => {
           check(request.messages, request.tools);
-          return complete(request);
+          if (completeChat) meter?.request(request);
+          const response = await complete(request);
+          if (completeChat) {
+            meter?.response(response);
+            inspectCompletion?.(response);
+          }
+          return response;
         }),
         model, schemaCompat,
         async bridgeCall(method, args) {

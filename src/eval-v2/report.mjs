@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 import { formatUsd } from '../foundation/model-budget.mjs';
 import { ARMS } from './arms.mjs';
 import { JUDGE_MODELS, rubric } from './judge-b2.mjs';
@@ -56,7 +58,8 @@ function repeats(rows) {
   });
 }
 
-function screening(rows, tieBreakCaseId) {
+export function stage1Screen(allRows, tieBreakCaseId) {
+  const rows = allRows.filter(row => row.caseId !== tieBreakCaseId);
   const cases = [...new Set(rows.map(row => row.caseId))];
   const sorted = groups(rows, row => key(row.model, row.provider)).map(group => {
     const { model, provider } = group[0];
@@ -85,9 +88,57 @@ function screening(rows, tieBreakCaseId) {
       }
     }
   }
-  return { ranking: sorted, topTie: ties.length > 1 ? ties : [], inversions,
-    tieBreakNeeded: ties.length > 1 || inversions.some(item => ties.includes(item.left) || ties.includes(item.right)),
-    preselectedThirdCaseId: tieBreakCaseId ?? null };
+  const finalists = new Set(ties);
+  for (const item of inversions) {
+    if (ties.includes(item.left) || ties.includes(item.right)) {
+      finalists.add(item.left);
+      finalists.add(item.right);
+    }
+  }
+  const tieBreakNeeded = finalists.size > 1;
+  const tieBreak = ranked.filter(item => finalists.has(item.model)).map(item => {
+    const observed = allRows.filter(row => row.caseId === tieBreakCaseId && row.model === item.model &&
+      row.provider === item.provider && row.repeat === 1);
+    const complete = observed.length === 2 && ['H0', 'C1'].every(arm =>
+      observed.some(row => row.arm === arm && quality(row) !== null));
+    const passes = item.cells.filter(cell => cell.passed).length;
+    return { model: item.model, provider: item.provider,
+      score: complete ? (passes + observed.filter(row => row.passed).length) / 6 : null };
+  }).sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+  const winner = tieBreakNeeded
+    ? (tieBreak.every(item => item.score !== null) && tieBreak[0].score > tieBreak[1].score ? tieBreak[0] : null)
+    : ranked[0] ?? null;
+  return { ranking: sorted, topTie: ties.length > 1 ? ties : [], inversions, tieBreakNeeded,
+    preselectedThirdCaseId: tieBreakCaseId ?? null, finalistModels: [...finalists], tieBreak, winner };
+}
+
+const evidenceDigest = evidence => createHash('sha256').update(JSON.stringify(evidence)).digest('hex');
+
+export function createStage1Decision({ runs, models, tieBreakCaseId = null }) {
+  const evidence = { models, tieBreakCaseId, runs: runs.map(({ caseId, split, arm, repeat, model, provider, status, passed, eligible }) =>
+    ({ caseId, split, arm, repeat, model, provider, status, passed, eligible })) };
+  const screen = stage1Screen(evidence.runs, tieBreakCaseId);
+  const base = evidence.runs.filter(row => row.caseId !== tieBreakCaseId);
+  const expanded = evidence.runs.filter(row => row.caseId === tieBreakCaseId);
+  if (models.length !== 5 || new Set(models.map(pin => pin.model)).size !== 5 ||
+      base.length !== 20 || screen.ranking.length !== 5 || screen.ranking.some(row => row.score === null) ||
+      evidence.runs.some(row => row.split !== 'dev' || row.repeat !== 1 || !['H0', 'C1'].includes(row.arm) ||
+        row.status !== 'completed' || typeof row.passed !== 'boolean' || row.eligible !== row.passed ||
+        !models.some(pin => pin.model === row.model && pin.provider === row.provider)) ||
+      expanded.length !== (screen.tieBreakNeeded ? screen.finalistModels.length * 2 : 0) || !screen.winner) return null;
+  const finalist = models.find(pin => pin.model === screen.winner.model && pin.provider === screen.winner.provider);
+  return { version: 1, finalist, evidence, sha256: evidenceDigest(evidence) };
+}
+
+export function verifyStage1Decision(decision, pin) {
+  const evidence = decision?.evidence;
+  const checked = Array.isArray(evidence?.runs) && Array.isArray(evidence?.models)
+    ? createStage1Decision(evidence) : null;
+  if (!checked || decision.version !== 1 || checked.sha256 !== decision.sha256 ||
+      !isDeepStrictEqual(checked.finalist, decision.finalist) || !isDeepStrictEqual(checked.finalist, pin)) {
+    throw Object.assign(new Error('Stage 1 evidence does not support the configured finalist'), { code: 'stage1_decision_invalid' });
+  }
+  return checked.finalist;
 }
 
 function describeJudges(rows) {
@@ -121,7 +172,6 @@ function nullResult(rows, pairs) {
 
 export function buildReport({ runs, stage, tieBreakCaseId }) {
   if (stage !== 'dev' && stage !== 'sealed') throw new Error('Unknown evaluation stage');
-  if (tieBreakCaseId && runs.some(row => row.caseId === tieBreakCaseId)) throw new Error('Tie-break case must be reserved');
   const pairs = pairwise(runs);
   const lookup = runs.filter(row => row.archetype === 'long_pdf_lookup');
   const knownSpend = runs.filter(row => Number.isFinite(row.spendUsd) && row.spendUsd >= 0);
@@ -148,7 +198,7 @@ export function buildReport({ runs, stage, tieBreakCaseId }) {
     spend: { total: formatted === '$0.0000' ? (totalUsd === 0 ? '$0' : '<$0.0001') : formatted,
       knownRuns: knownSpend.length, unknownRuns: runs.length - knownSpend.length },
     descriptiveJudges: describeJudges(runs),
-    devScreen: stage === 'dev' ? screening(runs, tieBreakCaseId) : null,
+    devScreen: stage === 'dev' ? stage1Screen(runs, tieBreakCaseId) : null,
     nullResult: stage === 'sealed' ? nullResult(runs, pairs) : null,
   };
 }

@@ -9,6 +9,7 @@ import { tmpdir } from 'node:os';
 import test from 'node:test';
 import { promisify } from 'node:util';
 import { startComposeCalendarpitRun } from '../src/foundation/calendarpit-runner.mjs';
+import { runComposeSweep } from '../src/eval-v2/compose-sweep.mjs';
 
 const exec = promisify(execFile);
 const student = 'ravi';
@@ -30,16 +31,17 @@ const evaluatorProbe = String.raw`
   import assert from 'node:assert/strict';
   import { once } from 'node:events';
   import { randomUUID } from 'node:crypto';
-  import { readFile, writeFile } from 'node:fs/promises';
+  import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
   import { createServer } from 'node:http';
   import { CalendarpitApi } from './src/foundation/calendarpit-api.mjs';
   import { authorizeSyntheticCalendar } from './src/foundation/synthetic-calendar-auth.mjs';
   import { createEvalGateway } from './src/foundation/eval-gateway.mjs';
   import { createModelBudget } from './src/foundation/model-budget.mjs';
   import { createHttpRunnerAdapter } from './src/paired-replay/http-adapter.mjs';
-  import { startArmSession } from './src/eval-v2/arms.mjs';
+  import { openClaimedEvalCalendar } from './src/eval-v2/compose-sweep.mjs';
+  import { runCase } from './src/eval-v2/orchestrator.mjs';
 
-  const [run, student, redirectUri, version] = JSON.parse(process.argv[1]);
+  const [run, student, redirectUri, version, calendarFixture] = JSON.parse(process.argv[1]);
   const transport = 'compose-eval';
   const authFile = '/tmp/calendar-token-from-first-seed';
   const token = await authorizeSyntheticCalendar({ run, student, redirectUri, transport, allowedStudents: [student] });
@@ -61,7 +63,7 @@ const evaluatorProbe = String.raw`
     const body = JSON.parse(Buffer.concat(chunks));
     const hasToolResult = body.messages.at(-1)?.role === 'tool';
     const v2 = body.messages[0]?.content.includes('Finish each turn with one JSON action');
-    if (v2) assert.equal(body.messages[1].content, '{"version":"study-preload-v1"}');
+    if (v2) assert.match(body.messages[0].content, /study-preload-v1/);
     const message = hasToolResult
       ? { role: 'assistant', content: v2 ? '{"action":"answer","message":"Verified through Eval v2."}' : 'Verified through the tool bridge.' }
       : { role: 'assistant', content: '', tool_calls: [
@@ -100,20 +102,25 @@ const evaluatorProbe = String.raw`
     assert.match(snapshot.messages.at(-1).text, /Verified through the tool bridge/);
     assert.equal(toolCalls, 1);
     await session.close();
-    const v2 = await startArmSession({
-      arm: 'C3', bundle: { ...manifest, locale: 'en', split: 'dev', canaryGuid: randomUUID(),
-        operatorFacts: { forbiddenSecrets: [], hiddenOracleFacts: [] } }, bridge: { service },
-      preload: { bytes: '{"version":"study-preload-v1"}' }, model, gateway,
-      runnerUrl: 'http://runner:4180', transport,
-    });
+    const workspaceDir = await mkdtemp('/tmp/topology-workspace-');
     try {
-      const snapshot = await v2.prompt('What is on the synthetic calendar?');
-      assert.equal(snapshot.action.message, 'Verified through Eval v2.');
-      assert.equal(snapshot.turns[0].toolAttempts, 1);
-      assert.equal(snapshot.turns[0].completions, 2);
-      assert.equal(toolCalls, 2);
+      const { calendar } = await openClaimedEvalCalendar({ run, redirectUri, student });
+      const bundle = { ...manifest, caseId: 'topology-fixture', archetype: 'compound_mixed_intent', locale: 'en',
+        split: 'dev', canaryGuid: randomUUID(), initialRequest: 'What is on the synthetic calendar?', calendarFixture,
+        workspaceDir, workspaceFiles: [], preloadConfig: { maxPdfPages: 2, maxTextChars: 100 },
+        oracle: { requiredDeadlines: [], forbiddenInjectionPatterns: [] },
+        operatorFacts: { disclosable: {}, forbiddenSecrets: [], hiddenOracleFacts: [] } };
+      const row = await runCase({ cell: { bundle, arm: 'C3', repeat: 1, pin: { model, provider: 'stub' } },
+        gateway: { ...gateway, origin: 'http://evaluator:4181' }, operatorProviderPin: 'stub',
+        runnerUrl: 'http://runner:4180', transport, calendars: () => calendar });
+      assert.equal(row.failure, null, JSON.stringify(row));
+      assert.equal(row.exchanges[0].action.message, 'Verified through Eval v2.');
+      assert.equal(row.serverTurns[0].toolAttempts, 1);
+      assert.equal(row.serverTurns[0].completions, 2);
+      assert.equal(row.gates.budget_compliance.passed, true);
+      assert.equal(row.spendUsd, 0.00002);
     } finally {
-      await v2.close();
+      await rm(workspaceDir, { recursive: true, force: true });
     }
   } finally {
     await session.close();
@@ -166,15 +173,14 @@ test('Compose seed switch, token retirement and runner network isolation', { ski
   for (const key of ['OPENROUTER_API_KEY', 'GEMINI_API_KEY', 'TYPESAFE_API_KEY']) delete env[key];
   const docker = async (...args) => (await exec('docker', args, { env, timeout: 150_000, maxBuffer: 1024 * 1024 })).stdout.trim();
   const compose = (...args) => docker('compose', '--env-file', '/dev/null', '-f', 'compose.eval.yaml', '-p', project, ...args);
-  const runEvalProbe = async (run, version) => {
+  const runEvalProbe = async (run, version, fixture) => {
     try {
       await compose('exec', '-T', 'evaluator', 'node', '--input-type=module', '-e', evaluatorProbe,
-        JSON.stringify([{ origin: run.origin, client: run.client, id: run.id }, student, redirectUri, version]));
+        JSON.stringify([run, student, redirectUri, version, fixture]));
     } catch (error) {
       throw new Error(`Evaluator probe failed for the ${version} synthetic seed\n${error.stderr || ''}`);
     }
   };
-  let run;
   try {
     await writeFile(`${directory}/marker.txt`, 'synthetic marker');
     await compose('up', '-d', '--build', 'evaluator', 'runner');
@@ -193,25 +199,31 @@ test('Compose seed switch, token retirement and runner network isolation', { ski
       assert.deepEqual(Object.keys(options.PortBindings ?? {}), []);
       assert.deepEqual(Object.keys(options.Tmpfs), ['/tmp']);
     }
-    run = await startComposeCalendarpitRun({ project, fixture: seed('first'), redirectUri, runDocker: docker });
-    const net = JSON.parse(await docker('network', 'inspect', '--format', '{{json .}}', `${project}_net_calendar`));
-    const calendar = Object.values(net.Containers).find(container => container.Name.startsWith('study-eval-calendar-'));
-    assert.ok(calendar);
-    const inspected = JSON.parse(await docker('inspect', '--format', '{{json .}}', calendar.Name));
-    assert.deepEqual(Object.keys(inspected.HostConfig.PortBindings ?? {}), []);
-    assert.deepEqual(inspected.Mounts.filter(mount => mount.Type === 'bind').map(mount => [mount.Destination, mount.RW]), [['/fixtures/startup.json', false]]);
-    assert.equal(inspected.Mounts.some(mount => mount.Type === 'volume'), false);
-    assert.deepEqual(Object.keys(inspected.HostConfig.Tmpfs), ['/data']);
-    await compose('exec', '-T', 'runner', 'node', '--input-type=module', '-e', runnerProbe, calendar.IPv4Address.split('/')[0]);
-    await runEvalProbe(run, 'first');
-    await run.close();
-    run = await startComposeCalendarpitRun({ project, fixture: seed('second'), redirectUri, runDocker: docker });
-    await runEvalProbe(run, 'second');
+    const cells = ['first', 'second'].map(version => ({ version, bundle: { calendarFixture: seed(version) } }));
+    const containerIds = [];
+    const result = await runComposeSweep({ project, redirectUri, cells,
+      startCalendar: options => startComposeCalendarpitRun({ ...options, runDocker: docker }),
+      async executeCell({ cell, run }) {
+        const net = JSON.parse(await docker('network', 'inspect', '--format', '{{json .}}', `${project}_net_calendar`));
+        const entry = Object.entries(net.Containers).find(([, container]) => container.Name.startsWith('study-eval-calendar-'));
+        assert.ok(entry);
+        const [id, calendar] = entry;
+        containerIds.push(id);
+        const inspected = JSON.parse(await docker('inspect', '--format', '{{json .}}', calendar.Name));
+        assert.deepEqual(Object.keys(inspected.HostConfig.PortBindings ?? {}), []);
+        assert.deepEqual(inspected.Mounts.filter(mount => mount.Type === 'bind').map(mount => [mount.Destination, mount.RW]), [['/fixtures/startup.json', false]]);
+        assert.equal(inspected.Mounts.some(mount => mount.Type === 'volume'), false);
+        assert.deepEqual(Object.keys(inspected.HostConfig.Tmpfs), ['/data']);
+        await compose('exec', '-T', 'runner', 'node', '--input-type=module', '-e', runnerProbe, calendar.IPv4Address.split('/')[0]);
+        await runEvalProbe(run, cell.version, cell.bundle.calendarFixture);
+        return run.id;
+      },
+    });
+    assert.equal(new Set(result).size, 2);
+    assert.equal(new Set(containerIds).size, 2);
+    for (const id of containerIds) await assert.rejects(docker('inspect', id));
   } finally {
-    try { await run?.close(); }
-    finally {
-      try { await compose('down', '--remove-orphans'); }
-      finally { await rm(directory, { recursive: true, force: true }); }
-    }
+    try { await compose('down', '--remove-orphans'); }
+    finally { await rm(directory, { recursive: true, force: true }); }
   }
 });

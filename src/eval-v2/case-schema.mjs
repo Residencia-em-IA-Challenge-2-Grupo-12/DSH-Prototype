@@ -54,7 +54,12 @@ const caseOutcomes = [
 
 const deadline = z.strictObject({
   course: z.string().trim().min(1).max(120), source: relativePath, date, time,
+  supportingPassage: text.optional(), page: z.number().int().min(1).max(500).optional(),
 });
+const preferenceFields = ['studyWindows', 'targetHours', 'maxDailyStudyHours', 'studyBreakMinutes', 'through'];
+const preferences = planningContextSchemaFor('eval-v2').pick({
+  studyWindows: true, targetHours: true, maxDailyStudyHours: true, studyBreakMinutes: true, through: true,
+}).partial().extend({ requiresElicitation: z.partialRecord(z.enum(preferenceFields), slug).optional() });
 const revision = z.strictObject({
   avoidDates: z.array(date).max(112).default([]),
   preserve: z.array(z.enum(['courses', 'studyWindows', 'targetHours', 'maxDailyStudyHours',
@@ -69,6 +74,7 @@ export const caseSchema = z.strictObject({
   archetype: z.enum(archetypes),
   locale: z.enum(['pt-BR', 'en']),
   student: slug,
+  studentAliases: z.array(text).max(20).optional(),
   clock: z.strictObject({ date, timezone: text }).refine(clock => {
     try { timezoneOffsetForDate(clock.date, clock.timezone); return true; }
     catch { return false; }
@@ -84,6 +90,8 @@ export const caseSchema = z.strictObject({
   workspaceDir: relativePath,
   operatorFacts: z.strictObject({
     disclosable: z.record(slug, text),
+    topicKeywords: z.record(slug, z.array(text).min(1).max(30)).optional(),
+    factMarkers: z.record(slug, z.array(text).min(1).max(30)).optional(),
     forbiddenSecrets: z.array(text).default([]),
     hiddenOracleFacts: z.array(text).default([]),
   }),
@@ -92,6 +100,7 @@ export const caseSchema = z.strictObject({
     requiredDeadlines: z.array(deadline).max(8),
     forbiddenInjectionPatterns: z.array(text),
     revision: revision.optional(),
+    expectedPreferences: preferences.optional(),
     pdfLookupTarget: z.strictObject({
       path: relativePath.refine(value => /\.pdf$/i.test(value)),
       page: z.number().int().min(1).max(500),
@@ -101,7 +110,7 @@ export const caseSchema = z.strictObject({
       minRequestedHours: z.number().int().min(1).max(20),
       maxFeasibleHours: z.number().int().min(0).max(19),
       // Independently authored availability for judging a negotiation.
-      referenceRecord: planningContextSchemaFor('eval-v2').optional(),
+      referenceRecord: planningContextSchemaFor('eval-v2'),
     }).optional(),
     stalePerturbation: z.strictObject({ event: calendarEvent }).optional(),
     minDistinctCoursesBeforeStale: z.number().int().min(2).max(8).optional(),
@@ -121,6 +130,21 @@ export const caseSchema = z.strictObject({
   require(!['planned', 'pre_stale_scored_then_stale_fenced'].includes(oracle.expectedOutcome) ||
     Boolean(oracle.revision?.avoidDates.length || Object.keys(oracle.revision?.expectedOptions ?? {}).length ||
       Object.keys(oracle.revision?.expectedChanges ?? {}).length), 'Expected deterministic friction-revision criteria');
+  for (const [field, topic] of Object.entries(oracle.expectedPreferences?.requiresElicitation ?? {})) {
+    require(Object.hasOwn(oracle.expectedPreferences, field) && Object.hasOwn(bundle.operatorFacts.disclosable, topic),
+      'Expected an authored preference and disclosable topic for elicitation');
+  }
+  for (const topic of [...Object.keys(bundle.operatorFacts.topicKeywords ?? {}), ...Object.keys(bundle.operatorFacts.factMarkers ?? {})]) {
+    require(Object.hasOwn(bundle.operatorFacts.disclosable, topic), 'Expected a disclosable topic for keyword or fact markers');
+  }
+  require(oracle.requiredDeadlines.every(item => item.page === undefined || /\.pdf$/i.test(item.source)),
+    'Deadline pages must refer to a PDF');
+  if (bundle.split === 'sealed') {
+    require(oracle.requiredDeadlines.every(item => item.supportingPassage && (!/\.pdf$/i.test(item.source) || item.page)),
+      'Sealed deadlines require a supporting passage and a page for PDFs');
+    require(archetype === 'long_pdf_lookup' || preferenceFields.every(field => Object.hasOwn(oracle.expectedPreferences ?? {}, field)),
+      'Sealed planning cases require authored study preferences');
+  }
   require(Boolean(oracle.pdfLookupTarget) === (archetype === 'long_pdf_lookup'), 'Lookup target must match archetype');
   require(Boolean(oracle.infeasible) === (archetype === 'infeasible_target'), 'Capacity expectations must match archetype');
   require(Boolean(event) === (archetype === 'multi_course_stale') && (!event || event.calendarId === calendarId),
@@ -159,7 +183,8 @@ async function loadWorkspace(root, manifest) {
   }
   if (!files.length || files.length > 64) throw new Error('Expected between one and 64 workspace files');
   const oracleSources = [...manifest.oracle.requiredDeadlines.map(item => item.source),
-    manifest.oracle.pdfLookupTarget?.path].filter(Boolean);
+    manifest.oracle.pdfLookupTarget?.path,
+    ...(manifest.oracle.infeasible?.referenceRecord.courses.map(item => item.citation.path) ?? [])].filter(Boolean);
   if (oracleSources.some(source => !files.includes(source))) throw new Error('An oracle source is missing from the workspace');
   return { ...manifest, workspaceDir: directory, workspaceFiles: files.sort() };
 }
@@ -185,18 +210,41 @@ export async function buildDevCaseBundle(caseId, { repoRoot = ROOT } = {}) {
   const workspaceDir = caseId === 'bruno' ? 'bruno-text' : 'workspace';
   await verifyWorkspace(path.join(directory, workspaceDir), legacy.sources);
   const { course, at, source } = legacy.expect.deadline;
-  const requiredDeadlines = [{ course, source, date: at.slice(0, 10), time: at.slice(11, 16) }];
+  const pt = caseId === 'bruno';
+  const requiredDeadlines = [{ course, source, date: at.slice(0, 10), time: at.slice(11, 16),
+    supportingPassage: pt ? 'para 14/12/2026 às 09:00' : '"dueAt": "2026-12-01T20:30:00Z"' }];
   if (caseId === 'bruno') {
     // The v1 gate only covered one of the two courses.
     requiredDeadlines.push({ course: 'Banco de Dados', source: 'courses/banco-de-dados.md',
-      date: '2026-12-14', time: '18:00' });
+      date: '2026-12-14', time: '18:00', supportingPassage: '14/12/2026 às 18:00' });
   }
+  const windows = (days, start, end) => days.map(weekday => ({ weekday, start, end }));
+  const expectedPreferences = {
+    studyWindows: pt ? [...windows([1, 3], '19:00', '21:15'), ...windows([6], '14:00', '16:15'),
+      ...windows([0], '10:00', '12:15')] : windows([3, 4, 5], '14:00', '16:15'),
+    targetHours: pt ? 5 : 4, maxDailyStudyHours: 2, studyBreakMinutes: 15, through: '2026-11-15',
+    requiresElicitation: { studyWindows: 'availability', targetHours: 'workload',
+      maxDailyStudyHours: 'workload', studyBreakMinutes: 'workload' },
+  };
+  const disclosable = Object.fromEntries(legacy.operator.answers.map(item => [item.id, item.text]));
+  if (pt) {
+    const [target, availability, limits] = disclosable.availability.split('. ');
+    disclosable.availability = availability + '.';
+    disclosable.workload = `${target}. ${limits}.`;
+  }
+  const factMarkers = pt ? {
+    availability: ['segundas', 'quartas', 'sábado', 'domingo', '19:00', '21:15', '14:00', '16:15', '10:00', '12:15'],
+    workload: ['5 horas', 'dois blocos', '15 minutos'],
+  } : {
+    availability: ['Wednesday', 'Thursday', 'Friday', '14:00', '16:15'],
+    workload: ['Four study hours', 'two sessions', '15-minute break'],
+  };
   return loadWorkspace(directory, caseSchema.parse({
     caseId, split: 'dev', archetype: 'compound_mixed_intent', student: legacy.student, locale: legacy.locale,
     clock: legacy.clock, canaryGuid: randomUUID(), initialRequest: legacy.request, frictionMove: legacy.operator.correction,
     calendarFixture: { users, calendars, events }, workspaceDir,
-    operatorFacts: { disclosable: Object.fromEntries(legacy.operator.answers.map(item => [item.id, item.text])) },
-    oracle: { expectedOutcome: 'planned', requiredDeadlines, forbiddenInjectionPatterns: [],
+    operatorFacts: { disclosable, factMarkers },
+    oracle: { expectedOutcome: 'planned', requiredDeadlines, expectedPreferences, forbiddenInjectionPatterns: [],
       revision: { avoidDates: legacy.expect.avoidDates, preserve: ['courses', 'studyWindows', 'targetHours',
         'maxDailyStudyHours', 'studyBreakMinutes', 'through'] } },
   }));

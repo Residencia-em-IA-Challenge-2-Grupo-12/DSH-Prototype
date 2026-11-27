@@ -118,9 +118,43 @@ const dates = iso => {
     `${Number(day)} de ${monthName('pt-BR')} de ${year}`];
 };
 
+async function gitHistory(root) {
+  const git = (args, options = {}) => execFileAsync('git', ['-C', root, ...args], {
+    timeout: 90_000, maxBuffer: 96 * 1024 * 1024,
+    ...options,
+  });
+  const top = (await git(['rev-parse', '--show-toplevel'])).stdout.trim();
+  if (await realpath(top) !== root) throw new Error('Expected a repository root');
+  if ((await git(['rev-parse', '--is-shallow-repository'])).stdout.trim() !== 'false') {
+    throw new Error('Expected complete repository history');
+  }
+  await git(['rev-parse', '--verify', 'HEAD^{commit}']);
+  // Skip credential paths before Git reads patches, including deleted files.
+  const exclusions = ['.env', '.env.*', '.envrc', '.npmrc', '.git-credentials', '.netrc', 'id_rsa', 'id_ed25519',
+    '*.pem', '*.key', '*.p12'].flatMap(name => [`:(exclude,glob,icase)${name}`, `:(exclude,glob,icase)**/${name}`]);
+  const patch = (await git(['--no-pager', 'log', '--all', 'HEAD', '-p', '--full-history', '-m', '--no-ext-diff', '--no-textconv',
+    '--no-renames', '--format=%x00%B', '--', '.', ...exclusions])).stdout;
+  const objects = (await git(['rev-list', '--objects', '--all', 'HEAD'])).stdout;
+  async function* pdfs() {
+    for (const match of objects.matchAll(/^([0-9a-f]{40,64}) (.+\.pdf)$/gim)) {
+      const [, id, relative] = match;
+      const { stdout: raw } = await git(['cat-file', 'blob', id], { encoding: 'buffer', maxBuffer: 5_000_000 });
+      const body = await new Promise((resolve, reject) => {
+        const child = execFile('pdftotext', ['-layout', '-', '-'], {
+          timeout: 15_000, maxBuffer: 5_000_000, env: { PATH: process.env.PATH, LC_ALL: 'C' },
+        }, (error, stdout) => error ? reject(error) : resolve(stdout));
+        child.stdin.on('error', reject);
+        child.stdin.end(raw);
+      });
+      yield { relative, raw, body, sha256: hash(raw) };
+    }
+  }
+  return { patch, pdfs: pdfs() };
+}
+
 export async function scanContamination({
   bundles = [], repoPath, peerRepoPath, gitLogText, runnerPrompts = [], toolSchemas = [], runnerOutputs = [],
-  runnerPayloads = [], judgePackets = [], preloads = [],
+  runnerPayloads = [], judgePackets = [], preloads = [], requireHistory = false,
 } = {}) {
   const findings = [];
   const add = (kind, location) => findings.push({ kind, location });
@@ -131,7 +165,7 @@ export async function scanContamination({
     return {
       bundle,
       workspace,
-      phrases,
+      phrases: phrases.filter(phrase => phrase.length >= 12 && phrase.includes(' ')),
       grams: new Set(phrases.flatMap(windows)),
       dates: bundle.oracle.requiredDeadlines.flatMap(deadline => {
         const names = [deadline.course, bundle.student, bundle.calendarFixture.users[0].name];
@@ -149,12 +183,14 @@ export async function scanContamination({
       const { bundle, workspace, phrases, dates: combinations } = indicator;
       const contains = value => Boolean(value) && ` ${normalized} `.includes(` ${normalizeWords(value)} `);
       if (source.toLowerCase().includes(bundle.canaryGuid.toLowerCase()) || raw?.includes(bundle.canaryGuid)) add('sealed_canary', relative);
+      if ([...bundle.operatorFacts.forbiddenSecrets, ...bundle.operatorFacts.hiddenOracleFacts]
+        .some(marker => matchesMarker(source, marker) || raw?.includes(marker))) add('sealed_private_fact', relative);
       if (allPhrases && phrases.some(contains)) add('sealed_exact_overlap', relative);
       if (allPhrases && grams.some(gram => indicator.grams.has(gram))) add('sealed_six_word_overlap', relative);
       if (allPhrases && combinations.some(([name, choices]) => contains(name) && choices.some(contains))) {
         add('sealed_name_and_date', relative);
       }
-      if (allPhrases && workspace.some(file => source.toLowerCase().includes(file.relative.toLowerCase()))) {
+      if (allPhrases && workspace.some(file => file.relative.includes('/') && source.toLowerCase().includes(file.relative.toLowerCase()))) {
         add('sealed_file_path', relative);
       }
       if (workspace.some(file => file.sha256 === sha256 || source.toLowerCase().includes(file.sha256) || raw?.includes(file.sha256))) {
@@ -163,14 +199,36 @@ export async function scanContamination({
     }
   }
 
+  const roots = new Set();
   for (const [label, directory] of [['repo', repoPath], ['peer', peerRepoPath]]) {
-    if (!directory) continue;
-    const root = await realpath(directory);
+    if (!directory) {
+      if (requireHistory) add('sealed_repository_required', label);
+      continue;
+    }
+    let root;
+    try { root = await realpath(directory); }
+    catch { add('repository_unreadable', label); continue; }
+    if (requireHistory && roots.has(root)) {
+      add('sealed_distinct_repository_required', label);
+      continue;
+    }
+    roots.add(root);
     if (sealed.some(bundle => bundle.workspaceDir === root || bundle.workspaceDir.startsWith(root + path.sep))) {
       add('sealed_workspace_inside_scan_root', label);
       continue;
     }
-    for await (const file of repoFiles(root)) scanStatic({ ...file, relative: `${label}/${file.relative}` }, true);
+    try {
+      for await (const file of repoFiles(root)) scanStatic({ ...file, relative: `${label}/${file.relative}` }, true);
+    } catch { add('repository_unreadable', label); }
+    if (requireHistory) {
+      try {
+        const { patch, pdfs } = await gitHistory(root);
+        for (const [index, entry] of patch.split(/\0|(?=^diff --git )/m).entries()) {
+          if (entry.trim()) scanStatic({ relative: `${label}/git-history/${index}`, body: entry }, true);
+        }
+        for await (const pdf of pdfs) scanStatic({ ...pdf, relative: `${label}/git-history/${pdf.relative}` }, true);
+      } catch { add('git_history_unverified', label); }
+    }
   }
   if (gitLogText) scanStatic({ relative: 'git-log', body: gitLogText }, true);
   for (const [label, items] of [['runner-prompt', runnerPrompts], ['tool-schema', toolSchemas], ['runner-output', runnerOutputs]]) {

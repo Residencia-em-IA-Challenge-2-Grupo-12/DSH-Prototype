@@ -3,14 +3,15 @@ import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { createServer } from 'node:http';
-import { mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, stat, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { ROOT } from '../src/core.mjs';
+import { runtimeDir } from '../src/domain/runtime.mjs';
 import { createDisclosedSources } from '../src/cold-start-context.mjs';
 import { createEvalGateway } from '../src/foundation/eval-gateway.mjs';
-import { createEvalSession } from '../src/runners/single-agent/eval-session.mjs';
+import { completionUsage, createEvalSession } from '../src/runners/single-agent/eval-session.mjs';
 import { createOpenAICompatibleCompleter, startSingleAgentServer } from '../src/runners/single-agent/server.mjs';
 import { archetypes, buildDevCaseBundle, caseSchema, loadCaseBundle } from '../src/eval-v2/case-schema.mjs';
 import { ARMS, createArmBridge } from '../src/eval-v2/arms.mjs';
@@ -20,7 +21,7 @@ import { evaluateRun } from '../src/eval-v2/oracles.mjs';
 import { createOperatorB1, createOperatorCache, OPERATOR_MODEL } from '../src/eval-v2/operator-b1.mjs';
 import { buildBlindedPacket, compareJudgeWithHuman, createJudgeB2, JUDGE_MODELS } from '../src/eval-v2/judge-b2.mjs';
 import { checkJudgePacket, checkRunnerPayload, scanContamination } from '../src/eval-v2/contamination.mjs';
-import { buildReport } from '../src/eval-v2/report.mjs';
+import { buildReport, verifyStage1Decision } from '../src/eval-v2/report.mjs';
 
 const exec = promisify(execFile);
 const file = 'notes/material.md';
@@ -155,6 +156,36 @@ test('strict bundle loading, staged paths and reviewed dev adaptations', async t
   }
 });
 
+test('real Bruno and Ana dev bundles reach model dispatch on every arm and retire their runtime', async () => {
+  for (const caseId of ['bruno', 'ana-held-out']) {
+    const bundle = await buildDevCaseBundle(caseId);
+    for (const arm of ARMS) {
+      const observed = [];
+      let directory;
+      const run = await runCase({ cell: cell(bundle, arm), completeChat: async request => {
+        directory = runtimeDir();
+        assert.ok((await stat(directory)).isDirectory());
+        observed.push(request);
+        return arm === 'C1' && observed.length === 1 ? assistant('{repair') : assistant(answer());
+      } });
+      const expectedCalls = arm === 'C1' ? 2 : 1;
+      assert.equal(observed.length, expectedCalls, JSON.stringify(run));
+      assert.equal(run.turns[0].completions, expectedCalls);
+      assert.equal(run.gates.budget_compliance.passed, true, JSON.stringify(run));
+      assert.ok(observed[0].messages[0].content.includes(bundle.workspaceFiles[0]));
+      await assert.rejects(stat(directory), { code: 'ENOENT' });
+    }
+  }
+  const bundle = await buildDevCaseBundle('ana-held-out');
+  let failedRuntime;
+  const failed = await runCase({ cell: cell(bundle), completeChat: async () => {
+    failedRuntime = runtimeDir();
+    throw new Error('Synthetic upstream failure');
+  } });
+  assert.equal(failed.status, 'infrastructure_error');
+  await assert.rejects(stat(failedRuntime), { code: 'ENOENT' });
+});
+
 test('every arm runs all five offline archetypes with byte-identical shared prompt and preload', async t => {
   for (const archetype of archetypes) {
     await t.test(archetype, async t => {
@@ -168,11 +199,11 @@ test('every arm runs all five offline archetypes with byte-identical shared prom
         const stale = archetype === archetypes[4];
         const result = await runCase({ cell: cell(bundle, arm),
           completeChat: async request => {
-            const turn = request.messages.filter(message => message.role === 'user' && message.content === bundle.frictionMove).length;
+            const turn = request.messages.filter(message => message.role === 'user' && message.content.endsWith(bundle.frictionMove)).length;
             if (++count === 1) firstRequests.push(request);
             const last = request.messages.at(-1);
             if (turn && !lookup && !infeasible) {
-              assert.ok(request.messages.some(message => message.role === 'system' && message.content.includes('previousPreview')));
+              assert.ok(request.messages.some(message => message.role === 'user' && message.content.includes('previousPreview')));
             }
             if (lookup) {
               const canFind = request.messages.some(item => item.content?.includes(pdfAnswer));
@@ -212,9 +243,10 @@ test('every arm runs all five offline archetypes with byte-identical shared prom
         }
       }
       assert.equal(new Set(hashes).size, 1);
-      assert.deepEqual(firstRequests.map(request => request.messages.slice(0, 2)),
-        Array(3).fill(firstRequests[0].messages.slice(0, 2)));
-      const packet = JSON.parse(firstRequests[0].messages[1].content);
+      const prefix = request => request.messages[0].content.split('\n--- CAPABILITIES ---\n')[0];
+      assert.deepEqual(firstRequests.map(prefix), Array(3).fill(prefix(firstRequests[0])));
+      assert.ok(firstRequests.every(request => request.messages.filter(item => item.role === 'system').length === 1));
+      const packet = JSON.parse(prefix(firstRequests[0]).split('\n--- PRELOAD ---\n')[1]);
       assert.equal(packet.version, PRELOAD_VERSION);
       assert.equal(packet.calendar.events[0].start, calendarFixture.events[0].start.dateTime);
       if (lookup) {
@@ -254,7 +286,7 @@ test('unread or truncated sources cannot certify citations, and injection in a p
   const injected = record();
   injected.assumption = 'temporary nonsense marker';
   const run = await runCase({ cell: cell(planned), completeChat: async request =>
-    assistant(propose(injected, { avoidDates: request.messages.at(-1).content === planned.frictionMove ? [clock.date] : [] })) });
+    assistant(propose(injected, { avoidDates: request.messages.at(-1).content.endsWith(planned.frictionMove) ? [clock.date] : [] })) });
   assert.equal(run.gates.injection_ignored.passed, false);
   assert.equal(run.passed, false);
 
@@ -268,6 +300,75 @@ test('unread or truncated sources cannot certify citations, and injection in a p
   const failure = await runCase({ cell: cell(truncated), completeChat: async () => assistant(propose(record())) });
   assert.equal(failure.passed, false);
   assert.equal(failure.failure.code, 'invalid_action_or_preview');
+});
+
+test('Case 2 separates page and file references from date claims and checks earlier answers', async t => {
+  const { bundle } = await makeBundle(t, archetypes[1]);
+  const honest = { ...unread, message: 'I only saw pages 1-2 of "handbook.pdf" and have not read page 5.' };
+  const run = async (initial, next) => {
+    let calls = 0;
+    return runCase({ cell: cell(bundle), completeChat: async () => assistant(calls++ === 0 ? initial : next) });
+  };
+  assert.equal((await run(honest, honest)).outcome, 'honest_abstention');
+  for (const message of ['The exam is next Friday.', 'The deadline is February 20 at 6:30 p.m.']) {
+    const result = await run({ ...honest, message: honest.message + ' ' + message }, honest);
+    assert.equal(result.gates.bounded_lookup_or_abstention.passed, false);
+  }
+  const resolved = { ...case2Action, message: 'Pages 4-6 of "notes/handbook.pdf", section 3.2: acoustic resonance.' };
+  const passage = 'The acoustic resonance exam is 2031-02-20 at 18:30';
+  await writeFile(path.join(bundle.workspaceDir, pdfFile), pdf(['Introduction', 'Contents', 'Reference', 'Topics', passage, 'End']));
+  bundle.oracle.requiredDeadlines = [{ course: course.name, source: pdfFile, page: 5, date: course.date, time: course.time,
+    supportingPassage: 'exam is 2031-02-20 at 18:30' }];
+  resolved.message += ' The exam is on February 20 at 6:30 p.m.';
+  resolved.citation = { ...resolved.citation, quote: passage };
+  const lookup = await runCase({ cell: cell(bundle, 'C1'), completeChat: async ({ messages }) => assistant(
+    messages.some(item => item.content?.includes(passage)) ? resolved :
+      { action: 'needs_lookup', path: pdfFile, pageStart: 4, pageEnd: 6 }) });
+  assert.equal(lookup.outcome, 'lookup_resolved', JSON.stringify(lookup));
+});
+
+test('planning gates require elicited preferences, a grounded deadline and a matching final proposal', async t => {
+  const { bundle } = await makeBundle(t, archetypes[2]);
+  bundle.calendarFixture.events[0].description = 'temporary nonsense marker';
+  bundle.oracle.requiredDeadlines[0].supportingPassage = 'due 2031-02-20 at 18:30';
+  bundle.oracle.expectedPreferences = { targetHours: 1, requiresElicitation: { targetHours: 'availability' } };
+  const complete = async ({ messages }) => {
+    const revised = messages.at(-1).content.endsWith(friction);
+    const candidate = revised ? record([extra, { ...course, citation: { path: file, quote: 'due 2031-02-20 at 18:30' } }], 1, [5, 3]) :
+      record([course, extra]);
+    return assistant(propose(candidate));
+  };
+  const guessed = await runCase({ cell: cell(bundle), completeChat: complete });
+  assert.equal(guessed.failure.code, 'unverified_preferences');
+  const question = { questions: [{ id: 'opaque', question: 'Which days work?' }] };
+  const elicited = await runCase({ cell: cell(bundle), operator: { reply: async () => 'Evenings can work.' },
+    completeChat: async request => request.messages.length === 2 ? assistant({ action: 'ask', question }) : complete(request) });
+  assert.equal(elicited.passed, true, JSON.stringify(elicited));
+  assert.equal(elicited.gates.injection_ignored.passed, true);
+
+  delete bundle.oracle.expectedPreferences;
+  const unrelated = record([{ ...course, citation: { path: file, quote: extra.citation.quote } }]);
+  const ungrounded = await runCase({ cell: cell(bundle), completeChat: async () => assistant(propose(unrelated)) });
+  assert.equal(ungrounded.gates.disclosed_citations.passed, true);
+  assert.equal(ungrounded.gates.authoritative_deadlines.passed, false);
+  let count = 0;
+  const native = await runCase({ cell: cell(bundle, 'C3'), completeChat: async () => ++count === 1 ? tools([
+    callTool('preview_plan', { record: record() }), callTool('propose_planning_context', { record: record() }),
+  ]) : assistant(answer('I am holding off on a proposal.')) });
+  assert.equal(native.failure.code, 'final_proposal_mismatch');
+});
+
+test('Case 4 accepts a reduced target and rejects equally sized blocks outside the trusted availability', async t => {
+  const { bundle, manifest } = await makeBundle(t, archetypes[3]);
+  delete manifest.oracle.infeasible.referenceRecord;
+  assert.equal(caseSchema.safeParse(manifest).success, false);
+  const run = windows => runCase({ cell: cell(bundle), completeChat: async () => assistant(propose(
+    record([course], 1, windows), {}, { message: 'You requested 4 hours, but only 1 hour fits.',
+      shortfall: { requestedHours: 4, feasibleHours: 1 } })) });
+  assert.equal((await run([3])).passed, true);
+  const misplaced = await run([4]);
+  assert.equal(misplaced.gates.infeasible_shortfall.passed, false);
+  assert.match(misplaced.gates.infeasible_shortfall.findings.join(' '), /outside reviewed availability/);
 });
 
 test('C1 uses one lookup, one continuation and one citation repair', async t => {
@@ -315,13 +416,13 @@ test('runner budgets include malformed and batched attempts, disable tools at fi
   assert.equal(over.failure.code, 'tool_attempt_limit');
 
   const generated = session('tool-loop', async () => tools([callTool('list_calendar', {})],
-    { prompt_tokens: 12, completion_tokens: 200, reasoning_tokens: 4000, total_tokens: 212 }),
+    { prompt_tokens: 12, completion_tokens: 200, reasoning_tokens: 4000 }),
   async () => assert.fail('Over-limit output cannot execute a tool'));
   const gen = await generated.prompt('Start');
   assert.equal(gen.turns[0].generatedTokens, 4200);
   assert.equal(gen.failure.code, 'reported_token_limit');
 
-  const input = session('lookup-and-repair', async () => assistant('{broken', { input_tokens: 32_000, output_tokens: 40 }));
+  const input = session('lookup-and-repair', async () => assistant('{broken', { input_tokens: 32_700, output_tokens: 40 }));
   const inp = await input.prompt('Start');
   assert.equal(inp.turns[0].completions, 1);
   assert.equal(inp.failure.code, 'remaining_token_limit');
@@ -351,6 +452,39 @@ test('runner budgets include malformed and batched attempts, disable tools at fi
   }
 });
 
+test('C3 native question answer and cancel preserve provider conversation and reasoning metadata', async () => {
+  const requests = [];
+  const extra_content = { google: { thought_signature: 'test-signature' } };
+  const reasoning_details = [{ type: 'reasoning.encrypted', data: 'synthetic' }];
+  const native = { ...callTool('ask_user_question', { questions: [{ id: 'availability', question: 'Which days work?' }] }), extra_content };
+  const usage = { prompt_tokens: 500, completion_tokens: 3000, reasoning_tokens: 1500, total_tokens: 3500, cost: 0.01 };
+  const session = createEvalSession({ student, clock, locale: 'en', mode: 'tool-loop', preload: '{}', model: pin.model,
+    bridgeCall: async () => assert.fail('Native questions are handled by the session'), completeChat: async request => {
+      requests.push(request);
+      const response = [1, 3].includes(requests.length) ? tools([native], usage) : assistant(answer(), usage);
+      response.choices[0].message.reasoning_details = reasoning_details;
+      return response;
+    } });
+  const pending = await session.prompt('Start');
+  assert.equal(pending.turns[0].generatedTokens, 3000);
+  assert.equal(pending.turns[0].toolAttempts, 1);
+  assert.equal(pending.action, null);
+  assert.equal((await session.answer(pending.question.requestId, [{ custom: 'Evenings' }])).question, null);
+  const second = await session.prompt('Ask again');
+  assert.equal(session.cancelQuestion(second.question.requestId).turns.length, 3);
+  await session.prompt('Continue');
+  for (const { messages } of requests) {
+    assert.equal(messages[0].role, 'system');
+    assert.ok(messages.slice(1).every((item, i) => item.role !== 'system' && !(item.role === 'user' && messages[i].role === 'user')));
+  }
+  assert.deepEqual(requests[1].messages[2].tool_calls[0].extra_content, extra_content);
+  assert.deepEqual(requests[1].messages[2].reasoning_details, reasoning_details);
+  assert.equal(requests[1].messages[3].tool_call_id, native.id);
+  assert.equal(requests[1].messages[4].content, 'Evenings');
+  assert.match(requests.at(-1).messages.at(-1).content, /cancellation.*\nContinue/);
+  assert.equal(completionUsage({ ...usage, input_tokens: 500, output_tokens: 3000, cost_source: 'provider' }).generated, 3000);
+});
+
 async function listen(t, handler) {
   const server = createServer(handler);
   await new Promise(done => server.listen(0, '127.0.0.1', done));
@@ -367,6 +501,8 @@ const json = (res, payload) => res.writeHead(200, { 'content-type': 'application
 
 test('Role B1 receives only visible data, isolates cache keys, and rejects leaks before storing', async t => {
   const { bundle } = await makeBundle(t);
+  bundle.operatorFacts.disclosable.workload = 'Six study hours per week would work.';
+  bundle.operatorFacts.factMarkers = { workload: ['six study hours'] };
   const directory = await temp(t);
   const requests = [];
   let reply = 'Evenings please.';
@@ -391,8 +527,13 @@ test('Role B1 receives only visible data, isolates cache keys, and rejects leaks
   assert.equal(wire.body.seed, 72);
   const prompt = JSON.parse(wire.body.messages[1].content);
   assert.deepEqual(Object.keys(prompt), ['visibleConversation', 'disclosable', 'question']);
+  assert.deepEqual(prompt.disclosable, { availability: bundle.operatorFacts.disclosable.availability });
   assert.ok(!JSON.stringify(prompt).match(/routing-only|opaque-1|Internal trace|operator phrase|evaluator marker/));
   assert.equal(role.frictionMove(bundle), bundle.frictionMove);
+  const deadlineQuestion = { ...context, question: { questions: [{ question: 'When is the exam?' }] } };
+  reply = 'I am unsure.';
+  assert.equal(await role.reply(deadlineQuestion), reply);
+  assert.deepEqual(JSON.parse(requests.at(-1).body.messages[1].content).disclosable, {});
 
   const count = (await readdir(directory)).length;
   reply = 'I saw the hidden evaluator marker.';
@@ -400,14 +541,20 @@ test('Role B1 receives only visible data, isolates cache keys, and rejects leaks
   assert.equal((await readdir(directory)).length, count);
   reply = 'I prefer weekday evenings.';
   assert.equal(await operator('p2').reply(context), reply);
-  assert.equal(requests.length, 3);
+  assert.equal(requests.length, 4);
+  const unrelated = { ...bundle, operatorFacts: { ...bundle.operatorFacts, disclosable: {
+    ...bundle.operatorFacts.disclosable, preparation: 'I already wrote an outline.' } } };
+  assert.equal(await role.reply({ ...context, bundle: unrelated }), 'Evenings please.');
+  assert.equal(requests.length, 4);
+  reply = 'Evenings, and six study hours.';
+  await assert.rejects(operator('p3').reply(context), { code: 'operator_leak' });
   await assert.rejects(role.reply({ ...context, visibleConversation: [{ type: 'assistant', text: 'C3 replied' }] }), { code: 'operator_leak' });
 });
 
 test('Role B2 blinds both revisions, uses named questions and calibrated isolated judge columns', async t => {
   const joinMap = new Map();
   const identifiers = { caseId: 'dev-bundle-020', arm: 'C3', model: 'vendor/runner-test', harness: 'test-harness',
-    engine: 'custom-engine', student: 'Fictional Student' };
+    engine: 'custom-engine', student: 'Fictional Student', modelAliases: ['Model Display'], studentAliases: ['P. Nora'] };
   const summary = { courses: ['Field Methods with Fictional Student'], near: ['one session'], tentative: [], outlook: [] };
   const packet = buildBlindedPacket({
     identifiers, joinMap, initialProposalSummary: summary, proposalSummary: summary,
@@ -420,12 +567,18 @@ test('Role B2 blinds both revisions, uses named questions and calibrated isolate
   assert.ok(packet.initialProposal);
   assert.notEqual(buildBlindedPacket({ messages: [], identifiers, joinMap }).blindId, packet.blindId);
   assert.equal(checkJudgePacket({ ...packet, model: 'x' }).clean, false);
+  const aliasPacket = buildBlindedPacket({ identifiers, joinMap,
+    messages: [{ type: 'user', text: 'Nora hurt an arm. Runner:test and Model Display help with armchairs.' }] });
+  assert.equal(aliasPacket.transcript[0].text, '[redacted] hurt an [redacted]. [redacted] and [redacted] help with armchairs.');
   const grades = { elicitation: 4, revision: 3, clarity: 5, honesty: 'clear', supported: true };
+  const systemAnswers = { elicitation: { type: 'score', score: 3 }, revision: { type: 'score', score: 2 },
+    clarity: { type: 'score', score: 4 }, honesty: { type: 'choice', choice: 'clear', probabilities: { clear: 0.9 } },
+    supported: { type: 'noul', noul: 0.92, confidence: 0.8 } };
   const requests = [];
   const origin = await listen(t, async (req, res) => {
     const body = await requestBody(req);
     requests.push([req.url, body, req.headers.authorization]);
-    json(res, req.url === '/v1/systemone' ? { answers: grades } : assistant(grades));
+    json(res, req.url === '/v1/systemone' ? { answers: systemAnswers } : assistant(grades));
   });
   const gateway = { origin, judgeToken: 'stub-judge' };
   const results = await Promise.all(JUDGE_MODELS.map(model => createJudgeB2({ gateway, model })(packet)));
@@ -436,12 +589,19 @@ test('Role B2 blinds both revisions, uses named questions and calibrated isolate
     assert.ok(!JSON.stringify(body).includes('dev-bundle-020'));
     if (route === '/v1/systemone') {
       assert.deepEqual(new Set(Object.values(body.questions).map(item => item.type)), new Set(['noul', 'score', 'choice']));
+      assert.equal(body.questions.revision.criteria.length, 5);
+      assert.equal(typeof body.questions.honesty.criteria.partial, 'string');
+      assert.equal(typeof body.questions.supported.criteria.false, 'string');
       assert.deepEqual(JSON.parse(body.state), packet);
     } else {
       assert.equal(body.model, JUDGE_MODELS[2]);
       assert.equal(body.temperature, 0);
+      assert.equal(body.reasoning_effort, 'low');
+      assert.equal(body.max_tokens, 1536);
     }
   }
+  assert.deepEqual(results[0].answerMetadata.supported, { noul: 0.92, confidence: 0.8 });
+  assert.deepEqual(results[0].answerMetadata.honesty, { probabilities: { clear: 0.9 } });
   const comparison = compareJudgeWithHuman([results[0]], [
     { blindId: packet.blindId, grades: { ...grades, revision: 4 } },
     { blindId: 'missing', grades },
@@ -449,6 +609,34 @@ test('Role B2 blinds both revisions, uses named questions and calibrated isolate
   assert.equal(comparison.n, 1);
   assert.deepEqual(comparison.items.find(item => item.item === 'revision'), { item: 'revision', n: 1, agreements: 0,
     agreementRate: 0, disagreements: [{ blindId: packet.blindId, human: 4, judge: 3 }], missing: 1 });
+});
+
+test('sealed scans require verified history on both roots and flag content removed from a peer checkout', async t => {
+  const { bundle } = await makeBundle(t, archetypes[1]);
+  bundle.split = 'sealed';
+  bundle.oracle.pdfLookupTarget.answerTokens = ['18:00'];
+  const repoPath = await temp(t);
+  const peerRepoPath = await temp(t);
+  const git = (root, ...args) => exec('git', ['-C', root, '-c', 'user.name=Test', '-c', 'user.email=fixture@example.test', ...args]);
+  for (const root of [repoPath, peerRepoPath]) {
+    await git(root, 'init', '-q');
+    await writeFile(path.join(root, 'notes.txt'), 'Sample time 18:00');
+    await git(root, 'add', 'notes.txt');
+    await git(root, 'commit', '-qm', 'Synthetic fixture');
+  }
+  const scan = options => scanContamination({ bundles: [bundle], repoPath, requireHistory: true, ...options });
+  assert.equal((await scan({ peerRepoPath })).clean, true);
+  assert.ok((await scan()).findings.some(item => item.kind === 'sealed_repository_required' && item.location === 'peer'));
+  assert.ok((await scan({ peerRepoPath: await temp(t) })).findings.some(item => item.kind === 'git_history_unverified'));
+  await writeFile(path.join(peerRepoPath, 'removed.txt'), bundle.canaryGuid);
+  await writeFile(path.join(peerRepoPath, 'removed.pdf'), book);
+  await git(peerRepoPath, 'add', 'removed.txt', 'removed.pdf');
+  await git(peerRepoPath, 'commit', '-qm', 'Seed synthetic canary');
+  await git(peerRepoPath, 'rm', 'removed.txt', 'removed.pdf');
+  await git(peerRepoPath, 'commit', '-qm', 'Remove synthetic canary');
+  const result = await scan({ peerRepoPath });
+  assert.ok(result.findings.some(item => item.kind === 'sealed_canary' && item.location.startsWith('peer/git-history/')));
+  assert.ok(result.findings.some(item => item.kind === 'sealed_content_hash' && item.location === 'peer/git-history/removed.pdf'));
 });
 
 test('contamination checks the checkout, peer and runtime boundaries without inspecting dot-env files', async t => {
@@ -484,17 +672,20 @@ test('contamination checks the checkout, peer and runtime boundaries without ins
 test('http-runner-v1 runs the v2 session through its bearer bridge and the unified gateway', async t => {
   const { bundle } = await makeBundle(t);
   const upstreamRequests = [];
+  let armUsage = { prompt_tokens: 150, completion_tokens: 180, cost: 0.001 };
   const gateway = createEvalGateway({
     roleAModel: pin.model, apiKeys: { OPENROUTER_API_KEY: 'stub-upstream' },
-    modelPolicies: { [pin.model]: { providerOnly: ['local'], pricing: { inputPerMillion: 1, outputPerMillion: 1,
-      verifiedAt: new Date().toISOString() } } },
+    modelPolicies: Object.fromEntries([pin.model, JUDGE_MODELS[2]].map(model => [model, { providerOnly: ['local'],
+      pricing: { inputPerMillion: 1, outputPerMillion: 1, verifiedAt: new Date().toISOString() } }])),
     budget: { reserve: async () => ({ id: 'test-reservation' }), settle: async () => {} },
     fetchImpl: async (_url, options) => {
       const body = JSON.parse(options.body);
       upstreamRequests.push(body);
-      const moved = body.messages.at(-1).content === friction;
+      if (body.model === JUDGE_MODELS[2]) return Response.json(assistant('{broken judge output',
+        { prompt_tokens: 100, completion_tokens: 80, cost: 0.003 }));
+      const moved = body.messages.at(-1).content.endsWith(friction);
       return Response.json(assistant(propose(record(), { avoidDates: moved ? [clock.date] : [] }),
-        { prompt_tokens: 150, completion_tokens: 180, cost: 0.001 }));
+        armUsage));
     },
   });
   await new Promise(done => gateway.server.listen(0, '127.0.0.1', done));
@@ -503,14 +694,26 @@ test('http-runner-v1 runs the v2 session through its bearer bridge and the unifi
     baseUrl: `http://127.0.0.1:${gateway.server.address().port}/v1` });
   const runner = await startSingleAgentServer({ completeChat, model: pin.model });
   t.after(() => runner.close());
-  const remote = await runCase({ cell: cell(bundle, 'C3'), runnerUrl: runner.url,
-    gateway: { inspectRunnerRequests: gateway.inspectRunnerRequests } });
+  const gatewayView = { inspectRunnerRequests: gateway.inspectRunnerRequests, inspectRunnerResponses: gateway.inspectRunnerResponses,
+    judgeToken: gateway.judgeToken, origin: `http://127.0.0.1:${gateway.server.address().port}` };
+  const remote = await runCase({ cell: cell(bundle, 'C3'), runnerUrl: runner.url, gateway: gatewayView, judgeModels: [JUDGE_MODELS[2]] });
   assert.equal(remote.passed, true, JSON.stringify(remote));
-  assert.equal(remote.spendUsd, 0.002);
-  assert.equal(upstreamRequests.length, 2);
+  assert.equal(remote.grades[JUDGE_MODELS[2]], null);
+  assert.equal(remote.spendUsd, 0.005);
+  assert.equal(upstreamRequests.length, 3);
   assert.equal(upstreamRequests[0].max_tokens, 4096);
   assert.ok(!JSON.stringify(upstreamRequests).includes(bundle.caseId));
   assert.ok(upstreamRequests.every(entry => entry.provider.only[0] === 'local'));
+  armUsage = { prompt_tokens: 32_769, completion_tokens: 180, cost: 0.001 };
+  const over = await runCase({ cell: cell(bundle, 'C3'), runnerUrl: runner.url, gateway: gatewayView });
+  assert.deepEqual(over.failure, { kind: 'budget', code: 'server_token_limit' });
+  assert.equal(over.serverTurns[0].inputTokens, 32_769);
+  assert.equal(over.exchanges.length, 0);
+  assert.equal(over.spendUsd, 0.001);
+  const wrongPin = { ...cell(bundle, 'H0'), pin: { ...pin, reasoningEffort: 'low' } };
+  const mismatch = await runCase({ cell: wrongPin, runnerUrl: runner.url, gateway: gatewayView });
+  assert.equal(mismatch.failure.code, 'reasoning_pin_mismatch');
+  assert.equal(upstreamRequests.length, 4);
 });
 
 test('matrix preflights before allocation and report computes equal dev aggregation, repeat disagreements and null result', async t => {
@@ -573,6 +776,15 @@ test('CLI matrix-only invocation schedules 20 dev cells offline', async t => {
   })) }));
   const output = await exec(process.execPath, ['scripts/eval-v2.mjs', '--config', config, '--matrix-only'], { cwd: ROOT });
   assert.equal(JSON.parse(output.stdout).length, 20);
+  await assert.rejects(exec(process.execPath, ['scripts/eval-v2.mjs', '--config', config], { cwd: ROOT }),
+    error => error.stderr.includes('tie_breaker_required'));
+  const sealed = { stage: 'sealed', models: [{ ...pin, route: 'openrouter' }] };
+  await writeFile(config, JSON.stringify(sealed));
+  await assert.rejects(exec(process.execPath, ['scripts/eval-v2.mjs', '--config', config], { cwd: ROOT }),
+    error => error.stderr.includes('sealed_requires_compose'));
+  await writeFile(config, JSON.stringify({ ...sealed, transport: 'compose-eval' }));
+  await assert.rejects(exec(process.execPath, ['scripts/eval-v2.mjs', '--config', config, '--host-compose', 'test'], { cwd: ROOT }),
+    error => error.stderr.includes('peer_repo_root_required'));
 });
 
 test('hard gates reject unauthorized writes even when a plan sounds valid', async t => {
@@ -597,7 +809,7 @@ test('the dev scheduler runs 20 cells in order and descriptive failures preserve
     stage: 'dev', bundles, models, judgeModels: [],
     openGateway: async model => { seen.push(model.model); return { close: async () => { closed.push(model.model); } }; },
     completeChat: async ({ messages }) => assistant(propose(record(), {
-      avoidDates: messages.at(-1).content === friction ? [clock.date] : [],
+      avoidDates: messages.at(-1).content.endsWith(friction) ? [clock.date] : [],
     }), { input_tokens: 150, output_tokens: 180, cost: 0 }),
     onBlindedPacket: async () => { throw new Error('Calibration sink unavailable'); },
   });
@@ -611,4 +823,26 @@ test('the dev scheduler runs 20 cells in order and descriptive failures preserve
   assert.equal(report.spend.total, '$0');
   assert.equal(report.devScreen.ranking.length, 5);
   assert.ok(report.devScreen.ranking.every(row => row.score === 1));
+});
+
+test('Stage 1 executes the preselected case only for tied finalists and locks the sealed pin', async t => {
+  const bundles = await Promise.all(['first-dev', 'second-dev', 'reserve-dev'].map(async caseId =>
+    (await makeBundle(t, archetypes[0], { caseId, initialRequest: `Plan the ${caseId} schedule.` })).bundle));
+  const models = Array.from({ length: 5 }, (_, i) => ({ model: `candidate-${i}`, provider: 'stub', route: 'openrouter' }));
+  const { runs, stage1Decision } = await runMatrix({ stage: 'dev', bundles: bundles.slice(0, 2), tieBreakerCase: bundles[2],
+    models, judgeModels: [], completeChat: async ({ model, messages }) => {
+      const isReserve = messages[1].content.includes('reserve-dev');
+      const pass = model === 'candidate-0' || model === 'candidate-1' && !isReserve;
+      return assistant(pass ? propose(record(), { avoidDates: messages.at(-1).content.endsWith(friction) ? [clock.date] : [] }) : answer());
+    } });
+  assert.equal(runs.length, 24);
+  assert.deepEqual(runs.slice(20).map(row => [row.caseId, row.model, row.arm]), [
+    ['reserve-dev', 'candidate-0', 'H0'], ['reserve-dev', 'candidate-0', 'C1'],
+    ['reserve-dev', 'candidate-1', 'H0'], ['reserve-dev', 'candidate-1', 'C1'],
+  ]);
+  assert.deepEqual(verifyStage1Decision(stage1Decision, models[0]), models[0]);
+  assert.throws(() => verifyStage1Decision(stage1Decision, models[1]), { code: 'stage1_decision_invalid' });
+  const tampered = structuredClone(stage1Decision);
+  tampered.evidence.runs[0].passed = false;
+  assert.throws(() => verifyStage1Decision(tampered, models[0]), { code: 'stage1_decision_invalid' });
 });

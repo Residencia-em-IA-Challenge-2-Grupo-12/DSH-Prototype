@@ -1,6 +1,7 @@
-import { mkdtemp } from 'node:fs/promises';
+import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { isDeepStrictEqual } from 'node:util';
 import {
   disposeSyntheticRuntime, initializeScenario, previewPlan, withSyntheticRuntime,
 } from '../core.mjs';
@@ -14,8 +15,11 @@ import { archetypes } from './case-schema.mjs';
 import { checkRunnerPayload, hiddenMarkers, scanContamination } from './contamination.mjs';
 import { buildBlindedPacket, createJudgeB2, JUDGE_MODELS } from './judge-b2.mjs';
 import { EVAL_LIMITS } from '../runners/single-agent/eval-session.mjs';
-import { createOperatorB1, createOperatorCache } from './operator-b1.mjs';
-import { evaluatePreStale, evaluateRun } from './oracles.mjs';
+import { normalizeContent } from '../runners/single-agent/agent-loop.mjs';
+import { createOperatorB1, createOperatorCache, disclosedOperatorTopics } from './operator-b1.mjs';
+import { evaluatePreStale, evaluateRun, matchesPreferences } from './oracles.mjs';
+import { createStage1Decision, stage1Screen } from './report.mjs';
+import { createArmMeter } from './arm-meter.mjs';
 import { buildPreload, checkLookupPreload } from './preload.mjs';
 
 export function buildMatrix({ stage, bundles, models }) {
@@ -64,7 +68,8 @@ async function withCaseRuntime(bundle, calendar, operation) {
       return operation(directory, workspace);
     }, workspace);
   } finally {
-    await disposeSyntheticRuntime(directory);
+    try { await disposeSyntheticRuntime(directory); }
+    finally { await rm(directory, { recursive: true, force: true }); }
   }
 }
 
@@ -77,10 +82,12 @@ function safeProposal(plan) {
   };
 }
 
-async function staleProbe({ bundle, calendar, service, final, initial, events, writeAttempts }) {
+async function staleProbe({ bundle, calendar, service, final, initial, events, writeAttempts, perturbCalendar }) {
   const preStale = evaluatePreStale(bundle, final, events, initial);
   const delta = bundle.oracle.stalePerturbation.event;
-  if (events.some(event => event.id === delta.id)) await calendar.patch(bundle.student, delta.id, delta);
+  const existing = events.some(event => event.id === delta.id);
+  if (perturbCalendar) await perturbCalendar(bundle.student, delta, existing);
+  else if (existing) await calendar.patch(bundle.student, delta.id, delta);
   else await calendar.create(bundle.student, delta);
   const perturbed = await calendar.events(bundle.student);
   const changed = digest(perturbed) !== digest(events) && digest(perturbed) !== final.plan.baseHash;
@@ -116,7 +123,7 @@ const runnerSnapshot = z.object({
 
 export async function runCase({
   cell, completeChat, gateway, runnerUrl, transport = 'loopback', fetchImpl = fetch,
-  operator, operatorProviderPin, operatorCache, judgeModels = [], calendars = createMemoryCalendar,
+  operator, operatorProviderPin, operatorCache, judgeModels = [], calendars = createMemoryCalendar, perturbCalendar,
   expectedPreload, joinMap = new Map(), onBlindedPacket,
 }) {
   const { arm, bundle, repeat, pin } = cell;
@@ -126,6 +133,7 @@ export async function runCase({
   const roleSpend = [];
   const onUsage = usage => roleSpend.push(observedSpend(usage));
   let turns = [];
+  let armSpend = [];
   let row;
   try {
     const calendar = await calendars(bundle.calendarFixture, cell);
@@ -151,34 +159,61 @@ export async function runCase({
         runIdentifiers: [pin.model],
       }));
       let runnerClean = true;
+      const modelOutputs = [];
+      let toolNarration = [];
       const inspect = data => {
         if (!checkRunnerPayload({ bundle, ...data }).clean) {
           runnerClean = false;
           throw Object.assign(new Error('Runner content failed isolation checks'), { code: 'runner_contamination' });
         }
       };
-      const bridge = createArmBridge(service, bundle.student, arm, { inspect, disclosedSources });
-      // The evaluator also inspects the remote runner's actual outbound chat
-      // requests before the gateway forwards them to the pinned provider.
-      const removeInspector = gateway?.inspectRunnerRequests?.(payload => {
-        inspect({ payload });
-        if (pin.reasoningEffort !== undefined && payload.reasoning_effort !== pin.reasoningEffort) {
-          throw new Error('Runner reasoning mode differs from the frozen configuration');
+      const inspectCompletion = response => {
+        const message = response?.choices?.[0]?.message;
+        if (message) {
+          const calls = Array.isArray(message.tool_calls) ? message.tool_calls : [];
+          modelOutputs.push([message.content, calls.map(call => call?.function)]);
+          if (calls.length) toolNarration.push({ text: normalizeContent(message.content), reads: [...bridge.reads] });
         }
-      });
+        inspect({ outputs: response?.choices });
+      };
+      const meter = createArmMeter(arm);
+      const bridge = createArmBridge(service, bundle.student, arm, { inspect, disclosedSources, meter });
+      let removeInspector;
+      let removeResponseInspector;
+      let pinMismatch = false;
       let session;
       let failure;
       let lastAction;
       let messages = [];
       const exchanges = [];
+      const lookupTurns = [];
+      const disclosedTopics = new Set();
+      let preferenceViolation = false;
       let firstDraft;
       let finalDraft;
       let lastPreview;
       let stale;
       let frictionDelivered = false;
       try {
+        if (!completeChat || runnerUrl) {
+          if (typeof gateway?.inspectRunnerRequests !== 'function' || typeof gateway?.inspectRunnerResponses !== 'function') {
+            throw new Error('Evaluator gateway metering is required for HTTP execution');
+          }
+          removeInspector = gateway.inspectRunnerRequests(payload => {
+            inspect({ payload });
+            if ((payload.reasoning_effort ?? undefined) !== (pin.reasoningEffort ?? undefined)) {
+              pinMismatch = true;
+              throw new Error('Runner reasoning mode differs from the frozen configuration');
+            }
+            meter.request(payload);
+          });
+          removeResponseInspector = gateway.inspectRunnerResponses(response => {
+            inspectCompletion(response);
+            meter.response(response);
+          });
+        }
         session = await startArmSession({ arm, bundle, bridge, preload, model: pin.model,
-          completeChat, gateway, runnerUrl, transport, fetchImpl, schemaCompat: pin.schemaCompat, inspect });
+          completeChat, gateway, runnerUrl, transport, fetchImpl, schemaCompat: pin.schemaCompat, inspect, inspectCompletion, meter });
         const operatorReplies = [bundle.initialRequest];
         let transition = () => session.prompt(bundle.initialRequest);
         let stage = 'initial';
@@ -188,10 +223,25 @@ export async function runCase({
             break;
           }
           bridge.beginTurn();
-          const response = runnerSnapshot.parse(await transition());
+          const messageOffset = messages.length;
+          const readOffset = bridge.reads.length;
+          toolNarration = [];
+          meter.beginTurn();
+          let response;
+          try { response = runnerSnapshot.parse(await transition()); }
+          finally { meter.endTurn(); }
           ({ turns, failure, messages, action: lastAction } = response);
+          lookupTurns.push({ action: lastAction, messages: messages.slice(messageOffset),
+            priorReads: bridge.reads.slice(0, readOffset), reads: [...bridge.reads], toolNarration });
           inspect({ outputs: { messages, question: response.question, action: lastAction } });
+          if (bridge.submission && !matchesPreferences(bridge.submission.record, bundle, disclosedTopics, {
+            revised: stage === 'friction', shortfall: lastAction?.shortfall,
+          })) preferenceViolation = true;
           if (failure) break;
+          if ((lastAction || meter.finalAction) && !isDeepStrictEqual(meter.finalAction, lastAction)) {
+            failure = { kind: 'quality', code: 'final_action_mismatch' };
+            break;
+          }
           if (response.question) {
             if (!roleB1) {
               failure = { kind: 'compatibility', code: 'operator_unavailable' };
@@ -200,11 +250,23 @@ export async function runCase({
             const reply = await roleB1.reply({ bundle, visibleConversation: messages, question: response.question });
             inspect({ outputs: reply });
             operatorReplies.push(reply);
+            for (const topic of disclosedOperatorTopics(bundle, response.question, reply)) disclosedTopics.add(topic);
             transition = () => session.answer(response.question.requestId, [{ custom: reply }]);
             continue;
           }
-          if (bridge.submission && lastAction?.action !== 'abstain_infeasible') {
-            const { id, record: candidate, options, result: preview } = bridge.submission;
+          const submission = bridge.submission;
+          if (submission || lastAction?.action === 'propose') {
+            if (!submission || lastAction?.action !== 'propose' ||
+                !isDeepStrictEqual(submission.record, lastAction.record) ||
+                !isDeepStrictEqual(submission.options, lastAction.options ?? {})) {
+              failure = { kind: 'quality', code: 'final_proposal_mismatch' };
+              break;
+            }
+            if (preferenceViolation) {
+              failure = { kind: 'quality', code: 'unverified_preferences' };
+              break;
+            }
+            const { id, record: candidate, options, result: preview } = submission;
             if (!preview.ok && !lastAction?.shortfall) {
               failure = { kind: 'quality', code: 'unacknowledged_shortfall' };
               break;
@@ -241,12 +303,23 @@ export async function runCase({
         }
       } finally {
         try { await session?.close(); }
-        finally { removeInspector?.(); }
+        finally {
+          removeInspector?.();
+          removeResponseInspector?.();
+        }
       }
 
       if (!runnerClean && failure?.code !== 'operator_leak') {
         failure = { kind: 'quality', code: 'runner_contamination' };
       }
+      const budget = meter.compare(turns);
+      armSpend = budget.spend;
+      if (!pinMismatch && runnerClean && (budget.violation || (budget.failure && !failure))) {
+        failure = budget.violation === 'server_missing_token_usage'
+          ? { kind: 'compatibility', code: 'missing_token_usage' }
+          : { kind: 'budget', code: budget.failure };
+      }
+      if (pinMismatch) failure = { kind: 'compatibility', code: 'reasoning_pin_mismatch' };
       const beforeApproval = await calendar.events(bundle.student);
       const providerAttempts = attempts;
       const calendarUnchanged = digest(initialEvents) === digest(beforeApproval);
@@ -254,21 +327,23 @@ export async function runCase({
       if (!failure && bundle.oracle.infeasible && lastPreview) {
         const reference = bundle.oracle.infeasible.referenceRecord;
         const clock = bundle.clock;
-        const preview = (input, options) => previewPlan(serviceCalendar, bundle.student, { ...options, record: input }, {
+        const preview = (input, options, schemaProfile) => previewPlan(serviceCalendar, bundle.student, { ...options, record: input }, {
           ...workspace, today: clock.date, timezone: clock.timezone,
-          timezoneOffset: timezoneOffsetForDate(clock.date, clock.timezone), disclosedSources, schemaProfile: 'eval-v2',
+          timezoneOffset: timezoneOffsetForDate(clock.date, clock.timezone),
+          ...(schemaProfile === 'eval-v2' ? { disclosedSources } : {}), schemaProfile,
         });
-        const independent = await preview(lastPreview.record, lastPreview.options);
-        const trustedReference = reference && await preview(reference, { avoidDates: bundle.oracle.revision?.avoidDates ?? [] });
-        capacity = { candidate: independent.capacityPerWeek, reference: trustedReference?.capacityPerWeek };
+        const independent = await preview(lastPreview.record, lastPreview.options, 'eval-v2');
+        const trustedReference = await preview(reference, { weeks: 16, avoidDates: bundle.oracle.revision?.avoidDates ?? [] }, 'v1');
+        capacity = { candidate: independent, reference: trustedReference };
       }
       if (!failure && bundle.oracle.stalePerturbation && finalDraft && calendarUnchanged && !attempts) {
         stale = await staleProbe({ bundle, calendar, service, final: finalDraft, initial: firstDraft,
-          events: beforeApproval, writeAttempts: () => attempts });
+          events: beforeApproval, writeAttempts: () => attempts, perturbCalendar });
       }
       await service.drain();
       const evaluation = await evaluateRun({
-        bundle, arm, turns, failure, messages, providerAttempts, calendarUnchanged, observedEvents: beforeApproval,
+        bundle, arm, turns, failure, messages, modelOutputs, budget, lookupTurns, preferenceViolation, disclosedTopics,
+        providerAttempts, calendarUnchanged, initialEvents, observedEvents: beforeApproval,
         initial: firstDraft, final: finalDraft, lastAction, records: bridge.planningRecords, reads: bridge.reads,
         disclosedSources, independentCapacity: capacity, stale, runnerClean, invalidCitation: bridge.invalidCitation,
       });
@@ -277,7 +352,8 @@ export async function runCase({
       if (status === 'completed' && runnerClean && (judgeModels.length || onBlindedPacket)) {
         const identifiers = { caseId: bundle.caseId, arm, model: pin.model, provider: pin.provider,
           engine: 'single-agent-http-v1', harness: 'eval-v2', repeat, student: bundle.student,
-          studentName: bundle.calendarFixture.users[0].name };
+          studentName: bundle.calendarFixture.users[0].name, studentAliases: bundle.studentAliases ?? [],
+          modelAliases: pin.modelAliases ?? [] };
         try {
           const packet = buildBlindedPacket({
             messages, proposalSummary: safeProposal(finalDraft?.plan), initialProposalSummary: safeProposal(firstDraft?.plan),
@@ -286,19 +362,20 @@ export async function runCase({
           record.blindId = packet.blindId;
           await onBlindedPacket?.(packet);
           for (const model of judgeModels) {
+            const priorSpendCount = roleSpend.length;
             try {
               record.grades[model] = await createJudgeB2({ gateway, model, transport, fetchImpl, onUsage })(packet);
             } catch {
               record.grades[model] = null;
-              roleSpend.push(null);
+              if (roleSpend.length === priorSpendCount) roleSpend.push(null);
             }
           }
         } catch {
           record.gradingError = 'blinded_packet_unavailable';
         }
       }
-      return { ...record, status, failure, ...evaluation, turns, providerAttempts, frictionDelivered,
-        ...(capacity ? { capacity: capacity.candidate } : {}),
+      return { ...record, status, failure, ...evaluation, turns, serverTurns: budget.turns, providerAttempts, frictionDelivered,
+        ...(capacity ? { capacity: capacity.candidate.capacityPerWeek } : {}),
         ...(stale ? { stale: { ...stale, perturbed: undefined } } : {}), exchanges };
     });
   } catch (error) {
@@ -310,20 +387,18 @@ export async function runCase({
     }
   }
   return { ...row, elapsedMs: Math.round(performance.now() - started),
-    spendUsd: sumKnown([...turns.map(turn => turn.spendUsd), ...roleSpend, ...(row.status === 'completed' ? [] : [null])]) };
+    spendUsd: sumKnown([...armSpend, ...roleSpend, ...(row.status === 'completed' ? [] : [null])]) };
 }
 
-export async function runMatrix({
-  stage, bundles, models, repoPath = ROOT, peerRepoPath, gitLogText, openGateway,
-  operatorCache = createOperatorCache(), judgeModels = JUDGE_MODELS, onBlindedPacket, ...runOptions
-}) {
+export async function prepareMatrix({ stage, bundles, models, tieBreakerCase, repoPath = ROOT, peerRepoPath, gitLogText }) {
   const cells = buildMatrix({ stage, bundles, models });
-  if (judgeModels.some(model => !JUDGE_MODELS.includes(model)) || new Set(judgeModels).size !== judgeModels.length) {
-    throw new Error('Unexpected judge selection');
+  if (tieBreakerCase && (stage !== 'dev' || tieBreakerCase.split !== 'dev' || bundles.some(bundle => bundle.caseId === tieBreakerCase.caseId))) {
+    throw new Error('The tie-breaker must be a distinct preselected dev case');
   }
+  const checkedBundles = tieBreakerCase ? [...bundles, tieBreakerCase] : bundles;
   const preloads = [];
   const hashes = new Map();
-  for (const bundle of bundles) {
+  for (const bundle of checkedBundles) {
     const calendar = createMemoryCalendar(bundle.calendarFixture);
     await withCaseRuntime(bundle, calendar, async (runtimeDirectory, workspace) => {
       const disclosedSources = createDisclosedSources();
@@ -338,11 +413,22 @@ export async function runMatrix({
       }
     });
   }
-  const scan = await scanContamination({ bundles, repoPath, peerRepoPath, gitLogText, preloads });
+  const scan = await scanContamination({ bundles: checkedBundles, repoPath, peerRepoPath, gitLogText, preloads, requireHistory: stage === 'sealed' });
+  return { cells, scan, hashes };
+}
+
+export async function runMatrix({
+  stage, bundles, models, tieBreakerCase, repoPath = ROOT, peerRepoPath, gitLogText, openGateway,
+  operatorCache = createOperatorCache(), judgeModels = JUDGE_MODELS, onBlindedPacket, ...runOptions
+}) {
+  if (judgeModels.some(model => !JUDGE_MODELS.includes(model)) || new Set(judgeModels).size !== judgeModels.length) {
+    throw new Error('Unexpected judge selection');
+  }
+  const { cells, scan, hashes } = await prepareMatrix({ stage, bundles, models, tieBreakerCase, repoPath, peerRepoPath, gitLogText });
   if (!scan.clean) return { scan, runs: [], joinMap: new Map() };
   const joinMap = new Map();
   const runs = [];
-  for (const cell of cells) {
+  async function runCell(cell) {
     let gateway;
     try {
       gateway = openGateway ? await openGateway(cell.pin) : runOptions.gateway;
@@ -357,5 +443,15 @@ export async function runMatrix({
       if (openGateway && gateway) await gateway.close();
     }
   }
-  return { scan, runs, joinMap };
+  for (const cell of cells) await runCell(cell);
+  if (tieBreakerCase) {
+    const screen = stage1Screen(runs, tieBreakerCase.caseId);
+    if (screen.tieBreakNeeded) {
+      for (const pin of models.filter(pin => screen.finalistModels.includes(pin.model))) {
+        for (const arm of ARMS.slice(0, 2)) await runCell({ bundle: tieBreakerCase, pin, arm, repeat: 1 });
+      }
+    }
+  }
+  const stage1Decision = stage === 'dev' ? createStage1Decision({ runs, models, tieBreakCaseId: tieBreakerCase?.caseId }) : null;
+  return { scan, runs, joinMap, stage1Decision };
 }

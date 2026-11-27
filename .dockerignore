@@ -32,8 +32,10 @@
 !src/foundation/availability-preview.mjs
 !src/foundation/calendar-view.mjs
 !src/foundation/calendarpit-api.mjs
+!src/foundation/claimed-calendar.mjs
 !src/foundation/eval-gateway.mjs
 !src/foundation/eval-transport.mjs
+!src/foundation/eval-usage.mjs
 !src/foundation/study-boundary.mjs
 !src/foundation/synthetic-calendar-auth.mjs
 !src/foundation/trusted-study-service.mjs
