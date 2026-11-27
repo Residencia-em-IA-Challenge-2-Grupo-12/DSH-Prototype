@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { buildOpenAITools, buildSystemPrompt, parseAskUserQuestionArgs } from './tool-definitions.mjs';
 import { EVAL_EVALUATOR_ORIGIN, syntheticHttpUrl, TOOL_BRIDGE_ROUTE } from '../../foundation/eval-transport.mjs';
 
-function normalizeContent(content) {
+export function normalizeContent(content) {
   if (typeof content === 'string') return content;
   if (Array.isArray(content)) {
     return content
@@ -13,7 +13,7 @@ function normalizeContent(content) {
   return '';
 }
 
-async function callToolBridge(toolBridge, method, args) {
+export async function callToolBridge(toolBridge, method, args) {
   const response = await fetch(toolBridge.url, {
     method: 'POST',
     headers: {

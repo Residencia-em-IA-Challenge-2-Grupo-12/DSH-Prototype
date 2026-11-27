@@ -29,6 +29,7 @@ function seed(version) {
 const evaluatorProbe = String.raw`
   import assert from 'node:assert/strict';
   import { once } from 'node:events';
+  import { randomUUID } from 'node:crypto';
   import { readFile, writeFile } from 'node:fs/promises';
   import { createServer } from 'node:http';
   import { CalendarpitApi } from './src/foundation/calendarpit-api.mjs';
@@ -36,6 +37,7 @@ const evaluatorProbe = String.raw`
   import { createEvalGateway } from './src/foundation/eval-gateway.mjs';
   import { createModelBudget } from './src/foundation/model-budget.mjs';
   import { createHttpRunnerAdapter } from './src/paired-replay/http-adapter.mjs';
+  import { startArmSession } from './src/eval-v2/arms.mjs';
 
   const [run, student, redirectUri, version] = JSON.parse(process.argv[1]);
   const transport = 'compose-eval';
@@ -58,8 +60,10 @@ const evaluatorProbe = String.raw`
     for await (const chunk of req) chunks.push(chunk);
     const body = JSON.parse(Buffer.concat(chunks));
     const hasToolResult = body.messages.at(-1)?.role === 'tool';
+    const v2 = body.messages[0]?.content.includes('Finish each turn with one JSON action');
+    if (v2) assert.equal(body.messages[1].content, '{"version":"study-preload-v1"}');
     const message = hasToolResult
-      ? { role: 'assistant', content: 'Verified through the tool bridge.' }
+      ? { role: 'assistant', content: v2 ? '{"action":"answer","message":"Verified through Eval v2."}' : 'Verified through the tool bridge.' }
       : { role: 'assistant', content: '', tool_calls: [
         { id: 'local-only', type: 'function', function: { name: 'list_calendar', arguments: '{}' } },
       ] };
@@ -95,6 +99,22 @@ const evaluatorProbe = String.raw`
     const snapshot = await session.prompt('What is on the synthetic calendar?');
     assert.match(snapshot.messages.at(-1).text, /Verified through the tool bridge/);
     assert.equal(toolCalls, 1);
+    await session.close();
+    const v2 = await startArmSession({
+      arm: 'C3', bundle: { ...manifest, locale: 'en', split: 'dev', canaryGuid: randomUUID(),
+        operatorFacts: { forbiddenSecrets: [], hiddenOracleFacts: [] } }, bridge: { service },
+      preload: { bytes: '{"version":"study-preload-v1"}' }, model, gateway,
+      runnerUrl: 'http://runner:4180', transport,
+    });
+    try {
+      const snapshot = await v2.prompt('What is on the synthetic calendar?');
+      assert.equal(snapshot.action.message, 'Verified through Eval v2.');
+      assert.equal(snapshot.turns[0].toolAttempts, 1);
+      assert.equal(snapshot.turns[0].completions, 2);
+      assert.equal(toolCalls, 2);
+    } finally {
+      await v2.close();
+    }
   } finally {
     await session.close();
     gateway.retire();
@@ -122,6 +142,10 @@ const runnerProbe = String.raw`
   import { existsSync, readFileSync } from 'node:fs';
   const [calendarIp] = process.argv.slice(1);
   assert.equal(existsSync('/sealed-eval'), false);
+  assert.equal(existsSync('/repo'), false);
+  assert.equal(existsSync('/app/src/eval-v2'), false);
+  assert.equal(existsSync('/app/src/foundation/eval-gateway.mjs'), false);
+  assert.equal(existsSync('/app/src/domain/planner.mjs'), false);
   assert.equal(existsSync('/var/run/docker.sock'), false);
   assert.equal(process.env.OPENROUTER_API_KEY, undefined);
   assert.equal(process.env.GEMINI_API_KEY, undefined);

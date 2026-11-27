@@ -1,7 +1,7 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { createServer } from 'node:http';
 import { MAX_OUTPUT_TOKENS, prepareOpenRouterRequest } from './openrouter-policy.mjs';
-import { TOOL_BRIDGE_ROUTE } from './eval-transport.mjs';
+import { EVAL_EVALUATOR_ORIGIN, syntheticHttpUrl, TOOL_BRIDGE_ROUTE } from './eval-transport.mjs';
 
 const routes = {
   openrouter: {
@@ -196,6 +196,7 @@ export function createEvalGateway({
     .map(([role, token]) => [role, digest(`Bearer ${token}`)]);
   let active = true;
   let bridge;
+  let inspectRunnerRequest;
 
   const server = createServer(async (req, res) => {
     if (active && req.url === TOOL_BRIDGE_ROUTE && bridge) return bridge(req, res);
@@ -215,6 +216,7 @@ export function createEvalGateway({
     if (typeof key !== 'string' || !key.trim()) return send(res, 503, { error: 'Configured provider credentials unavailable' });
     let body, estimate;
     try {
+      if (role === 'agent') inspectRunnerRequest?.(input);
       body = prepareRequest(input, route, policy);
       estimate = estimateCost(body, policy.pricing, route.decision);
     } catch (error) { return send(res, 400, { error: error.message }); }
@@ -256,6 +258,11 @@ export function createEvalGateway({
 
   return {
     server, runnerToken, operatorToken, judgeToken,
+    inspectRunnerRequests(inspect) {
+      if (!active || inspectRunnerRequest || typeof inspect !== 'function') throw new Error('Cannot inspect eval runner requests');
+      inspectRunnerRequest = inspect;
+      return () => { if (inspectRunnerRequest === inspect) inspectRunnerRequest = undefined; };
+    },
     mountToolBridge(handler) {
       if (!active || bridge || typeof handler !== 'function') throw new Error('Cannot mount eval tool bridge');
       bridge = handler;
@@ -264,6 +271,25 @@ export function createEvalGateway({
     retire() {
       active = false;
       bridge = undefined;
+      inspectRunnerRequest = undefined;
     },
   };
+}
+
+// Used by evaluator-owned roles. Redirects cannot forward role credentials.
+export async function requestEvalGateway({ origin, token, path, body, transport = 'loopback', fetchImpl = fetch }) {
+  if (!knownPaths.has(path) || typeof token !== 'string' || !token) throw new Error('Invalid evaluator gateway request');
+  const base = syntheticHttpUrl(origin, {
+    transport, peer: EVAL_EVALUATOR_ORIGIN, routes: ['/'], message: 'Invalid evaluator gateway origin',
+  });
+  const response = await fetchImpl(base.origin + path, {
+    method: 'POST', redirect: 'error', signal: AbortSignal.timeout(120_000),
+    headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    await response.body?.cancel();
+    throw new Error(`Evaluator gateway returned HTTP ${response.status}`);
+  }
+  return readJson(response.body, 5_000_000);
 }

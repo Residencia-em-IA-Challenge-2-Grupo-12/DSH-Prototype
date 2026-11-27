@@ -40,3 +40,9 @@
 !src/foundation/write-gate.mjs
 !scripts/
 !scripts/single-agent-runner.mjs
+!src/paired-replay/bundle.mjs
+!src/paired-replay/contract.mjs
+!src/paired-replay/schedule.mjs
+!src/eval-v2/
+!src/eval-v2/*.mjs
+!scripts/eval-v2.mjs

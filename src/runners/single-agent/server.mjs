@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { createEvalSession } from './eval-session.mjs';
 import { createSingleAgentSession } from './agent-loop.mjs';
 import { SCHEMA_COMPAT_MODES } from './tool-definitions.mjs';
 import { assertTransport, EVAL_EVALUATOR_ORIGIN, EVAL_RUNNER_ORIGIN, syntheticHttpUrl } from '../../foundation/eval-transport.mjs';
@@ -37,11 +38,12 @@ export function createOpenAICompatibleCompleter({
     message: 'Model gateway must be a loopback HTTP or explicit Compose chat endpoint',
   });
   const endpoint = `${base.href.replace(/\/+$/, '')}/chat/completions`;
-  return async function completeChat({ model, messages, tools }) {
+  return async function completeChat({ model, messages, tools, max_tokens }) {
     const requestBody = {
       model,
       messages,
       tools,
+      max_tokens,
       stream: false,
       ...(reasoningEffort ? { reasoning_effort: reasoningEffort } : {}),
     };
@@ -114,22 +116,17 @@ export async function startSingleAgentServer({
           if (typeof body.runnerToken !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(body.runnerToken)) throw new Error('A per-run model gateway token is required');
           complete = completeChatForRun(body.runnerToken);
         }
-        const session = createSingleAgentSession({
-          student: body.student,
-          locale: body.locale || 'en',
-          clock: body.clock,
-          toolBridge: body.toolBridge,
-          completeChat: complete,
-          model,
-          maxSteps,
-          schemaCompat,
-          schemaProfile,
-          transport,
-          onEvent,
-        });
+        const shared = {
+          student: body.student, locale: body.locale || 'en', clock: body.clock,
+          toolBridge: body.toolBridge, completeChat: complete, model, schemaCompat, transport,
+        };
+        const session = body.sessionProfile === 'eval-v2'
+          ? createEvalSession({ ...shared, mode: body.mode, preload: body.preload })
+          : createSingleAgentSession({ ...shared, maxSteps, schemaProfile, onEvent });
         sessions.set(session.sessionId, session);
         return send(200, {
           sessionId: session.sessionId,
+          ...(body.sessionProfile === 'eval-v2' ? { schemaCompat } : {}),
           engine: {
             name: engineName || `Single-agent HTTP (${model})`,
             revision,

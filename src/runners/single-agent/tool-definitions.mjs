@@ -101,7 +101,7 @@ function toParameters(schema, schemaCompat = 'standard') {
   return schemaCompat === 'gemini' ? stripAdditionalProperties(jsonSchema) : jsonSchema;
 }
 
-export function buildOpenAITools(allowedMethods = [], { schemaCompat = 'standard', schemaProfile = 'v1' } = {}) {
+export function buildOpenAITools(allowedMethods = [], { schemaCompat = 'standard', schemaProfile = 'v1', previewCandidateRequired = false } = {}) {
   const contextSchema = planningContextSchemaFor(schemaProfile);
   const tools = [
     {
@@ -118,7 +118,7 @@ export function buildOpenAITools(allowedMethods = [], { schemaCompat = 'standard
     if (!spec) continue;
     let schema = spec.schema;
     if (method === 'propose_planning_context') schema = schema.extend({ record: contextSchema });
-    if (method === 'preview_plan') schema = schema.extend({ record: contextSchema.optional() });
+    if (method === 'preview_plan') schema = schema.extend({ record: previewCandidateRequired ? contextSchema : contextSchema.optional() });
     tools.push({
       type: 'function',
       function: {
@@ -135,7 +135,7 @@ export function parseAskUserQuestionArgs(rawArgs) {
   return askUserQuestionSchema.parse(rawArgs);
 }
 
-export function buildSystemPrompt({ student, clock, locale, schemaProfile = 'v1' }) {
+export function buildSystemPrompt({ student, clock, locale, schemaProfile = 'v1', trustedDraft = false }) {
   const languageHint = locale === 'pt-BR' ? 'Brazilian Portuguese (pt-BR)' : 'English';
   return [
     `You are a collaborative study-planning assistant for synthetic student "${student}".`,
@@ -144,8 +144,12 @@ export function buildSystemPrompt({ student, clock, locale, schemaProfile = 'v1'
     schemaProfile === 'eval-v2'
       ? 'Review the available sources and synthetic calendar before proposing a plan. Quote authoritative deadlines verbatim and cite PDF page numbers. Request a bounded page range when more evidence is needed. Include planning targets as courses and explain context-only milestones separately.'
       : 'Inspect the workspace files and synthetic calendar first before proposing a plan. Distinguish superseded dates from authoritative deadlines, quote the authoritative source verbatim (with PDF page when applicable), and keep optional clinics or context-only milestones in your explanation rather than courses.',
-    'Ask only about material missing or conflicting decisions using ask_user_question. Study blocks are always 1 hour each (so N sessions/day corresponds to maxDailyStudyHours: N). Once sources and operator inputs determine a feasible plan, submit those normalized inputs directly via propose_planning_context (weekdays are 0=Sunday through 6=Saturday; use the exact course title for courses[].name without task suffixes; keep assumption concise and under 600 characters; its review is the confirmation step — skip extra yes/no questions about resolved facts).',
-    'Wait for separate operator confirmation of the pending planning context before calling draft_study_plan. When the operator requests a correction (such as removing a weekday or changing availability/deadlines), reuse confirmed inputs for unchanged fields, submit the updated record via propose_planning_context for review, and wait for confirmation before drafting.',
+    ...(trustedDraft ? [
+      'Ask only about material missing or conflicting decisions. Once the sources and operator inputs determine a plan, prepare it for separate review. Study blocks are one hour and weekdays are 0=Sunday through 6=Saturday. Reuse unchanged inputs on revision.',
+    ] : [
+      'Ask only about material missing or conflicting decisions using ask_user_question. Study blocks are always 1 hour each (so N sessions/day corresponds to maxDailyStudyHours: N). Once sources and operator inputs determine a feasible plan, submit those normalized inputs directly via propose_planning_context (weekdays are 0=Sunday through 6=Saturday; use the exact course title for courses[].name without task suffixes; keep assumption concise and under 600 characters; its review is the confirmation step — skip extra yes/no questions about resolved facts).',
+      'Wait for separate operator confirmation of the pending planning context before calling draft_study_plan. When the operator requests a correction (such as removing a weekday or changing availability/deadlines), reuse confirmed inputs for unchanged fields, submit the updated record via propose_planning_context for review, and wait for confirmation before drafting.',
+    ]),
     'Never attempt to write to the calendar directly; calendar approval happens through separate trusted controls.',
   ].join(' ');
 }

@@ -78,34 +78,39 @@ export function createDisclosedSources() {
   };
 }
 
+export async function validateSourceCitation(value, readSource, disclosedSources) {
+  const source = citation.parse(value);
+  const normalize = text=>text.replace(/\*\*|__/g,'').replace(/\s+/g,' ').trim();
+  const pdf = source.path.toLowerCase().endsWith('.pdf');
+  if (pdf !== Boolean(source.page)) throw new Error('Provide a page for PDF citations and a quote for text citations');
+  let excerpts;
+  if (disclosedSources) {
+    const disclosed = await (typeof disclosedSources === 'function'
+      ? disclosedSources(source.path, source.page)
+      : disclosedSources.read(source.path, source.page));
+    excerpts = Array.isArray(disclosed) ? disclosed : [disclosed];
+    if (!excerpts.some(text => typeof text === 'string')) throw new Error('Citation source was not disclosed');
+  } else {
+    const body = await readSource(source.path);
+    excerpts = [pdf ? body.split('\f')[source.page-1] : body];
+  }
+  const normalizedQuote = normalize(source.quote);
+  if (!normalizedQuote) {
+    throw new Error(`Cited quote in ${source.path}${source.page?' on page '+source.page:''} is empty after normalization.`);
+  }
+  if (!excerpts.some(text => typeof text === 'string' && normalize(text).includes(normalizedQuote))) {
+    throw new Error(`Cited quote was not found in ${source.path}${source.page?' on page '+source.page:''}. Use the assessment line from that source.`);
+  }
+}
+
 export async function validatePlanningContext(value, readSource, today, { disclosedSources, schemaProfile = 'v1' } = {}) {
   if (schemaProfile === 'eval-v2' && !disclosedSources) throw new Error('Eval v2 requires disclosed citation sources');
   const record = planningContextSchemaFor(schemaProfile).parse(value);
   if (record.through < today) throw new Error('The proposed preference scope has expired');
   const names = new Set(record.courses.map(course=>course.name.toLowerCase()));
   if (names.size !== record.courses.length) throw new Error('Each course must be listed once');
-  const normalize = text=>text.replace(/\*\*|__/g,'').replace(/\s+/g,' ').trim();
-  for (const {citation:source} of record.courses) {
-    const pdf = source.path.toLowerCase().endsWith('.pdf');
-    if (pdf !== Boolean(source.page)) throw new Error('Provide a page for PDF citations and a quote for text citations');
-    let excerpts;
-    if (disclosedSources) {
-      const disclosed = await (typeof disclosedSources === 'function'
-        ? disclosedSources(source.path, source.page)
-        : disclosedSources.read(source.path, source.page));
-      excerpts = Array.isArray(disclosed) ? disclosed : [disclosed];
-      if (!excerpts.some(text => typeof text === 'string')) throw new Error('Citation source was not disclosed');
-    } else {
-      const body = await readSource(source.path);
-      excerpts = [pdf ? body.split('\f')[source.page-1] : body];
-    }
-    const normalizedQuote = normalize(source.quote);
-    if (!normalizedQuote) {
-      throw new Error(`Cited quote in ${source.path}${source.page?' on page '+source.page:''} is empty after normalization.`);
-    }
-    if (!excerpts.some(text => typeof text === 'string' && normalize(text).includes(normalizedQuote))) {
-      throw new Error(`Cited quote was not found in ${source.path}${source.page?' on page '+source.page:''}. Use the assessment line from that source.`);
-    }
+  for (const course of record.courses) {
+    await validateSourceCitation(course.citation, readSource, disclosedSources);
   }
   return record;
 }
