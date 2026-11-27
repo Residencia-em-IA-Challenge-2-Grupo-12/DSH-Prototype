@@ -1,0 +1,271 @@
+{
+  "browser": "Chrome",
+  "runtime": "real companion and managed HTTP, scripted reviewed inputs and in-memory synthetic calendar",
+  "cases": [
+    {
+      "caseId": "open-choice",
+      "reviewedPreference": {
+        "kind": "soft",
+        "validFrom": "2026-11-02",
+        "validThrough": "2026-11-08"
+      },
+      "decisions": [
+        {
+          "action": "ask",
+          "candidateIds": [
+            "free",
+            "usual"
+          ],
+          "reason": "unresolved_tradeoff",
+          "candidates": [
+            {
+              "id": "free",
+              "label": "Keep Friday free",
+              "windows": [
+                {
+                  "date": "2026-11-04",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-08",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-04",
+                  "start": "15:15",
+                  "end": "16:15"
+                }
+              ],
+              "studyMinutes": 180,
+              "protectedMinutes": 0
+            },
+            {
+              "id": "usual",
+              "label": "Use the usual windows",
+              "windows": [
+                {
+                  "date": "2026-11-04",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-06",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-08",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-04",
+                  "start": "15:15",
+                  "end": "16:15"
+                }
+              ],
+              "studyMinutes": 240,
+              "protectedMinutes": 60
+            }
+          ]
+        }
+      ],
+      "answers": [
+        {
+          "candidateId": "usual"
+        }
+      ],
+      "approvals": 0,
+      "expectedWidget": true,
+      "lateOptionRejected": false,
+      "originalEventsPreserved": true
+    },
+    {
+      "caseId": "accepted-fallback",
+      "reviewedPreference": {
+        "kind": "soft",
+        "validFrom": "2026-11-02",
+        "validThrough": "2026-11-08",
+        "fallbackMinutes": 60
+      },
+      "decisions": [
+        {
+          "action": "recommend",
+          "candidateIds": [
+            "usual"
+          ],
+          "reason": "explicit_fallback",
+          "candidates": [
+            {
+              "id": "usual",
+              "label": "Use the usual windows",
+              "windows": [
+                {
+                  "date": "2026-11-04",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-06",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-08",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-04",
+                  "start": "15:15",
+                  "end": "16:15"
+                }
+              ],
+              "studyMinutes": 240,
+              "protectedMinutes": 60
+            }
+          ]
+        }
+      ],
+      "answers": [],
+      "approvals": 0,
+      "expectedWidget": false,
+      "lateOptionRejected": false,
+      "originalEventsPreserved": true
+    },
+    {
+      "caseId": "expired",
+      "reviewedPreference": {
+        "kind": "soft",
+        "validFrom": "2026-10-26",
+        "validThrough": "2026-11-01"
+      },
+      "decisions": [
+        {
+          "action": "recommend",
+          "candidateIds": [
+            "usual"
+          ],
+          "reason": "no_current_preference",
+          "candidates": [
+            {
+              "id": "usual",
+              "label": "Use the usual windows",
+              "windows": [
+                {
+                  "date": "2026-11-04",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-06",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-08",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-04",
+                  "start": "15:15",
+                  "end": "16:15"
+                }
+              ],
+              "studyMinutes": 240,
+              "protectedMinutes": 60
+            }
+          ]
+        }
+      ],
+      "answers": [],
+      "approvals": 0,
+      "expectedWidget": false,
+      "lateOptionRejected": false,
+      "originalEventsPreserved": true
+    },
+    {
+      "caseId": "late-conflict",
+      "reviewedPreference": {
+        "kind": "soft",
+        "validFrom": "2026-11-02",
+        "validThrough": "2026-11-08"
+      },
+      "decisions": [
+        {
+          "action": "ask",
+          "candidateIds": [
+            "free",
+            "usual"
+          ],
+          "reason": "unresolved_tradeoff",
+          "candidates": [
+            {
+              "id": "free",
+              "label": "Keep Friday free",
+              "windows": [
+                {
+                  "date": "2026-11-04",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-08",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-04",
+                  "start": "15:15",
+                  "end": "16:15"
+                }
+              ],
+              "studyMinutes": 180,
+              "protectedMinutes": 0
+            },
+            {
+              "id": "usual",
+              "label": "Use the usual windows",
+              "windows": [
+                {
+                  "date": "2026-11-04",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-06",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-08",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "date": "2026-11-04",
+                  "start": "15:15",
+                  "end": "16:15"
+                }
+              ],
+              "studyMinutes": 240,
+              "protectedMinutes": 60
+            }
+          ]
+        }
+      ],
+      "answers": [
+        {
+          "candidateId": "free"
+        }
+      ],
+      "approvals": 0,
+      "expectedWidget": true,
+      "lateOptionRejected": true,
+      "originalEventsPreserved": true
+    }
+  ]
+}

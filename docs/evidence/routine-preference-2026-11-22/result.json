@@ -1,0 +1,660 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-11-22",
+  "experimentCommit": "6e346fc56aefb45feb7e0ea78f3bc28671453533",
+  "parentCommit": "9dbc3984325e7b1d7c01815053870378b2c50ce8",
+  "runtime": "host-luna-fallback",
+  "provider": "codex",
+  "model": "gpt-6-luna",
+  "harness": "0.2.2-rc.1",
+  "operator": "Headless Chrome submitted only the packet, with one fresh synthetic run per case.",
+  "cases": [
+    {
+      "case": "no-cost",
+      "packet": {
+        "caseId": "rp-01",
+        "fixtureSha256": "f721b210b15a73dd58de788c487f38268455c14bac3fc131b4fac977c66e20d0",
+        "clock": {
+          "date": "2026-11-02",
+          "timezone": "America/Sao_Paulo"
+        },
+        "week": {
+          "through": "2026-11-08",
+          "targetHours": 4,
+          "wednesdayDate": "2026-11-04"
+        },
+        "statement": "For this week, I would prefer to keep Wednesday evening free. I still aim for four hours.",
+        "candidates": [
+          {
+            "id": "flexible",
+            "studyMinutes": 240,
+            "shortfallMinutes": 0,
+            "wednesdayMinutes": 120,
+            "perCourseMinutes": {
+              "Banco de Dados": 60,
+              "Algoritmos": 180
+            },
+            "blocks": [
+              {
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          },
+          {
+            "id": "protect-wednesday",
+            "studyMinutes": 240,
+            "shortfallMinutes": 0,
+            "wednesdayMinutes": 0,
+            "perCourseMinutes": {
+              "Banco de Dados": 120,
+              "Algoritmos": 120
+            },
+            "blocks": [
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-08T11:15:00-03:00",
+                "end": "2026-11-08T12:15:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          },
+          {
+            "id": "one-hour-wednesday",
+            "studyMinutes": 240,
+            "shortfallMinutes": 0,
+            "wednesdayMinutes": 60,
+            "perCourseMinutes": {
+              "Banco de Dados": 120,
+              "Algoritmos": 120
+            },
+            "blocks": [
+              {
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          }
+        ],
+        "responseInstructions": "This is a synthetic comparison. Use the packet as the only input and respond without tool calls. Prefer the stated target and honor confirmed limits. Use the dated statement to decide whether a restriction is hard, flexible, current, or expired. Use only the supplied candidates. Recommend one when the statement resolves the choice. Ask one focused question using two candidate IDs when a material tradeoff is open. Explain it with actual study and Wednesday minutes. Return only JSON with caseId (the supplied case identifier), action (recommend or ask), candidateIds (array), and message (string)."
+      },
+      "run": {
+        "id": "bb81009c-0def-42f7-873a-d31cef2f911d",
+        "attemptId": "2a999627-82a4-47c7-ae07-c94c12ef728c",
+        "startedAt": "2026-11-23T01:33:12.660Z",
+        "replyMs": 9288,
+        "totalMs": 11802,
+        "archiveAndRetirementVerified": true,
+        "calendarEventsUnchanged": 146,
+        "toolCalls": 0,
+        "strictJson": true,
+        "usage": "unknown",
+        "traceSha256": "4868c6be793450ef3435b5e268a498a11a3c57d1d7afea5cbc80c80174759519"
+      },
+      "form": {
+        "action": "recommend",
+        "candidateIds": [
+          "protect-wednesday"
+        ],
+        "mechanicalScore": "pass"
+      },
+      "luna": {
+        "rawResponse": "{\"caseId\":\"rp-01\",\"action\":\"recommend\",\"candidateIds\":[\"protect-wednesday\"],\"message\":\"Recommend `protect-wednesday`: your dated preference is to keep Wednesday evening free, and this option schedules 0 study minutes on Wednesday while meeting your four-hour target (240 study minutes). It places 120 minutes in Banco de Dados and 120 in Algoritmos across Saturday and Sunday. The flexible option also totals 240 minutes but schedules 120 on Wednesday; the one-hour-Wednesday option schedules 60 there.\"}",
+        "mechanicalScore": "pass",
+        "explanationReview": {
+          "hoursAndConstraintFacts": "pass",
+          "preferenceHandling": "honored-current-preference",
+          "language": "en",
+          "observation": "Correctly gave four hours and zero on Wednesday. The per-course and comparison totals matched the packet."
+        }
+      }
+    },
+    {
+      "case": "needs-choice",
+      "packet": {
+        "caseId": "rp-02",
+        "fixtureSha256": "f721b210b15a73dd58de788c487f38268455c14bac3fc131b4fac977c66e20d0",
+        "clock": {
+          "date": "2026-11-02",
+          "timezone": "America/Sao_Paulo"
+        },
+        "week": {
+          "through": "2026-11-08",
+          "targetHours": 4,
+          "wednesdayDate": "2026-11-04"
+        },
+        "statement": "For this week, I would prefer to keep Wednesday evening free. I still aim for four hours.",
+        "candidates": [
+          {
+            "id": "flexible",
+            "studyMinutes": 240,
+            "shortfallMinutes": 0,
+            "wednesdayMinutes": 120,
+            "perCourseMinutes": {
+              "Banco de Dados": 60,
+              "Algoritmos": 180
+            },
+            "blocks": [
+              {
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          },
+          {
+            "id": "protect-wednesday",
+            "studyMinutes": 180,
+            "shortfallMinutes": 60,
+            "wednesdayMinutes": 0,
+            "perCourseMinutes": {
+              "Banco de Dados": 120,
+              "Algoritmos": 60
+            },
+            "blocks": [
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          },
+          {
+            "id": "one-hour-wednesday",
+            "studyMinutes": 240,
+            "shortfallMinutes": 0,
+            "wednesdayMinutes": 60,
+            "perCourseMinutes": {
+              "Banco de Dados": 120,
+              "Algoritmos": 120
+            },
+            "blocks": [
+              {
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          }
+        ],
+        "responseInstructions": "This is a synthetic comparison. Use the packet as the only input and respond without tool calls. Prefer the stated target and honor confirmed limits. Use the dated statement to decide whether a restriction is hard, flexible, current, or expired. Use only the supplied candidates. Recommend one when the statement resolves the choice. Ask one focused question using two candidate IDs when a material tradeoff is open. Explain it with actual study and Wednesday minutes. Return only JSON with caseId (the supplied case identifier), action (recommend or ask), candidateIds (array), and message (string)."
+      },
+      "run": {
+        "id": "71f24c04-3feb-40f4-9d8f-03dfdd73982f",
+        "attemptId": "7b69f58f-a90d-47ec-8b8a-fa2086f5de8b",
+        "startedAt": "2026-11-23T01:33:27.442Z",
+        "replyMs": 4416,
+        "totalMs": 6613,
+        "archiveAndRetirementVerified": true,
+        "calendarEventsUnchanged": 146,
+        "toolCalls": 0,
+        "strictJson": true,
+        "usage": "unknown",
+        "traceSha256": "64d4dafc622f7224242d97f873b5a5dcea0ff5bdadd5182f7fc0c82863f48a75"
+      },
+      "form": {
+        "action": "ask",
+        "candidateIds": [
+          "protect-wednesday",
+          "one-hour-wednesday"
+        ],
+        "mechanicalScore": "pass"
+      },
+      "luna": {
+        "rawResponse": "{\"caseId\":\"rp-02\",\"action\":\"recommend\",\"candidateIds\":[\"one-hour-wednesday\"],\"message\":\"The dated statement says you would prefer to keep Wednesday evening free this week, but does not make that a firm restriction. I recommend one-hour-wednesday: it meets your four-hour target (240 study minutes) while limiting Wednesday to 60 minutes, compared with 120 minutes in flexible. The protect-wednesday option leaves Wednesday entirely free, but totals 180 minutes—one hour short of your target.\"}",
+        "mechanicalScore": "fail",
+        "explanationReview": {
+          "hoursAndConstraintFacts": "pass",
+          "preferenceHandling": "skipped-open-choice",
+          "language": "en",
+          "observation": "Correctly described 180 with zero Wednesday minutes and 240 with 60. Chose the latter instead of asking while the user had left the fallback open."
+        }
+      }
+    },
+    {
+      "case": "bounded-fallback",
+      "packet": {
+        "caseId": "rp-03",
+        "fixtureSha256": "f721b210b15a73dd58de788c487f38268455c14bac3fc131b4fac977c66e20d0",
+        "clock": {
+          "date": "2026-11-02",
+          "timezone": "America/Sao_Paulo"
+        },
+        "week": {
+          "through": "2026-11-08",
+          "targetHours": 4,
+          "wednesdayDate": "2026-11-04"
+        },
+        "statement": "For this week, I would prefer to keep Wednesday evening free. If otherwise I cannot reach four hours, one hour on Wednesday evening is OK.",
+        "candidates": [
+          {
+            "id": "flexible",
+            "studyMinutes": 240,
+            "shortfallMinutes": 0,
+            "wednesdayMinutes": 120,
+            "perCourseMinutes": {
+              "Banco de Dados": 60,
+              "Algoritmos": 180
+            },
+            "blocks": [
+              {
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          },
+          {
+            "id": "protect-wednesday",
+            "studyMinutes": 180,
+            "shortfallMinutes": 60,
+            "wednesdayMinutes": 0,
+            "perCourseMinutes": {
+              "Banco de Dados": 120,
+              "Algoritmos": 60
+            },
+            "blocks": [
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          },
+          {
+            "id": "one-hour-wednesday",
+            "studyMinutes": 240,
+            "shortfallMinutes": 0,
+            "wednesdayMinutes": 60,
+            "perCourseMinutes": {
+              "Banco de Dados": 120,
+              "Algoritmos": 120
+            },
+            "blocks": [
+              {
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          }
+        ],
+        "responseInstructions": "This is a synthetic comparison. Use the packet as the only input and respond without tool calls. Prefer the stated target and honor confirmed limits. Use the dated statement to decide whether a restriction is hard, flexible, current, or expired. Use only the supplied candidates. Recommend one when the statement resolves the choice. Ask one focused question using two candidate IDs when a material tradeoff is open. Explain it with actual study and Wednesday minutes. Return only JSON with caseId (the supplied case identifier), action (recommend or ask), candidateIds (array), and message (string)."
+      },
+      "run": {
+        "id": "8022195f-987b-406d-85f1-6205a7589596",
+        "attemptId": "88c4a906-4b19-4dd4-a662-e81b7c850649",
+        "startedAt": "2026-11-23T01:33:37.064Z",
+        "replyMs": 4812,
+        "totalMs": 6767,
+        "archiveAndRetirementVerified": true,
+        "calendarEventsUnchanged": 146,
+        "toolCalls": 0,
+        "strictJson": true,
+        "usage": "unknown",
+        "traceSha256": "57f8e034cce888fec5e93ac616c4234c1c9ae3172c8c490f986db64720d621c8"
+      },
+      "form": {
+        "action": "recommend",
+        "candidateIds": [
+          "one-hour-wednesday"
+        ],
+        "mechanicalScore": "pass"
+      },
+      "luna": {
+        "rawResponse": "{\"caseId\":\"rp-03\",\"action\":\"recommend\",\"candidateIds\":[\"one-hour-wednesday\"],\"message\":\"Recomendo one-hour-wednesday. Sua preferência para esta semana é manter a quarta à noite livre, mas você declarou que uma hora na quarta é aceitável se necessário para alcançar a meta. Esta opção atende às 4 horas (240 minutos) e limita a quarta a 60 minutos; protect-wednesday mantém a quarta totalmente livre, mas soma apenas 3 horas (180 minutos), ficando 60 minutos abaixo da meta.\"}",
+        "mechanicalScore": "pass",
+        "explanationReview": {
+          "hoursAndConstraintFacts": "pass",
+          "preferenceHandling": "honored-explicit-fallback",
+          "language": "pt-BR",
+          "observation": "Grounded the one-hour Wednesday option in Bruno’s explicit permission and correctly explained the three-hour alternative."
+        }
+      }
+    },
+    {
+      "case": "hard-limit",
+      "packet": {
+        "caseId": "rp-04",
+        "fixtureSha256": "f721b210b15a73dd58de788c487f38268455c14bac3fc131b4fac977c66e20d0",
+        "clock": {
+          "date": "2026-11-02",
+          "timezone": "America/Sao_Paulo"
+        },
+        "week": {
+          "through": "2026-11-08",
+          "targetHours": 4,
+          "wednesdayDate": "2026-11-04"
+        },
+        "statement": "I am unavailable for study on Wednesday this week. I would like to fit four hours if possible.",
+        "candidates": [
+          {
+            "id": "protect-wednesday",
+            "studyMinutes": 180,
+            "shortfallMinutes": 60,
+            "wednesdayMinutes": 0,
+            "perCourseMinutes": {
+              "Banco de Dados": 120,
+              "Algoritmos": 60
+            },
+            "blocks": [
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          }
+        ],
+        "responseInstructions": "This is a synthetic comparison. Use the packet as the only input and respond without tool calls. Prefer the stated target and honor confirmed limits. Use the dated statement to decide whether a restriction is hard, flexible, current, or expired. Use only the supplied candidates. Recommend one when the statement resolves the choice. Ask one focused question using two candidate IDs when a material tradeoff is open. Explain it with actual study and Wednesday minutes. Return only JSON with caseId (the supplied case identifier), action (recommend or ask), candidateIds (array), and message (string)."
+      },
+      "run": {
+        "id": "e019c970-97c0-42c4-bb6d-d3527f82c1f6",
+        "attemptId": "6db81cda-4133-4adf-b562-2058e088f26a",
+        "startedAt": "2026-11-23T01:33:46.806Z",
+        "replyMs": 9683,
+        "totalMs": 11972,
+        "archiveAndRetirementVerified": true,
+        "calendarEventsUnchanged": 146,
+        "toolCalls": 0,
+        "strictJson": true,
+        "usage": "unknown",
+        "traceSha256": "4adacc91548c9f41a81fa81e125932afd9e83258f34fdeadb92250ae0bbb8e11"
+      },
+      "form": {
+        "action": "recommend",
+        "candidateIds": [
+          "protect-wednesday"
+        ],
+        "mechanicalScore": "pass"
+      },
+      "luna": {
+        "rawResponse": "{\"caseId\":\"rp-04\",\"action\":\"recommend\",\"candidateIds\":[\"protect-wednesday\"],\"message\":\"Recommend protect-wednesday. Your statement says you are unavailable for study on Wednesday this week, so I’m treating that as a hard limit for Nov 4. This option schedules 180 minutes (3 hours), with 0 minutes on Wednesday, and leaves a 60-minute shortfall against your 4-hour target. The supplied candidate list offers no alternative to compare.\"}",
+        "mechanicalScore": "pass",
+        "explanationReview": {
+          "hoursAndConstraintFacts": "pass",
+          "preferenceHandling": "honored-hard-limit",
+          "language": "en",
+          "observation": "Acknowledged unavailability, kept Wednesday free, and explained the 60-minute shortfall."
+        }
+      }
+    },
+    {
+      "case": "expired",
+      "packet": {
+        "caseId": "rp-05",
+        "fixtureSha256": "f721b210b15a73dd58de788c487f38268455c14bac3fc131b4fac977c66e20d0",
+        "clock": {
+          "date": "2026-11-02",
+          "timezone": "America/Sao_Paulo"
+        },
+        "week": {
+          "through": "2026-11-08",
+          "targetHours": 4,
+          "wednesdayDate": "2026-11-04"
+        },
+        "statement": "Earlier check-in: last week Wednesday felt too demanding. I asked to keep that evening free through November 1 only. I have provided no newer check-in or preference about Wednesday.",
+        "candidates": [
+          {
+            "id": "flexible",
+            "studyMinutes": 240,
+            "shortfallMinutes": 0,
+            "wednesdayMinutes": 120,
+            "perCourseMinutes": {
+              "Banco de Dados": 60,
+              "Algoritmos": 180
+            },
+            "blocks": [
+              {
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-04T20:15:00-03:00",
+                "end": "2026-11-04T21:15:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          },
+          {
+            "id": "protect-wednesday",
+            "studyMinutes": 180,
+            "shortfallMinutes": 60,
+            "wednesdayMinutes": 0,
+            "perCourseMinutes": {
+              "Banco de Dados": 120,
+              "Algoritmos": 60
+            },
+            "blocks": [
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          },
+          {
+            "id": "one-hour-wednesday",
+            "studyMinutes": 240,
+            "shortfallMinutes": 0,
+            "wednesdayMinutes": 60,
+            "perCourseMinutes": {
+              "Banco de Dados": 120,
+              "Algoritmos": 120
+            },
+            "blocks": [
+              {
+                "start": "2026-11-04T19:00:00-03:00",
+                "end": "2026-11-04T20:00:00-03:00",
+                "course": "Algoritmos"
+              },
+              {
+                "start": "2026-11-07T14:00:00-03:00",
+                "end": "2026-11-07T15:00:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-07T15:15:00-03:00",
+                "end": "2026-11-07T16:15:00-03:00",
+                "course": "Banco de Dados"
+              },
+              {
+                "start": "2026-11-08T10:00:00-03:00",
+                "end": "2026-11-08T11:00:00-03:00",
+                "course": "Algoritmos"
+              }
+            ]
+          }
+        ],
+        "responseInstructions": "This is a synthetic comparison. Use the packet as the only input and respond without tool calls. Prefer the stated target and honor confirmed limits. Use the dated statement to decide whether a restriction is hard, flexible, current, or expired. Use only the supplied candidates. Recommend one when the statement resolves the choice. Ask one focused question using two candidate IDs when a material tradeoff is open. Explain it with actual study and Wednesday minutes. Return only JSON with caseId (the supplied case identifier), action (recommend or ask), candidateIds (array), and message (string)."
+      },
+      "run": {
+        "id": "929338b7-64f4-459f-b1a5-8b0f182e9bec",
+        "attemptId": "634a00d8-c063-4be4-80f6-a2b1bacfc893",
+        "startedAt": "2026-11-23T01:34:01.757Z",
+        "replyMs": 5623,
+        "totalMs": 7718,
+        "archiveAndRetirementVerified": true,
+        "calendarEventsUnchanged": 146,
+        "toolCalls": 0,
+        "strictJson": true,
+        "usage": "unknown",
+        "traceSha256": "f3a46013ac899fed61844aea923adbb118ff4b6f0a35c358dcc0a9f50ec861a4"
+      },
+      "form": {
+        "action": "recommend",
+        "candidateIds": [
+          "flexible"
+        ],
+        "mechanicalScore": "pass"
+      },
+      "luna": {
+        "rawResponse": "{\"caseId\":\"rp-05\",\"action\":\"ask\",\"candidateIds\":[\"protect-wednesday\",\"one-hour-wednesday\"],\"message\":\"A restrição de manter quarta à noite livre foi pedida apenas até 1º de novembro, então está expirada; não há preferência mais recente registrada sobre quarta. Há um equilíbrio em aberto: proteger toda a quarta oferece 180 minutos de estudo, 60 abaixo da meta de 240, e 0 minutos na quarta; estudar uma hora na quarta atinge os 240 minutos, com 60 minutos na quarta. Qual opção prefere: protect-wednesday ou one-hour-wednesday?\"}",
+        "mechanicalScore": "fail",
+        "explanationReview": {
+          "hoursAndConstraintFacts": "pass",
+          "preferenceHandling": "reopened-expired-preference",
+          "language": "pt-BR",
+          "observation": "Recognized the old preference had expired and that newer feedback was missing. Still reopened the three-versus-four-hour question with no current reason."
+        }
+      }
+    }
+  ]
+}
