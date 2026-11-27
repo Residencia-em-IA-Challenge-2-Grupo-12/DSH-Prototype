@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends poppler-utils &
 WORKDIR /app
 COPY --from=deps /app/node_modules/zod ./node_modules/zod/
 COPY src/ ./src/
+COPY scripts/eval-v2.mjs ./scripts/
 USER node
 # Run the trusted per-run evaluator with Compose exec.
 CMD ["sleep", "infinity"]

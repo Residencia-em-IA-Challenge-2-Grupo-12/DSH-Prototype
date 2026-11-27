@@ -355,7 +355,9 @@ const chat = '/v1/chat/completions';
 const gemini = '/v1/gemini/chat/completions';
 const systemone = '/v1/systemone';
 const pricing = { inputPerMillion: 1, outputPerMillion: 2, verifiedAt: new Date().toISOString() };
-const decisions = [{ type: 'noul' }, { type: 'choice', options: ['yes', 'no'] }, { type: 'score' }];
+const binaryQuestion = { type: 'noul', criteria: { true: 'Yes', false: 'No' } };
+const decisions = [binaryQuestion, { type: 'choice', criteria: { yes: 'Yes', no: 'No' } },
+  { type: 'score', criteria: ['Lowest', 'Low', 'Middle', 'High', 'Highest'] }];
 const apiKeys = { OPENROUTER_API_KEY: 'stub-or', GEMINI_API_KEY: 'stub-g', TYPESAFE_API_KEY: 'stub-ts' };
 const policies = {
   [chatModel]: { pricing, providerOnly: ['arm-provider'] },
@@ -412,9 +414,11 @@ test('gateway binds model and route to each token and enforces separate OpenRout
     [chat, judgeToken, operatorModel], [gemini, runnerToken, chatModel], [chat, judgeToken, jev],
   ]) assert.equal((await call(route, token, { model, messages, questions: decisions })).status, 403);
   assert.equal((await call(chat, runnerToken, { model: chatModel, models: [judgeModel], messages })).status, 400);
+  assert.equal((await call(chat, judgeToken, { model: judgeModel, messages })).status, 400);
   assert.equal(requests.length, 0);
   for (const [token, model, provider] of [[runnerToken, chatModel, 'arm-provider'], [operatorToken, operatorModel, 'operator-provider'], [judgeToken, judgeModel, 'judge-provider']]) {
-    const response = await call(chat, token, { model, messages, temperature: 0, provider: { only: ['spoofed'] } }, 'setup');
+    const response = await call(chat, token, { model, messages, temperature: 0, provider: { only: ['spoofed'] },
+      ...(model === judgeModel ? { reasoning_effort: 'low', max_tokens: 1536 } : {}) }, 'setup');
     assert.equal(response.status, 200);
     const { body, authorization } = requests.at(-1);
     assert.equal(authorization, 'Bearer stub-or');
@@ -582,7 +586,7 @@ test('sol-loop R1 regressions: narrowed allowlists, bounded eval-v2 PDFs, trace-
   const mapRes = await gateway.call(systemone, gateway.judgeToken, {
     model: jev,
     state: { transcript: 'Synthetic turn' },
-    questions: { safe: { type: 'noul', instructions: 'Was it safe?' } },
+    questions: { safe: binaryQuestion },
   });
   assert.equal(mapRes.status, 200);
   assert.deepEqual(gateway.requests.at(-1).body.state, { transcript: 'Synthetic turn' });
@@ -645,12 +649,12 @@ test('inverse sol-loop R1 regressions (N1-N9): seed, requireParameters, freeTier
   assert.equal(captured.at(-1).provider.require_parameters, false);
 
   // N3: liquid/d1.2-ultra falls back to token-rates without locking budget; jev preserves real output_tokens.
-  const liqRes = await call(systemone, gw.judgeToken, { model: liquid, state: 'text', questions: { q: { type: 'noul' } } });
+  const liqRes = await call(systemone, gw.judgeToken, { model: liquid, state: 'text', questions: { q: binaryQuestion } });
   assert.equal(liqRes.status, 200);
   const liqJson = await liqRes.json();
   assert.equal(liqJson.usage.cost_source, 'token-rates');
   assert.equal(liqJson.usage.cost, 0.0002);
-  const jevRes = await call(systemone, gw.judgeToken, { model: jev, state: 'text', questions: { q: { type: 'noul' } } });
+  const jevRes = await call(systemone, gw.judgeToken, { model: jev, state: 'text', questions: { q: binaryQuestion } });
   assert.equal(jevRes.status, 200);
   const jevJson = await jevRes.json();
   assert.equal(jevJson.usage.output_tokens, 15);

@@ -8,7 +8,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules/zod ./node_modules/zod/
 COPY scripts/single-agent-runner.mjs ./scripts/
 COPY src/cold-start-context.mjs src/calendar-time.mjs ./src/
-COPY src/foundation/availability-preview.mjs src/foundation/eval-transport.mjs ./src/foundation/
+COPY src/foundation/availability-preview.mjs src/foundation/eval-transport.mjs src/foundation/eval-usage.mjs ./src/foundation/
 COPY src/runners/single-agent/ ./src/runners/single-agent/
 USER node
 CMD ["node", "scripts/single-agent-runner.mjs", "--transport", "compose-eval"]

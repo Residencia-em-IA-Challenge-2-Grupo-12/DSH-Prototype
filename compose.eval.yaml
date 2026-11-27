@@ -14,6 +14,7 @@ services:
       - TYPESAFE_API_KEY
     volumes:
       - ${STUDY_SEALED_EVAL_DIR:?set STUDY_SEALED_EVAL_DIR}:/sealed-eval:ro
+      - ${STUDY_EVAL_REPO_DIR:-.}:/repo:ro
     networks:
       net_calendar: {}
       net_eval: {}

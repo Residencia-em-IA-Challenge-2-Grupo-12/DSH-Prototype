@@ -1,7 +1,8 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { createServer } from 'node:http';
 import { MAX_OUTPUT_TOKENS, prepareOpenRouterRequest } from './openrouter-policy.mjs';
-import { TOOL_BRIDGE_ROUTE } from './eval-transport.mjs';
+import { EVAL_EVALUATOR_ORIGIN, syntheticHttpUrl, TOOL_BRIDGE_ROUTE } from './eval-transport.mjs';
+import { evalTokenUsage } from './eval-usage.mjs';
 
 const routes = {
   openrouter: {
@@ -37,10 +38,19 @@ const judgeModels = new Map([
 const chatFields = ['model', 'messages', 'tools', 'tool_choice', 'parallel_tool_calls', 'response_format',
   'temperature', 'top_p', 'seed', 'max_tokens', 'max_completion_tokens', 'reasoning_effort'];
 const decisionFields = ['model', 'state', 'context', 'messages', 'questions'];
-const questionTypes = new Set(['noul', 'choice', 'score']);
+const criterionText = value => typeof value === 'string' && Boolean(value.trim());
+function validQuestion(question) {
+  const criteria = question?.criteria;
+  if (question?.type === 'score') {
+    return Array.isArray(criteria) && criteria.length >= 2 && criteria.length <= 10 && criteria.every(criterionText);
+  }
+  if (!criteria || typeof criteria !== 'object' || Array.isArray(criteria)) return false;
+  if (question.type === 'noul') return Object.keys(criteria).length === 2 && criterionText(criteria.true) && criterionText(criteria.false);
+  return question.type === 'choice' && Object.keys(criteria).length >= 2 &&
+    Object.entries(criteria).every(([name, text]) => criterionText(name) && criterionText(text));
+}
 const digest = value => createHash('sha256').update(value).digest();
 const dollars = value => Number.isFinite(value) && value >= 0;
-const tokens = value => Number.isSafeInteger(value) && value >= 0 ? value : null;
 
 function send(res, status, body) {
   if (res.headersSent) { res.destroy(); return; }
@@ -67,8 +77,8 @@ function prepareRequest(input, route, policy) {
       ? input.questions
       : (input.questions && typeof input.questions === 'object' ? Object.values(input.questions) : null);
     if (!questionList || !questionList.length ||
-        questionList.some(question => !questionTypes.has(question?.type))) {
-      throw new Error('System One requires noul, choice, or score questions');
+        questionList.some(question => !validQuestion(question))) {
+      throw new Error('System One requires noul, choice, or score questions with valid criteria');
     }
     return Object.fromEntries(decisionFields.filter(key => Object.hasOwn(input, key)).map(key => [key, input[key]]));
   }
@@ -125,13 +135,7 @@ function estimateCost(body, pricing, decision) {
 
 function usageFor(payload, route, pricing) {
   const usage = payload.usage ?? (route.decision ? payload : {});
-  const inputTokens = tokens(usage?.input_tokens ?? usage?.prompt_tokens);
-  const outputTokens = tokens(usage?.output_tokens ?? usage?.completion_tokens) ?? (route.decision ? 0 : null);
-  const totalTokens = tokens(usage?.total_tokens);
-  const billedOutput = route === routes.gemini && inputTokens !== null && outputTokens !== null &&
-    totalTokens !== null && totalTokens > inputTokens + outputTokens
-    ? totalTokens - inputTokens
-    : outputTokens;
+  const { input: inputTokens, generated: billedOutput } = evalTokenUsage(usage, { decision: route.decision });
   const cost = usage?.cost ?? usage?.cost_usd;
   if (dollars(cost) && (cost > 0 || pricing?.freeTier !== true)) {
     return { inputTokens, outputTokens: billedOutput, actualUsd: cost, source: 'provider' };
@@ -196,6 +200,8 @@ export function createEvalGateway({
     .map(([role, token]) => [role, digest(`Bearer ${token}`)]);
   let active = true;
   let bridge;
+  let inspectRunnerRequest;
+  let inspectRunnerResponse;
 
   const server = createServer(async (req, res) => {
     if (active && req.url === TOOL_BRIDGE_ROUTE && bridge) return bridge(req, res);
@@ -215,6 +221,11 @@ export function createEvalGateway({
     if (typeof key !== 'string' || !key.trim()) return send(res, 503, { error: 'Configured provider credentials unavailable' });
     let body, estimate;
     try {
+      if (role === 'judge' && route === routes.openrouter &&
+          (policy.providerOnly?.length !== 1 || input.reasoning_effort !== 'low' || input.max_tokens !== 1536)) {
+        throw new Error('Role B2 chat requires the pinned provider, low reasoning, and 1536 output tokens');
+      }
+      if (role === 'agent') inspectRunnerRequest?.(input);
       body = prepareRequest(input, route, policy);
       estimate = estimateCost(body, policy.pricing, route.decision);
     } catch (error) { return send(res, 400, { error: error.message }); }
@@ -242,10 +253,13 @@ export function createEvalGateway({
       const payload = await readJson(upstream.body, 5_000_000);
       const { inputTokens, outputTokens, actualUsd, source } = usageFor(payload, route, policy.pricing);
       await budget.settle(reservation.id, { inputTokens, outputTokens, actualUsd });
-      return send(res, 200, {
-        ...payload,
-        usage: { ...payload.usage, input_tokens: inputTokens, output_tokens: outputTokens, cost: actualUsd, cost_source: source },
-      });
+      const result = { ...payload,
+        usage: { ...payload.usage, input_tokens: inputTokens, output_tokens: outputTokens, cost: actualUsd, cost_source: source } };
+      if (role === 'agent' && inspectRunnerResponse) {
+        try { inspectRunnerResponse(result); }
+        catch { return send(res, 422, { error: 'Runner response failed evaluator checks' }); }
+      }
+      return send(res, 200, result);
     } catch {
       try { await budget.settle(reservation.id, { actualUsd: null, ...(route.decision ? { outputTokens: 0 } : {}) }); }
       catch { /* Preserve an unresolved reservation on ledger failure. */ }
@@ -256,6 +270,16 @@ export function createEvalGateway({
 
   return {
     server, runnerToken, operatorToken, judgeToken,
+    inspectRunnerRequests(inspect) {
+      if (!active || inspectRunnerRequest || typeof inspect !== 'function') throw new Error('Cannot inspect eval runner requests');
+      inspectRunnerRequest = inspect;
+      return () => { if (inspectRunnerRequest === inspect) inspectRunnerRequest = undefined; };
+    },
+    inspectRunnerResponses(inspect) {
+      if (!active || inspectRunnerResponse || typeof inspect !== 'function') throw new Error('Cannot inspect eval runner responses');
+      inspectRunnerResponse = inspect;
+      return () => { if (inspectRunnerResponse === inspect) inspectRunnerResponse = undefined; };
+    },
     mountToolBridge(handler) {
       if (!active || bridge || typeof handler !== 'function') throw new Error('Cannot mount eval tool bridge');
       bridge = handler;
@@ -264,6 +288,26 @@ export function createEvalGateway({
     retire() {
       active = false;
       bridge = undefined;
+      inspectRunnerRequest = undefined;
+      inspectRunnerResponse = undefined;
     },
   };
+}
+
+// Used by evaluator-owned roles. Redirects cannot forward role credentials.
+export async function requestEvalGateway({ origin, token, path, body, transport = 'loopback', fetchImpl = fetch }) {
+  if (!knownPaths.has(path) || typeof token !== 'string' || !token) throw new Error('Invalid evaluator gateway request');
+  const base = syntheticHttpUrl(origin, {
+    transport, peer: EVAL_EVALUATOR_ORIGIN, routes: ['/'], message: 'Invalid evaluator gateway origin',
+  });
+  const response = await fetchImpl(base.origin + path, {
+    method: 'POST', redirect: 'error', signal: AbortSignal.timeout(120_000),
+    headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    await response.body?.cancel();
+    throw new Error(`Evaluator gateway returned HTTP ${response.status}`);
+  }
+  return readJson(response.body, 5_000_000);
 }
