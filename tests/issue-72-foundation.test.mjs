@@ -339,13 +339,19 @@ test('anti-leakage strips caseId from POST /sessions and read_planning_context, 
     );
   }
   const customSessionAnswers = [
-    { id: 'slot_pref', text: 'Mondays and Wednesdays 19:00-21:15.' },
+    { id: 'slot_pref', text: 'I can do study sessions on Mondays each week.' },
     { id: 'load_pref', text: 'Two study sessions each week.' },
   ];
-  assert.equal(
-    matchPreparedAnswer({ id: 'q_custom_load', question: 'How many study sessions should I schedule each week?' }, customSessionAnswers, new Set())?.id,
-    'load_pref',
-  );
+  for (const orderedCustom of [customSessionAnswers, [...customSessionAnswers].reverse()]) {
+    assert.equal(
+      matchPreparedAnswer({ id: 'q_custom_load', question: 'How many study sessions should I schedule each week?' }, orderedCustom, new Set())?.id,
+      'load_pref',
+    );
+    assert.equal(
+      matchPreparedAnswer({ id: 'q_custom_avail', question: 'Which days and time windows work for your study sessions each week?' }, orderedCustom, new Set())?.id,
+      'slot_pref',
+    );
+  }
 
   // Verify HTTP adapter never sends caseId on POST /sessions, read_planning_context strips caseId,
   // and 0-LLM trusted draftMode completes replay with zero draft prompts.

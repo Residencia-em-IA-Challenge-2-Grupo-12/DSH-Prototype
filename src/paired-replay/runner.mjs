@@ -73,7 +73,7 @@ const TOPIC_PATTERNS = [
   {
     topic: 'workload',
     pattern: /\b(?:hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b/i,
-    answerPattern: /\b(?:hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b|\b(?:sessions?|sess[õo]es|blocks?|blocos?)\b.{0,16}\b(?:per|each|a|por)\s+(?:week|day|semana|dia)\b/i,
+    answerPattern: /\b(?:hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b|\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|um|uma|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\s+(?:[a-zà-ÿ-]+\s+){0,2}(?:sessions?|sess[õo]es|blocks?|blocos?)\b/i,
   },
   {
     topic: 'availability',
