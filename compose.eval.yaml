@@ -44,6 +44,8 @@ services:
     environment:
       CALENDARPIT_DATABASE: ":memory:"
       CALENDARPIT_CONFIG: /fixtures/startup.json
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
     mem_limit: 512m
     cpus: 1
     pids_limit: 128

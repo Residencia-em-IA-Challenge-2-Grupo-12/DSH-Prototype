@@ -243,7 +243,7 @@ async function main() {
           questionsAsked: questions.length,
           questionTurns,
           usage: result.usage,
-          observedUsd: budgetSummary.pendingCount || budgetSummary.unknownCount ? null : budgetSummary.observedUsd,
+          observedUsd: budgetSummary.totalUsd,
           checks: Object.fromEntries(result.checks.map(c => [c.id, c.outcome])),
           failedCheckDetails: failedChecks,
           failureMessages: failures.map(f => f.message),

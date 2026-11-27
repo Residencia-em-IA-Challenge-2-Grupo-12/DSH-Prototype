@@ -26,6 +26,16 @@ export function requiresStagedWorkspace(required = false) {
   return runtimeContext.getStore()?.requireStaged === true || required;
 }
 
+function narrowStudents(...lists) {
+  let narrowed;
+  for (const list of lists) {
+    if (list === undefined) continue;
+    if (!Array.isArray(list)) throw new Error('An explicit student allowlist is required');
+    narrowed = narrowed === undefined ? [...list] : narrowed.filter(student => list.includes(student));
+  }
+  return narrowed;
+}
+
 export function withSyntheticRuntime(directory, operation, { allowedStudents, requireStaged } = {}) {
   if (
     typeof directory !== 'string' ||
@@ -39,9 +49,10 @@ export function withSyntheticRuntime(directory, operation, { allowedStudents, re
   if (allowedStudents !== undefined && !Array.isArray(allowedStudents)) throw new Error('An explicit student allowlist is required');
   if (requireStaged !== undefined && typeof requireStaged !== 'boolean') throw new Error('Workspace policy must be explicit');
   const parent = runtimeContext.getStore();
+  const effectiveAllowed = narrowStudents(parent?.allowedStudents, allowedStudents);
   return runtimeContext.run({
     directory,
-    allowedStudents: allowedStudents === undefined ? parent?.allowedStudents : Object.freeze([...allowedStudents]),
+    allowedStudents: effectiveAllowed === undefined ? undefined : Object.freeze(effectiveAllowed),
     requireStaged: requiresStagedWorkspace(requireStaged),
   }, operation);
 }
@@ -56,9 +67,10 @@ export async function withWriteLock(student, fn) {
   }
 }
 
-export function assertStudent(id, allowed = runtimeContext.getStore()?.allowedStudents ?? KNOWN_STUDENTS) {
+export function assertStudent(id, allowed) {
+  const effective = narrowStudents(runtimeContext.getStore()?.allowedStudents, allowed) ?? KNOWN_STUDENTS;
   if (typeof id !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(id) ||
-      !Array.isArray(allowed) || !allowed.includes(id)) throw new Error('Unknown fixture');
+      !Array.isArray(effective) || !effective.includes(id)) throw new Error('Unknown fixture');
   return id;
 }
 
@@ -194,7 +206,7 @@ export class Calendarpit {
   }
 
   #eventsRoute(student, allowedStudents) {
-    return `/calendars/${assertStudent(student, this.#allowedStudents ?? allowedStudents)}-calendar/events`;
+    return `/calendars/${assertStudent(student, narrowStudents(this.#allowedStudents, allowedStudents))}-calendar/events`;
   }
 
   async create(student, event) {

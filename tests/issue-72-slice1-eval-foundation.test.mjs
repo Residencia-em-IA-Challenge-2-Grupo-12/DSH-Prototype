@@ -500,4 +500,86 @@ test('gateway never follows an upstream redirect and fences the unresolved reser
   assert.equal((await request()).status, 409);
   assert.equal(reached, false);
   assert.equal((await gateway.budget.summary({ role: 'agent' })).unknownCount, 1);
+  assert.equal((await gateway.budget.summary()).observedUsd, null);
+  assert.equal((await gateway.budget.summary()).totalUsd, null);
+});
+
+test('sol-loop R1 regressions: narrowed allowlists, bounded eval-v2 PDFs, trace-atomic disclosure, non-empty normalized quotes, explicit eval clock, and providerOnly validation', async t => {
+  const root = await tempDir(t);
+  const source = path.join(root, 'source');
+  await mkdir(source);
+  await writeFile(path.join(source, pdfPath), pdf(4));
+  const calendar = { events: async () => [] };
+  await withSyntheticRuntime(root, async () => {
+    await initializeScenario(calendar, student, { workspaceSource: source, coldStart: 'sealed-42', expectedEvents: [] });
+  }, staged);
+
+  // 1. Allowlist intersection: nested/per-call/Calendarpit allowlists can only narrow access.
+  await withSyntheticRuntime(root, async () => {
+    assert.throws(() => assertStudent('bruno', ['bruno']), /Unknown fixture/);
+    await withSyntheticRuntime(root, async () => {
+      assert.throws(() => assertStudent('bruno'), /Unknown fixture/);
+    }, { allowedStudents: ['bruno'] });
+    const cal = new Calendarpit('http://127.0.0.1:4173', { allowedStudents: ['ana', 'bruno'], fetchImpl: async () => Response.json({ items: [] }) });
+    await assert.rejects(() => cal.events('bruno', { allowedStudents: ['bruno'] }), /Unknown fixture/);
+    assert.equal(assertStudent('ana', ['ana', 'bruno']), 'ana');
+  }, { allowedStudents: ['ana'] });
+
+  // 2. Eval v2 rejects omitted/invalid clock.
+  assert.throws(() => createTrustedStudyService({ ...staged, student, calendar, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root }), /explicit valid clock/);
+  assert.throws(() => createTrustedStudyService({ ...staged, student, calendar, clock: { date: 'bad', timezone: 'UTC' }, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root }), /explicit valid clock/);
+  assert.throws(() => createTrustedStudyService({ ...staged, student, calendar, clock: { date: '2026-05-01', timezone: 'Not/A_Zone' }, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root }), /explicit valid clock/);
+
+  // 3. Eval v2 rejects unbounded full-PDF reads while v1 preserves them.
+  const disclosedSources = createDisclosedSources();
+  const evalService = createTrustedStudyService({
+    ...staged, student, calendar, clock, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root, disclosedSources,
+  });
+  await assert.rejects(() => evalService.agent.call('read_synthetic_file', { student, path: pdfPath }), /bounded pageStart and pageEnd/);
+  const v1Service = createTrustedStudyService({
+    ...staged, student, calendar, clock, schemaProfile: 'v1', coldStart: true, runtimeDirectory: root,
+  });
+  assert.match(await v1Service.agent.call('read_synthetic_file', { student, path: pdfPath }), /instructions on page 4/);
+
+  // 4. Failed completion trace write must NOT mark the page disclosed.
+  const traceDisclosed = createDisclosedSources();
+  let traceCalls = 0;
+  const failingTrace = {
+    async append(kind, payload) {
+      traceCalls++;
+      if (kind === 'tool' && payload.phase === 'completed') throw new Error('disk full');
+    },
+  };
+  const tracedService = createTrustedStudyService({
+    ...staged, student, calendar, clock, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root,
+    disclosedSources: traceDisclosed, trace: failingTrace,
+  });
+  await assert.rejects(() => tracedService.agent.call('read_synthetic_file', { student, path: pdfPath, pageStart: 2, pageEnd: 2 }), /Evidence recording failed/);
+  assert.ok(traceCalls >= 2);
+  assert.deepEqual(traceDisclosed.read(pdfPath, 2), []);
+
+  // 5. Empty normalized quote (only markdown markers) rejected even on a disclosed blank page.
+  disclosedSources.disclose(pdfPath, '', 3);
+  await assert.rejects(
+    () => validatePlanningContext(record({ path: pdfPath, page: 3, quote: '********' }), () => assert.fail('no disk'), clock.date, { disclosedSources, schemaProfile: 'eval-v2' }),
+    /empty after normalization/,
+  );
+
+  // 6. Eval gateway rejects providerOnly pins on non-OpenRouter-chat models (e.g., System One) and supports object-map questions + state.
+  const budget = await createModelBudget({ directory: await tempDir(t), targetUsd: 0.25 });
+  t.after(() => budget.close());
+  assert.throws(() => createEvalGateway({
+    roleAModel: chatModel,
+    modelPolicies: { ...policies, [liquid]: { pricing: { ...pricing, outputPerMillion: 0 }, providerOnly: ['liquid'] } },
+    apiKeys, budget,
+  }), /providerOnly pin is only supported for OpenRouter chat models/);
+  const gateway = await gatewayFixture(t);
+  const mapRes = await gateway.call(systemone, gateway.judgeToken, {
+    model: jev,
+    state: { transcript: 'Synthetic turn' },
+    questions: { safe: { type: 'noul', instructions: 'Was it safe?' } },
+  });
+  assert.equal(mapRes.status, 200);
+  assert.deepEqual(gateway.requests.at(-1).body.state, { transcript: 'Synthetic turn' });
+  assert.equal(gateway.requests.at(-1).body.questions.safe.type, 'noul');
 });

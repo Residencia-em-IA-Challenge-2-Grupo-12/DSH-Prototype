@@ -56,8 +56,9 @@ export async function createModelBudget({directory,targetUsd=5}) {
         return {observedUsd:row.pending||row.unknown?null:(row.observed??0)/1_000_000,pendingCount:row.pending||0,unknownCount:row.unknown||0,
           inputTokens:row.inputTokens,outputTokens:row.outputTokens};
       }
-      const row=db.prepare("SELECT COALESCE(SUM(CASE WHEN status='settled' THEN actual_micro ELSE 0 END),0) AS observed, SUM(CASE WHEN status='pending' THEN 1 ELSE 0 END) AS pending, SUM(CASE WHEN status='unknown' THEN 1 ELSE 0 END) AS unknown FROM budget_request").get();
-      return {targetUsd:target/1_000_000,observedUsd:row.observed/1_000_000,pendingCount:row.pending||0,unknownCount:row.unknown||0,limit:'approximate-local'};
+      const row=db.prepare("SELECT COALESCE(SUM(CASE WHEN status='settled' THEN actual_micro ELSE 0 END),0) AS observed, SUM(CASE WHEN status='settled' THEN 1 ELSE 0 END) AS settled, SUM(CASE WHEN status='pending' THEN 1 ELSE 0 END) AS pending, SUM(CASE WHEN status='unknown' THEN 1 ELSE 0 END) AS unknown FROM budget_request").get();
+      const incomplete=Boolean(row.pending||row.unknown);
+      return {targetUsd:target/1_000_000,observedUsd:incomplete&&!row.settled?null:row.observed/1_000_000,totalUsd:incomplete?null:row.observed/1_000_000,pendingCount:row.pending||0,unknownCount:row.unknown||0,limit:'approximate-local'};
     },
     async close(){db.close();}
   };

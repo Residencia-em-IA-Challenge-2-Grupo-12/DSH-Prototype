@@ -78,7 +78,11 @@ export async function validatePlanningContext(value, readSource, today, { disclo
       const body = await readSource(source.path);
       excerpts = [pdf ? body.split('\f')[source.page-1] : body];
     }
-    if (!excerpts.some(text => typeof text === 'string' && normalize(text).includes(normalize(source.quote)))) {
+    const normalizedQuote = normalize(source.quote);
+    if (!normalizedQuote) {
+      throw new Error(`Cited quote in ${source.path}${source.page?' on page '+source.page:''} is empty after normalization.`);
+    }
+    if (!excerpts.some(text => typeof text === 'string' && normalize(text).includes(normalizedQuote))) {
       throw new Error(`Cited quote was not found in ${source.path}${source.page?' on page '+source.page:''}. Use the assessment line from that source.`);
     }
   }

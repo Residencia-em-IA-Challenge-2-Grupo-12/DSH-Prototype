@@ -36,7 +36,7 @@ const judgeModels = new Map([
 ]);
 const chatFields = ['model', 'messages', 'tools', 'tool_choice', 'parallel_tool_calls', 'response_format',
   'temperature', 'top_p', 'max_tokens', 'max_completion_tokens', 'reasoning_effort'];
-const decisionFields = ['model', 'context', 'messages', 'questions'];
+const decisionFields = ['model', 'state', 'context', 'messages', 'questions'];
 const questionTypes = new Set(['noul', 'choice', 'score']);
 const digest = value => createHash('sha256').update(value).digest();
 const dollars = value => Number.isFinite(value) && value >= 0;
@@ -62,8 +62,11 @@ async function readJson(stream, limit) {
 
 function prepareRequest(input, route, policy) {
   if (route.decision) {
-    if (!Array.isArray(input.questions) || !input.questions.length ||
-        input.questions.some(question => !questionTypes.has(question?.type))) {
+    const questionList = Array.isArray(input.questions)
+      ? input.questions
+      : (input.questions && typeof input.questions === 'object' ? Object.values(input.questions) : null);
+    if (!questionList || !questionList.length ||
+        questionList.some(question => !questionTypes.has(question?.type))) {
       throw new Error('System One requires noul, choice, or score questions');
     }
     return Object.fromEntries(decisionFields.filter(key => Object.hasOwn(input, key)).map(key => [key, input[key]]));
@@ -132,11 +135,19 @@ export function createEvalGateway({
     operator: new Map([[operatorModel, routes.openrouter]]),
     judge: judgeModels,
   };
+  const routeByModel = new Map([
+    [roleAModel, routes[roleAProvider]],
+    [operatorModel, routes.openrouter],
+    ...judgeModels.entries(),
+  ]);
   const policies = new Map();
-  for (const model of [roleAModel, operatorModel, ...judgeModels.keys()]) {
+  for (const [model, modelRoute] of routeByModel.entries()) {
     const policy = Object.hasOwn(modelPolicies, model) ? structuredClone(modelPolicies[model]) : {};
-    if (policy.providerOnly != null && (!Array.isArray(policy.providerOnly) || !policy.providerOnly.length ||
-        policy.providerOnly.some(provider => typeof provider !== 'string' || !provider.trim()))) throw new Error('Invalid per-model provider pin');
+    if (policy.providerOnly != null) {
+      if (modelRoute !== routes.openrouter) throw new Error('providerOnly pin is only supported for OpenRouter chat models');
+      if (!Array.isArray(policy.providerOnly) || !policy.providerOnly.length ||
+          policy.providerOnly.some(provider => typeof provider !== 'string' || !provider.trim())) throw new Error('Invalid per-model provider pin');
+    }
     policies.set(model, { ...policy, providerOnly: policy.providerOnly ?? null });
   }
   const upstreamKeys = new Map(Object.values(routes).map(route => [route, apiKeys[route.key]]));

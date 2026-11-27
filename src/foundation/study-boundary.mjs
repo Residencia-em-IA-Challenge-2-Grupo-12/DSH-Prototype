@@ -28,33 +28,53 @@ export function createStudyBoundary({
   disclosedSources = schemaProfile === 'eval-v2' ? createDisclosedSources() : undefined,
   coldStart = false,
   availabilityPreview,
-  clock = { date: FIXED_TODAY, timezone: 'America/Sao_Paulo' },
+  clock = schemaProfile === 'eval-v2' ? undefined : { date: FIXED_TODAY, timezone: 'America/Sao_Paulo' },
 } = {}) {
   assertStudent(student, allowedStudents);
   planningContextSchemaFor(schemaProfile);
   if (typeof requireStaged !== 'boolean') throw new Error('Workspace policy must be explicit');
   if (!calendar || typeof calendar.events !== 'function') throw new Error('A synthetic calendar is required');
-  const simulationToday = clock?.date || FIXED_TODAY;
-  const timezone = clock?.timezone || 'America/Sao_Paulo';
+  let simulationToday;
+  let timezone;
+  if (schemaProfile === 'eval-v2') {
+    if (!clock || typeof clock !== 'object' || typeof clock.date !== 'string' ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(clock.date) || !Number.isFinite(Date.parse(`${clock.date}T00:00:00Z`)) ||
+        typeof clock.timezone !== 'string' || !clock.timezone.trim()) {
+      throw new Error('Eval v2 requires an explicit valid clock');
+    }
+    try {
+      new Intl.DateTimeFormat('en-CA', { timeZone: clock.timezone });
+    } catch {
+      throw new Error('Eval v2 requires an explicit valid clock');
+    }
+    simulationToday = clock.date;
+    timezone = clock.timezone;
+  } else {
+    simulationToday = clock?.date || FIXED_TODAY;
+    timezone = clock?.timezone || 'America/Sao_Paulo';
+  }
   const workspace = { requireStaged: requireStaged || schemaProfile === 'eval-v2', allowedStudents };
   const planning = { ...workspace, today: simulationToday, disclosedSources, schemaProfile };
 
   const methods = new Map([
     ['list_synthetic_files', args => listWorkspace(student, args.path || '', workspace)],
-    ['read_synthetic_file', async ({ path, pageStart, pageEnd }) => {
+    ['read_synthetic_file', async ({ path, pageStart, pageEnd }, pendingDisclosures) => {
       if (pageStart !== undefined || pageEnd !== undefined) {
         const result = await readWorkspacePageRange(student, path, { ...workspace, pageStart, pageEnd });
-        for (const { page, text } of result.pages) disclosedSources?.disclose(path, text, page);
+        for (const { page, text } of result.pages) pendingDisclosures.push([path, text, page]);
         return result;
+      }
+      if (schemaProfile === 'eval-v2' && /\.pdf$/i.test(path)) {
+        throw new Error('PDF reads in eval-v2 require an explicit bounded pageStart and pageEnd');
       }
       const text = await readWorkspace(student, path, workspace);
       if (disclosedSources) {
         if (/\.pdf$/i.test(path)) {
           const pages = text.split('\f');
           if (pages.at(-1) === '') pages.pop();
-          pages.forEach((body, index) => disclosedSources.disclose(path, body, index + 1));
+          pages.forEach((body, index) => pendingDisclosures.push([path, body, index + 1]));
         } else {
-          disclosedSources.disclose(path, text);
+          pendingDisclosures.push([path, text]);
         }
       }
       return text;
@@ -118,12 +138,16 @@ export function createStudyBoundary({
 
   return {
     methods: () => [...methods.keys()],
-    async call(method, args) {
+    async call(method, args, { afterExecute } = {}) {
       if (!methods.has(method)) throw new Error('Agent operation is not available');
       if (!args || typeof args !== 'object' || Array.isArray(args) || args.student !== student) {
         throw new Error('Request does not match the selected synthetic student');
       }
-      return withSyntheticRuntime(runtimeDir(), () => methods.get(method)(args), workspace);
+      const pendingDisclosures = [];
+      const result = await withSyntheticRuntime(runtimeDir(), () => methods.get(method)(args, pendingDisclosures), workspace);
+      if (afterExecute) await afterExecute(result);
+      for (const [sourcePath, body, page] of pendingDisclosures) disclosedSources?.disclose(sourcePath, body, page);
+      return result;
     },
   };
 }

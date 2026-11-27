@@ -18,11 +18,11 @@ export function createTrustedStudyService({
   const workspace={allowedStudents:[student],requireStaged:requiresStagedWorkspace(requireStaged||schemaProfile==='eval-v2')};
   withSyntheticRuntime(directory,()=>{},workspace);
   const inRuntime=operation=>withSyntheticRuntime(directory,operation,workspace);
-  const simulationToday=clock?.date||FIXED_TODAY;
   const availabilityPreview=browserStudy?createAvailabilityPreview(calendar,student):null;
   const boundary=createStudyBoundary({
     student,calendar,coldStart,availabilityPreview,clock,...workspace,schemaProfile,disclosedSources,
   }),gate=createWriteGate(),agentCalls=new Set();
+  const simulationToday=clock?.date||FIXED_TODAY;
   let retiring=false,drained=false;
   const agent={
     allowedMethods:()=>boundary.methods(),
@@ -30,11 +30,19 @@ export function createTrustedStudyService({
     if(retiring)return Promise.reject(new Error('Synthetic run is retiring')); 
     const operation=Promise.resolve().then(async()=>{
       if(trace)await trace.append('tool',{phase:'requested',method,args});
-      let result;
-      try{result=await inRuntime(()=>boundary.call(method,args));}
-      catch(error){if(trace){try{await trace.append('failure',{operation:method,outcome:'failed'});}catch(traceError){throw new Error('Evidence recording failed after the operation; state may have changed',{cause:traceError});}}throw error;}
-      if(trace){try{await trace.append('tool',{phase:'completed',method,result});}catch(error){throw new Error('Evidence recording failed after the operation; state may have changed',{cause:error});}}
-      return result;
+      let traceFailed=false;
+      try{
+        return await inRuntime(()=>boundary.call(method,args,{
+          afterExecute:trace?async result=>{
+            try{await trace.append('tool',{phase:'completed',method,result});}
+            catch(error){traceFailed=true;throw new Error('Evidence recording failed after the operation; state may have changed',{cause:error});}
+          }:undefined,
+        }));
+      }
+      catch(error){
+        if(!traceFailed&&trace){try{await trace.append('failure',{operation:method,outcome:'failed'});}catch(traceError){throw new Error('Evidence recording failed after the operation; state may have changed',{cause:traceError});}}
+        throw error;
+      }
     });agentCalls.add(operation);
     operation.then(()=>agentCalls.delete(operation),()=>agentCalls.delete(operation));return operation;
   }};
