@@ -267,6 +267,8 @@ export function loadComparisonSuite() {
 
   const plannerSource = readFileSync(resolve(ROOT, 'src/domain/planner.mjs'));
   const cpsatSource = readFileSync(resolve(ROOT, 'experiments/planner-comparison/cpsat_planner.py'));
+  const benchmarkSource = readFileSync(resolve(ROOT, 'experiments/planner-comparison/benchmark.mjs'));
+  const casesLoaderSource = readFileSync(resolve(ROOT, 'experiments/planner-comparison/cases.mjs'));
 
   return {
     schemaVersion: 1,
@@ -282,6 +284,8 @@ export function loadComparisonSuite() {
       anaReplayCaseSha256: anaReplayCase.sha256,
       heuristicPlannerSha256: sha256(plannerSource),
       cpsatPlannerSha256: sha256(cpsatSource),
+      benchmarkSha256: sha256(benchmarkSource),
+      casesLoaderSha256: sha256(casesLoaderSource),
     },
     cases: [...frozenCases, ...pairedReplayCases, ...diagnosticCases],
   };
