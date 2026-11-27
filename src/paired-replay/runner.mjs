@@ -66,10 +66,13 @@ export function selectStaleEventId(fixture, manifest) {
   return (preferred || inWeek1[0] || candidates[0] || fixture.events[0])?.id || null;
 }
 
+const WORKLOAD_QUANTITY_PATTERN =
+  /\b(?:how\s+many|quant[oa]s|number\s+of|n[uú]mero\s+de)\b.{0,30}\b(?:sessions?|sess[õo]es|blocks?|blocos?|hours?|horas?)\b/i;
+
 const TOPIC_PATTERNS = [
   {
     topic: 'workload',
-    pattern: /\b(?:hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b|\b(?:how\s+many|quant[oa]s|number\s+of|n[uú]mero\s+de)\b.{0,24}\b(?:sessions?|sess[õo]es|blocks?|blocos?)\b|\b(?:sessions?|sess[õo]es|blocks?|blocos?)\b.{0,16}\b(?:per|each|a|por)\s+(?:week|day|semana|dia)\b/i,
+    pattern: /\b(?:hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b/i,
   },
   {
     topic: 'availability',
@@ -89,7 +92,10 @@ export function matchPreparedAnswer(asked, preparedAnswers, usedIds = new Set())
   if (!questionText) return null;
 
   // Classify strictly from question text; routing IDs are never consulted.
-  const askedTopics = TOPIC_PATTERNS.filter(entry => entry.pattern.test(questionText)).map(entry => entry.topic);
+  // Explicit quantity asks (e.g. "How many time blocks each week?") take priority as workload.
+  const askedTopics = WORKLOAD_QUANTITY_PATTERN.test(questionText)
+    ? ['workload']
+    : TOPIC_PATTERNS.filter(entry => entry.pattern.test(questionText)).map(entry => entry.topic);
   if (askedTopics.length === 0) return null;
 
   let best = null;

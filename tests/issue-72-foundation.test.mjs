@@ -316,18 +316,28 @@ test('anti-leakage strips caseId from POST /sessions and read_planning_context, 
     { id: 'workload', text: 'Plan 4 hours per week, at most 2 sessions per day, with a 15-minute break.' },
     { id: 'preparation', text: 'I have not started an outline yet.' },
   ];
-  assert.equal(
-    matchPreparedAnswer({ id: 'q_avail', question: 'Which days and time windows work for your study sessions?' }, anaFixtureAnswers, new Set())?.id,
-    'availability',
-  );
-  assert.equal(
-    matchPreparedAnswer({ id: 'q_count_en', question: 'How many study sessions should I schedule each week?' }, anaFixtureAnswers, new Set())?.id,
-    'workload',
-  );
-  assert.equal(
-    matchPreparedAnswer({ id: 'q_count_pt', question: 'Quantas sessões de estudo por semana?' }, anaFixtureAnswers, new Set())?.id,
-    'workload',
-  );
+  for (const orderedAnswers of [anaFixtureAnswers, [...anaFixtureAnswers].reverse()]) {
+    assert.equal(
+      matchPreparedAnswer({ id: 'q_avail', question: 'Which days and time windows work for your study sessions?' }, orderedAnswers, new Set())?.id,
+      'availability',
+    );
+    assert.equal(
+      matchPreparedAnswer({ id: 'q_avail_week', question: 'Which days and time windows work for your study sessions each week?' }, orderedAnswers, new Set())?.id,
+      'availability',
+    );
+    assert.equal(
+      matchPreparedAnswer({ id: 'q_count_en', question: 'How many study sessions should I schedule each week?' }, orderedAnswers, new Set())?.id,
+      'workload',
+    );
+    assert.equal(
+      matchPreparedAnswer({ id: 'q_blocks_en', question: 'How many time blocks should I schedule each week?' }, orderedAnswers, new Set())?.id,
+      'workload',
+    );
+    assert.equal(
+      matchPreparedAnswer({ id: 'q_count_pt', question: 'Quantas sessões de estudo por semana?' }, orderedAnswers, new Set())?.id,
+      'workload',
+    );
+  }
 
   // Verify HTTP adapter never sends caseId on POST /sessions, read_planning_context strips caseId,
   // and 0-LLM trusted draftMode completes replay with zero draft prompts.
