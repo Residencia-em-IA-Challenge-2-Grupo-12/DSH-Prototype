@@ -1,4 +1,8 @@
+import path from 'node:path';
 import {z} from 'zod';
+
+const DEFAULT_TIMEZONE = 'America/Sao_Paulo';
+const DEFAULT_TIMEZONE_OFFSET = '-03:00';
 
 export const coldStartStudents = Object.freeze({
   bruno:'bruno', 'bruno-text':'bruno', ana:'ana', 'ana-conflict':'ana', 'ana-held-out':'ana',
@@ -17,7 +21,7 @@ const window = z.strictObject({
 
 const neutralPlanningContextSchema = z.strictObject({
   courses:z.array(z.strictObject({
-    name:z.string().trim().min(1).max(120).describe('Course title only (omit task suffixes such as "case memo" or "exam").'),
+    name:z.string().trim().min(1).max(120).describe('Course title only (omit task suffixes such as "assignment" or "exam").'),
     date,
     time,
     citation,
@@ -42,18 +46,35 @@ export function planningContextSchemaFor(profile = 'v1') {
   throw new Error('Unknown planning context schema profile');
 }
 
+export function canonicalSourcePath(raw) {
+  if (typeof raw !== 'string') throw new Error('Citation source path must be a string');
+  const slashNormalized = raw.trim().replace(/\\/g, '/');
+  if (!slashNormalized || slashNormalized.startsWith('/')) throw new Error('Citation source path must be relative');
+  const normalized = path.posix.normalize(slashNormalized).replace(/^(?:\.\/)+/, '');
+  if (!normalized || normalized === '.' || normalized === '..' || normalized.startsWith('../')) {
+    throw new Error('Citation source path is outside synthetic workspace');
+  }
+  return normalized;
+}
+
 // One instance per arm and run. Record the exact text shared by preload or tool
 // responses so citation checks cannot discover new material by reading disk.
 export function createDisclosedSources() {
   const sources = new Map();
-  const key = (path, page) => JSON.stringify([path, page ?? null]);
+  const key = (sourcePath, page) => JSON.stringify([canonicalSourcePath(sourcePath), page ?? null]);
   return {
-    disclose(path, text, page) {
-      const source = key(path, page);
+    disclose(sourcePath, text, page) {
+      const source = key(sourcePath, page);
       if (!sources.has(source)) sources.set(source, new Set());
       sources.get(source).add(text);
     },
-    read: (path, page) => [...(sources.get(key(path, page)) ?? [])],
+    read: (sourcePath, page) => {
+      try {
+        return [...(sources.get(key(sourcePath, page)) ?? [])];
+      } catch {
+        return [];
+      }
+    },
   };
 }
 
@@ -89,20 +110,22 @@ export async function validatePlanningContext(value, readSource, today, { disclo
   return record;
 }
 
-export function plannerProfileFromRecord(student, record, today) {
+export function plannerProfileFromRecord(student, record, today, {
+  timezone = DEFAULT_TIMEZONE, timezoneOffset = DEFAULT_TIMEZONE_OFFSET,
+} = {}) {
   if (!record || record.through < today) throw new Error('Review the planning context before generating a proposal');
   return {
-    student, timezone:'America/Sao_Paulo', availabilityThrough:record.through,
+    student, timezone, availabilityThrough:record.through,
     studyWindows:record.studyWindows, targetHours:record.targetHours,
     maxDailyStudyHours:record.maxDailyStudyHours, studyBreakMinutes:record.studyBreakMinutes,
     courses:record.courses.map(course=>({
-      name:course.name, deadline:`${course.date}T${course.time}:00-03:00`,
+      name:course.name, deadline:`${course.date}T${course.time}:00${timezoneOffset}`,
       source:course.citation.path, evidence:course.citation,
       ...(course.resolution?{resolution:course.resolution}:{}),
     })),
   };
 }
 
-export function reviewedPlannerProfile(student, context, today) {
-  return plannerProfileFromRecord(student, context.confirmed?.record, today);
+export function reviewedPlannerProfile(student, context, today, clock) {
+  return plannerProfileFromRecord(student, context.confirmed?.record, today, clock);
 }

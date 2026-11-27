@@ -35,7 +35,7 @@ const judgeModels = new Map([
   ['mistralai/mistral-large-4-0', routes.openrouter],
 ]);
 const chatFields = ['model', 'messages', 'tools', 'tool_choice', 'parallel_tool_calls', 'response_format',
-  'temperature', 'top_p', 'max_tokens', 'max_completion_tokens', 'reasoning_effort'];
+  'temperature', 'top_p', 'seed', 'max_tokens', 'max_completion_tokens', 'reasoning_effort'];
 const decisionFields = ['model', 'state', 'context', 'messages', 'questions'];
 const questionTypes = new Set(['noul', 'choice', 'score']);
 const digest = value => createHash('sha256').update(value).digest();
@@ -43,6 +43,7 @@ const dollars = value => Number.isFinite(value) && value >= 0;
 const tokens = value => Number.isSafeInteger(value) && value >= 0 ? value : null;
 
 function send(res, status, body) {
+  if (res.headersSent) { res.destroy(); return; }
   res.writeHead(status, { 'content-type': 'application/json', 'cache-control': 'no-store' });
   res.end(JSON.stringify(body));
 }
@@ -80,6 +81,7 @@ function prepareRequest(input, route, policy) {
     throw new Error('Only function tools are available');
   }
   const body = Object.fromEntries(chatFields.filter(key => Object.hasOwn(input, key)).map(key => [key, input[key]]));
+  if (body.seed !== undefined && !Number.isSafeInteger(body.seed)) throw new Error('Invalid seed');
   const requested = input.max_tokens ?? input.max_completion_tokens ?? MAX_OUTPUT_TOKENS;
   if (!Number.isSafeInteger(requested) || requested < 1) throw new Error('Invalid output token limit');
   if (policy.supportsTemperature !== true) delete body.temperature;
@@ -90,7 +92,11 @@ function prepareRequest(input, route, policy) {
     throw new Error('Gemini reasoning_effort must be low when supplied');
   }
   return route === routes.openrouter
-    ? prepareOpenRouterRequest(body, { allowedModels: [body.model], providerOnly: policy.providerOnly })
+    ? prepareOpenRouterRequest(body, {
+        allowedModels: [body.model],
+        providerOnly: policy.providerOnly,
+        requireParameters: policy.requireParameters,
+      })
     : body;
 }
 
@@ -99,12 +105,20 @@ function priceFor(pricing, inputTokens, outputTokens) {
 }
 
 function estimateCost(body, pricing, decision) {
-  if (!pricing || !dollars(pricing.inputPerMillion) || !dollars(pricing.outputPerMillion) ||
-      (pricing.inputPerMillion === 0 && (decision || pricing.outputPerMillion === 0))) {
+  if (!pricing || !dollars(pricing.inputPerMillion) || !dollars(pricing.outputPerMillion)) {
     throw new Error('A verified price for this model is required');
   }
   const age = Date.now() - Date.parse(pricing.verifiedAt);
   if (!Number.isFinite(age) || age < 0 || age > 86_400_000) throw new Error('Current model pricing is required');
+  if (pricing.freeTier === true) {
+    if (pricing.inputPerMillion !== 0 || pricing.outputPerMillion !== 0) {
+      throw new Error('freeTier pricing requires zero input and output rates');
+    }
+    return 0;
+  }
+  if (pricing.inputPerMillion === 0 && (decision || pricing.outputPerMillion === 0)) {
+    throw new Error('A verified price for this model is required');
+  }
   const inputEstimate = Buffer.byteLength(JSON.stringify(body), 'utf8') * 2 + 4096;
   return priceFor(pricing, inputEstimate, decision ? 0 : body.max_tokens);
 }
@@ -112,13 +126,24 @@ function estimateCost(body, pricing, decision) {
 function usageFor(payload, route, pricing) {
   const usage = payload.usage ?? (route.decision ? payload : {});
   const inputTokens = tokens(usage?.input_tokens ?? usage?.prompt_tokens);
-  const outputTokens = route.decision ? 0 : tokens(usage?.output_tokens ?? usage?.completion_tokens);
-  const cost = usage?.cost ?? usage?.cost_usd;
-  if (dollars(cost)) return { inputTokens, outputTokens, actualUsd: cost, source: 'provider' };
-  if ((route === routes.gemini || route === routes.typesafe) && inputTokens !== null && outputTokens !== null) {
-    return { inputTokens, outputTokens, actualUsd: priceFor(pricing, inputTokens, outputTokens), source: 'token-rates' };
+  const outputTokens = tokens(usage?.output_tokens ?? usage?.completion_tokens) ?? (route.decision ? 0 : null);
+  const totalTokens = tokens(usage?.total_tokens);
+  const billedOutput = route === routes.gemini && inputTokens !== null && outputTokens !== null &&
+    totalTokens !== null && totalTokens > inputTokens + outputTokens
+    ? totalTokens - inputTokens
+    : outputTokens;
+  if (pricing?.freeTier === true) {
+    if (inputTokens !== null && billedOutput !== null) {
+      return { inputTokens, outputTokens: billedOutput, actualUsd: 0, source: 'free-tier' };
+    }
+    return { inputTokens, outputTokens: billedOutput, actualUsd: null, source: 'unknown' };
   }
-  return { inputTokens, outputTokens, actualUsd: null, source: 'unknown' };
+  const cost = usage?.cost ?? usage?.cost_usd;
+  if (dollars(cost)) return { inputTokens, outputTokens: billedOutput, actualUsd: cost, source: 'provider' };
+  if ((route === routes.gemini || route.decision) && inputTokens !== null && billedOutput !== null) {
+    return { inputTokens, outputTokens: billedOutput, actualUsd: priceFor(pricing, inputTokens, billedOutput), source: 'token-rates' };
+  }
+  return { inputTokens, outputTokens: billedOutput, actualUsd: null, source: 'unknown' };
 }
 
 // Construct one gateway per run. Only runnerToken crosses into the runner.
@@ -148,7 +173,18 @@ export function createEvalGateway({
       if (!Array.isArray(policy.providerOnly) || !policy.providerOnly.length ||
           policy.providerOnly.some(provider => typeof provider !== 'string' || !provider.trim())) throw new Error('Invalid per-model provider pin');
     }
-    policies.set(model, { ...policy, providerOnly: policy.providerOnly ?? null });
+    if (policy.requireParameters !== undefined) {
+      if (modelRoute !== routes.openrouter) throw new Error('requireParameters is only supported for OpenRouter chat models');
+      if (typeof policy.requireParameters !== 'boolean') throw new Error('Invalid requireParameters policy');
+    }
+    if (policy.pricing?.freeTier === true && (policy.pricing.inputPerMillion !== 0 || policy.pricing.outputPerMillion !== 0)) {
+      throw new Error('freeTier pricing requires zero input and output rates');
+    }
+    policies.set(model, {
+      ...policy,
+      providerOnly: policy.providerOnly ?? null,
+      requireParameters: policy.requireParameters ?? true,
+    });
   }
   const upstreamKeys = new Map(Object.values(routes).map(route => [route, apiKeys[route.key]]));
   const runnerToken = randomBytes(32).toString('base64url');
@@ -183,7 +219,7 @@ export function createEvalGateway({
 
     if (!active) return send(res, 401, { error: 'Eval run has retired' });
     let reservation;
-    try { reservation = await budget.reserve({ role, estimatedUsd: estimate }); }
+    try { reservation = await budget.reserve({ role, estimatedUsd: estimate, allowZero: policy.pricing?.freeTier === true }); }
     catch (error) { return send(res, 409, { error: error.message }); }
     try {
       if (!active) {
@@ -197,7 +233,10 @@ export function createEvalGateway({
         redirect: 'error',
         signal: AbortSignal.timeout(120_000),
       });
-      if (!upstream.ok || !upstream.body) throw new Error('Provider request failed');
+      if (!upstream.ok || !upstream.body) {
+        await upstream.body?.cancel().catch(() => {});
+        throw new Error('Provider request failed');
+      }
       const payload = await readJson(upstream.body, 5_000_000);
       const { inputTokens, outputTokens, actualUsd, source } = usageFor(payload, route, policy.pricing);
       await budget.settle(reservation.id, { inputTokens, outputTokens, actualUsd });
@@ -208,6 +247,7 @@ export function createEvalGateway({
     } catch {
       try { await budget.settle(reservation.id, { actualUsd: null, ...(route.decision ? { outputTokens: 0 } : {}) }); }
       catch { /* Preserve an unresolved reservation on ledger failure. */ }
+      if (res.headersSent) { res.destroy(); return; }
       return send(res, 502, { error: 'Provider request or usage accounting failed' });
     }
   });

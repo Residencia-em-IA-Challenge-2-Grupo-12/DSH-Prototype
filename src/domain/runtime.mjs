@@ -134,6 +134,24 @@ export function addDaysIso(isoDate, days) {
   return new Date(Date.parse(`${isoDate}T00:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
 }
 
+export function timezoneOffsetForDate(isoDate, timeZone = DEFAULT_TIMEZONE) {
+  if (typeof isoDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate) || !Number.isFinite(Date.parse(`${isoDate}T12:00:00Z`))) {
+    throw new Error('Invalid planning clock date');
+  }
+  if (typeof timeZone !== 'string' || !timeZone.trim()) throw new Error('Invalid planning clock timezone');
+  let parts;
+  try {
+    parts = new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'longOffset' }).formatToParts(new Date(`${isoDate}T12:00:00Z`));
+  } catch {
+    throw new Error('Invalid planning clock timezone');
+  }
+  const label = parts.find(part => part.type === 'timeZoneName')?.value;
+  if (label === 'GMT' || label === 'UTC') return '+00:00';
+  const match = /^(?:GMT|UTC)([+-]\d{2}:\d{2})$/.exec(label || '');
+  if (!match) throw new Error('Unsupported planning clock timezone offset');
+  return match[1];
+}
+
 export function validateClock(today, timezoneOffset) {
   if (typeof today !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(today) || !Number.isFinite(Date.parse(`${today}T00:00:00Z`))) {
     throw new Error('Invalid planning clock date');

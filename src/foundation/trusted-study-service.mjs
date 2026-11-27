@@ -2,7 +2,7 @@ import {assertStudent,FIXED_TODAY,draft,applyApproved,applyAnnotation,snapshotFo
 import {createStudyBoundary} from './study-boundary.mjs';
 import {createAvailabilityPreview} from './availability-preview.mjs';
 import {createWriteGate} from './write-gate.mjs';
-import {requiresStagedWorkspace} from '../domain/runtime.mjs';
+import {requiresStagedWorkspace,timezoneOffsetForDate} from '../domain/runtime.mjs';
 
 // Trusted application side. Only its `agent` member may be exposed through
 // the broker; approval methods require a separate authenticated user action.
@@ -23,6 +23,7 @@ export function createTrustedStudyService({
     student,calendar,coldStart,availabilityPreview,clock,...workspace,schemaProfile,disclosedSources,
   }),gate=createWriteGate(),agentCalls=new Set();
   const simulationToday=clock?.date||FIXED_TODAY;
+  const clockProfile=clock?.timezone?{timezone:clock.timezone,timezoneOffset:timezoneOffsetForDate(simulationToday,clock.timezone)}:{};
   let retiring=false,drained=false;
   const agent={
     allowedMethods:()=>boundary.methods(),
@@ -54,7 +55,7 @@ export function createTrustedStudyService({
     })}:{}),
     draftPlan:(options={})=>gate.run(async()=>{
       if(trace)await trace.append('decision',{operation:'draft_plan',options});
-      return inRuntime(()=>draft(calendar,student,options,{...workspace,today:simulationToday}));
+      return inRuntime(()=>draft(calendar,student,options,{...workspace,today:simulationToday,...clockProfile}));
     }),
     status:()=>inRuntime(async()=>{
       const [state,recovery,courses,observation]=await Promise.all([

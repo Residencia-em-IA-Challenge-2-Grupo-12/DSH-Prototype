@@ -208,18 +208,19 @@ function computeProtectedIds(state, events) {
   ];
 }
 
-function buildPlanOptions(options, { effectiveToday, protectedIds, enforcedHours }) {
+function buildPlanOptions(options, { effectiveToday, timezoneOffset, protectedIds, enforcedHours }) {
   const { record: _ignoredRecord, ...rest } = options || {};
   return {
     ...rest,
     today: options?.today ?? effectiveToday,
+    ...(timezoneOffset !== undefined ? { timezoneOffset: options?.timezoneOffset ?? timezoneOffset } : {}),
     ...(enforcedHours !== undefined ? { hours: enforcedHours } : {}),
     protectedIds,
   };
 }
 
 export async function previewPlan(calendar, student, options = {}, {
-  requireStaged = false, allowedStudents, today = FIXED_TODAY, disclosedSources, schemaProfile,
+  requireStaged = false, allowedStudents, today = FIXED_TODAY, timezone, timezoneOffset, disclosedSources, schemaProfile,
 } = {}) {
   const workspace = { requireStaged: requireStaged || schemaProfile === 'eval-v2', allowedStudents };
   if (requiresStagedWorkspace(workspace.requireStaged)) await workspaceRoot(student, workspace);
@@ -227,6 +228,7 @@ export async function previewPlan(calendar, student, options = {}, {
   const events = await calendar.events(student, { allowedStudents });
   const context = state.planningContext;
   const effectiveToday = options?.today ?? today;
+  const clockProfile = { ...(timezone ? { timezone } : {}), ...(timezoneOffset ? { timezoneOffset } : {}) };
   const hasCandidateRecord = options?.record !== undefined;
   let profile;
   let planningContextRevisionId = null;
@@ -239,11 +241,11 @@ export async function previewPlan(calendar, student, options = {}, {
       effectiveToday,
       { disclosedSources, schemaProfile },
     );
-    profile = plannerProfileFromRecord(student, record, effectiveToday);
+    profile = plannerProfileFromRecord(student, record, effectiveToday, clockProfile);
     enforceTargetHours = true;
   } else if (context) {
     if (context.pending) throw new Error('The operator must review the pending planning context revision');
-    profile = reviewedPlannerProfile(student, context, effectiveToday);
+    profile = reviewedPlannerProfile(student, context, effectiveToday, clockProfile);
     planningContextRevisionId = context.confirmed.id;
     enforceTargetHours = true;
   } else {
@@ -260,6 +262,7 @@ export async function previewPlan(calendar, student, options = {}, {
     events,
     buildPlanOptions(options, {
       effectiveToday,
+      timezoneOffset,
       protectedIds,
       enforcedHours: enforceTargetHours ? profile.targetHours : undefined,
     }),
@@ -275,17 +278,20 @@ export async function previewPlan(calendar, student, options = {}, {
   };
 }
 
-export async function draft(calendar, student, options = {}, { requireStaged = false, allowedStudents, today = FIXED_TODAY } = {}) {
+export async function draft(calendar, student, options = {}, {
+  requireStaged = false, allowedStudents, today = FIXED_TODAY, timezone, timezoneOffset,
+} = {}) {
   const workspace = { requireStaged, allowedStudents };
   if (requiresStagedWorkspace(requireStaged)) await workspaceRoot(student, workspace);
   const coldStart = (await loadState(student, allowedStudents)).planningContext;
   const events = await calendar.events(student, { allowedStudents });
   const baseline = coldStart ? null : await getStudent(student, workspace);
+  const clockProfile = { ...(timezone ? { timezone } : {}), ...(timezoneOffset ? { timezoneOffset } : {}) };
   return stateStore.update(student, state => {
     const context = state.planningContext;
     if (context?.pending) throw new Error('The operator must review the pending planning context revision');
     const effectiveToday = options?.today ?? today;
-    const profile = context ? reviewedPlannerProfile(student, context, effectiveToday) : baseline;
+    const profile = context ? reviewedPlannerProfile(student, context, effectiveToday, clockProfile) : baseline;
     if (context && options.hours !== undefined && options.hours !== profile.targetHours) {
       throw new Error('Review a new planning context to change the confirmed hours');
     }
@@ -296,6 +302,7 @@ export async function draft(calendar, student, options = {}, { requireStaged = f
       events,
       buildPlanOptions(options, {
         effectiveToday,
+        timezoneOffset,
         protectedIds,
         enforcedHours: context ? profile.targetHours : undefined,
       }),

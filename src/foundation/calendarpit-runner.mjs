@@ -12,7 +12,7 @@ import { EVAL_CALENDAR_ORIGIN, syntheticHttpUrl } from './eval-transport.mjs';
 
 export const CALENDARPIT_IMAGE = 'ghcr.io/iktakahiro/calendarpit:0.9.7@sha256:6baaca2eb2e587dbc52f9e63f7bc787188569578a6cba2981b1e380c91e54e96';
 const execFileAsync = promisify(execFile);
-const docker = async (...args) => (await execFileAsync('docker', args, { timeout: 20_000, maxBuffer: 64 * 1024 })).stdout.trim();
+const docker = async (...args) => (await execFileAsync('docker', args, { timeout: 20_000, maxBuffer: 512 * 1024 })).stdout.trim();
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 function checkedRunId(runId){
   if(typeof runId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(runId))throw new Error('Invalid synthetic run ID');
@@ -131,6 +131,13 @@ async function inspectEvalCalendarNetwork(runDocker, project) {
 }
 
 function matchesSeed(observed, fixture) {
+  if (Array.isArray(observed.userIds) && Array.isArray(observed.calendarIds) &&
+      Array.isArray(observed.eventIds) && typeof observed.eventsDigest === 'string') {
+    return isDeepStrictEqual(observed.userIds, fixture.users.map(item => item.id).sort()) &&
+      isDeepStrictEqual(observed.calendarIds, fixture.calendars.map(item => item.id).sort()) &&
+      isDeepStrictEqual(observed.eventIds, fixture.events.map(item => item.id).sort()) &&
+      observed.eventsDigest === digest(fixture.events);
+  }
   for (const key of ['users', 'calendars', 'events']) {
     if (!Array.isArray(observed[key]) || !isDeepStrictEqual(
       observed[key].map(item => item.id).sort(), fixture[key].map(item => item.id).sort(),
@@ -176,10 +183,16 @@ export async function startComposeCalendarpitRun({
       '--detach', '--no-deps', '--use-aliases', '--name', container, '--label', ownerLabel, '--label', `study.run.id=${runId}`,
       '--volume', `${filename}:/fixtures/startup.json:ro`, 'calendarpit');
     const url = EVAL_CALENDAR_ORIGIN + '/__calendarpit/state';
-    const probe = `const response = await fetch(${JSON.stringify(url)}, { redirect: 'error', signal: AbortSignal.timeout(1000) });
+    const probe = `import { digest } from './src/domain/planner.mjs';
+      const response = await fetch(${JSON.stringify(url)}, { redirect: 'error', signal: AbortSignal.timeout(1000) });
       if (!response.ok) process.exit(1);
-      const { users, calendars, events } = await response.json();
-      console.log(JSON.stringify({ users, calendars, events }));`;
+      const { users = [], calendars = [], events = [] } = await response.json();
+      console.log(JSON.stringify({
+        userIds: users.map(item => item.id).sort(),
+        calendarIds: calendars.map(item => item.id).sort(),
+        eventIds: events.map(item => item.id).sort(),
+        eventsDigest: digest(events),
+      }));`;
     const deadline = Date.now() + startupTimeoutMs;
     let observed;
     while (!observed && Date.now() < deadline) {

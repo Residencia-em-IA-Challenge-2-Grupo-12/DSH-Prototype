@@ -25,9 +25,10 @@ export async function createModelBudget({directory,targetUsd=5}) {
   } catch(error){db.close();throw error;}
   const transaction=fn=>{db.exec('BEGIN IMMEDIATE');try{const result=fn();db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}};
   return {
-    async reserve({role,estimatedUsd}){
+    async reserve({role,estimatedUsd,allowZero=false}){
       if(!roles.includes(role))throw new Error('Unknown paid-call role');
-      if(!Number.isFinite(estimatedUsd)||estimatedUsd<=0)throw new Error('A positive cost estimate is required');
+      if(typeof allowZero!=='boolean')throw new Error('Invalid zero-estimate policy');
+      if(!Number.isFinite(estimatedUsd)||(allowZero?estimatedUsd<0:estimatedUsd<=0))throw new Error('A positive cost estimate is required');
       const estimate=Math.ceil(estimatedUsd*1_000_000),id=randomUUID();
       return transaction(()=>{
         if(db.prepare("SELECT 1 FROM budget_request WHERE status IN ('pending','unknown') LIMIT 1").get())throw new Error('A paid request is pending or has unknown usage');

@@ -12,6 +12,8 @@ import {
 } from '../src/core.mjs';
 import { createDisclosedSources, validatePlanningContext } from '../src/cold-start-context.mjs';
 import { CalendarpitApi } from '../src/foundation/calendarpit-api.mjs';
+import { createClaimedCalendar } from '../src/foundation/claimed-calendar.mjs';
+import { startCalendarExperiment } from '../src/foundation/calendar-experiment.mjs';
 import { createEvalGateway } from '../src/foundation/eval-gateway.mjs';
 import { createModelBudget, formatUsd } from '../src/foundation/model-budget.mjs';
 import { authorizeSyntheticCalendar } from '../src/foundation/synthetic-calendar-auth.mjs';
@@ -585,4 +587,151 @@ test('sol-loop R1 regressions: narrowed allowlists, bounded eval-v2 PDFs, trace-
   assert.equal(mapRes.status, 200);
   assert.deepEqual(gateway.requests.at(-1).body.state, { transcript: 'Synthetic turn' });
   assert.equal(gateway.requests.at(-1).body.questions.safe.type, 'noul');
+});
+
+test('inverse sol-loop R1 regressions (N1-N9): seed, requireParameters, freeTier, System One billing, path canonicalization, timezone threading, and claimed calendar transport', async t => {
+  // N1: seed forwarded + validated, and per-model requireParameters=false supported on OpenRouter chat.
+  const budget1 = await createModelBudget({ directory: await tempDir(t), targetUsd: 0.25 });
+  t.after(() => budget1.close());
+  assert.throws(() => createEvalGateway({
+    roleAModel: geminiModel, roleAProvider: 'gemini',
+    modelPolicies: { ...policies, [geminiModel]: { pricing, requireParameters: false } },
+    apiKeys, budget: budget1,
+  }), /requireParameters is only supported for OpenRouter chat models/);
+  assert.throws(() => createEvalGateway({
+    roleAModel: geminiModel, roleAProvider: 'gemini',
+    modelPolicies: { ...policies, [geminiModel]: { pricing: { inputPerMillion: 1, outputPerMillion: 0, freeTier: true, verifiedAt: pricing.verifiedAt } } },
+    apiKeys, budget: budget1,
+  }), /freeTier pricing requires zero/);
+
+  const captured = [];
+  const stub = await listen(t, createServer(async (req, res) => {
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    const body = JSON.parse(Buffer.concat(chunks));
+    captured.push(body);
+    if (body.model === liquid) {
+      return json(res, { answers: {}, usage: { input_tokens: 200, output_tokens: 0 } });
+    }
+    if (body.model === jev) {
+      return json(res, { answers: {}, usage: { input_tokens: 200, output_tokens: 15 } });
+    }
+    if (body.model === geminiModel) {
+      return json(res, { choices: [], usage: { prompt_tokens: 100, completion_tokens: 50, total_tokens: 300 } });
+    }
+    return json(res, { choices: [], usage: { prompt_tokens: 100, completion_tokens: 50, cost: 0.0003 } });
+  }));
+  const fetchImpl = (url, options) => fetch(stub, options);
+  const relaxedPolicies = {
+    ...policies,
+    [chatModel]: { pricing, providerOnly: ['arm-provider'], requireParameters: false },
+    [operatorModel]: { pricing, providerOnly: ['operator-provider'], supportsTemperature: true, requireParameters: true },
+    [jev]: { pricing: { inputPerMillion: 1, outputPerMillion: 2, verifiedAt: pricing.verifiedAt } },
+    [liquid]: { pricing: { inputPerMillion: 1, outputPerMillion: 0, verifiedAt: pricing.verifiedAt } },
+  };
+  const gw = createEvalGateway({ roleAModel: chatModel, modelPolicies: relaxedPolicies, apiKeys, budget: budget1, fetchImpl });
+  const base = await listen(t, gw.server);
+  const call = (route, token, body) => post(base + route, body, { authorization: `Bearer ${token}` });
+
+  assert.equal((await call(chat, gw.operatorToken, { model: operatorModel, messages, seed: 1.5 })).status, 400);
+  const opRes = await call(chat, gw.operatorToken, { model: operatorModel, messages, temperature: 0, seed: 42 });
+  assert.equal(opRes.status, 200);
+  assert.equal(captured.at(-1).seed, 42);
+  assert.equal(captured.at(-1).provider.require_parameters, true);
+
+  const armRes = await call(chat, gw.runnerToken, { model: chatModel, messages, seed: 7 });
+  assert.equal(armRes.status, 200);
+  assert.equal(captured.at(-1).seed, 7);
+  assert.equal(captured.at(-1).provider.require_parameters, false);
+
+  // N3: liquid/d1.2-ultra falls back to token-rates without locking budget; jev preserves real output_tokens.
+  const liqRes = await call(systemone, gw.judgeToken, { model: liquid, state: 'text', questions: { q: { type: 'noul' } } });
+  assert.equal(liqRes.status, 200);
+  const liqJson = await liqRes.json();
+  assert.equal(liqJson.usage.cost_source, 'token-rates');
+  assert.equal(liqJson.usage.cost, 0.0002);
+  const jevRes = await call(systemone, gw.judgeToken, { model: jev, state: 'text', questions: { q: { type: 'noul' } } });
+  assert.equal(jevRes.status, 200);
+  const jevJson = await jevRes.json();
+  assert.equal(jevJson.usage.output_tokens, 15);
+  assert.equal(jevJson.usage.cost, 0.00023);
+
+  // N2 + N7: Gemini freeTier ($0/$0) works without locking budget, and paid Gemini bills thinking tokens via total_tokens.
+  const freeBudget = await createModelBudget({ directory: await tempDir(t), targetUsd: 0.25 });
+  t.after(() => freeBudget.close());
+  const freeGw = createEvalGateway({
+    roleAModel: geminiModel, roleAProvider: 'gemini',
+    modelPolicies: { ...policies, [geminiModel]: { pricing: { inputPerMillion: 0, outputPerMillion: 0, freeTier: true, verifiedAt: pricing.verifiedAt } } },
+    apiKeys, budget: freeBudget, fetchImpl,
+  });
+  const freeBase = await listen(t, freeGw.server);
+  const freeRes = await post(freeBase + gemini, { model: geminiModel, messages, reasoning_effort: 'low' }, { authorization: `Bearer ${freeGw.runnerToken}` });
+  assert.equal(freeRes.status, 200);
+  const freeUsage = (await freeRes.json()).usage;
+  assert.equal(freeUsage.cost, 0);
+  assert.equal(freeUsage.cost_source, 'free-tier');
+  assert.equal(freeUsage.output_tokens, 200); // total_tokens(300) - prompt_tokens(100)
+  assert.equal((await freeBudget.summary({ role: 'agent' })).observedUsd, 0);
+
+  const paidBudget = await createModelBudget({ directory: await tempDir(t), targetUsd: 0.25 });
+  t.after(() => paidBudget.close());
+  const paidGw = createEvalGateway({
+    roleAModel: geminiModel, roleAProvider: 'gemini',
+    modelPolicies: { ...policies, [geminiModel]: { pricing } },
+    apiKeys, budget: paidBudget, fetchImpl,
+  });
+  const paidBase = await listen(t, paidGw.server);
+  const paidRes = await post(paidBase + gemini, { model: geminiModel, messages, reasoning_effort: 'low' }, { authorization: `Bearer ${paidGw.runnerToken}` });
+  assert.equal(paidRes.status, 200);
+  const paidUsage = (await paidRes.json()).usage;
+  assert.equal(paidUsage.output_tokens, 200);
+  assert.equal(paidUsage.cost, 0.0005); // 100*1 + 200*2 per 1M
+
+  // N5 + N9: canonical path matching in createDisclosedSources and no "case memo" in eval-v2 schema.
+  const disclosed = createDisclosedSources();
+  disclosed.disclose('docs/syllabus.pdf', quote(2), 2);
+  assert.deepEqual(disclosed.read('./docs//syllabus.pdf', 2), [quote(2)]);
+  assert.deepEqual(disclosed.read('docs\\syllabus.pdf', 2), [quote(2)]);
+  assert.deepEqual(disclosed.read('../docs/syllabus.pdf', 2), []);
+  assert.doesNotMatch(JSON.stringify(buildOpenAITools(['propose_planning_context'], { schemaProfile: 'eval-v2' })), /case memo/i);
+
+  // N6: non-Sao_Paulo timezone threads through preview_plan & draftPlan (UTC -> +00:00).
+  const root = await tempDir(t);
+  const source = path.join(root, 'source');
+  await mkdir(source);
+  await writeFile(path.join(source, 'note.txt'), quote(1));
+  const calendar = { events: async () => [] };
+  const utcClock = { date: '2026-05-04', timezone: 'UTC' };
+  await withSyntheticRuntime(root, async () => {
+    await initializeScenario(calendar, student, { workspaceSource: source, coldStart: 'sealed-utc', expectedEvents: [] });
+  }, staged);
+  const utcDisclosed = createDisclosedSources();
+  utcDisclosed.disclose('./note.txt', quote(1));
+  const utcService = createTrustedStudyService({
+    ...staged, student, calendar, clock: utcClock, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root, disclosedSources: utcDisclosed,
+  });
+  const utcRecord = record({ path: 'note.txt', quote: quote(1) });
+  const preview = await utcService.agent.call('preview_plan', { student, weeks: 1, record: utcRecord });
+  assert.equal(preview.ok, true);
+  assert.match(preview.plan.near[0].start.dateTime, /\+00:00$/);
+  assert.equal(preview.plan.near[0].start.timeZone, 'UTC');
+
+  // N8: createClaimedCalendar and startCalendarExperiment forward transport & allowedStudents.
+  const claimed = createClaimedCalendar({
+    origin: 'http://calendarpit:4173', accessToken: 'tok', getClaim: async () => null,
+    transport, allowedStudents,
+    fetchImpl: async url => {
+      assert.match(url, /^http:\/\/calendarpit:4173\/calendar\/v3\/calendars\/ravi-calendar\/events/);
+      return Response.json({ items: [] });
+    },
+  });
+  assert.deepEqual(await claimed.events('ravi'), []);
+  const exp = await startCalendarExperiment({
+    fixture: { users: [{ id: 'ravi', email: 'ravi@example.test' }], calendars: [], events: [] },
+    redirectUri: callback,
+    context: { scenarioId: 'eval', simulatedClock: '2026-05-04T00:00:00+00:00', timeZone: 'UTC', generatorVersion: 'v2', seed: 's1' },
+    transport, allowedStudents,
+    startRun: async () => ({ id: 'r1', origin: 'http://calendarpit:4173', client: { id: 'c', secret: 's', redirectUris: [callback] }, close: async () => {} }),
+  });
+  assert.equal(typeof exp.provider('tok').listEvents, 'function');
 });

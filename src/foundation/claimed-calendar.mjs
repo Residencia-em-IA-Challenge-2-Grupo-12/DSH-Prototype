@@ -3,10 +3,10 @@ import {CalendarpitApi} from './calendarpit-api.mjs';
 
 // Synthetic provider adapter. The enclosing application must enforce access
 // to the API and database; this module is not an authentication boundary.
-export function createClaimedCalendar({origin,accessToken,getClaim,fetchImpl}) {
+export function createClaimedCalendar({origin,accessToken,getClaim,fetchImpl,transport='loopback',allowedStudents}) {
   if(typeof getClaim!=='function')throw new Error('A claim reader is required');
   async function claimed(student,actionId,claimId) {
-    assertStudent(student);
+    assertStudent(student,allowedStudents);
     const claim=await getClaim();
     const action=claim?.actions?.find(item=>item.actionId===actionId);
     const last=claim?.steps?.findLast(step=>step.actionId===actionId);
@@ -14,7 +14,7 @@ export function createClaimedCalendar({origin,accessToken,getClaim,fetchImpl}) {
     if(action.type==='patch'?claim.kind!=='annotation':claim.kind!=='approval'||!['near','future'].includes(claim.section)||claim.decision.section!==claim.section)throw new Error('Approval claim does not match the action or section');
     return {claim,action};
   }
-  const client=new CalendarpitApi({origin,accessToken,fetchImpl,authorizeWrite:async(action,approval)=>{
+  const client=new CalendarpitApi({origin,accessToken,fetchImpl,transport,authorizeWrite:async(action,approval)=>{
     try {
       const {action:expected}=await claimed(approval.student,approval.actionId,approval.claimId);
       if(action.calendarId!==`${approval.student}-calendar`)return false;
@@ -25,8 +25,8 @@ export function createClaimedCalendar({origin,accessToken,getClaim,fetchImpl}) {
     } catch {return false;}
   }});
   return {
-    async events(student) {
-      assertStudent(student);
+    async events(student,options) {
+      assertStudent(student,options?.allowedStudents??allowedStudents);
       const events=[],seen=new Set();let pageToken;
       do {
         const page=await client.listEvents(`${student}-calendar`,{maxResults:250,...(pageToken?{pageToken}:{})});

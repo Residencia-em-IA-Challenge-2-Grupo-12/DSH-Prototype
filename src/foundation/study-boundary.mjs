@@ -17,6 +17,7 @@ import {
 } from '../core.mjs';
 import { compactCalendarEvents } from './calendar-view.mjs';
 import { createDisclosedSources, planningContextSchemaFor } from '../cold-start-context.mjs';
+import { timezoneOffsetForDate } from '../domain/runtime.mjs';
 
 // Trusted application side of a single synthetic run. It deliberately exposes
 // no approval, reset, raw provider, administration or calendar-write method.
@@ -37,13 +38,14 @@ export function createStudyBoundary({
   if (!calendar || typeof calendar.events !== 'function') throw new Error('A synthetic calendar is required');
   let simulationToday;
   let timezone;
+  let timezoneOffset;
   if (schemaProfile === 'eval-v2') {
     if (!clock || typeof clock !== 'object' || !z.iso.date().safeParse(clock.date).success ||
         typeof clock.timezone !== 'string' || !clock.timezone.trim()) {
       throw new Error('Eval v2 requires an explicit valid clock');
     }
     try {
-      new Intl.DateTimeFormat('en-CA', { timeZone: clock.timezone });
+      timezoneOffset = timezoneOffsetForDate(clock.date, clock.timezone);
     } catch {
       throw new Error('Eval v2 requires an explicit valid clock');
     }
@@ -52,9 +54,16 @@ export function createStudyBoundary({
   } else {
     simulationToday = clock?.date || FIXED_TODAY;
     timezone = clock?.timezone || 'America/Sao_Paulo';
+    timezoneOffset = clock?.timezone ? timezoneOffsetForDate(simulationToday, timezone) : undefined;
   }
   const workspace = { requireStaged: requireStaged || schemaProfile === 'eval-v2', allowedStudents };
-  const planning = { ...workspace, today: simulationToday, disclosedSources, schemaProfile };
+  const planning = {
+    ...workspace,
+    today: simulationToday,
+    ...(timezoneOffset ? { timezone, timezoneOffset } : {}),
+    disclosedSources,
+    schemaProfile,
+  };
 
   const methods = new Map([
     ['list_synthetic_files', args => listWorkspace(student, args.path || '', workspace)],
@@ -117,7 +126,7 @@ export function createStudyBoundary({
         ),
     ],
     ['inspect_checkpoint', args => checkpoint(calendar, student, args.reason || '')],
-    ['routine_report', () => report(calendar, student, { today: simulationToday })],
+    ['routine_report', () => report(calendar, student, { today: simulationToday, ...(timezoneOffset ? { timezoneOffset } : {}) })],
     ['save_report_interpretation', args => saveNarrative(student, args.narrative)],
   ]);
   if (coldStart) {
