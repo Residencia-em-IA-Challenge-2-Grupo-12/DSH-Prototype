@@ -73,6 +73,7 @@ const TOPIC_PATTERNS = [
   {
     topic: 'workload',
     pattern: /\b(?:hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b/i,
+    answerPattern: /\b(?:hours?|horas?|\d+\s*h|workload|carga|break|pausa|intervalo|daily|di[aá]ri\w*|limit\w*|limite\w*|cap|max(?:imum)?|m[áa]ximo|meta)\b|\b(?:sessions?|sess[õo]es|blocks?|blocos?)\b.{0,16}\b(?:per|each|a|por)\s+(?:week|day|semana|dia)\b/i,
   },
   {
     topic: 'availability',
@@ -108,7 +109,8 @@ export function matchPreparedAnswer(asked, preparedAnswers, usedIds = new Set())
     for (const topic of askedTopics) {
       if (answer.id === topic) score += 2;
       const entry = TOPIC_PATTERNS.find(item => item.topic === topic);
-      if (entry && entry.pattern.test(answerText)) score += 1;
+      const answerMatcher = entry?.answerPattern || entry?.pattern;
+      if (answerMatcher && answerMatcher.test(answerText)) score += 1;
     }
     if (score === 0) continue;
     const isUnused = !usedIds.has(answer.id);
