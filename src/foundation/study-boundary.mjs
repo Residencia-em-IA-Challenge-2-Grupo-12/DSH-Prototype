@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import {
   assertStudent,
   FIXED_TODAY,
@@ -37,8 +38,7 @@ export function createStudyBoundary({
   let simulationToday;
   let timezone;
   if (schemaProfile === 'eval-v2') {
-    if (!clock || typeof clock !== 'object' || typeof clock.date !== 'string' ||
-        !/^\d{4}-\d{2}-\d{2}$/.test(clock.date) || !Number.isFinite(Date.parse(`${clock.date}T00:00:00Z`)) ||
+    if (!clock || typeof clock !== 'object' || !z.iso.date().safeParse(clock.date).success ||
         typeof clock.timezone !== 'string' || !clock.timezone.trim()) {
       throw new Error('Eval v2 requires an explicit valid clock');
     }
@@ -64,10 +64,7 @@ export function createStudyBoundary({
         for (const { page, text } of result.pages) pendingDisclosures.push([path, text, page]);
         return result;
       }
-      if (schemaProfile === 'eval-v2' && /\.pdf$/i.test(path)) {
-        throw new Error('PDF reads in eval-v2 require an explicit bounded pageStart and pageEnd');
-      }
-      const text = await readWorkspace(student, path, workspace);
+      const text = await readWorkspace(student, path, { ...workspace, allowWholePdf: schemaProfile !== 'eval-v2' });
       if (disclosedSources) {
         if (/\.pdf$/i.test(path)) {
           const pages = text.split('\f');

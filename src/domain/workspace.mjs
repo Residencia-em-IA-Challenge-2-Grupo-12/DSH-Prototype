@@ -68,11 +68,14 @@ export async function listWorkspace(student, relative = '', options = {}) {
     .map(entry => ({ name: entry.name, type: entry.isDirectory() ? 'directory' : 'file' }));
 }
 
-export async function readWorkspace(student, relative, options = {}) {
+export async function readWorkspace(student, relative, { allowWholePdf = true, ...options } = {}) {
   const root = await workspaceRoot(student, options);
   const filePath = await checkedPath(root, relative);
   const ext = path.extname(filePath).toLowerCase();
   if (!['.md', '.json', '.txt', '.pdf'].includes(ext)) throw new Error('Unsupported synthetic file type');
+  if (ext === '.pdf' && !allowWholePdf) {
+    throw new Error('PDF reads in eval-v2 require an explicit bounded pageStart and pageEnd');
+  }
   const info = await fs.stat(filePath);
   if (!info.isFile()) throw new Error('Expected a synthetic file');
   if (info.size > 200_000) throw new Error('File too large');

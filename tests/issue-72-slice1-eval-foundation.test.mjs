@@ -525,17 +525,20 @@ test('sol-loop R1 regressions: narrowed allowlists, bounded eval-v2 PDFs, trace-
     assert.equal(assertStudent('ana', ['ana', 'bruno']), 'ana');
   }, { allowedStudents: ['ana'] });
 
-  // 2. Eval v2 rejects omitted/invalid clock.
+  // 2. Eval v2 rejects omitted/invalid clock (including impossible calendar dates like 2026-02-30).
   assert.throws(() => createTrustedStudyService({ ...staged, student, calendar, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root }), /explicit valid clock/);
   assert.throws(() => createTrustedStudyService({ ...staged, student, calendar, clock: { date: 'bad', timezone: 'UTC' }, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root }), /explicit valid clock/);
+  assert.throws(() => createTrustedStudyService({ ...staged, student, calendar, clock: { date: '2026-02-30', timezone: 'UTC' }, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root }), /explicit valid clock/);
   assert.throws(() => createTrustedStudyService({ ...staged, student, calendar, clock: { date: '2026-05-01', timezone: 'Not/A_Zone' }, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root }), /explicit valid clock/);
 
-  // 3. Eval v2 rejects unbounded full-PDF reads while v1 preserves them.
+  // 3. Eval v2 rejects unbounded full-PDF reads (including via symlink to a PDF) while v1 preserves them.
   const disclosedSources = createDisclosedSources();
+  await symlink(path.join(root, 'workspaces', student, pdfPath), path.join(root, 'workspaces', student, 'alias.txt'));
   const evalService = createTrustedStudyService({
     ...staged, student, calendar, clock, schemaProfile: 'eval-v2', coldStart: true, runtimeDirectory: root, disclosedSources,
   });
   await assert.rejects(() => evalService.agent.call('read_synthetic_file', { student, path: pdfPath }), /bounded pageStart and pageEnd/);
+  await assert.rejects(() => evalService.agent.call('read_synthetic_file', { student, path: 'alias.txt' }), /bounded pageStart and pageEnd/);
   const v1Service = createTrustedStudyService({
     ...staged, student, calendar, clock, schemaProfile: 'v1', coldStart: true, runtimeDirectory: root,
   });
