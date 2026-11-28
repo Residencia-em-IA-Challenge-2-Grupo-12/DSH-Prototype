@@ -1138,6 +1138,21 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
     }),
     /whole-second precision/,
   );
+  assert.throws(
+    () => canonicalizeCalendarFixture({
+      ...mixedFixture,
+      events: [{ ...mixedFixture.events[0], start: { dateTime: 'Feb 4,2031 14:00:00 GMT' } }],
+    }),
+    /whole-second precision/,
+  );
+  assert.throws(
+    () => canonicalizeCalendarFixture({
+      ...mixedFixture,
+      calendars: [{ ...mixedFixture.calendars[0], timeZone: '' }],
+      events: [{ ...mixedFixture.events[0], start: { dateTime: '2031-02-04T14:00:00.0001Z' } }],
+    }),
+    /whole-second precision/,
+  );
   const subSecondBundle = {
     caseId: 'sub-second-case', split: 'dev', archetype: archetypes[0], student, locale: 'en', clock,
     canaryGuid: randomUUID(), initialRequest: request, frictionMove: friction,

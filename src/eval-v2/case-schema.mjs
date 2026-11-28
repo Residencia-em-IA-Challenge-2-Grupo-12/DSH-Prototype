@@ -20,25 +20,25 @@ const relativePath = z.string().min(1).max(180).refine(value => {
   }
 }, 'Expected a canonical, visible bundle-relative path');
 
-const isWholeSecondTimestamp = value =>
-  typeof value === 'string' && !/[.,]\d*[1-9]/.test(value);
-
+const wholeSecondDateTime = z.iso.datetime({ offset: true }).refine(
+  value => !/\.\d*[1-9]/.test(value),
+  'Calendar timestamps must use whole-second precision',
+);
 const endpoint = z.union([
   z.strictObject({ date }),
-  z.strictObject({
-    dateTime: z.iso.datetime({ offset: true }).refine(
-      isWholeSecondTimestamp,
-      'Calendar timestamps must use whole-second precision',
-    ),
-    timeZone: text.optional(),
-  }),
+  z.strictObject({ dateTime: wholeSecondDateTime, timeZone: text.optional() }),
 ]);
 
-function formatDateTimeInZone(isoDateTime, timeZone) {
-  const instant = new Date(isoDateTime);
-  if (!isWholeSecondTimestamp(isoDateTime) || Number.isNaN(instant.getTime()) || instant.getUTCMilliseconds() !== 0) {
-    throw new Error('Calendar timestamps must use whole-second precision');
+function parseWholeSecondDateTime(isoDateTime) {
+  const parsed = wholeSecondDateTime.safeParse(isoDateTime);
+  if (!parsed.success) {
+    throw new Error('Calendar timestamps must be ISO-8601 date-times with whole-second precision');
   }
+  return parsed.data;
+}
+
+function formatDateTimeInZone(isoDateTime, timeZone) {
+  const instant = new Date(parseWholeSecondDateTime(isoDateTime));
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone,
     year: 'numeric', month: '2-digit', day: '2-digit',
@@ -63,7 +63,7 @@ export function canonicalizeCalendarEndpoint(value, calendarTimeZone) {
     const timeZone = calendarTimeZone || value.timeZone;
     return timeZone
       ? { dateTime: formatDateTimeInZone(value.dateTime, timeZone), timeZone }
-      : { dateTime: value.dateTime };
+      : { dateTime: parseWholeSecondDateTime(value.dateTime) };
   }
   return structuredClone(value);
 }
