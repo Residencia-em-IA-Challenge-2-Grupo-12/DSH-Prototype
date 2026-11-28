@@ -1061,4 +1061,7 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
   assert.deepEqual(verifyStage1Decision(tiedRun.stage1Decision, tieModels[0]), tieModels[0]);
   assert.deepEqual(verifyStage1Decision(tiedRun.stage1Decision, tieModels[1]), tieModels[1]);
   assert.throws(() => verifyStage1Decision(tiedRun.stage1Decision, tieModels[2]), { code: 'stage1_decision_invalid' });
+  const tamperedTie = structuredClone(tiedRun.stage1Decision);
+  tamperedTie.finalist = tieModels[2];
+  assert.throws(() => verifyStage1Decision(tamperedTie, tieModels[0]), { code: 'stage1_decision_invalid' });
 });

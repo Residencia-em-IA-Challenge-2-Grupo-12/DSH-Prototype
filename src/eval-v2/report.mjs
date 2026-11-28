@@ -147,8 +147,8 @@ export function verifyStage1Decision(decision, pin) {
   const checked = Array.isArray(evidence?.runs) && Array.isArray(evidence?.models)
     ? createStage1Decision(evidence) : null;
   const singleMatch = checked?.finalist && isDeepStrictEqual(checked.finalist, decision?.finalist) &&
-    isDeepStrictEqual(checked.finalist, pin);
-  const tieMatch = !checked?.finalist && Array.isArray(checked?.finalists) &&
+    decision?.finalists === undefined && isDeepStrictEqual(checked.finalist, pin);
+  const tieMatch = !checked?.finalist && decision?.finalist === null && Array.isArray(checked?.finalists) &&
     isDeepStrictEqual(checked.finalists, decision?.finalists) &&
     checked.finalists.some(item => isDeepStrictEqual(item, pin));
   if (!checked || decision.version !== 1 || checked.sha256 !== decision.sha256 || (!singleMatch && !tieMatch)) {
