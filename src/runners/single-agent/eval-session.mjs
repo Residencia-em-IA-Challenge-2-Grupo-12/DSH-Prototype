@@ -64,7 +64,7 @@ const WIRE_RULES = [
 const CAPABILITIES = [
   '',
   'You may request a single PDF lookup before your final action using {"action":"needs_lookup","path":"…","pageStart":1,"pageEnd":3}.',
-  'Use optional tools when they are provided, then finish with a JSON action. Ask clarifying questions using the JSON ask action or a standalone ask_user_question call.',
+  'Workspace files and calendar events are already preloaded above. Use optional tools only when needed beyond the preload (at most 3 tool calls per turn), then finish with one JSON action matching the schema. Ask clarifying questions using the JSON ask action or a standalone ask_user_question call.',
 ];
 
 class TurnError extends Error {
@@ -74,6 +74,16 @@ class TurnError extends Error {
     this.code = code;
     if (detail) this.detail = detail;
   }
+}
+
+function safeUpstreamDetail(error) {
+  const msg = String(error?.message ?? '');
+  const upstream = /"upstreamStatus"\s*:\s*(\d{3})/.exec(msg);
+  if (upstream) return `upstream_${upstream[1]}`;
+  const status = /\((\d{3})\)/.exec(msg);
+  if (status) return `http_${status[1]}`;
+  if (/timeout|abort/i.test(msg)) return 'timeout';
+  return undefined;
 }
 
 function safeFailureDetail(error) {
@@ -193,7 +203,7 @@ export function createEvalSession({
     userMessage(context + userText);
     try {
       while (turn.completions < completionLimit) {
-        const nativeTools = modeIndex === 2 && turn.toolAttempts < toolLimit && turn.completions < completionLimit - 1;
+        const nativeTools = modeIndex === 2 && !repairUsed && turn.toolAttempts < toolLimit && turn.completions < completionLimit - 1;
         const request = {
           model,
           messages: conversation,
@@ -210,7 +220,7 @@ export function createEvalSession({
         turn.completions++;
         let response;
         try { response = await completeChat(structuredClone(request)); }
-        catch { turn.spendUsd = null; throw new TurnError('infrastructure', 'completion_request_failed'); }
+        catch (error) { turn.spendUsd = null; throw new TurnError('infrastructure', 'completion_request_failed', safeUpstreamDetail(error)); }
         const message = response?.choices?.[0]?.message;
         const content = normalizeContent(message?.content);
         const reasoning = message?.reasoning_details === undefined ? {} : { reasoning_details: message.reasoning_details };
@@ -299,7 +309,7 @@ export function createEvalSession({
           break;
         } catch (error) {
           if (error instanceof TurnError) throw error;
-          if (modeIndex !== 1 || repairUsed || turn.completions >= completionLimit) {
+          if (modeIndex === 0 || repairUsed || turn.completions >= completionLimit) {
             throw new TurnError('quality', 'invalid_action_or_preview', safeFailureDetail(error));
           }
           repairUsed = true;

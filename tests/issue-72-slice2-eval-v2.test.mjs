@@ -894,9 +894,17 @@ test('Role B1 scopes natural EN/PT-BR questions and credits paraphrased or split
   assert.deepEqual(disclosedOperatorTopics(bruno, qWorkloadPt, '5 horas por semana até 15 de novembro, máximo de 2 horas por dia e pausa de 15 minutos.'), ['workload']);
   assert.equal(isOperatorReplyFaithful('Quero 14 horas por semana até 15/11, 2 blocos por dia e 15 min.', bruno, { workload: bruno.operatorFacts.disclosable.workload }), false);
   assert.equal(isOperatorReplyFaithful('5 horas por semana, 2 blocos por dia e 15 min.', bruno, { workload: bruno.operatorFacts.disclosable.workload }), false);
+  assert.equal(isOperatorReplyFaithful('5 horas por semana até 15/11/2027, 2 blocos por dia e 15 min.', bruno, { workload: bruno.operatorFacts.disclosable.workload }), false);
+  assert.equal(isOperatorReplyFaithful('5 horas por semana até 15/11/2026, 2 blocos por dia e 15 min.', bruno, { workload: bruno.operatorFacts.disclosable.workload }), true);
   assert.equal(isOperatorReplyFaithful('Wednesday, Thursday, Friday 14:00-16:15 through 2026-12-01.', ana, { availability: ana.operatorFacts.disclosable.availability }), false);
+  assert.equal(isOperatorReplyFaithful('Wednesday, Thursday, Friday 14:00-16:15 or 9 to 11.', ana, { availability: ana.operatorFacts.disclosable.availability }), false);
+  assert.equal(isOperatorReplyFaithful('Wednesday, Thursday, Friday 14:00-16:15, about 1 hour.', ana, { availability: ana.operatorFacts.disclosable.availability }), false);
   assert.equal(isOperatorReplyFaithful('Saturday 09:00-17:00 works.', ana, { availability: ana.operatorFacts.disclosable.availability }), false);
   assert.equal(isOperatorReplyFaithful('I prefer Wednesday, Thursday, and Friday from 14:00 to 16:15.', ana, { availability: ana.operatorFacts.disclosable.availability }), true);
+  assert.equal(isOperatorReplyFaithful('4 hours per week, max 2 hours per day, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), true);
+  assert.equal(isOperatorReplyFaithful('4 hours per week, max 2 one-hour sessions per day, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), true);
+  assert.equal(isOperatorReplyFaithful('2 hours per week, max 2 sessions per day.', ana, { workload: 'At most two sessions per day.' }), false);
+  assert.equal(isOperatorReplyFaithful('5 horas por semana até 15/11/2027, 2 blocos por dia e 15 min.', bruno, { workload: 'Quero 5 horas por semana até 15/11/2026, no máximo dois blocos por dia e 15 minutos de pausa.' }), false);
 
   // Multi-turn split elicitation of workload across two natural questions.
   const qHoursOnly = { questions: [{ id: 'q7', question: 'How many hours per week do you want to study?' }] };
@@ -984,4 +992,40 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
   });
   assert.equal(titled.passed, true, JSON.stringify(titled));
   assert.equal(titled.gates.authoritative_deadlines.passed, true);
+
+  // C3 gets one bounded JSON repair turn with response_format enforced, and preview_plan alone does not set submitted_blocked_by_gate.
+  const c3Requests = [];
+  let c3Calls = 0;
+  const c3Repaired = await runCase({
+    cell: cell(planned, 'C3'),
+    completeChat: async req => {
+      c3Requests.push(req);
+      c3Calls++;
+      if (c3Calls === 1) return assistant('Not JSON after thinking');
+      const avoidDates = req.messages.some(m => typeof m.content === 'string' && m.content.endsWith(friction)) ? [clock.date] : [];
+      return assistant(propose(record(), { avoidDates }));
+    },
+  });
+  assert.equal(c3Repaired.passed, true, JSON.stringify(c3Repaired));
+  assert.equal(Boolean(c3Requests[0].tools), true);
+  assert.equal(c3Requests[1].tools, undefined);
+  assert.deepEqual(c3Requests[1].response_format, { type: 'json_object' });
+
+  let previewOnlyCalls = 0;
+  const previewOnlyFail = await runCase({
+    cell: cell(planned, 'C3'),
+    completeChat: async () => {
+      previewOnlyCalls++;
+      if (previewOnlyCalls === 1) {
+        return {
+          choices: [{ message: { content: null, tool_calls: [{ id: 'c1', type: 'function',
+            function: { name: 'preview_plan', arguments: JSON.stringify({ record: record() }) } }] } }],
+          usage: { input_tokens: 150, output_tokens: 80, cost: 0 },
+        };
+      }
+      return assistant('plain prose that fails json parse');
+    },
+  });
+  assert.equal(previewOnlyFail.passed, false);
+  assert.equal(previewOnlyFail.proposalStatus, 'none');
 });

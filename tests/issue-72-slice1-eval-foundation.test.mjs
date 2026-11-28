@@ -771,6 +771,7 @@ test('eval gateway releases reservation on clean upstream HTTP 4xx/5xx without f
     modelPolicies: { [chatModel]: { pricing: { inputPerMillion: 0.1, outputPerMillion: 0.5, verifiedAt: new Date().toISOString() }, providerOnly: ['openai'] } },
     apiKeys: { OPENROUTER_API_KEY: 'stub-key' },
     budget,
+    maxTransientRetries: 0,
     fetchImpl: async () => ++calls === 1
       ? new Response('upstream overloaded', { status: 503 })
       : Response.json({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 10, completion_tokens: 5, cost: 0.0001 } }),
@@ -783,8 +784,35 @@ test('eval gateway releases reservation on clean upstream HTTP 4xx/5xx without f
     headers: { authorization: `Bearer ${gateway.runnerToken}`, 'content-type': 'application/json' },
     body: JSON.stringify({ model: chatModel, messages }),
   });
-  assert.equal((await req()).status, 502);
+  const first = await req();
+  assert.equal(first.status, 502);
+  assert.equal((await first.json()).upstreamStatus, 503);
   assert.equal((await budget.summary({ role: 'agent' })).unknownCount, 0);
   assert.equal((await req()).status, 200);
   assert.equal((await budget.summary({ role: 'agent' })).observedUsd, 0.0001);
+
+  // Default transient retry recovers cleanly from 429/503 bursts under a single reservation.
+  let retryCalls = 0;
+  const retrying = createEvalGateway({
+    roleAModel: chatModel,
+    modelPolicies: { [chatModel]: { pricing: { inputPerMillion: 0.1, outputPerMillion: 0.5, verifiedAt: new Date().toISOString() }, providerOnly: ['openai'] } },
+    apiKeys: { OPENROUTER_API_KEY: 'stub-key' },
+    budget,
+    maxTransientRetries: 2,
+    retryBaseDelayMs: 1,
+    fetchImpl: async () => ++retryCalls < 3
+      ? new Response('rate limited', { status: 429 })
+      : Response.json({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 10, completion_tokens: 5, cost: 0.0002 } }),
+  });
+  await new Promise(done => retrying.server.listen(0, '127.0.0.1', done));
+  t.after(() => new Promise(done => { retrying.retire(); retrying.server.close(done); }));
+  const retryRes = await fetch(`http://127.0.0.1:${retrying.server.address().port}${chat}`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${retrying.runnerToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ model: chatModel, messages }),
+  });
+  assert.equal(retryRes.status, 200);
+  assert.equal(retryCalls, 3);
+  assert.equal((await budget.summary({ role: 'agent' })).unknownCount, 0);
+  assert.equal((await budget.summary({ role: 'agent' })).observedUsd, 0.0003);
 });

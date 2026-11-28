@@ -152,10 +152,23 @@ function usageFor(payload, route, pricing) {
   return { inputTokens, outputTokens: billedOutput, actualUsd: null, source: 'unknown' };
 }
 
+const RETRYABLE_UPSTREAM_STATUSES = new Set([429, 500, 502, 503, 504]);
+const RELEASE_ON_ERROR_STATUSES = new Set([500, 502, 503, 504]);
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+function retryDelayFor(response, attempt, baseDelayMs) {
+  const retryAfter = Number(response.headers?.get?.('retry-after'));
+  if (Number.isFinite(retryAfter) && retryAfter > 0 && retryAfter <= 10) {
+    return Math.min(10_000, Math.round(retryAfter * 1000));
+  }
+  return Math.min(10_000, baseDelayMs * (2 ** attempt));
+}
+
 // Construct one gateway per run. Only runnerToken crosses into the runner.
 // Pricing and model policies come from the trusted evaluator configuration.
 export function createEvalGateway({
   roleAModel, roleAProvider = 'openrouter', modelPolicies = {}, apiKeys = process.env, budget, fetchImpl = fetch,
+  maxTransientRetries = 3, retryBaseDelayMs = 1500,
 } = {}) {
   if (typeof roleAModel !== 'string' || !roleAModel.trim() || judgeModels.has(roleAModel) || roleAModel === operatorModel ||
       !['openrouter', 'gemini'].includes(roleAProvider)) throw new Error('A separate Role A chat model and provider are required');
@@ -239,18 +252,35 @@ export function createEvalGateway({
         await budget.settle(reservation.id, { actualUsd: 0 });
         return send(res, 401, { error: 'Eval run has retired' });
       }
-      const upstream = await fetchImpl(route.url, {
-        method: 'POST',
-        headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
-        body: JSON.stringify(body),
-        redirect: 'error',
-        signal: AbortSignal.timeout(120_000),
-      });
+      let upstream;
+      for (let attempt = 0; ; attempt++) {
+        if (!active) {
+          await budget.settle(reservation.id, { actualUsd: 0 });
+          return send(res, 401, { error: 'Eval run has retired' });
+        }
+        upstream = await fetchImpl(route.url, {
+          method: 'POST',
+          headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+          redirect: 'error',
+          signal: AbortSignal.timeout(120_000),
+        });
+        if (!upstream.ok && RETRYABLE_UPSTREAM_STATUSES.has(upstream.status) && attempt < maxTransientRetries) {
+          await upstream.body?.cancel().catch(() => {});
+          if (!active) {
+            await budget.settle(reservation.id, { actualUsd: 0 });
+            return send(res, 401, { error: 'Eval run has retired' });
+          }
+          await sleep(retryDelayFor(upstream, attempt, retryBaseDelayMs));
+          continue;
+        }
+        break;
+      }
       if (!upstream.ok || !upstream.body) {
         await upstream.body?.cancel().catch(() => {});
-        if (!upstream.ok && upstream.status >= 400 && upstream.status < 600) {
+        if (!upstream.ok && ((upstream.status >= 400 && upstream.status < 500) || RELEASE_ON_ERROR_STATUSES.has(upstream.status))) {
           await budget.settle(reservation.id, { actualUsd: 0, ...(route.decision ? { outputTokens: 0 } : {}) });
-          return send(res, 502, { error: 'Provider request failed' });
+          return send(res, 502, { error: 'Provider request failed', upstreamStatus: upstream.status });
         }
         throw new Error('Provider request failed');
       }

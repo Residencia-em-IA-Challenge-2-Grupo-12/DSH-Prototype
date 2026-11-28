@@ -228,9 +228,9 @@ export async function buildDevCaseBundle(caseId, { repoRoot = ROOT } = {}) {
   };
   const disclosable = Object.fromEntries(legacy.operator.answers.map(item => [item.id, item.text]));
   if (pt) {
-    const [target, availability, limits] = disclosable.availability.split('. ');
+    const [target, availability, ...limits] = disclosable.availability.split('. ');
     disclosable.availability = availability + '.';
-    disclosable.workload = `${target}. ${limits}.`;
+    disclosable.workload = `${target}. ${limits.join('. ')}`;
   }
   const factMarkers = pt ? {
     availability: ['segundas', 'quartas', 'sábado', 'domingo', '19:00', '21:15', '14:00', '16:15', '10:00', '12:15'],

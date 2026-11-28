@@ -7,7 +7,7 @@ import { hiddenMarkers } from './contamination.mjs';
 import { containsWords, normalizeWords } from './preload.mjs';
 
 export const OPERATOR_MODEL = 'mistralai/mistral-small-2603';
-export const SIMULATOR_VERSION = 'b1-v5';
+export const SIMULATOR_VERSION = 'b1-v6';
 const hash = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const replySchema = z.string().trim().min(1).max(2000);
 const projectText = value => String(value ?? '').normalize('NFC').trim();
@@ -78,6 +78,26 @@ function canonicalTokens(value) {
   return normalized.split(/[^\p{L}\p{N}]+/u).filter(Boolean).map(token => canonicalTokenMap[token] ?? token);
 }
 
+const monthsMap = [
+  ['january', 'jan', 'janeiro'],
+  ['february', 'feb', 'fevereiro'],
+  ['march', 'mar', 'marco'],
+  ['april', 'apr', 'abril'],
+  ['may', 'maio'],
+  ['june', 'jun', 'junho'],
+  ['july', 'jul', 'julho'],
+  ['august', 'aug', 'agosto'],
+  ['september', 'sep', 'sept', 'setembro', 'set'],
+  ['october', 'oct', 'outubro', 'out'],
+  ['november', 'nov', 'novembro'],
+  ['december', 'dec', 'dezembro', 'dez'],
+];
+const monthWordPattern = monthsMap.flat().join('|');
+const weekdayTokens = new Set(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']);
+const dailyCueTokens = new Set(['daily', 'day', 'dia', 'diario', 'diaria']);
+const weeklyCueTokens = new Set(['week', 'weekly', 'semana', 'semanal', 'semanais']);
+const nonTimeRangeUnitLookahead = '(?!\\s*(?:hours?|hrs?|horas?|minutes?|mins?|min|minutos?|minuto|sessions?|blocks?|sessoes|sessao|blocos?|bloco|days?|dias?|weeks?|semanas?|months?|meses|years?|anos|pages?|paginas?|times?|vezes|%|de\\s+(?:' + monthWordPattern + ')|(?:' + monthWordPattern + '))\\b)';
+
 function extractNormalizedTimes(text) {
   const times = new Set();
   const add = (hour, minutes = '00', meridiem = null) => {
@@ -101,8 +121,26 @@ function extractNormalizedTimes(text) {
   for (const [, hour] of plain.matchAll(/\b([01]?\d|2[0-3])hs?\b/gu)) {
     add(hour, '00');
   }
-  for (const [, hour] of plain.matchAll(/\b(?:das|de|from)\s+([01]?\d|2[0-3])\s+(?:as|a|to|[-–])\s*(?:[01]?\d|2[0-3])(?:[:h][0-5]\d|hs?\b)/gu)) {
-    add(hour, '00');
+  const monthPrefix = new RegExp(`(?:^|[^\\p{L}])(?:${monthWordPattern})\\s+$`, 'u');
+  const rangePattern = new RegExp(
+    `(?<![\\d/:-])\\b([01]?\\d|2[0-3])(?::([0-5]\\d)|h([0-5]\\d)?)?(?:\\s*([ap])\\.?m\\.?)?\\s*(?:to|as|a|ate|[-–])\\s*([01]?\\d|2[0-3])(?::([0-5]\\d)|h([0-5]\\d)?)?(?:\\s*([ap])\\.?m\\.?)?\\b(?![\\d/:-])${nonTimeRangeUnitLookahead}`,
+    'gu',
+  );
+  for (const match of plain.matchAll(rangePattern)) {
+    const [, start, startColon, startH, startMer, end, endColon, endH, endMer] = match;
+    if (monthPrefix.test(plain.slice(0, match.index))) continue;
+    const effectiveStartMer = startMer ?? (endMer && Number(start) >= 1 && Number(start) <= 12 ? endMer : null);
+    add(start, startColon ?? startH ?? '00', effectiveStartMer);
+    add(end, endColon ?? endH ?? '00', endMer ?? null);
+  }
+  const betweenPattern = new RegExp(
+    `\\b(?:between|entre)\\s+([01]?\\d|2[0-3])(?::([0-5]\\d)|h([0-5]\\d)?)?(?:\\s*([ap])\\.?m\\.?)?\\s+(?:and|e)\\s+([01]?\\d|2[0-3])(?::([0-5]\\d)|h([0-5]\\d)?)?(?:\\s*([ap])\\.?m\\.?)?\\b(?![\\d/:-])${nonTimeRangeUnitLookahead}`,
+    'gu',
+  );
+  for (const [, start, startColon, startH, startMer, end, endColon, endH, endMer] of plain.matchAll(betweenPattern)) {
+    const effectiveStartMer = startMer ?? (endMer && Number(start) >= 1 && Number(start) <= 12 ? endMer : null);
+    add(start, startColon ?? startH ?? '00', effectiveStartMer);
+    add(end, endColon ?? endH ?? '00', endMer ?? null);
   }
   return times;
 }
@@ -130,56 +168,54 @@ function windowContainsAll(tokens, required, maxWindow) {
   return false;
 }
 
-const monthsMap = [
-  ['january', 'jan', 'janeiro'],
-  ['february', 'feb', 'fevereiro'],
-  ['march', 'mar', 'marco'],
-  ['april', 'apr', 'abril'],
-  ['may', 'maio'],
-  ['june', 'jun', 'junho'],
-  ['july', 'jul', 'julho'],
-  ['august', 'aug', 'agosto'],
-  ['september', 'sep', 'sept', 'setembro', 'set'],
-  ['october', 'oct', 'outubro', 'out'],
-  ['november', 'nov', 'novembro'],
-  ['december', 'dec', 'dezembro', 'dez'],
-];
-const monthWordPattern = monthsMap.flat().join('|');
-const weekdayTokens = new Set(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']);
-
 function extractNormalizedDates(text, locale = 'en') {
-  const dates = new Set();
-  const add = (month, day) => {
+  const dates = new Map();
+  const add = (month, day, year = null) => {
     const m = Number(month);
     const d = Number(day);
-    if (m >= 1 && m <= 12 && d >= 1 && d <= 31) {
-      dates.add(`${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`);
+    const y = year == null ? null : Number(year);
+    if (m >= 1 && m <= 12 && d >= 1 && d <= 31 && (y === null || (y >= 1900 && y <= 2999))) {
+      const md = `${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      dates.set(`${y ?? ''}:${md}`, { md, year: y });
     }
   };
   const plain = stripDiacritics(text);
-  const withoutIso = plain.replace(/\b(\d{4})[-/](\d{1,2})[-/](\d{1,2})\b/gu, (_, _y, m, d) => {
-    add(m, d);
+  const withoutIso = plain.replace(/\b(\d{4})[-/](\d{1,2})[-/](\d{1,2})\b/gu, (_, y, m, d) => {
+    add(m, d, y);
     return ' ';
   });
-  for (const [, left, right] of withoutIso.matchAll(/(?<![\d/])(\d{1,2})\/(\d{1,2})(?:\/\d{4})?(?![\d/])/gu)) {
-    add(locale === 'pt-BR' ? right : left, locale === 'pt-BR' ? left : right);
+  for (const [, left, right, year] of withoutIso.matchAll(/(?<![\d/])(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?(?![\d/])/gu)) {
+    add(locale === 'pt-BR' ? right : left, locale === 'pt-BR' ? left : right, year ?? null);
   }
-  const written = new RegExp(`\\b(?:(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:de\\s+)?(${monthWordPattern})|(${monthWordPattern})\\s+(\\d{1,2})(?:st|nd|rd|th)?)\\b`, 'gu');
-  for (const [, dayFirst, monthAfter, monthFirst, dayAfter] of plain.matchAll(written)) {
+  const written = new RegExp(
+    `\\b(?:(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:de\\s+)?(${monthWordPattern})|(${monthWordPattern})\\s+(\\d{1,2})(?:st|nd|rd|th)?)(?:(?:,?\\s+|\\s+de\\s+)(\\d{4}))?\\b`,
+    'gu',
+  );
+  for (const [, dayFirst, monthAfter, monthFirst, dayAfter, year] of plain.matchAll(written)) {
     const word = monthFirst ?? monthAfter;
     const monthIndex = monthsMap.findIndex(aliases => aliases.includes(word));
-    if (monthIndex >= 0) add(monthIndex + 1, dayFirst ?? dayAfter);
+    if (monthIndex >= 0) add(monthIndex + 1, dayFirst ?? dayAfter, year ?? null);
   }
-  return dates;
+  return [...dates.values()];
 }
 
 function extractQuantities(text) {
   const tokens = canonicalTokens(text);
   const items = [];
   for (let i = 0; i < tokens.length - 1; i++) {
-    if (/^\d+$/.test(tokens[i]) && ['h', 'min', 'session'].includes(tokens[i + 1])) {
-      items.push({ num: Number(tokens[i]), unit: tokens[i + 1] });
-    }
+    if (!/^\d+$/.test(tokens[i])) continue;
+    let unitIndex = i + 1;
+    while (unitIndex < tokens.length && optionalMarkerTokens.has(tokens[unitIndex]) && unitIndex - i <= 2) unitIndex++;
+    if (unitIndex >= tokens.length || !['h', 'min', 'session'].includes(tokens[unitIndex])) continue;
+    const after = tokens.slice(unitIndex + 1, Math.min(tokens.length, unitIndex + 4));
+    const before = tokens.slice(Math.max(0, i - 3), i);
+    const afterDaily = after.some(t => dailyCueTokens.has(t));
+    const afterWeekly = after.some(t => weeklyCueTokens.has(t));
+    const isDaily = afterDaily || (!afterWeekly && before.some(t => dailyCueTokens.has(t)));
+    const isWeekly = afterWeekly || (!afterDaily && before.some(t => weeklyCueTokens.has(t)));
+    const nearSession = tokens[unitIndex] !== 'session' &&
+      tokens.slice(Math.max(0, i - 2), Math.min(tokens.length, unitIndex + 3)).includes('session');
+    items.push({ num: Number(tokens[i]), unit: tokens[unitIndex], isDaily, isWeekly, nearSession });
   }
   return items;
 }
@@ -194,7 +230,10 @@ function matchesMarker(reply, marker, locale = 'en') {
   if (dateMarker) {
     const targetDates = extractNormalizedDates(marker, locale);
     const replyDates = extractNormalizedDates(reply, locale);
-    if (targetDates.size && [...targetDates].every(d => replyDates.has(d))) return true;
+    if (targetDates.length && targetDates.every(td =>
+      replyDates.some(rd => rd.md === td.md && (rd.year === null || td.year === null || rd.year === td.year)))) {
+      return true;
+    }
   }
   const markerTokens = canonicalTokens(marker);
   const filtered = markerTokens.filter(token => !optionalMarkerTokens.has(token));
@@ -206,8 +245,7 @@ function matchesMarker(reply, marker, locale = 'en') {
   // Study blocks are always one hour, so "max N hours per day" expresses the same daily cap as "N sessions".
   if (core.includes('session')) {
     const hourCore = core.map(token => token === 'session' ? 'h' : token);
-    const dailyTokens = ['daily', 'day', 'dia', 'diario', 'diaria'];
-    if (dailyTokens.some(cue => windowContainsAll(replyTokens, [...hourCore, cue], maxWindow + 2))) return true;
+    if ([...dailyCueTokens].some(cue => windowContainsAll(replyTokens, [...hourCore, cue], maxWindow + 2))) return true;
   }
   return false;
 }
@@ -220,22 +258,31 @@ export function isOperatorReplyFaithful(reply, bundle, disclosable = {}) {
   for (const t of extractNormalizedTimes(reply)) {
     if (!allowedTimes.has(t)) return false;
   }
+  const clockYear = Number(String(bundle.clock?.date ?? '').slice(0, 4)) || null;
   const allowedDates = extractNormalizedDates(allowedText, bundle.locale);
-  for (const d of extractNormalizedDates(reply, bundle.locale)) {
-    if (!allowedDates.has(d)) return false;
+  for (const rd of extractNormalizedDates(reply, bundle.locale)) {
+    const dateAllowed = allowedDates.some(ad => ad.md === rd.md &&
+      (rd.year === null || (ad.year !== null ? rd.year === ad.year : rd.year === clockYear)));
+    if (!dateAllowed) return false;
   }
   const allowedWeekdays = new Set(canonicalTokens(allowedText).filter(token => weekdayTokens.has(token)));
   for (const token of canonicalTokens(reply)) {
     if (weekdayTokens.has(token) && !allowedWeekdays.has(token)) return false;
   }
   const allowedQuantities = extractQuantities(allowedText);
-  const allowedHourOrSession = new Set(allowedQuantities.filter(q => q.unit === 'h' || q.unit === 'session').map(q => q.num));
+  const allowedHours = new Set(allowedQuantities.filter(q => q.unit === 'h').map(q => q.num));
+  const allowedSessions = new Set(allowedQuantities.filter(q => q.unit === 'session').map(q => q.num));
   const allowedMinutes = new Set(allowedQuantities.filter(q => q.unit === 'min').map(q => q.num));
   for (const q of extractQuantities(reply)) {
     if (q.unit === 'min') {
       if (!allowedMinutes.has(q.num)) return false;
-    } else if (!(q.unit === 'h' && q.num === 1) && !allowedHourOrSession.has(q.num)) {
-      return false;
+    } else if (q.unit === 'session') {
+      if (!allowedSessions.has(q.num)) return false;
+    } else if (q.unit === 'h') {
+      const matchesHour = allowedHours.has(q.num);
+      const matchesDailySessionAlias = q.isDaily && !q.isWeekly && allowedSessions.has(q.num);
+      const matchesOneHourSessionDesc = q.num === 1 && q.nearSession && allowedSessions.size > 0;
+      if (!matchesHour && !matchesDailySessionAlias && !matchesOneHourSessionDesc) return false;
     }
   }
   for (const [topic] of entries) {

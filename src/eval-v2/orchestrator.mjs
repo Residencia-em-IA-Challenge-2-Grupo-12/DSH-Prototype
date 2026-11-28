@@ -217,6 +217,7 @@ export async function runCase({
       let lastPreview;
       let stale;
       let frictionDelivered = false;
+      let proposalBlockedByGate = false;
       try {
         if (!completeChat || runnerUrl) {
           if (typeof gateway?.inspectRunnerRequests !== 'function' || typeof gateway?.inspectRunnerResponses !== 'function') {
@@ -259,7 +260,10 @@ export async function runCase({
           inspect({ outputs: { messages, question: response.question, action: lastAction } });
           if (bridge.submission && !matchesPreferences(bridge.submission.record, bundle, disclosedTopics, {
             revised: stage === 'friction', shortfall: lastAction?.shortfall,
-          })) preferenceViolation = true;
+          })) {
+            preferenceViolation = true;
+            proposalBlockedByGate = true;
+          }
           if (failure) break;
           if ((lastAction || meter.finalAction) && !isDeepStrictEqual(meter.finalAction, lastAction)) {
             failure = { kind: 'quality', code: 'final_action_mismatch' };
@@ -384,7 +388,7 @@ export async function runCase({
         ? 'revised'
         : (firstDraft || finalDraft)
           ? 'initial_only'
-          : bridge.planningRecords.length
+          : proposalBlockedByGate
             ? 'submitted_blocked_by_gate'
             : 'none';
       if (status === 'completed' && runnerClean && (judgeModels.length || onBlindedPacket)) {
