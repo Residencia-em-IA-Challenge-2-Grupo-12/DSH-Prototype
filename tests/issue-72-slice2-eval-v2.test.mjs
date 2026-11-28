@@ -903,6 +903,7 @@ test('Role B1 scopes natural EN/PT-BR questions and credits paraphrased or split
   assert.equal(isOperatorReplyFaithful('I prefer Wednesday, Thursday, and Friday from 14:00 to 16:15.', ana, { availability: ana.operatorFacts.disclosable.availability }), true);
   assert.equal(isOperatorReplyFaithful('4 hours per week, max 2 hours per day, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), true);
   assert.equal(isOperatorReplyFaithful('4 hours per week, max 2 one-hour sessions per day, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), true);
+  assert.equal(isOperatorReplyFaithful('4 hours per day, max 2 sessions per week, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), false);
   assert.equal(isOperatorReplyFaithful('2 hours per week, max 2 sessions per day.', ana, { workload: 'At most two sessions per day.' }), false);
   assert.equal(isOperatorReplyFaithful('5 horas por semana até 15/11/2027, 2 blocos por dia e 15 min.', bruno, { workload: 'Quero 5 horas por semana até 15/11/2026, no máximo dois blocos por dia e 15 minutos de pausa.' }), false);
 

@@ -815,4 +815,35 @@ test('eval gateway releases reservation on clean upstream HTTP 4xx/5xx without f
   assert.equal(retryCalls, 3);
   assert.equal((await budget.summary({ role: 'agent' })).unknownCount, 0);
   assert.equal((await budget.summary({ role: 'agent' })).observedUsd, 0.0003);
+
+  // retire() aborts an in-flight retry backoff immediately and releases the reservation cleanly.
+  let enteredBackoff;
+  const backoffReady = new Promise(resolve => { enteredBackoff = resolve; });
+  const retiring = createEvalGateway({
+    roleAModel: chatModel,
+    modelPolicies: { [chatModel]: { pricing: { inputPerMillion: 0.1, outputPerMillion: 0.5, verifiedAt: new Date().toISOString() }, providerOnly: ['openai'] } },
+    apiKeys: { OPENROUTER_API_KEY: 'stub-key' },
+    budget,
+    maxTransientRetries: 2,
+    retryBaseDelayMs: 60_000,
+    fetchImpl: async () => {
+      enteredBackoff();
+      return new Response('rate limited', { status: 429 });
+    },
+  });
+  await new Promise(done => retiring.server.listen(0, '127.0.0.1', done));
+  t.after(() => new Promise(done => { retiring.retire(); retiring.server.close(done); }));
+  const started = Date.now();
+  const pendingReq = fetch(`http://127.0.0.1:${retiring.server.address().port}${chat}`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${retiring.runnerToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ model: chatModel, messages }),
+  });
+  await backoffReady;
+  await new Promise(resolve => setTimeout(resolve, 25));
+  retiring.retire();
+  const retiredRes = await pendingReq;
+  assert.equal(retiredRes.status, 401);
+  assert.ok(Date.now() - started < 2000);
+  assert.equal((await budget.summary({ role: 'agent' })).unknownCount, 0);
 });

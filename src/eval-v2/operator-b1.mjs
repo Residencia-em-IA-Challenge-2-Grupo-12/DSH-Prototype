@@ -7,7 +7,7 @@ import { hiddenMarkers } from './contamination.mjs';
 import { containsWords, normalizeWords } from './preload.mjs';
 
 export const OPERATOR_MODEL = 'mistralai/mistral-small-2603';
-export const SIMULATOR_VERSION = 'b1-v6';
+export const SIMULATOR_VERSION = 'b1-v7';
 const hash = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const replySchema = z.string().trim().min(1).max(2000);
 const projectText = value => String(value ?? '').normalize('NFC').trim();
@@ -270,18 +270,21 @@ export function isOperatorReplyFaithful(reply, bundle, disclosable = {}) {
     if (weekdayTokens.has(token) && !allowedWeekdays.has(token)) return false;
   }
   const allowedQuantities = extractQuantities(allowedText);
-  const allowedHours = new Set(allowedQuantities.filter(q => q.unit === 'h').map(q => q.num));
-  const allowedSessions = new Set(allowedQuantities.filter(q => q.unit === 'session').map(q => q.num));
+  const allowedHours = allowedQuantities.filter(q => q.unit === 'h');
+  const allowedSessions = allowedQuantities.filter(q => q.unit === 'session');
   const allowedMinutes = new Set(allowedQuantities.filter(q => q.unit === 'min').map(q => q.num));
+  const cadenceCompatible = (replyQ, allowedQ) =>
+    (!replyQ.isDaily || allowedQ.isDaily || !allowedQ.isWeekly) &&
+    (!replyQ.isWeekly || allowedQ.isWeekly || !allowedQ.isDaily);
   for (const q of extractQuantities(reply)) {
     if (q.unit === 'min') {
       if (!allowedMinutes.has(q.num)) return false;
     } else if (q.unit === 'session') {
-      if (!allowedSessions.has(q.num)) return false;
+      if (!allowedSessions.some(aq => aq.num === q.num && cadenceCompatible(q, aq))) return false;
     } else if (q.unit === 'h') {
-      const matchesHour = allowedHours.has(q.num);
-      const matchesDailySessionAlias = q.isDaily && !q.isWeekly && allowedSessions.has(q.num);
-      const matchesOneHourSessionDesc = q.num === 1 && q.nearSession && allowedSessions.size > 0;
+      const matchesHour = allowedHours.some(aq => aq.num === q.num && cadenceCompatible(q, aq));
+      const matchesDailySessionAlias = q.isDaily && !q.isWeekly && allowedSessions.some(aq => aq.num === q.num && !aq.isWeekly);
+      const matchesOneHourSessionDesc = q.num === 1 && q.nearSession && allowedSessions.length > 0;
       if (!matchesHour && !matchesDailySessionAlias && !matchesOneHourSessionDesc) return false;
     }
   }

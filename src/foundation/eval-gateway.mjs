@@ -154,7 +154,22 @@ function usageFor(payload, route, pricing) {
 
 const RETRYABLE_UPSTREAM_STATUSES = new Set([429, 500, 502, 503, 504]);
 const RELEASE_ON_ERROR_STATUSES = new Set([500, 502, 503, 504]);
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+function sleep(ms, signal) {
+  if (signal?.aborted) return Promise.reject(signal.reason ?? new Error('Aborted'));
+  return new Promise((resolve, reject) => {
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(signal.reason ?? new Error('Aborted'));
+    };
+    const timer = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+    timer.unref?.();
+    signal?.addEventListener('abort', onAbort, { once: true });
+  });
+}
 
 function retryDelayFor(response, attempt, baseDelayMs) {
   const retryAfter = Number(response.headers?.get?.('retry-after'));
@@ -212,6 +227,7 @@ export function createEvalGateway({
   const credentials = Object.entries({ agent: runnerToken, operator: operatorToken, judge: judgeToken })
     .map(([role, token]) => [role, digest(`Bearer ${token}`)]);
   let active = true;
+  const retireController = new AbortController();
   let bridge;
   let inspectRunnerRequest;
   let inspectRunnerResponse;
@@ -247,11 +263,12 @@ export function createEvalGateway({
     let reservation;
     try { reservation = await budget.reserve({ role, estimatedUsd: estimate, allowZero: policy.pricing?.freeTier === true }); }
     catch (error) { return send(res, 409, { error: error.message }); }
+    const requestController = new AbortController();
+    const onClose = () => { if (!res.writableEnded) requestController.abort(new Error('Client disconnected')); };
+    res.once('close', onClose);
+    const signal = AbortSignal.any([AbortSignal.timeout(120_000), retireController.signal, requestController.signal]);
+    let inBackoff = false;
     try {
-      if (!active) {
-        await budget.settle(reservation.id, { actualUsd: 0 });
-        return send(res, 401, { error: 'Eval run has retired' });
-      }
       let upstream;
       for (let attempt = 0; ; attempt++) {
         if (!active) {
@@ -263,7 +280,7 @@ export function createEvalGateway({
           headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
           body: JSON.stringify(body),
           redirect: 'error',
-          signal: AbortSignal.timeout(120_000),
+          signal,
         });
         if (!upstream.ok && RETRYABLE_UPSTREAM_STATUSES.has(upstream.status) && attempt < maxTransientRetries) {
           await upstream.body?.cancel().catch(() => {});
@@ -271,7 +288,9 @@ export function createEvalGateway({
             await budget.settle(reservation.id, { actualUsd: 0 });
             return send(res, 401, { error: 'Eval run has retired' });
           }
-          await sleep(retryDelayFor(upstream, attempt, retryBaseDelayMs));
+          inBackoff = true;
+          await sleep(retryDelayFor(upstream, attempt, retryBaseDelayMs), signal);
+          inBackoff = false;
           continue;
         }
         break;
@@ -295,10 +314,13 @@ export function createEvalGateway({
       }
       return send(res, 200, result);
     } catch {
-      try { await budget.settle(reservation.id, { actualUsd: null, ...(route.decision ? { outputTokens: 0 } : {}) }); }
+      const settledUsd = inBackoff ? 0 : null;
+      try { await budget.settle(reservation.id, { actualUsd: settledUsd, ...(route.decision ? { outputTokens: 0 } : {}) }); }
       catch { /* Preserve an unresolved reservation on ledger failure. */ }
-      if (res.headersSent) { res.destroy(); return; }
-      return send(res, 502, { error: 'Provider request or usage accounting failed' });
+      if (res.headersSent || res.destroyed) { res.destroy(); return; }
+      return send(res, !active ? 401 : 502, { error: !active ? 'Eval run has retired' : 'Provider request or usage accounting failed' });
+    } finally {
+      res.off('close', onClose);
     }
   });
 
@@ -321,6 +343,7 @@ export function createEvalGateway({
     },
     retire() {
       active = false;
+      retireController.abort(new Error('Eval run has retired'));
       bridge = undefined;
       inspectRunnerRequest = undefined;
       inspectRunnerResponse = undefined;
