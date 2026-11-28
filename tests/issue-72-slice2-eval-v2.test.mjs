@@ -13,10 +13,12 @@ import { createDisclosedSources } from '../src/cold-start-context.mjs';
 import { createEvalGateway } from '../src/foundation/eval-gateway.mjs';
 import { completionUsage, createEvalSession } from '../src/runners/single-agent/eval-session.mjs';
 import { createOpenAICompatibleCompleter, startSingleAgentServer } from '../src/runners/single-agent/server.mjs';
-import { archetypes, buildDevCaseBundle, caseSchema, loadCaseBundle } from '../src/eval-v2/case-schema.mjs';
+import {
+  archetypes, buildDevCaseBundle, canonicalizeCalendarFixture, caseSchema, loadCaseBundle,
+} from '../src/eval-v2/case-schema.mjs';
 import { ARMS, createArmBridge } from '../src/eval-v2/arms.mjs';
 import { checkLookupPreload, PRELOAD_VERSION } from '../src/eval-v2/preload.mjs';
-import { buildMatrix, runCase, runMatrix } from '../src/eval-v2/orchestrator.mjs';
+import { buildMatrix, prepareMatrix, runCase, runMatrix } from '../src/eval-v2/orchestrator.mjs';
 import { evaluateRun } from '../src/eval-v2/oracles.mjs';
 import {
   createOperatorB1, createOperatorCache, disclosedOperatorTopics, isOperatorReplyFaithful,
@@ -1064,4 +1066,53 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
   const tamperedTie = structuredClone(tiedRun.stage1Decision);
   tamperedTie.finalist = tieModels[2];
   assert.throws(() => verifyStage1Decision(tamperedTie, tieModels[0]), { code: 'stage1_decision_invalid' });
+
+  // Calendar fixture canonicalization matches Calendarpit v3 normalization (missing timeZone, Z/ms offsets, key order, cancelled filter).
+  const mixedFixture = {
+    users: [{ id: student, name: 'Example Learner', email: 'learner@example.test' }],
+    calendars: [{ id: calendarId, userId: student, summary: 'Study calendar', timeZone: 'America/Sao_Paulo' }],
+    events: [
+      { id: 'e-notz', calendarId, summary: 'No TZ',
+        start: { dateTime: '2031-02-04T14:00:00-03:00' }, end: { dateTime: '2031-02-04T15:00:00-03:00' } },
+      { id: 'e-zulu', calendarId, summary: 'Zulu MS',
+        start: { timeZone: 'UTC', dateTime: '2031-02-05T15:00:00.000Z' },
+        end: { timeZone: 'UTC', dateTime: '2031-02-05T16:00:00.000Z' } },
+      { id: 'e-allday', calendarId, summary: 'Holiday', start: { date: '2031-02-06' }, end: { date: '2031-02-07' } },
+      { id: 'e-canc', calendarId, summary: 'Cancelled', status: 'cancelled',
+        start: { dateTime: '2031-02-08T10:00:00-03:00' }, end: { dateTime: '2031-02-08T11:00:00-03:00' } },
+    ],
+  };
+  const canonical = canonicalizeCalendarFixture(mixedFixture);
+  assert.deepEqual(canonical.events[0].start, { dateTime: '2031-02-04T14:00:00-03:00', timeZone: 'America/Sao_Paulo' });
+  assert.deepEqual(canonical.events[1].start, { dateTime: '2031-02-05T12:00:00-03:00', timeZone: 'America/Sao_Paulo' });
+  assert.deepEqual(Object.keys(canonical.events[1].start), ['dateTime', 'timeZone']);
+  assert.deepEqual(canonical.events[2].start, { date: '2031-02-06' });
+  const utcCanonical = canonicalizeCalendarFixture({
+    ...mixedFixture,
+    calendars: [{ ...mixedFixture.calendars[0], timeZone: 'UTC' }],
+    events: [mixedFixture.events[0]],
+  });
+  assert.deepEqual(utcCanonical.events[0].start, { dateTime: '2031-02-04T17:00:00+00:00', timeZone: 'UTC' });
+
+  const { bundle: mixedBundle } = await makeBundle(t, archetypes[0], {
+    caseId: 'mixed-cal-case', initialRequest: 'Plan around mixed endpoints.', calendarFixture: mixedFixture,
+  });
+  assert.deepEqual(mixedBundle.calendarFixture.events[0].start, { dateTime: '2031-02-04T14:00:00-03:00', timeZone: 'America/Sao_Paulo' });
+  const { bundle: otherBundle } = await makeBundle(t, archetypes[0], { caseId: 'other-cal-case', initialRequest: 'Plan other.' });
+  const preparedMixed = await prepareMatrix({
+    stage: 'dev', bundles: [mixedBundle, otherBundle],
+    models: Array.from({ length: 5 }, (_, i) => ({ model: `m-${i}`, provider: 'stub' })),
+  });
+  const simulatedCalendarpitV3 = {
+    async events() { return structuredClone(canonical.events.filter(event => event.status !== 'cancelled')); },
+  };
+  const parityRun = await runCase({
+    cell: cell(mixedBundle),
+    calendars: () => simulatedCalendarpitV3,
+    expectedPreload: preparedMixed.hashes.get(mixedBundle.caseId),
+    completeChat: async ({ messages }) => assistant(propose(record(), {
+      avoidDates: messages.at(-1).content.endsWith(friction) ? [clock.date] : [],
+    })),
+  });
+  assert.equal(parityRun.passed, true, JSON.stringify(parityRun));
 });

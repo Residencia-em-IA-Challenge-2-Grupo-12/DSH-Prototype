@@ -11,7 +11,7 @@ import { createDisclosedSources } from '../cold-start-context.mjs';
 import { createTrustedStudyService } from '../foundation/trusted-study-service.mjs';
 import { z } from 'zod';
 import { ARMS, createArmBridge, startArmSession } from './arms.mjs';
-import { archetypes } from './case-schema.mjs';
+import { archetypes, canonicalizeCalendarEvent, canonicalizeCalendarFixture } from './case-schema.mjs';
 import { checkRunnerPayload, hiddenMarkers, scanContamination } from './contamination.mjs';
 import { buildBlindedPacket, createJudgeB2, JUDGE_MODELS } from './judge-b2.mjs';
 import { EVAL_LIMITS } from '../runners/single-agent/eval-session.mjs';
@@ -43,17 +43,21 @@ export function buildMatrix({ stage, bundles, models }) {
 }
 
 export function createMemoryCalendar(fixture) {
-  let events = structuredClone(fixture.events);
+  const calendarTimeZone = fixture?.calendars?.[0]?.timeZone;
+  let events = canonicalizeCalendarFixture(fixture).events;
   return {
-    async events() { return structuredClone(events); },
+    async events() { return structuredClone(events.filter(item => item.status !== 'cancelled')); },
     async create(_student, event) {
       if (events.some(item => item.id === event.id)) throw new Error('Calendar event already exists');
-      events.push(structuredClone(event));
-      return structuredClone(event);
+      const normalized = canonicalizeCalendarEvent(event, calendarTimeZone);
+      events.push(normalized);
+      return structuredClone(normalized);
     },
     async patch(_student, id, event) {
       if (!events.some(item => item.id === id)) throw new Error('Calendar event does not exist');
-      events = events.map(item => item.id === id ? { ...item, ...structuredClone(event), id } : item);
+      events = events.map(item => item.id === id
+        ? canonicalizeCalendarEvent({ ...item, ...structuredClone(event), id }, calendarTimeZone)
+        : item);
     },
   };
 }
@@ -61,10 +65,12 @@ export function createMemoryCalendar(fixture) {
 async function withCaseRuntime(bundle, calendar, operation) {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'study-eval-v2-'));
   const workspace = { allowedStudents: [bundle.student], requireStaged: true };
+  const canonicalFixture = canonicalizeCalendarFixture(bundle.calendarFixture);
+  const expectedEvents = canonicalFixture.events.filter(event => event.status !== 'cancelled');
   try {
     return await withSyntheticRuntime(directory, async () => {
       await initializeScenario(calendar, bundle.student, { ...workspace, coldStart: true,
-        workspaceSource: bundle.workspaceDir, calendarFixture: bundle.calendarFixture });
+        workspaceSource: bundle.workspaceDir, calendarFixture: canonicalFixture, expectedEvents });
       return operation(directory, workspace);
     }, workspace);
   } finally {
@@ -130,6 +136,16 @@ const runnerSnapshot = z.object({
   turns: turnCounts,
   action: z.record(z.string(), z.unknown()).nullable(),
 });
+
+function classifySetupError(error) {
+  const msg = String(error?.message ?? '');
+  if (msg.includes('Observed calendar does not match')) return 'calendar_fixture_digest_mismatch';
+  if (msg.includes('Calendar or preload differs')) return 'preload_parity';
+  if (msg.includes('Synthetic calendar API request failed')) return 'calendar_api_error';
+  if (msg.includes('already initialized')) return 'workspace_already_initialized';
+  if (msg.includes('Explicit workspace and calendar fixture required')) return 'missing_staged_fixture';
+  return undefined;
+}
 
 function classifyJudgeError(error) {
   if (error instanceof SyntaxError) return 'json_parse';
@@ -423,8 +439,9 @@ export async function runCase({
         ...(stale ? { stale: { ...stale, perturbed: undefined } } : {}), exchanges };
     });
   } catch (error) {
+    const detail = error.code ? undefined : classifySetupError(error);
     row = { ...record, passed: false, eligible: false, outcome: null, turns,
-      failure: { code: error.code ?? 'case_setup_or_cleanup_failed' } };
+      failure: { code: error.code ?? 'case_setup_or_cleanup_failed', ...(detail ? { detail } : {}) } };
     if (['preload_contamination', 'runner_contamination'].includes(error.code)) {
       row.status = 'completed';
       row.gates = { contamination: { passed: false, findings: [error.code] } };
