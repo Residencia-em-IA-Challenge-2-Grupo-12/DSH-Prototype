@@ -260,20 +260,34 @@ export function createEvalGateway({
     } catch (error) { return send(res, 400, { error: error.message }); }
 
     if (!active) return send(res, 401, { error: 'Eval run has retired' });
-    let reservation;
-    try { reservation = await budget.reserve({ role, estimatedUsd: estimate, allowZero: policy.pricing?.freeTier === true }); }
-    catch (error) { return send(res, 409, { error: error.message }); }
     const requestController = new AbortController();
     const onClose = () => { if (!res.writableEnded) requestController.abort(new Error('Client disconnected')); };
     res.once('close', onClose);
+    if (res.destroyed || res.closed) requestController.abort(new Error('Client disconnected'));
+    if (requestController.signal.aborted) {
+      res.off('close', onClose);
+      return;
+    }
+    let reservation;
+    try { reservation = await budget.reserve({ role, estimatedUsd: estimate, allowZero: policy.pricing?.freeTier === true }); }
+    catch (error) {
+      res.off('close', onClose);
+      if (res.headersSent || res.destroyed) return;
+      return send(res, 409, { error: error.message });
+    }
     const signal = AbortSignal.any([AbortSignal.timeout(120_000), retireController.signal, requestController.signal]);
     let inBackoff = false;
     try {
       let upstream;
       for (let attempt = 0; ; attempt++) {
         if (!active) {
-          await budget.settle(reservation.id, { actualUsd: 0 });
+          await budget.settle(reservation.id, { actualUsd: 0, ...(route.decision ? { outputTokens: 0 } : {}) });
           return send(res, 401, { error: 'Eval run has retired' });
+        }
+        if (requestController.signal.aborted || res.destroyed) {
+          await budget.settle(reservation.id, { actualUsd: 0, ...(route.decision ? { outputTokens: 0 } : {}) });
+          if (!res.destroyed) res.destroy();
+          return;
         }
         upstream = await fetchImpl(route.url, {
           method: 'POST',

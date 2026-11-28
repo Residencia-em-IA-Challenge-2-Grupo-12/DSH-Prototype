@@ -846,4 +846,45 @@ test('eval gateway releases reservation on clean upstream HTTP 4xx/5xx without f
   assert.equal(retiredRes.status, 401);
   assert.ok(Date.now() - started < 2000);
   assert.equal((await budget.summary({ role: 'agent' })).unknownCount, 0);
+
+  // Client disconnect while budget.reserve() is pending skips upstream dispatch and settles $0.
+  let releaseReserve;
+  let reserveStarted;
+  const reserveEntered = new Promise(resolve => { reserveStarted = resolve; });
+  let upstreamDispatches = 0;
+  let settledPayload = null;
+  const slowBudget = {
+    reserve: () => {
+      reserveStarted();
+      return new Promise(resolve => { releaseReserve = () => resolve({ id: 'slow-res' }); });
+    },
+    settle: async (_id, data) => { settledPayload = data; },
+  };
+  const disconnectGw = createEvalGateway({
+    roleAModel: chatModel,
+    modelPolicies: { [chatModel]: { pricing: { inputPerMillion: 0.1, outputPerMillion: 0.5, verifiedAt: new Date().toISOString() }, providerOnly: ['openai'] } },
+    apiKeys: { OPENROUTER_API_KEY: 'stub-key' },
+    budget: slowBudget,
+    fetchImpl: async () => {
+      upstreamDispatches++;
+      return Response.json({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 1, completion_tokens: 1, cost: 0.0001 } });
+    },
+  });
+  await new Promise(done => disconnectGw.server.listen(0, '127.0.0.1', done));
+  t.after(() => new Promise(done => { disconnectGw.retire(); disconnectGw.server.close(done); }));
+  const abortClient = new AbortController();
+  const dropped = fetch(`http://127.0.0.1:${disconnectGw.server.address().port}${chat}`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${disconnectGw.runnerToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ model: chatModel, messages }),
+    signal: abortClient.signal,
+  }).catch(() => 'aborted');
+  await reserveEntered;
+  abortClient.abort();
+  assert.equal(await dropped, 'aborted');
+  await new Promise(resolve => setTimeout(resolve, 25));
+  releaseReserve();
+  await new Promise(resolve => setTimeout(resolve, 25));
+  assert.equal(upstreamDispatches, 0);
+  assert.deepEqual(settledPayload, { actualUsd: 0 });
 });

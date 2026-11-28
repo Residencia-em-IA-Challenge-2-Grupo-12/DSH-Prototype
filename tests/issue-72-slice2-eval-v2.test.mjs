@@ -904,6 +904,7 @@ test('Role B1 scopes natural EN/PT-BR questions and credits paraphrased or split
   assert.equal(isOperatorReplyFaithful('4 hours per week, max 2 hours per day, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), true);
   assert.equal(isOperatorReplyFaithful('4 hours per week, max 2 one-hour sessions per day, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), true);
   assert.equal(isOperatorReplyFaithful('4 hours per day, max 2 sessions per week, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), false);
+  assert.equal(isOperatorReplyFaithful('2 sessions per day, 1 hour session per week.', { ...ana, operatorFacts: { ...ana.operatorFacts, factMarkers: {} } }, { workload: '2 sessions per day.' }), false);
   assert.equal(isOperatorReplyFaithful('2 hours per week, max 2 sessions per day.', ana, { workload: 'At most two sessions per day.' }), false);
   assert.equal(isOperatorReplyFaithful('5 horas por semana até 15/11/2027, 2 blocos por dia e 15 min.', bruno, { workload: 'Quero 5 horas por semana até 15/11/2026, no máximo dois blocos por dia e 15 minutos de pausa.' }), false);
 
@@ -1029,4 +1030,19 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
   });
   assert.equal(previewOnlyFail.passed, false);
   assert.equal(previewOnlyFail.proposalStatus, 'none');
+
+  // Opaque reasoning_details / extra_content metadata must not falsely trip pre-dispatch estimatedInputTokens.
+  const opaqueBlob = 'x'.repeat(120_000);
+  const withOpaque = await runCase({
+    cell: cell(planned, 'C3'),
+    completeChat: async req => {
+      const avoidDates = req.messages.some(m => typeof m.content === 'string' && m.content.endsWith(friction)) ? [clock.date] : [];
+      return {
+        choices: [{ message: { content: JSON.stringify(propose(record(), { avoidDates })),
+          reasoning_details: [{ type: 'reasoning.encrypted', data: opaqueBlob }] } }],
+        usage: { input_tokens: 2000, output_tokens: 180, cost: 0 },
+      };
+    },
+  });
+  assert.equal(withOpaque.passed, true, JSON.stringify(withOpaque));
 });

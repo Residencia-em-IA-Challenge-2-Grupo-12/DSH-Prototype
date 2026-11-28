@@ -12,7 +12,26 @@ export const EVAL_ARM_LIMITS = Object.freeze({
   C1: Object.freeze({ completions: 3, toolAttempts: 1 }),
   C3: Object.freeze({ completions: 4, toolAttempts: 3 }),
 });
-export const estimatedInputTokens = request => Math.ceil(Buffer.byteLength(JSON.stringify(request), 'utf8') / 3) + 512;
+function stripOpaqueMetadata(request) {
+  if (!request || typeof request !== 'object' || !Array.isArray(request.messages)) return request;
+  return {
+    ...request,
+    messages: request.messages.map(msg => {
+      if (!msg || typeof msg !== 'object') return msg;
+      const { reasoning_details: _rd, tool_calls, ...rest } = msg;
+      if (!Array.isArray(tool_calls)) return rest;
+      return {
+        ...rest,
+        tool_calls: tool_calls.map(call => {
+          if (!call || typeof call !== 'object') return call;
+          const { extra_content: _ec, ...cleanCall } = call;
+          return cleanCall;
+        }),
+      };
+    }),
+  };
+}
+export const estimatedInputTokens = request => Math.ceil(Buffer.byteLength(JSON.stringify(stripOpaqueMetadata(request)), 'utf8') / 3) + 512;
 export function parseActionJson(content) {
   const trimmed = String(content ?? '').trim();
   const fenced = /^```(?:json)?\s*\n?([\s\S]*?)\n?\s*```$/i.exec(trimmed);

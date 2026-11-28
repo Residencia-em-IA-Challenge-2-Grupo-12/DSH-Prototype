@@ -284,7 +284,7 @@ export function isOperatorReplyFaithful(reply, bundle, disclosable = {}) {
     } else if (q.unit === 'h') {
       const matchesHour = allowedHours.some(aq => aq.num === q.num && cadenceCompatible(q, aq));
       const matchesDailySessionAlias = q.isDaily && !q.isWeekly && allowedSessions.some(aq => aq.num === q.num && !aq.isWeekly);
-      const matchesOneHourSessionDesc = q.num === 1 && q.nearSession && allowedSessions.length > 0;
+      const matchesOneHourSessionDesc = q.num === 1 && q.nearSession && allowedSessions.some(aq => cadenceCompatible(q, aq));
       if (!matchesHour && !matchesDailySessionAlias && !matchesOneHourSessionDesc) return false;
     }
   }
