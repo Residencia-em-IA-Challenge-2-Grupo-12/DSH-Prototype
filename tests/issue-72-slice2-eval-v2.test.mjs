@@ -19,7 +19,8 @@ import { checkLookupPreload, PRELOAD_VERSION } from '../src/eval-v2/preload.mjs'
 import { buildMatrix, runCase, runMatrix } from '../src/eval-v2/orchestrator.mjs';
 import { evaluateRun } from '../src/eval-v2/oracles.mjs';
 import {
-  createOperatorB1, createOperatorCache, disclosedOperatorTopics, OPERATOR_MODEL, scopeOperatorFacts,
+  createOperatorB1, createOperatorCache, disclosedOperatorTopics, isOperatorReplyFaithful,
+  OPERATOR_MODEL, scopeOperatorFacts,
 } from '../src/eval-v2/operator-b1.mjs';
 import { buildBlindedPacket, compareJudgeWithHuman, createJudgeB2, JUDGE_MODELS } from '../src/eval-v2/judge-b2.mjs';
 import { checkJudgePacket, checkRunnerPayload, scanContamination } from '../src/eval-v2/contamination.mjs';
@@ -424,10 +425,24 @@ test('runner budgets include malformed and batched attempts, disable tools at fi
   assert.equal(gen.turns[0].generatedTokens, 4200);
   assert.equal(gen.failure.code, 'reported_token_limit');
 
-  const input = session('lookup-and-repair', async () => assistant('{broken', { input_tokens: 32_700, output_tokens: 40 }));
-  const inp = await input.prompt('Start');
-  assert.equal(inp.turns[0].completions, 1);
+  const oversizedPreload = createEvalSession({ student, clock, locale: 'en', mode: 'single-completion',
+    preload: 'x'.repeat(100_000), model: pin.model, completeChat: async () => assert.fail('Oversized prompt cannot dispatch'),
+    bridgeCall: async () => ({ isError: false, result: 'ok' }) });
+  const inp = await oversizedPreload.prompt('Start');
+  assert.equal(inp.turns[0].completions, 0);
   assert.equal(inp.failure.code, 'remaining_token_limit');
+
+  // C1 multi-completion turns allow 32,768 input tokens per completion (up to 32,768 * completions per turn).
+  let c1Calls = 0;
+  const multiInput = session('lookup-and-repair', async req => {
+    assert.deepEqual(req.response_format, { type: 'json_object' });
+    return ++c1Calls === 1
+      ? assistant('{broken', { input_tokens: 18_000, output_tokens: 40 })
+      : assistant('```json\n' + JSON.stringify(answer()) + '\n```', { input_tokens: 19_000, output_tokens: 40 });
+  });
+  const repaired = await multiInput.prompt('Start');
+  assert.equal(repaired.failure, null);
+  assert.equal(repaired.turns[0].inputTokens, 37_000);
 
   const missingUsage = session('single-completion', async () => ({ choices: assistant(answer()).choices }));
   assert.equal((await missingUsage.prompt('Start')).failure.kind, 'compatibility');
@@ -591,6 +606,7 @@ test('Role B2 blinds both revisions, uses named questions and calibrated isolate
     assert.ok(!JSON.stringify(body).includes('dev-bundle-020'));
     if (route === '/v1/systemone') {
       assert.deepEqual(new Set(Object.values(body.questions).map(item => item.type)), new Set(['noul', 'score', 'choice']));
+      assert.ok(Object.values(body.questions).every(item => typeof item.instructions === 'string' && item.instructions.trim().length > 0));
       assert.equal(body.questions.revision.criteria.length, 5);
       assert.equal(typeof body.questions.honesty.criteria.partial, 'string');
       assert.equal(typeof body.questions.supported.criteria.false, 'string');
@@ -599,7 +615,7 @@ test('Role B2 blinds both revisions, uses named questions and calibrated isolate
       assert.equal(body.model, JUDGE_MODELS[2]);
       assert.equal(body.temperature, 0);
       assert.equal(body.reasoning_effort, 'low');
-      assert.equal(body.max_tokens, 1536);
+      assert.equal(body.max_tokens, 4096);
     }
   }
   assert.deepEqual(results[0].answerMetadata.supported, { noul: 0.92, confidence: 0.8 });
@@ -868,11 +884,29 @@ test('Role B1 scopes natural EN/PT-BR questions and credits paraphrased or split
   assert.deepEqual(Object.keys(scopeOperatorFacts(bruno, { questions: [{ id: 'q6', question: 'Quais dias e horários você pode estudar?' }] })), ['availability']);
 
   assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, '4 hours a week, up to 2 sessions per day with a 15 min break.'), ['workload']);
+  assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, '4 hours per week, maximum of 2 hours per day, and a 15-minute break.'), ['workload']);
+  assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, '2 hours per week, max 1 hour per day, and a 15-minute break.'), []);
   assert.deepEqual(disclosedOperatorTopics(ana, qDays, 'Wednesdays, Thursdays, and Fridays from 2:00 PM to 4:15 PM.'), ['availability']);
   assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, 'I am unsure.'), []);
   assert.deepEqual(disclosedOperatorTopics(bruno, { questions: [{ id: 'q6', question: 'Quais dias e horários você pode estudar?' }] },
     'Posso estudar segunda e quarta das 19h às 21h15, sábado das 14h às 16h15 e domingo das 10h às 12h15.'), ['availability']);
-  assert.deepEqual(disclosedOperatorTopics(bruno, qWorkloadPt, '5h semanais, no máximo 2 blocos por dia e 15 min de pausa.'), ['workload']);
+  assert.deepEqual(disclosedOperatorTopics(bruno, qWorkloadPt, '5h semanais até 15/11, no máximo 2 blocos por dia e 15 min de pausa.'), ['workload']);
+  assert.deepEqual(disclosedOperatorTopics(bruno, qWorkloadPt, '5 horas por semana até 15 de novembro, máximo de 2 horas por dia e pausa de 15 minutos.'), ['workload']);
+  assert.equal(isOperatorReplyFaithful('Quero 14 horas por semana até 15/11, 2 blocos por dia e 15 min.', bruno, { workload: bruno.operatorFacts.disclosable.workload }), false);
+  assert.equal(isOperatorReplyFaithful('5 horas por semana, 2 blocos por dia e 15 min.', bruno, { workload: bruno.operatorFacts.disclosable.workload }), false);
+  assert.equal(isOperatorReplyFaithful('5 horas por semana até 15/11/2027, 2 blocos por dia e 15 min.', bruno, { workload: bruno.operatorFacts.disclosable.workload }), false);
+  assert.equal(isOperatorReplyFaithful('5 horas por semana até 15/11/2026, 2 blocos por dia e 15 min.', bruno, { workload: bruno.operatorFacts.disclosable.workload }), true);
+  assert.equal(isOperatorReplyFaithful('Wednesday, Thursday, Friday 14:00-16:15 through 2026-12-01.', ana, { availability: ana.operatorFacts.disclosable.availability }), false);
+  assert.equal(isOperatorReplyFaithful('Wednesday, Thursday, Friday 14:00-16:15 or 9 to 11.', ana, { availability: ana.operatorFacts.disclosable.availability }), false);
+  assert.equal(isOperatorReplyFaithful('Wednesday, Thursday, Friday 14:00-16:15, about 1 hour.', ana, { availability: ana.operatorFacts.disclosable.availability }), false);
+  assert.equal(isOperatorReplyFaithful('Saturday 09:00-17:00 works.', ana, { availability: ana.operatorFacts.disclosable.availability }), false);
+  assert.equal(isOperatorReplyFaithful('I prefer Wednesday, Thursday, and Friday from 14:00 to 16:15.', ana, { availability: ana.operatorFacts.disclosable.availability }), true);
+  assert.equal(isOperatorReplyFaithful('4 hours per week, max 2 hours per day, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), true);
+  assert.equal(isOperatorReplyFaithful('4 hours per week, max 2 one-hour sessions per day, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), true);
+  assert.equal(isOperatorReplyFaithful('4 hours per day, max 2 sessions per week, 15 min break.', ana, { workload: ana.operatorFacts.disclosable.workload }), false);
+  assert.equal(isOperatorReplyFaithful('2 sessions per day, 1 hour session per week.', { ...ana, operatorFacts: { ...ana.operatorFacts, factMarkers: {} } }, { workload: '2 sessions per day.' }), false);
+  assert.equal(isOperatorReplyFaithful('2 hours per week, max 2 sessions per day.', ana, { workload: 'At most two sessions per day.' }), false);
+  assert.equal(isOperatorReplyFaithful('5 horas por semana até 15/11/2027, 2 blocos por dia e 15 min.', bruno, { workload: 'Quero 5 horas por semana até 15/11/2026, no máximo dois blocos por dia e 15 minutos de pausa.' }), false);
 
   // Multi-turn split elicitation of workload across two natural questions.
   const qHoursOnly = { questions: [{ id: 'q7', question: 'How many hours per week do you want to study?' }] };
@@ -913,11 +947,31 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
 
   const seenBodies = [];
   const origin = await listen(t, async (req, res) => {
-    seenBodies.push(await requestBody(req));
-    json(res, assistant({ elicitation: 4, revision: 4, clarity: 5, honesty: 'clear', supported: true }));
+    const body = await requestBody(req);
+    seenBodies.push([req.url, body]);
+    json(res, req.url === '/v1/systemone'
+      ? { answers: { elicitation: { type: 'score', score: 3 }, clarity: { type: 'score', score: 4 },
+        honesty: { type: 'choice', choice: 'clear' }, supported: { type: 'noul', noul: 0.9 } } }
+      : assistant('```json\n' + JSON.stringify({ elicitation: 4, clarity: 5, honesty: 'clear', supported: true }) + '\n```'));
   });
-  await createJudgeB2({ gateway: { origin, judgeToken: 'stub-judge' }, model: JUDGE_MODELS[2] })(packet);
-  const systemPrompt = seenBodies[0].messages[0].content;
+  // Packet with no revision omits the revision rubric item deterministically across System One and chat judges.
+  const noRevPacket = buildBlindedPacket({
+    identifiers: { caseId: 'case-2', student: 'student-y' },
+    proposalStatus: 'submitted_blocked_by_gate',
+    frictionDelivered: false,
+    joinMap,
+    messages: [{ type: 'assistant', text: 'When can you study?', questions: [{ question: 'When can you study?', options: [{ label: 'Afternoons' }] }] }],
+  });
+  assert.equal(noRevPacket.proposalStatus, 'submitted_blocked_by_gate');
+  assert.deepEqual(noRevPacket.transcript[0].questions[0].options, [{ label: 'Afternoons' }]);
+  const [sysGrade, chatGrade] = await Promise.all([
+    createJudgeB2({ gateway: { origin, judgeToken: 'stub-judge' }, model: JUDGE_MODELS[0] })(noRevPacket),
+    createJudgeB2({ gateway: { origin, judgeToken: 'stub-judge' }, model: JUDGE_MODELS[2] })(noRevPacket),
+  ]);
+  assert.equal(sysGrade.grades.revision, null);
+  assert.equal(chatGrade.grades.revision, null);
+  assert.equal('revision' in seenBodies.find(([u]) => u === '/v1/systemone')[1].questions, false);
+  const systemPrompt = seenBodies.find(([u]) => u === '/v1/chat/completions')[1].messages[0].content;
   assert.match(systemPrompt, /1 to 5/);
   assert.match(systemPrompt, /clear, partial, misleading, or not_applicable/);
 
@@ -928,4 +982,67 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
   const honest = { ...unread, message: 'I have not read page 5 of "notes/handbook.pdf" yet.' };
   const lookup = await runCase({ cell: cell(bundle), completeChat: async () => assistant(honest) });
   assert.equal(lookup.outcome, 'honest_abstention', JSON.stringify(lookup));
+
+  // Full official course title containing the required short course name still passes authoritative_deadlines.
+  const planned = (await makeBundle(t, archetypes[0])).bundle;
+  const fullTitle = { ...course, name: 'Field Methods and Applied Research' };
+  const titled = await runCase({
+    cell: cell(planned),
+    completeChat: async ({ messages }) => assistant('```json\n' + JSON.stringify(propose(
+      record([fullTitle]), { avoidDates: messages.at(-1).content.endsWith(friction) ? [clock.date] : [] },
+    )) + '\n```'),
+  });
+  assert.equal(titled.passed, true, JSON.stringify(titled));
+  assert.equal(titled.gates.authoritative_deadlines.passed, true);
+
+  // C3 gets one bounded JSON repair turn with response_format enforced, and preview_plan alone does not set submitted_blocked_by_gate.
+  const c3Requests = [];
+  let c3Calls = 0;
+  const c3Repaired = await runCase({
+    cell: cell(planned, 'C3'),
+    completeChat: async req => {
+      c3Requests.push(req);
+      c3Calls++;
+      if (c3Calls === 1) return assistant('Not JSON after thinking');
+      const avoidDates = req.messages.some(m => typeof m.content === 'string' && m.content.endsWith(friction)) ? [clock.date] : [];
+      return assistant(propose(record(), { avoidDates }));
+    },
+  });
+  assert.equal(c3Repaired.passed, true, JSON.stringify(c3Repaired));
+  assert.equal(Boolean(c3Requests[0].tools), true);
+  assert.equal(c3Requests[1].tools, undefined);
+  assert.deepEqual(c3Requests[1].response_format, { type: 'json_object' });
+
+  let previewOnlyCalls = 0;
+  const previewOnlyFail = await runCase({
+    cell: cell(planned, 'C3'),
+    completeChat: async () => {
+      previewOnlyCalls++;
+      if (previewOnlyCalls === 1) {
+        return {
+          choices: [{ message: { content: null, tool_calls: [{ id: 'c1', type: 'function',
+            function: { name: 'preview_plan', arguments: JSON.stringify({ record: record() }) } }] } }],
+          usage: { input_tokens: 150, output_tokens: 80, cost: 0 },
+        };
+      }
+      return assistant('plain prose that fails json parse');
+    },
+  });
+  assert.equal(previewOnlyFail.passed, false);
+  assert.equal(previewOnlyFail.proposalStatus, 'none');
+
+  // Opaque reasoning_details / extra_content metadata must not falsely trip pre-dispatch estimatedInputTokens.
+  const opaqueBlob = 'x'.repeat(120_000);
+  const withOpaque = await runCase({
+    cell: cell(planned, 'C3'),
+    completeChat: async req => {
+      const avoidDates = req.messages.some(m => typeof m.content === 'string' && m.content.endsWith(friction)) ? [clock.date] : [];
+      return {
+        choices: [{ message: { content: JSON.stringify(propose(record(), { avoidDates })),
+          reasoning_details: [{ type: 'reasoning.encrypted', data: opaqueBlob }] } }],
+        usage: { input_tokens: 2000, output_tokens: 180, cost: 0 },
+      };
+    },
+  });
+  assert.equal(withOpaque.passed, true, JSON.stringify(withOpaque));
 });

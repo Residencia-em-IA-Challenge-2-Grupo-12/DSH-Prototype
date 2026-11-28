@@ -112,14 +112,34 @@ const turnCounts = z.array(z.object({
   spendUsd: z.number().nonnegative().nullable(),
 }));
 const runnerSnapshot = z.object({
-  messages: z.array(z.strictObject({ type: z.enum(['user', 'assistant']), text: z.string() })),
+  messages: z.array(z.strictObject({
+    type: z.enum(['user', 'assistant']),
+    text: z.string(),
+    questions: z.array(z.strictObject({
+      question: z.string(),
+      options: z.array(z.strictObject({ label: z.string(), description: z.string().optional() })).optional(),
+    })).optional(),
+  })),
   question: z.object({ requestId: z.string(), questions: z.array(z.object({
     id: z.string(), question: z.string(), options: z.array(z.object({ label: z.string(), description: z.string().optional() })),
   })).min(1) }).nullable(),
-  failure: z.strictObject({ kind: z.enum(['budget', 'quality', 'infrastructure', 'compatibility']), code: z.string() }).nullable(),
+  failure: z.strictObject({
+    kind: z.enum(['budget', 'quality', 'infrastructure', 'compatibility']), code: z.string(),
+    detail: z.string().max(200).optional(),
+  }).nullable(),
   turns: turnCounts,
   action: z.record(z.string(), z.unknown()).nullable(),
 });
+
+function classifyJudgeError(error) {
+  if (error instanceof SyntaxError) return 'json_parse';
+  if (error instanceof z.ZodError) return 'zod_schema';
+  const msg = String(error?.message ?? '');
+  const httpMatch = /HTTP (\d+)/.exec(msg);
+  if (httpMatch) return `http_${httpMatch[1]}`;
+  if (msg.includes('System One')) return 'systemone_invalid';
+  return 'judge_error';
+}
 
 export async function runCase({
   cell, completeChat, gateway, runnerUrl, transport = 'loopback', fetchImpl = fetch,
@@ -154,8 +174,10 @@ export async function runCase({
       const lookupPreflight = checkLookupPreload(preload.packet, bundle.oracle.pdfLookupTarget);
       if (!lookupPreflight.clean) throw Object.assign(new Error('Lookup preload failed contamination checks'), { code: 'preload_contamination' });
       const initialEvents = await calendar.events(bundle.student);
+      let operatorFallbacks = 0;
       const roleB1 = operator ?? (gateway?.operatorToken && createOperatorB1({
         gateway, providerPin: operatorProviderPin, cache: operatorCache, transport, fetchImpl, onUsage,
+        onFallback: () => { operatorFallbacks++; },
         runIdentifiers: [pin.model],
       }));
       let runnerClean = true;
@@ -195,6 +217,7 @@ export async function runCase({
       let lastPreview;
       let stale;
       let frictionDelivered = false;
+      let proposalBlockedByGate = false;
       try {
         if (!completeChat || runnerUrl) {
           if (typeof gateway?.inspectRunnerRequests !== 'function' || typeof gateway?.inspectRunnerResponses !== 'function') {
@@ -237,7 +260,10 @@ export async function runCase({
           inspect({ outputs: { messages, question: response.question, action: lastAction } });
           if (bridge.submission && !matchesPreferences(bridge.submission.record, bundle, disclosedTopics, {
             revised: stage === 'friction', shortfall: lastAction?.shortfall,
-          })) preferenceViolation = true;
+          })) {
+            preferenceViolation = true;
+            proposalBlockedByGate = true;
+          }
           if (failure) break;
           if ((lastAction || meter.finalAction) && !isDeepStrictEqual(meter.finalAction, lastAction)) {
             failure = { kind: 'quality', code: 'final_action_mismatch' };
@@ -357,6 +383,14 @@ export async function runCase({
       });
       const status = failure?.kind === 'infrastructure' ? 'infrastructure_error' :
         failure?.kind === 'compatibility' ? 'compatibility_error' : 'completed';
+      const judgeErrors = {};
+      const proposalStatus = firstDraft && finalDraft && finalDraft.plan.id !== firstDraft.plan.id
+        ? 'revised'
+        : (firstDraft || finalDraft)
+          ? 'initial_only'
+          : proposalBlockedByGate
+            ? 'submitted_blocked_by_gate'
+            : 'none';
       if (status === 'completed' && runnerClean && (judgeModels.length || onBlindedPacket)) {
         const identifiers = { caseId: bundle.caseId, arm, model: pin.model, provider: pin.provider,
           engine: 'single-agent-http-v1', harness: 'eval-v2', repeat, student: bundle.student,
@@ -365,7 +399,7 @@ export async function runCase({
         try {
           const packet = buildBlindedPacket({
             messages, proposalSummary: safeProposal(finalDraft?.plan), initialProposalSummary: safeProposal(firstDraft?.plan),
-            identifiers, joinMap, privateMarkers: hiddenMarkers(bundle),
+            proposalStatus, frictionDelivered, identifiers, joinMap, privateMarkers: hiddenMarkers(bundle),
           });
           record.blindId = packet.blindId;
           await onBlindedPacket?.(packet);
@@ -373,8 +407,9 @@ export async function runCase({
             const priorSpendCount = roleSpend.length;
             try {
               record.grades[model] = await createJudgeB2({ gateway, model, transport, fetchImpl, onUsage })(packet);
-            } catch {
+            } catch (error) {
               record.grades[model] = null;
+              judgeErrors[model] = classifyJudgeError(error);
               if (roleSpend.length === priorSpendCount) roleSpend.push(null);
             }
           }
@@ -383,6 +418,7 @@ export async function runCase({
         }
       }
       return { ...record, status, failure, ...evaluation, turns, serverTurns: budget.turns, providerAttempts, frictionDelivered,
+        proposalStatus, operatorFallbacks, ...(Object.keys(judgeErrors).length ? { judgeErrors } : {}),
         ...(capacity ? { capacity: capacity.candidate.capacityPerWeek } : {}),
         ...(stale ? { stale: { ...stale, perturbed: undefined } } : {}), exchanges };
     });

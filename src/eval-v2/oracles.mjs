@@ -35,8 +35,11 @@ function supportingQuote(quote, expected) {
   return !expected.supportingPassage || containsWords(quote, expected.supportingPassage);
 }
 
+const matchesCourseName = (actual, expected) =>
+  actual.toLowerCase() === expected.toLowerCase() || containsWords(actual, expected);
+
 export function matchesDeadlines(record, required) {
-  return required.every(expected => record?.courses.some(course => course.name.toLowerCase() === expected.course.toLowerCase() &&
+  return required.every(expected => record?.courses.some(course => matchesCourseName(course.name, expected.course) &&
     citationPath(course.citation.path) === expected.source && (expected.page === undefined || course.citation.page === expected.page) &&
     course.date === expected.date && course.time === expected.time && supportingQuote(course.citation.quote, expected)));
 }
@@ -216,7 +219,8 @@ function budgetComplies(arm, turns, failure) {
   if (!EVAL_ARM_LIMITS[arm] || !turns.length || turns.length > EVAL_LIMITS.maxUserTurns || failure?.kind === 'budget') return false;
   const { completions, toolAttempts } = EVAL_ARM_LIMITS[arm];
   return turns.every(turn => [
-    [turn.completions, completions], [turn.toolAttempts, toolAttempts], [turn.inputTokens, EVAL_LIMITS.inputTokens],
+    [turn.completions, completions], [turn.toolAttempts, toolAttempts],
+    [turn.inputTokens, EVAL_LIMITS.inputTokens * completions],
     [turn.generatedTokens, EVAL_LIMITS.generatedTokens],
   ].every(([value, max]) => Number.isSafeInteger(value) && value >= 0 && value <= max) && turn.completions >= 1);
 }
@@ -237,7 +241,7 @@ export function evaluatePreStale(bundle, final, events, initial) {
   const required = bundle.oracle.requiredDeadlines;
   const blocks = final ? proposalAdditions({ sections: blocksFor(final.plan) }) : [];
   const courses = [...new Set(blocks.map(block => block.course.toLowerCase()))].sort();
-  const coveredRequired = required.filter(item => courses.includes(item.course.toLowerCase())).length;
+  const coveredRequired = required.filter(item => courses.some(course => matchesCourseName(course, item.course))).length;
   const requiredCount = bundle.oracle.minDistinctCoursesBeforeStale ?? required.length;
   const deadlinesMatch = matchesDeadlines(final?.record, required);
   const findings = validateDraft(final, events, bundle, bundle.oracle.revision?.avoidDates ?? [], false);

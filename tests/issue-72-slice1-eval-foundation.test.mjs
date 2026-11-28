@@ -418,7 +418,7 @@ test('gateway binds model and route to each token and enforces separate OpenRout
   assert.equal(requests.length, 0);
   for (const [token, model, provider] of [[runnerToken, chatModel, 'arm-provider'], [operatorToken, operatorModel, 'operator-provider'], [judgeToken, judgeModel, 'judge-provider']]) {
     const response = await call(chat, token, { model, messages, temperature: 0, provider: { only: ['spoofed'] },
-      ...(model === judgeModel ? { reasoning_effort: 'low', max_tokens: 1536 } : {}) }, 'setup');
+      ...(model === judgeModel ? { reasoning_effort: 'low', max_tokens: 4096 } : {}) }, 'setup');
     assert.equal(response.status, 200);
     const { body, authorization } = requests.at(-1);
     assert.equal(authorization, 'Bearer stub-or');
@@ -758,4 +758,133 @@ test('inverse sol-loop R1 regressions (N1-N9): seed, requireParameters, freeTier
     startRun: async () => ({ id: 'r1', origin: 'http://calendarpit:4173', client: { id: 'c', secret: 's', redirectUris: [callback] }, close: async () => {} }),
   });
   assert.equal(typeof exp.provider('tok').listEvents, 'function');
+});
+
+test('eval gateway releases reservation on clean upstream HTTP 4xx/5xx without fencing subsequent runs', async t => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'slice1-http-err-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const budget = await createModelBudget({ directory: dir, targetUsd: 1 });
+  t.after(() => budget.close());
+  let calls = 0;
+  const gateway = createEvalGateway({
+    roleAModel: chatModel,
+    modelPolicies: { [chatModel]: { pricing: { inputPerMillion: 0.1, outputPerMillion: 0.5, verifiedAt: new Date().toISOString() }, providerOnly: ['openai'] } },
+    apiKeys: { OPENROUTER_API_KEY: 'stub-key' },
+    budget,
+    maxTransientRetries: 0,
+    fetchImpl: async () => ++calls === 1
+      ? new Response('upstream overloaded', { status: 503 })
+      : Response.json({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 10, completion_tokens: 5, cost: 0.0001 } }),
+  });
+  await new Promise(done => gateway.server.listen(0, '127.0.0.1', done));
+  t.after(() => new Promise(done => { gateway.retire(); gateway.server.close(done); }));
+  const url = `http://127.0.0.1:${gateway.server.address().port}${chat}`;
+  const req = () => fetch(url, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${gateway.runnerToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ model: chatModel, messages }),
+  });
+  const first = await req();
+  assert.equal(first.status, 502);
+  assert.equal((await first.json()).upstreamStatus, 503);
+  assert.equal((await budget.summary({ role: 'agent' })).unknownCount, 0);
+  assert.equal((await req()).status, 200);
+  assert.equal((await budget.summary({ role: 'agent' })).observedUsd, 0.0001);
+
+  // Default transient retry recovers cleanly from 429/503 bursts under a single reservation.
+  let retryCalls = 0;
+  const retrying = createEvalGateway({
+    roleAModel: chatModel,
+    modelPolicies: { [chatModel]: { pricing: { inputPerMillion: 0.1, outputPerMillion: 0.5, verifiedAt: new Date().toISOString() }, providerOnly: ['openai'] } },
+    apiKeys: { OPENROUTER_API_KEY: 'stub-key' },
+    budget,
+    maxTransientRetries: 2,
+    retryBaseDelayMs: 1,
+    fetchImpl: async () => ++retryCalls < 3
+      ? new Response('rate limited', { status: 429 })
+      : Response.json({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 10, completion_tokens: 5, cost: 0.0002 } }),
+  });
+  await new Promise(done => retrying.server.listen(0, '127.0.0.1', done));
+  t.after(() => new Promise(done => { retrying.retire(); retrying.server.close(done); }));
+  const retryRes = await fetch(`http://127.0.0.1:${retrying.server.address().port}${chat}`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${retrying.runnerToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ model: chatModel, messages }),
+  });
+  assert.equal(retryRes.status, 200);
+  assert.equal(retryCalls, 3);
+  assert.equal((await budget.summary({ role: 'agent' })).unknownCount, 0);
+  assert.equal((await budget.summary({ role: 'agent' })).observedUsd, 0.0003);
+
+  // retire() aborts an in-flight retry backoff immediately and releases the reservation cleanly.
+  let enteredBackoff;
+  const backoffReady = new Promise(resolve => { enteredBackoff = resolve; });
+  const retiring = createEvalGateway({
+    roleAModel: chatModel,
+    modelPolicies: { [chatModel]: { pricing: { inputPerMillion: 0.1, outputPerMillion: 0.5, verifiedAt: new Date().toISOString() }, providerOnly: ['openai'] } },
+    apiKeys: { OPENROUTER_API_KEY: 'stub-key' },
+    budget,
+    maxTransientRetries: 2,
+    retryBaseDelayMs: 60_000,
+    fetchImpl: async () => {
+      enteredBackoff();
+      return new Response('rate limited', { status: 429 });
+    },
+  });
+  await new Promise(done => retiring.server.listen(0, '127.0.0.1', done));
+  t.after(() => new Promise(done => { retiring.retire(); retiring.server.close(done); }));
+  const started = Date.now();
+  const pendingReq = fetch(`http://127.0.0.1:${retiring.server.address().port}${chat}`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${retiring.runnerToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ model: chatModel, messages }),
+  });
+  await backoffReady;
+  await new Promise(resolve => setTimeout(resolve, 25));
+  retiring.retire();
+  const retiredRes = await pendingReq;
+  assert.equal(retiredRes.status, 401);
+  assert.ok(Date.now() - started < 2000);
+  assert.equal((await budget.summary({ role: 'agent' })).unknownCount, 0);
+
+  // Client disconnect while budget.reserve() is pending skips upstream dispatch and settles $0.
+  let releaseReserve;
+  let reserveStarted;
+  const reserveEntered = new Promise(resolve => { reserveStarted = resolve; });
+  let upstreamDispatches = 0;
+  let settledPayload = null;
+  const slowBudget = {
+    reserve: () => {
+      reserveStarted();
+      return new Promise(resolve => { releaseReserve = () => resolve({ id: 'slow-res' }); });
+    },
+    settle: async (_id, data) => { settledPayload = data; },
+  };
+  const disconnectGw = createEvalGateway({
+    roleAModel: chatModel,
+    modelPolicies: { [chatModel]: { pricing: { inputPerMillion: 0.1, outputPerMillion: 0.5, verifiedAt: new Date().toISOString() }, providerOnly: ['openai'] } },
+    apiKeys: { OPENROUTER_API_KEY: 'stub-key' },
+    budget: slowBudget,
+    fetchImpl: async () => {
+      upstreamDispatches++;
+      return Response.json({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 1, completion_tokens: 1, cost: 0.0001 } });
+    },
+  });
+  await new Promise(done => disconnectGw.server.listen(0, '127.0.0.1', done));
+  t.after(() => new Promise(done => { disconnectGw.retire(); disconnectGw.server.close(done); }));
+  const abortClient = new AbortController();
+  const dropped = fetch(`http://127.0.0.1:${disconnectGw.server.address().port}${chat}`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${disconnectGw.runnerToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ model: chatModel, messages }),
+    signal: abortClient.signal,
+  }).catch(() => 'aborted');
+  await reserveEntered;
+  abortClient.abort();
+  assert.equal(await dropped, 'aborted');
+  await new Promise(resolve => setTimeout(resolve, 25));
+  releaseReserve();
+  await new Promise(resolve => setTimeout(resolve, 25));
+  assert.equal(upstreamDispatches, 0);
+  assert.deepEqual(settledPayload, { actualUsd: 0 });
 });

@@ -228,13 +228,13 @@ export async function buildDevCaseBundle(caseId, { repoRoot = ROOT } = {}) {
   };
   const disclosable = Object.fromEntries(legacy.operator.answers.map(item => [item.id, item.text]));
   if (pt) {
-    const [target, availability, limits] = disclosable.availability.split('. ');
+    const [target, availability, ...limits] = disclosable.availability.split('. ');
     disclosable.availability = availability + '.';
-    disclosable.workload = `${target}. ${limits}.`;
+    disclosable.workload = `${target}. ${limits.join('. ')}`;
   }
   const factMarkers = pt ? {
     availability: ['segundas', 'quartas', 'sábado', 'domingo', '19:00', '21:15', '14:00', '16:15', '10:00', '12:15'],
-    workload: ['5 horas', 'dois blocos', '15 minutos'],
+    workload: ['5 horas', '15/11', 'dois blocos', '15 minutos'],
   } : {
     availability: ['Wednesday', 'Thursday', 'Friday', '14:00', '16:15'],
     workload: ['Four study hours', 'two sessions', '15-minute break'],

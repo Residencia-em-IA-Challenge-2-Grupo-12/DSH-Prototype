@@ -152,10 +152,38 @@ function usageFor(payload, route, pricing) {
   return { inputTokens, outputTokens: billedOutput, actualUsd: null, source: 'unknown' };
 }
 
+const RETRYABLE_UPSTREAM_STATUSES = new Set([429, 500, 502, 503, 504]);
+const RELEASE_ON_ERROR_STATUSES = new Set([500, 502, 503, 504]);
+
+function sleep(ms, signal) {
+  if (signal?.aborted) return Promise.reject(signal.reason ?? new Error('Aborted'));
+  return new Promise((resolve, reject) => {
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(signal.reason ?? new Error('Aborted'));
+    };
+    const timer = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+    timer.unref?.();
+    signal?.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
+function retryDelayFor(response, attempt, baseDelayMs) {
+  const retryAfter = Number(response.headers?.get?.('retry-after'));
+  if (Number.isFinite(retryAfter) && retryAfter > 0 && retryAfter <= 10) {
+    return Math.min(10_000, Math.round(retryAfter * 1000));
+  }
+  return Math.min(10_000, baseDelayMs * (2 ** attempt));
+}
+
 // Construct one gateway per run. Only runnerToken crosses into the runner.
 // Pricing and model policies come from the trusted evaluator configuration.
 export function createEvalGateway({
   roleAModel, roleAProvider = 'openrouter', modelPolicies = {}, apiKeys = process.env, budget, fetchImpl = fetch,
+  maxTransientRetries = 3, retryBaseDelayMs = 1500,
 } = {}) {
   if (typeof roleAModel !== 'string' || !roleAModel.trim() || judgeModels.has(roleAModel) || roleAModel === operatorModel ||
       !['openrouter', 'gemini'].includes(roleAProvider)) throw new Error('A separate Role A chat model and provider are required');
@@ -199,6 +227,7 @@ export function createEvalGateway({
   const credentials = Object.entries({ agent: runnerToken, operator: operatorToken, judge: judgeToken })
     .map(([role, token]) => [role, digest(`Bearer ${token}`)]);
   let active = true;
+  const retireController = new AbortController();
   let bridge;
   let inspectRunnerRequest;
   let inspectRunnerResponse;
@@ -222,8 +251,8 @@ export function createEvalGateway({
     let body, estimate;
     try {
       if (role === 'judge' && route === routes.openrouter &&
-          (policy.providerOnly?.length !== 1 || input.reasoning_effort !== 'low' || input.max_tokens !== 1536)) {
-        throw new Error('Role B2 chat requires the pinned provider, low reasoning, and 1536 output tokens');
+          (policy.providerOnly?.length !== 1 || input.reasoning_effort !== 'low' || input.max_tokens !== 4096)) {
+        throw new Error('Role B2 chat requires the pinned provider, low reasoning, and 4096 output tokens');
       }
       if (role === 'agent') inspectRunnerRequest?.(input);
       body = prepareRequest(input, route, policy);
@@ -231,23 +260,61 @@ export function createEvalGateway({
     } catch (error) { return send(res, 400, { error: error.message }); }
 
     if (!active) return send(res, 401, { error: 'Eval run has retired' });
+    const requestController = new AbortController();
+    const onClose = () => { if (!res.writableEnded) requestController.abort(new Error('Client disconnected')); };
+    res.once('close', onClose);
+    if (res.destroyed || res.closed) requestController.abort(new Error('Client disconnected'));
+    if (requestController.signal.aborted) {
+      res.off('close', onClose);
+      return;
+    }
     let reservation;
     try { reservation = await budget.reserve({ role, estimatedUsd: estimate, allowZero: policy.pricing?.freeTier === true }); }
-    catch (error) { return send(res, 409, { error: error.message }); }
+    catch (error) {
+      res.off('close', onClose);
+      if (res.headersSent || res.destroyed) return;
+      return send(res, 409, { error: error.message });
+    }
+    const signal = AbortSignal.any([AbortSignal.timeout(120_000), retireController.signal, requestController.signal]);
+    let inBackoff = false;
     try {
-      if (!active) {
-        await budget.settle(reservation.id, { actualUsd: 0 });
-        return send(res, 401, { error: 'Eval run has retired' });
+      let upstream;
+      for (let attempt = 0; ; attempt++) {
+        if (!active) {
+          await budget.settle(reservation.id, { actualUsd: 0, ...(route.decision ? { outputTokens: 0 } : {}) });
+          return send(res, 401, { error: 'Eval run has retired' });
+        }
+        if (requestController.signal.aborted || res.destroyed) {
+          await budget.settle(reservation.id, { actualUsd: 0, ...(route.decision ? { outputTokens: 0 } : {}) });
+          if (!res.destroyed) res.destroy();
+          return;
+        }
+        upstream = await fetchImpl(route.url, {
+          method: 'POST',
+          headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+          redirect: 'error',
+          signal,
+        });
+        if (!upstream.ok && RETRYABLE_UPSTREAM_STATUSES.has(upstream.status) && attempt < maxTransientRetries) {
+          await upstream.body?.cancel().catch(() => {});
+          if (!active) {
+            await budget.settle(reservation.id, { actualUsd: 0 });
+            return send(res, 401, { error: 'Eval run has retired' });
+          }
+          inBackoff = true;
+          await sleep(retryDelayFor(upstream, attempt, retryBaseDelayMs), signal);
+          inBackoff = false;
+          continue;
+        }
+        break;
       }
-      const upstream = await fetchImpl(route.url, {
-        method: 'POST',
-        headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
-        body: JSON.stringify(body),
-        redirect: 'error',
-        signal: AbortSignal.timeout(120_000),
-      });
       if (!upstream.ok || !upstream.body) {
         await upstream.body?.cancel().catch(() => {});
+        if (!upstream.ok && ((upstream.status >= 400 && upstream.status < 500) || RELEASE_ON_ERROR_STATUSES.has(upstream.status))) {
+          await budget.settle(reservation.id, { actualUsd: 0, ...(route.decision ? { outputTokens: 0 } : {}) });
+          return send(res, 502, { error: 'Provider request failed', upstreamStatus: upstream.status });
+        }
         throw new Error('Provider request failed');
       }
       const payload = await readJson(upstream.body, 5_000_000);
@@ -261,10 +328,13 @@ export function createEvalGateway({
       }
       return send(res, 200, result);
     } catch {
-      try { await budget.settle(reservation.id, { actualUsd: null, ...(route.decision ? { outputTokens: 0 } : {}) }); }
+      const settledUsd = inBackoff ? 0 : null;
+      try { await budget.settle(reservation.id, { actualUsd: settledUsd, ...(route.decision ? { outputTokens: 0 } : {}) }); }
       catch { /* Preserve an unresolved reservation on ledger failure. */ }
-      if (res.headersSent) { res.destroy(); return; }
-      return send(res, 502, { error: 'Provider request or usage accounting failed' });
+      if (res.headersSent || res.destroyed) { res.destroy(); return; }
+      return send(res, !active ? 401 : 502, { error: !active ? 'Eval run has retired' : 'Provider request or usage accounting failed' });
+    } finally {
+      res.off('close', onClose);
     }
   });
 
@@ -287,6 +357,7 @@ export function createEvalGateway({
     },
     retire() {
       active = false;
+      retireController.abort(new Error('Eval run has retired'));
       bridge = undefined;
       inspectRunnerRequest = undefined;
       inspectRunnerResponse = undefined;

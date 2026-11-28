@@ -12,7 +12,31 @@ export const EVAL_ARM_LIMITS = Object.freeze({
   C1: Object.freeze({ completions: 3, toolAttempts: 1 }),
   C3: Object.freeze({ completions: 4, toolAttempts: 3 }),
 });
-export const estimatedInputTokens = request => Math.ceil(Buffer.byteLength(JSON.stringify(request), 'utf8') / 3) + 512;
+function stripOpaqueMetadata(request) {
+  if (!request || typeof request !== 'object' || !Array.isArray(request.messages)) return request;
+  return {
+    ...request,
+    messages: request.messages.map(msg => {
+      if (!msg || typeof msg !== 'object') return msg;
+      const { reasoning_details: _rd, tool_calls, ...rest } = msg;
+      if (!Array.isArray(tool_calls)) return rest;
+      return {
+        ...rest,
+        tool_calls: tool_calls.map(call => {
+          if (!call || typeof call !== 'object') return call;
+          const { extra_content: _ec, ...cleanCall } = call;
+          return cleanCall;
+        }),
+      };
+    }),
+  };
+}
+export const estimatedInputTokens = request => Math.ceil(Buffer.byteLength(JSON.stringify(stripOpaqueMetadata(request)), 'utf8') / 3) + 512;
+export function parseActionJson(content) {
+  const trimmed = String(content ?? '').trim();
+  const fenced = /^```(?:json)?\s*\n?([\s\S]*?)\n?\s*```$/i.exec(trimmed);
+  return JSON.parse(fenced ? fenced[1].trim() : trimmed);
+}
 export const EVAL_MODES = Object.freeze(['single-completion', 'lookup-and-repair', 'tool-loop']);
 export const EVAL_TOOL_METHODS = Object.freeze([
   'list_synthetic_files', 'read_synthetic_file', 'list_calendar', 'preview_plan', 'propose_planning_context',
@@ -59,15 +83,38 @@ const WIRE_RULES = [
 const CAPABILITIES = [
   '',
   'You may request a single PDF lookup before your final action using {"action":"needs_lookup","path":"…","pageStart":1,"pageEnd":3}.',
-  'Use optional tools when they are provided, then finish with a JSON action. Ask clarifying questions using the JSON ask action or a standalone ask_user_question call.',
+  'Workspace files and calendar events are already preloaded above. Use optional tools only when needed beyond the preload (at most 3 tool calls per turn), then finish with one JSON action matching the schema. Ask clarifying questions using the JSON ask action or a standalone ask_user_question call.',
 ];
 
 class TurnError extends Error {
-  constructor(kind, code) {
+  constructor(kind, code, detail) {
     super(code);
     this.kind = kind;
     this.code = code;
+    if (detail) this.detail = detail;
   }
+}
+
+function safeUpstreamDetail(error) {
+  const msg = String(error?.message ?? '');
+  const upstream = /"upstreamStatus"\s*:\s*(\d{3})/.exec(msg);
+  if (upstream) return `upstream_${upstream[1]}`;
+  const status = /\((\d{3})\)/.exec(msg);
+  if (status) return `http_${status[1]}`;
+  if (/timeout|abort/i.test(msg)) return 'timeout';
+  return undefined;
+}
+
+function safeFailureDetail(error) {
+  if (error instanceof SyntaxError) return 'json_parse';
+  if (error instanceof z.ZodError) {
+    return ('zod:' + error.issues.slice(0, 3).map(issue => `${issue.path.join('.') || 'root'}:${issue.code}`).join(',')).slice(0, 200);
+  }
+  const msg = String(error?.message ?? '');
+  if (msg.includes('shortfall')) return 'preview_shortfall';
+  if (msg.includes('citation') || msg.includes('disclosed') || msg.includes('quote')) return 'citation_error';
+  if (msg.includes('PDF') || msg.includes('pages')) return 'lookup_error';
+  return 'validation_error';
 }
 
 export function completionUsage(usage) {
@@ -117,7 +164,19 @@ export function createEvalSession({
     // Generate the request routing ID locally. The model's question IDs are
     // retained only so replies can be routed to the visible question.
     question = { requestId: randomUUID(), questions: parsed.questions };
-    for (const item of parsed.questions) visible('assistant', item.question);
+    messages.push({
+      type: 'assistant',
+      text: parsed.questions.map(item => item.question).join('\n'),
+      questions: parsed.questions.map(item => ({
+        question: item.question,
+        ...(item.options?.length ? {
+          options: item.options.map(option => ({
+            label: option.label,
+            ...(option.description ? { description: option.description } : {}),
+          })),
+        } : {}),
+      })),
+    });
   };
 
   async function submit(value) {
@@ -163,23 +222,24 @@ export function createEvalSession({
     userMessage(context + userText);
     try {
       while (turn.completions < completionLimit) {
-        const nativeTools = modeIndex === 2 && turn.toolAttempts < toolLimit && turn.completions < completionLimit - 1;
+        const nativeTools = modeIndex === 2 && !repairUsed && turn.toolAttempts < toolLimit && turn.completions < completionLimit - 1;
         const request = {
           model,
           messages: conversation,
-          ...(nativeTools ? { tools } : {}),
+          ...(nativeTools ? { tools } : { response_format: { type: 'json_object' } }),
           max_tokens: EVAL_LIMITS.generatedTokens - turn.generatedTokens,
         };
         // Bound the serialized input conservatively before dispatch. Provider
         // usage remains authoritative and is checked before acting on output.
         const inputUpperBound = estimatedInputTokens(request);
-        if (!request.max_tokens || inputUpperBound + turn.inputTokens > EVAL_LIMITS.inputTokens) {
+        if (!request.max_tokens || inputUpperBound > EVAL_LIMITS.inputTokens ||
+            turn.inputTokens + inputUpperBound > EVAL_LIMITS.inputTokens * completionLimit) {
           throw new TurnError('budget', 'remaining_token_limit');
         }
         turn.completions++;
         let response;
         try { response = await completeChat(structuredClone(request)); }
-        catch { turn.spendUsd = null; throw new TurnError('infrastructure', 'completion_request_failed'); }
+        catch (error) { turn.spendUsd = null; throw new TurnError('infrastructure', 'completion_request_failed', safeUpstreamDetail(error)); }
         const message = response?.choices?.[0]?.message;
         const content = normalizeContent(message?.content);
         const reasoning = message?.reasoning_details === undefined ? {} : { reasoning_details: message.reasoning_details };
@@ -189,7 +249,8 @@ export function createEvalSession({
         turn.inputTokens += usage.input;
         turn.generatedTokens += usage.generated;
         turn.spendUsd = turn.spendUsd === null || usage.spendUsd === null ? null : turn.spendUsd + usage.spendUsd;
-        if (turn.inputTokens > EVAL_LIMITS.inputTokens || turn.generatedTokens > EVAL_LIMITS.generatedTokens) {
+        if (usage.input > EVAL_LIMITS.inputTokens || turn.inputTokens > EVAL_LIMITS.inputTokens * completionLimit ||
+            turn.generatedTokens > EVAL_LIMITS.generatedTokens) {
           throw new TurnError('budget', 'reported_token_limit');
         }
         if (turn.toolAttempts > toolLimit || ((!Array.isArray(calls) || calls.length) && calls != null && !nativeTools)) {
@@ -234,7 +295,7 @@ export function createEvalSession({
 
         try {
           let raw;
-          try { raw = JSON.parse(content); }
+          try { raw = parseActionJson(content); }
           catch (error) {
             if (modeIndex === 1 && /"action"\s*:\s*"needs_lookup"/.test(content)) {
               turn.toolAttempts++;
@@ -267,8 +328,8 @@ export function createEvalSession({
           break;
         } catch (error) {
           if (error instanceof TurnError) throw error;
-          if (modeIndex !== 1 || repairUsed || turn.completions >= completionLimit) {
-            throw new TurnError('quality', 'invalid_action_or_preview');
+          if (modeIndex === 0 || repairUsed || turn.completions >= completionLimit) {
+            throw new TurnError('quality', 'invalid_action_or_preview', safeFailureDetail(error));
           }
           repairUsed = true;
           conversation.push({ role: 'assistant', content: content || '{}', ...reasoning });
@@ -277,7 +338,8 @@ export function createEvalSession({
       }
       if (!action && !question) throw new TurnError('budget', 'no_final_response');
     } catch (error) {
-      failure = error instanceof TurnError ? { kind: error.kind, code: error.code }
+      failure = error instanceof TurnError
+        ? { kind: error.kind, code: error.code, ...(error.detail ? { detail: error.detail } : {}) }
         : { kind: 'infrastructure', code: 'session_failed' };
       if (error.code === 'missing_token_usage') turn.spendUsd = null;
     } finally {
