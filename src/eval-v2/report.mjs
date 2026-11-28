@@ -125,20 +125,36 @@ export function createStage1Decision({ runs, models, tieBreakCaseId = null }) {
       evidence.runs.some(row => row.split !== 'dev' || row.repeat !== 1 || !['H0', 'C1'].includes(row.arm) ||
         row.status !== 'completed' || typeof row.passed !== 'boolean' || row.eligible !== row.passed ||
         !models.some(pin => pin.model === row.model && pin.provider === row.provider)) ||
-      expanded.length !== (screen.tieBreakNeeded ? screen.finalistModels.length * 2 : 0) || !screen.winner) return null;
-  const finalist = models.find(pin => pin.model === screen.winner.model && pin.provider === screen.winner.provider);
-  return { version: 1, finalist, evidence, sha256: evidenceDigest(evidence) };
+      expanded.length !== (screen.tieBreakNeeded ? screen.finalistModels.length * 2 : 0)) return null;
+  if (screen.winner) {
+    const finalist = models.find(pin => pin.model === screen.winner.model && pin.provider === screen.winner.provider);
+    return { version: 1, finalist, evidence, sha256: evidenceDigest(evidence) };
+  }
+  if (screen.tieBreakNeeded && screen.tieBreak.length >= 2 && screen.tieBreak.every(item => item.score !== null)) {
+    const topScore = screen.tieBreak[0].score;
+    const finalists = screen.tieBreak.filter(item => item.score === topScore)
+      .map(item => models.find(pin => pin.model === item.model && pin.provider === item.provider))
+      .filter(Boolean);
+    if (finalists.length >= 2) {
+      return { version: 1, finalist: null, finalists, evidence, sha256: evidenceDigest(evidence) };
+    }
+  }
+  return null;
 }
 
 export function verifyStage1Decision(decision, pin) {
   const evidence = decision?.evidence;
   const checked = Array.isArray(evidence?.runs) && Array.isArray(evidence?.models)
     ? createStage1Decision(evidence) : null;
-  if (!checked || decision.version !== 1 || checked.sha256 !== decision.sha256 ||
-      !isDeepStrictEqual(checked.finalist, decision.finalist) || !isDeepStrictEqual(checked.finalist, pin)) {
+  const singleMatch = checked?.finalist && isDeepStrictEqual(checked.finalist, decision?.finalist) &&
+    isDeepStrictEqual(checked.finalist, pin);
+  const tieMatch = !checked?.finalist && Array.isArray(checked?.finalists) &&
+    isDeepStrictEqual(checked.finalists, decision?.finalists) &&
+    checked.finalists.some(item => isDeepStrictEqual(item, pin));
+  if (!checked || decision.version !== 1 || checked.sha256 !== decision.sha256 || (!singleMatch && !tieMatch)) {
     throw Object.assign(new Error('Stage 1 evidence does not support the configured finalist'), { code: 'stage1_decision_invalid' });
   }
-  return checked.finalist;
+  return singleMatch ? checked.finalist : pin;
 }
 
 function describeJudges(rows) {

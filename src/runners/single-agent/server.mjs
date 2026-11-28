@@ -34,7 +34,7 @@ export function createOpenAICompatibleCompleter({
   }
   const base = syntheticHttpUrl(baseUrl, {
     transport, peer: EVAL_EVALUATOR_ORIGIN,
-    routes: transport === 'compose-eval' ? ['/v1', '/v1/gemini'] : undefined,
+    routes: transport === 'compose-eval' ? ['/v1', '/v1/gemini', '/v1/gemini-paid'] : undefined,
     message: 'Model gateway must be a loopback HTTP or explicit Compose chat endpoint',
   });
   const endpoint = `${base.href.replace(/\/+$/, '')}/chat/completions`;

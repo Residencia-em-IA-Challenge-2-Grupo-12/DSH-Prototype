@@ -15,7 +15,8 @@ import { EVAL_EVALUATOR_ORIGIN, EVAL_RUNNER_ORIGIN } from '../src/foundation/eva
 import { createModelBudget } from '../src/foundation/model-budget.mjs';
 
 const name = z.string().trim().min(1);
-const route = z.enum(['openrouter', 'gemini']);
+const route = z.enum(['openrouter', 'gemini', 'gemini-paid']);
+const routePathPrefix = value => value === 'gemini' ? '/v1/gemini' : value === 'gemini-paid' ? '/v1/gemini-paid' : '/v1';
 const pricing = z.strictObject({
   inputPerMillion: z.number().nonnegative(), outputPerMillion: z.number().nonnegative(),
   verifiedAt: z.iso.datetime(), freeTier: z.boolean().optional(),
@@ -91,6 +92,7 @@ function validateExecution(config) {
   if (new Set(judges).size !== judges.length ||
       config.models.some(model => model.route === 'openrouter' && !matchesProvider(model.model, model.provider)) ||
       config.models.some(model => model.route === 'gemini' && model.provider !== 'gemini') ||
+      config.models.some(model => model.route === 'gemini-paid' && !['gemini', 'gemini-paid'].includes(model.provider)) ||
       !matchesProvider(OPERATOR_MODEL, operatorProviderPin) ||
       (judges.includes(JUDGE_MODELS[2]) && policies[JUDGE_MODELS[2]]?.providerOnly?.length !== 1)) {
     reject('provider_pin_required', 'Configured gateway policies must pin the declared providers');
@@ -113,7 +115,7 @@ async function openGateway(model, config, budget) {
     throw error;
   }
   const origin = compose ? EVAL_EVALUATOR_ORIGIN : `http://127.0.0.1:${gateway.server.address().port}`;
-  return { ...gateway, origin, chatBaseUrl: origin + (model.route === 'gemini' ? '/v1/gemini' : '/v1'),
+  return { ...gateway, origin, chatBaseUrl: origin + routePathPrefix(model.route),
     reasoningEffort: model.reasoningEffort,
     async close() {
       gateway.retire();
@@ -131,7 +133,7 @@ function composeCommand({ project, env }) {
   });
 }
 
-async function executeHostSweep({ config, bundles, repoPath, project, decision }) {
+async function executeHostSweep({ config, bundles, repoPath, project, decision, exploratory = false }) {
   if (!/^[a-z0-9][a-z0-9_-]*$/.test(project)) reject('compose_project_invalid', 'Expected a Compose project name');
   const prepared = await prepareMatrix({ ...config, bundles, repoPath, peerRepoPath: config.peerRepoRoot });
   if (!prepared.scan.clean) return { scan: prepared.scan, runs: [], blindedPackets: [], evaluatorJoinMap: {} };
@@ -150,7 +152,7 @@ async function executeHostSweep({ config, bundles, repoPath, project, decision }
   const env = { ...process.env, STUDY_SEALED_EVAL_DIR: sealedRoot, STUDY_EVAL_REPO_DIR: repoPath,
     STUDY_EVAL_ROLE_A_MODEL: frozen.model, STUDY_EVAL_SCHEMA_COMPAT: frozen.schemaCompat ?? 'standard',
     STUDY_EVAL_REASONING_EFFORT: frozen.reasoningEffort ?? '',
-    STUDY_EVAL_GATEWAY_BASE_URL: EVAL_EVALUATOR_ORIGIN + (frozen.route === 'gemini' ? '/v1/gemini' : '/v1'),
+    STUDY_EVAL_GATEWAY_BASE_URL: EVAL_EVALUATOR_ORIGIN + routePathPrefix(frozen.route),
   };
   const compose = composeCommand({ project, env });
   const runnerHealthScript = `
@@ -183,7 +185,7 @@ async function executeHostSweep({ config, bundles, repoPath, project, decision }
           (error, stdout) => error ? reject(new Error('Calendarpit lifecycle command failed')) : done(stdout.trim())));
       } }),
       async executeCell({ cell, index, run }) {
-        const envelope = { config: evaluatorConfig, decision, run, redirectUri, expectedPreload: prepared.hashes.get(cell.bundle.caseId) };
+        const envelope = { config: evaluatorConfig, decision, exploratory, run, redirectUri, expectedPreload: prepared.hashes.get(cell.bundle.caseId) };
         const output = await compose(['exec', '-T', 'evaluator', 'node', 'scripts/eval-v2.mjs', '--config', '-', '--cell', String(index)],
           JSON.stringify(envelope));
         return JSON.parse(output);
@@ -224,8 +226,8 @@ async function executeCell({ config, cell, envelope, budget }) {
 
 async function main() {
   const { values } = parseArgs({ options: { config: { type: 'string' }, 'matrix-only': { type: 'boolean' },
-    'stage1-decision': { type: 'string' }, 'host-compose': { type: 'string' }, cell: { type: 'string' },
-    help: { type: 'boolean', short: 'h' } } });
+    'stage1-decision': { type: 'string' }, 'exploratory-model': { type: 'boolean' }, 'host-compose': { type: 'string' },
+    cell: { type: 'string' }, help: { type: 'boolean', short: 'h' } } });
   if (values.help) {
     process.stdout.write(`Usage: node scripts/eval-v2.mjs --config FILE [--matrix-only]
        node scripts/eval-v2.mjs --config FILE --host-compose PROJECT --stage1-decision FILE
@@ -253,8 +255,11 @@ The host starts and retires one Calendarpit per cell. --cell is the internal eva
   if (!values['matrix-only'] && config.stage === 'sealed' && !single && !host) {
     reject('host_compose_required', 'Start sealed execution with --host-compose');
   }
+  const exploratory = Boolean(envelope?.exploratory ?? values['exploratory-model']);
   const decision = envelope?.decision ?? (values['stage1-decision'] && JSON.parse(await readInput(values['stage1-decision'])));
-  if (!values['matrix-only'] && config.stage === 'sealed') verifyStage1Decision(decision?.stage1Decision ?? decision, config.models[0]);
+  if (!values['matrix-only'] && config.stage === 'sealed' && !exploratory) {
+    verifyStage1Decision(decision?.stage1Decision ?? decision, config.models[0]);
+  }
   const repoPath = await realpath(config.repoPath ?? (single ? '/repo' : ROOT));
   if (host && repoPath !== await realpath(ROOT)) {
     reject('repo_root_mismatch', 'Scan the same checkout used to build the sealed evaluator and runner');
@@ -269,8 +274,10 @@ The host starts and retires one Calendarpit per cell. --cell is the internal eva
     return;
   }
   if (host) {
-    const output = await executeHostSweep({ config, bundles, repoPath, project: host, decision: decision.stage1Decision ?? decision });
-    console.log(JSON.stringify({ ...output, report: buildReport({ stage: 'sealed', runs: output.runs }) }, null, 2));
+    const output = await executeHostSweep({ config, bundles, repoPath, project: host,
+      decision: decision?.stage1Decision ?? decision ?? null, exploratory });
+    console.log(JSON.stringify({ ...(exploratory ? { exploratory: true } : {}), ...output,
+      report: buildReport({ stage: 'sealed', runs: output.runs }) }, null, 2));
     if (!output.scan.clean) process.exitCode = 1;
     return;
   }

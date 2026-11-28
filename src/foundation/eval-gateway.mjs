@@ -15,6 +15,11 @@ const routes = {
     url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
     key: 'GEMINI_API_KEY',
   },
+  'gemini-paid': {
+    path: '/v1/gemini-paid/chat/completions',
+    url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
+    key: 'GEMINI_PAID_API_KEY',
+  },
   typesafe: {
     path: '/v1/systemone',
     url: 'https://api.typesafe.ai/v1/systemone',
@@ -98,7 +103,7 @@ function prepareRequest(input, route, policy) {
   body.max_tokens = Math.min(requested, MAX_OUTPUT_TOKENS);
   delete body.max_completion_tokens;
   body.stream = false;
-  if (route === routes.gemini && body.reasoning_effort !== undefined && body.reasoning_effort !== 'low') {
+  if ((route === routes.gemini || route === routes['gemini-paid']) && body.reasoning_effort !== undefined && body.reasoning_effort !== 'low') {
     throw new Error('Gemini reasoning_effort must be low when supplied');
   }
   return route === routes.openrouter
@@ -146,7 +151,7 @@ function usageFor(payload, route, pricing) {
     }
     return { inputTokens, outputTokens: billedOutput, actualUsd: null, source: 'unknown' };
   }
-  if ((route === routes.gemini || route.decision) && inputTokens !== null && billedOutput !== null) {
+  if ((route === routes.gemini || route === routes['gemini-paid'] || route.decision) && inputTokens !== null && billedOutput !== null) {
     return { inputTokens, outputTokens: billedOutput, actualUsd: priceFor(pricing, inputTokens, billedOutput), source: 'token-rates' };
   }
   return { inputTokens, outputTokens: billedOutput, actualUsd: null, source: 'unknown' };
@@ -186,7 +191,7 @@ export function createEvalGateway({
   maxTransientRetries = 3, retryBaseDelayMs = 1500,
 } = {}) {
   if (typeof roleAModel !== 'string' || !roleAModel.trim() || judgeModels.has(roleAModel) || roleAModel === operatorModel ||
-      !['openrouter', 'gemini'].includes(roleAProvider)) throw new Error('A separate Role A chat model and provider are required');
+      !['openrouter', 'gemini', 'gemini-paid'].includes(roleAProvider)) throw new Error('A separate Role A chat model and provider are required');
   if (typeof budget?.reserve !== 'function' || typeof budget?.settle !== 'function') throw new Error('A local eval budget is required');
 
   const bindings = {
@@ -210,6 +215,9 @@ export function createEvalGateway({
     if (policy.requireParameters !== undefined) {
       if (modelRoute !== routes.openrouter) throw new Error('requireParameters is only supported for OpenRouter chat models');
       if (typeof policy.requireParameters !== 'boolean') throw new Error('Invalid requireParameters policy');
+    }
+    if (policy.pricing?.freeTier === true && modelRoute === routes['gemini-paid']) {
+      throw new Error('gemini-paid route cannot use freeTier pricing');
     }
     if (policy.pricing?.freeTier === true && (policy.pricing.inputPerMillion !== 0 || policy.pricing.outputPerMillion !== 0)) {
       throw new Error('freeTier pricing requires zero input and output rates');

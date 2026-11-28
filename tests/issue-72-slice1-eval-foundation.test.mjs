@@ -887,4 +887,37 @@ test('eval gateway releases reservation on clean upstream HTTP 4xx/5xx without f
   await new Promise(resolve => setTimeout(resolve, 25));
   assert.equal(upstreamDispatches, 0);
   assert.deepEqual(settledPayload, { actualUsd: 0 });
+
+  // gemini-paid uses GEMINI_PAID_API_KEY, computes token-rates, and rejects freeTier pricing.
+  assert.throws(() => createEvalGateway({
+    roleAModel: geminiModel,
+    roleAProvider: 'gemini-paid',
+    modelPolicies: { [geminiModel]: { pricing: { inputPerMillion: 0, outputPerMillion: 0, verifiedAt: new Date().toISOString(), freeTier: true } } },
+    apiKeys: { GEMINI_PAID_API_KEY: 'paid-key' },
+    budget,
+  }), /gemini-paid route cannot use freeTier/);
+  let paidAuth = null;
+  const paidGw = createEvalGateway({
+    roleAModel: geminiModel,
+    roleAProvider: 'gemini-paid',
+    modelPolicies: { [geminiModel]: { pricing: { inputPerMillion: 1.5, outputPerMillion: 7.5, verifiedAt: new Date().toISOString() } } },
+    apiKeys: { GEMINI_PAID_API_KEY: 'paid-key-123' },
+    budget,
+    fetchImpl: async (_url, opts) => {
+      paidAuth = opts.headers.authorization;
+      return Response.json({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 1000, completion_tokens: 200 } });
+    },
+  });
+  await new Promise(done => paidGw.server.listen(0, '127.0.0.1', done));
+  t.after(() => new Promise(done => { paidGw.retire(); paidGw.server.close(done); }));
+  const paidRes = await fetch(`http://127.0.0.1:${paidGw.server.address().port}/v1/gemini-paid/chat/completions`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${paidGw.runnerToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ model: geminiModel, messages, reasoning_effort: 'low' }),
+  });
+  assert.equal(paidRes.status, 200);
+  assert.equal(paidAuth, 'Bearer paid-key-123');
+  const paidBody = await paidRes.json();
+  assert.equal(paidBody.usage.cost_source, 'token-rates');
+  assert.equal(paidBody.usage.cost, 0.003);
 });

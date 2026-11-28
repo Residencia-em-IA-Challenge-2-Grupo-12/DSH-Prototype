@@ -1045,4 +1045,20 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
     },
   });
   assert.equal(withOpaque.passed, true, JSON.stringify(withOpaque));
+
+  // Tied Stage 1 co-winners after tiebreaker are accepted by verifyStage1Decision while non-tied models are rejected.
+  const tieBundles = await Promise.all(['t1', 't2', 't3'].map(async caseId =>
+    (await makeBundle(t, archetypes[0], { caseId, initialRequest: `Plan ${caseId}.` })).bundle));
+  const tieModels = Array.from({ length: 5 }, (_, i) => ({ model: `tie-${i}`, provider: 'stub', route: 'openrouter' }));
+  const tiedRun = await runMatrix({
+    stage: 'dev', bundles: tieBundles.slice(0, 2), tieBreakerCase: tieBundles[2],
+    models: tieModels, judgeModels: [],
+    completeChat: async ({ model, messages }) => assistant((model === 'tie-0' || model === 'tie-1')
+      ? propose(record(), { avoidDates: messages.at(-1).content.endsWith(friction) ? [clock.date] : [] }) : answer()),
+  });
+  assert.equal(tiedRun.stage1Decision.finalist, null);
+  assert.deepEqual(tiedRun.stage1Decision.finalists, [tieModels[0], tieModels[1]]);
+  assert.deepEqual(verifyStage1Decision(tiedRun.stage1Decision, tieModels[0]), tieModels[0]);
+  assert.deepEqual(verifyStage1Decision(tiedRun.stage1Decision, tieModels[1]), tieModels[1]);
+  assert.throws(() => verifyStage1Decision(tiedRun.stage1Decision, tieModels[2]), { code: 'stage1_decision_invalid' });
 });
