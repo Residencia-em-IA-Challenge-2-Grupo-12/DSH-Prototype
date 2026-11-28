@@ -79,7 +79,7 @@ class TurnError extends Error {
 function safeFailureDetail(error) {
   if (error instanceof SyntaxError) return 'json_parse';
   if (error instanceof z.ZodError) {
-    return 'zod:' + error.issues.slice(0, 3).map(issue => `${issue.path.join('.') || 'root'}:${issue.code}`).join(',');
+    return ('zod:' + error.issues.slice(0, 3).map(issue => `${issue.path.join('.') || 'root'}:${issue.code}`).join(',')).slice(0, 200);
   }
   const msg = String(error?.message ?? '');
   if (msg.includes('shortfall')) return 'preview_shortfall';
@@ -135,7 +135,19 @@ export function createEvalSession({
     // Generate the request routing ID locally. The model's question IDs are
     // retained only so replies can be routed to the visible question.
     question = { requestId: randomUUID(), questions: parsed.questions };
-    for (const item of parsed.questions) visible('assistant', item.question);
+    messages.push({
+      type: 'assistant',
+      text: parsed.questions.map(item => item.question).join('\n'),
+      questions: parsed.questions.map(item => ({
+        question: item.question,
+        ...(item.options?.length ? {
+          options: item.options.map(option => ({
+            label: option.label,
+            ...(option.description ? { description: option.description } : {}),
+          })),
+        } : {}),
+      })),
+    });
   };
 
   async function submit(value) {

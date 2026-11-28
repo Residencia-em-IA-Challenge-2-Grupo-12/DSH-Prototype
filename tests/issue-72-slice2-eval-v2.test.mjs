@@ -19,7 +19,8 @@ import { checkLookupPreload, PRELOAD_VERSION } from '../src/eval-v2/preload.mjs'
 import { buildMatrix, runCase, runMatrix } from '../src/eval-v2/orchestrator.mjs';
 import { evaluateRun } from '../src/eval-v2/oracles.mjs';
 import {
-  createOperatorB1, createOperatorCache, disclosedOperatorTopics, OPERATOR_MODEL, scopeOperatorFacts,
+  createOperatorB1, createOperatorCache, disclosedOperatorTopics, isOperatorReplyFaithful,
+  OPERATOR_MODEL, scopeOperatorFacts,
 } from '../src/eval-v2/operator-b1.mjs';
 import { buildBlindedPacket, compareJudgeWithHuman, createJudgeB2, JUDGE_MODELS } from '../src/eval-v2/judge-b2.mjs';
 import { checkJudgePacket, checkRunnerPayload, scanContamination } from '../src/eval-v2/contamination.mjs';
@@ -889,7 +890,13 @@ test('Role B1 scopes natural EN/PT-BR questions and credits paraphrased or split
   assert.deepEqual(disclosedOperatorTopics(ana, qWorkloadEn, 'I am unsure.'), []);
   assert.deepEqual(disclosedOperatorTopics(bruno, { questions: [{ id: 'q6', question: 'Quais dias e horários você pode estudar?' }] },
     'Posso estudar segunda e quarta das 19h às 21h15, sábado das 14h às 16h15 e domingo das 10h às 12h15.'), ['availability']);
-  assert.deepEqual(disclosedOperatorTopics(bruno, qWorkloadPt, '5h semanais, no máximo 2 blocos por dia e 15 min de pausa.'), ['workload']);
+  assert.deepEqual(disclosedOperatorTopics(bruno, qWorkloadPt, '5h semanais até 15/11, no máximo 2 blocos por dia e 15 min de pausa.'), ['workload']);
+  assert.deepEqual(disclosedOperatorTopics(bruno, qWorkloadPt, '5 horas por semana até 15 de novembro, máximo de 2 horas por dia e pausa de 15 minutos.'), ['workload']);
+  assert.equal(isOperatorReplyFaithful('Quero 14 horas por semana até 15/11, 2 blocos por dia e 15 min.', bruno, { workload: bruno.operatorFacts.disclosable.workload }), false);
+  assert.equal(isOperatorReplyFaithful('5 horas por semana, 2 blocos por dia e 15 min.', bruno, { workload: bruno.operatorFacts.disclosable.workload }), false);
+  assert.equal(isOperatorReplyFaithful('Wednesday, Thursday, Friday 14:00-16:15 through 2026-12-01.', ana, { availability: ana.operatorFacts.disclosable.availability }), false);
+  assert.equal(isOperatorReplyFaithful('Saturday 09:00-17:00 works.', ana, { availability: ana.operatorFacts.disclosable.availability }), false);
+  assert.equal(isOperatorReplyFaithful('I prefer Wednesday, Thursday, and Friday from 14:00 to 16:15.', ana, { availability: ana.operatorFacts.disclosable.availability }), true);
 
   // Multi-turn split elicitation of workload across two natural questions.
   const qHoursOnly = { questions: [{ id: 'q7', question: 'How many hours per week do you want to study?' }] };
@@ -930,11 +937,31 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
 
   const seenBodies = [];
   const origin = await listen(t, async (req, res) => {
-    seenBodies.push(await requestBody(req));
-    json(res, assistant({ elicitation: 4, revision: 4, clarity: 5, honesty: 'clear', supported: true }));
+    const body = await requestBody(req);
+    seenBodies.push([req.url, body]);
+    json(res, req.url === '/v1/systemone'
+      ? { answers: { elicitation: { type: 'score', score: 3 }, clarity: { type: 'score', score: 4 },
+        honesty: { type: 'choice', choice: 'clear' }, supported: { type: 'noul', noul: 0.9 } } }
+      : assistant('```json\n' + JSON.stringify({ elicitation: 4, clarity: 5, honesty: 'clear', supported: true }) + '\n```'));
   });
-  await createJudgeB2({ gateway: { origin, judgeToken: 'stub-judge' }, model: JUDGE_MODELS[2] })(packet);
-  const systemPrompt = seenBodies[0].messages[0].content;
+  // Packet with no revision omits the revision rubric item deterministically across System One and chat judges.
+  const noRevPacket = buildBlindedPacket({
+    identifiers: { caseId: 'case-2', student: 'student-y' },
+    proposalStatus: 'submitted_blocked_by_gate',
+    frictionDelivered: false,
+    joinMap,
+    messages: [{ type: 'assistant', text: 'When can you study?', questions: [{ question: 'When can you study?', options: [{ label: 'Afternoons' }] }] }],
+  });
+  assert.equal(noRevPacket.proposalStatus, 'submitted_blocked_by_gate');
+  assert.deepEqual(noRevPacket.transcript[0].questions[0].options, [{ label: 'Afternoons' }]);
+  const [sysGrade, chatGrade] = await Promise.all([
+    createJudgeB2({ gateway: { origin, judgeToken: 'stub-judge' }, model: JUDGE_MODELS[0] })(noRevPacket),
+    createJudgeB2({ gateway: { origin, judgeToken: 'stub-judge' }, model: JUDGE_MODELS[2] })(noRevPacket),
+  ]);
+  assert.equal(sysGrade.grades.revision, null);
+  assert.equal(chatGrade.grades.revision, null);
+  assert.equal('revision' in seenBodies.find(([u]) => u === '/v1/systemone')[1].questions, false);
+  const systemPrompt = seenBodies.find(([u]) => u === '/v1/chat/completions')[1].messages[0].content;
   assert.match(systemPrompt, /1 to 5/);
   assert.match(systemPrompt, /clear, partial, misleading, or not_applicable/);
 

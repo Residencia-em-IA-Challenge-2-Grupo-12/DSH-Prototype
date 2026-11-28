@@ -7,7 +7,7 @@ import { hiddenMarkers } from './contamination.mjs';
 import { containsWords, normalizeWords } from './preload.mjs';
 
 export const OPERATOR_MODEL = 'mistralai/mistral-small-2603';
-export const SIMULATOR_VERSION = 'b1-v4';
+export const SIMULATOR_VERSION = 'b1-v5';
 const hash = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const replySchema = z.string().trim().min(1).max(2000);
 const projectText = value => String(value ?? '').normalize('NFC').trim();
@@ -130,11 +130,71 @@ function windowContainsAll(tokens, required, maxWindow) {
   return false;
 }
 
-function matchesMarker(reply, marker) {
+const monthsMap = [
+  ['january', 'jan', 'janeiro'],
+  ['february', 'feb', 'fevereiro'],
+  ['march', 'mar', 'marco'],
+  ['april', 'apr', 'abril'],
+  ['may', 'maio'],
+  ['june', 'jun', 'junho'],
+  ['july', 'jul', 'julho'],
+  ['august', 'aug', 'agosto'],
+  ['september', 'sep', 'sept', 'setembro', 'set'],
+  ['october', 'oct', 'outubro', 'out'],
+  ['november', 'nov', 'novembro'],
+  ['december', 'dec', 'dezembro', 'dez'],
+];
+const monthWordPattern = monthsMap.flat().join('|');
+const weekdayTokens = new Set(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']);
+
+function extractNormalizedDates(text, locale = 'en') {
+  const dates = new Set();
+  const add = (month, day) => {
+    const m = Number(month);
+    const d = Number(day);
+    if (m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+      dates.add(`${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`);
+    }
+  };
+  const plain = stripDiacritics(text);
+  const withoutIso = plain.replace(/\b(\d{4})[-/](\d{1,2})[-/](\d{1,2})\b/gu, (_, _y, m, d) => {
+    add(m, d);
+    return ' ';
+  });
+  for (const [, left, right] of withoutIso.matchAll(/(?<![\d/])(\d{1,2})\/(\d{1,2})(?:\/\d{4})?(?![\d/])/gu)) {
+    add(locale === 'pt-BR' ? right : left, locale === 'pt-BR' ? left : right);
+  }
+  const written = new RegExp(`\\b(?:(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:de\\s+)?(${monthWordPattern})|(${monthWordPattern})\\s+(\\d{1,2})(?:st|nd|rd|th)?)\\b`, 'gu');
+  for (const [, dayFirst, monthAfter, monthFirst, dayAfter] of plain.matchAll(written)) {
+    const word = monthFirst ?? monthAfter;
+    const monthIndex = monthsMap.findIndex(aliases => aliases.includes(word));
+    if (monthIndex >= 0) add(monthIndex + 1, dayFirst ?? dayAfter);
+  }
+  return dates;
+}
+
+function extractQuantities(text) {
+  const tokens = canonicalTokens(text);
+  const items = [];
+  for (let i = 0; i < tokens.length - 1; i++) {
+    if (/^\d+$/.test(tokens[i]) && ['h', 'min', 'session'].includes(tokens[i + 1])) {
+      items.push({ num: Number(tokens[i]), unit: tokens[i + 1] });
+    }
+  }
+  return items;
+}
+
+function matchesMarker(reply, marker, locale = 'en') {
   if (containsWords(reply, marker)) return true;
   const timeMatch = /^\s*([01]?\d|2[0-3]):([0-5]\d)\s*$/.exec(marker);
   if (timeMatch) {
     return extractNormalizedTimes(reply).has(`${String(Number(timeMatch[1])).padStart(2, '0')}:${timeMatch[2]}`);
+  }
+  const dateMarker = /^\s*(?:\d{4}-\d{1,2}-\d{1,2}|\d{1,2}\/\d{1,2}(?:\/\d{4})?)\s*$/.test(marker);
+  if (dateMarker) {
+    const targetDates = extractNormalizedDates(marker, locale);
+    const replyDates = extractNormalizedDates(reply, locale);
+    if (targetDates.size && [...targetDates].every(d => replyDates.has(d))) return true;
   }
   const markerTokens = canonicalTokens(marker);
   const filtered = markerTokens.filter(token => !optionalMarkerTokens.has(token));
@@ -150,6 +210,39 @@ function matchesMarker(reply, marker) {
     if (dailyTokens.some(cue => windowContainsAll(replyTokens, [...hourCore, cue], maxWindow + 2))) return true;
   }
   return false;
+}
+
+export function isOperatorReplyFaithful(reply, bundle, disclosable = {}) {
+  const entries = Object.entries(disclosable);
+  if (!entries.length) return unsureReply.test(reply);
+  const allowedText = entries.map(([, fact]) => fact).join(' ');
+  const allowedTimes = extractNormalizedTimes(allowedText);
+  for (const t of extractNormalizedTimes(reply)) {
+    if (!allowedTimes.has(t)) return false;
+  }
+  const allowedDates = extractNormalizedDates(allowedText, bundle.locale);
+  for (const d of extractNormalizedDates(reply, bundle.locale)) {
+    if (!allowedDates.has(d)) return false;
+  }
+  const allowedWeekdays = new Set(canonicalTokens(allowedText).filter(token => weekdayTokens.has(token)));
+  for (const token of canonicalTokens(reply)) {
+    if (weekdayTokens.has(token) && !allowedWeekdays.has(token)) return false;
+  }
+  const allowedQuantities = extractQuantities(allowedText);
+  const allowedHourOrSession = new Set(allowedQuantities.filter(q => q.unit === 'h' || q.unit === 'session').map(q => q.num));
+  const allowedMinutes = new Set(allowedQuantities.filter(q => q.unit === 'min').map(q => q.num));
+  for (const q of extractQuantities(reply)) {
+    if (q.unit === 'min') {
+      if (!allowedMinutes.has(q.num)) return false;
+    } else if (!(q.unit === 'h' && q.num === 1) && !allowedHourOrSession.has(q.num)) {
+      return false;
+    }
+  }
+  for (const [topic] of entries) {
+    const markers = bundle.operatorFacts.factMarkers?.[topic];
+    if (markers && !markers.every(marker => matchesMarker(reply, marker, bundle.locale))) return false;
+  }
+  return true;
 }
 
 function canonicalFactOverlap(reply, fact) {
@@ -189,7 +282,7 @@ export function disclosedOperatorTopics(bundle, question, reply, priorByTopic = 
     const prior = priorByTopic?.get(topic);
     const combined = prior?.length ? [...prior, reply].join('\n') : reply;
     const markers = bundle.operatorFacts.factMarkers?.[topic];
-    if (markers) return markers.every(marker => matchesMarker(combined, marker));
+    if (markers) return markers.every(marker => matchesMarker(combined, marker, bundle.locale));
     return !unsureReply.test(combined) &&
       (containsWords(combined, fact) || substantialOverlap(combined, fact) || canonicalFactOverlap(combined, fact));
   }).map(([topic]) => topic);
@@ -250,7 +343,7 @@ export function createOperatorCache({ directory } = {}) {
 
 export function createOperatorB1({
   gateway, providerPin, cache = createOperatorCache(), seed = 72, fetchImpl = fetch,
-  transport = 'loopback', onUsage, runIdentifiers = [],
+  transport = 'loopback', onUsage, onFallback, runIdentifiers = [],
 }) {
   if (!gateway?.operatorToken || !providerPin || !Number.isSafeInteger(seed)) throw new Error('A pinned Role B1 gateway is required');
   return {
@@ -282,7 +375,15 @@ export function createOperatorB1({
           },
         });
         onUsage?.(response.usage);
-        return response?.choices?.[0]?.message?.content;
+        const raw = response?.choices?.[0]?.message?.content;
+        const validated = validateOperatorReply(raw, bundle, disclosable);
+        if (!isOperatorReplyFaithful(validated, bundle, disclosable)) {
+          onFallback?.({ topics: Object.keys(disclosable) });
+          return Object.keys(disclosable).length
+            ? Object.values(disclosable).join(' ')
+            : (bundle.locale === 'pt-BR' ? 'Não tenho certeza.' : 'I am unsure.');
+        }
+        return validated;
       }, value => validateOperatorReply(value, bundle, disclosable));
     },
     frictionMove: bundle => bundle.frictionMove,
