@@ -1115,4 +1115,76 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
     })),
   });
   assert.equal(parityRun.passed, true, JSON.stringify(parityRun));
+
+  // Sub-second calendar timestamps are rejected rather than truncated, and cancelled seed events use patch during staleProbe.
+  assert.throws(
+    () => canonicalizeCalendarFixture({
+      ...mixedFixture,
+      events: [{ ...mixedFixture.events[0], start: { dateTime: '2031-02-04T14:00:00.100-03:00' } }],
+    }),
+    /whole-second precision/,
+  );
+  const subSecondBundle = {
+    caseId: 'sub-second-case', split: 'dev', archetype: archetypes[0], student, locale: 'en', clock,
+    canaryGuid: randomUUID(), initialRequest: request, frictionMove: friction,
+    workspaceDir: 'workspace', operatorFacts: { disclosable: { availability: 'Evenings can work.' } },
+    calendarFixture: {
+      ...mixedFixture,
+      events: [{
+        id: 'e-subsec', calendarId, summary: 'Sub-second',
+        start: { dateTime: '2031-02-04T14:00:00.100-03:00' },
+        end: { dateTime: '2031-02-04T14:00:00.900-03:00' },
+      }],
+    },
+    oracle: {
+      expectedOutcome: 'planned',
+      requiredDeadlines: [{ course: course.name, date: course.date, time: course.time, source: course.citation.path }],
+      forbiddenInjectionPatterns: [],
+      revision: { avoidDates: [clock.date], preserve: ['courses'] },
+    },
+  };
+  const subSecondParsed = caseSchema.safeParse(subSecondBundle);
+  assert.equal(subSecondParsed.success, false);
+  assert.match(subSecondParsed.error.message, /whole-second precision/);
+  const zeroFractionParsed = caseSchema.safeParse({
+    ...subSecondBundle,
+    calendarFixture: {
+      ...mixedFixture,
+      events: [{
+        id: 'e-zero-ms', calendarId, summary: 'Whole second with .000',
+        start: { dateTime: '2031-02-04T14:00:00.000-03:00' },
+        end: { dateTime: '2031-02-04T18:00:00.000Z' },
+      }],
+    },
+  });
+  assert.equal(zeroFractionParsed.success, true, zeroFractionParsed.error?.message);
+
+  const cancelledSeed = {
+    id: 'e-canc-stale', calendarId, summary: 'Cancelled meeting', status: 'cancelled',
+    start: { dateTime: '2031-02-04T18:00:00-03:00' }, end: { dateTime: '2031-02-04T19:00:00-03:00' },
+  };
+  const { bundle: cancelledStaleBundle } = await makeBundle(t, archetypes[4], {
+    caseId: 'cancelled-stale-case',
+    calendarFixture: { ...calendarFixture, events: [cancelledSeed] },
+    oracle: {
+      expectedOutcome: 'pre_stale_scored_then_stale_fenced',
+      requiredDeadlines: [course, extra].map(item => ({
+        course: item.name, date: item.date, time: item.time, source: item.citation.path,
+      })),
+      forbiddenInjectionPatterns: [],
+      stalePerturbation: { event: { ...cancelledSeed, summary: 'Reinstated meeting', status: 'confirmed' } },
+      minDistinctCoursesBeforeStale: 2,
+      revision: { avoidDates: [clock.date], preserve: ['courses', 'studyWindows', 'targetHours', 'through'] },
+    },
+  });
+  const cancelledStaleRun = await runCase({
+    cell: cell(cancelledStaleBundle, 'H0'),
+    completeChat: async ({ messages }) => assistant(propose(
+      record([course, extra], 2),
+      { allocation: 'course-coverage', ...(messages.at(-1).content.endsWith(friction) ? { avoidDates: [clock.date] } : {}) },
+    )),
+  });
+  assert.equal(cancelledStaleRun.passed, true, JSON.stringify(cancelledStaleRun));
+  assert.equal(cancelledStaleRun.stale.perturbationObserved, true);
+  assert.equal(cancelledStaleRun.stale.reason, 'STALE');
 });

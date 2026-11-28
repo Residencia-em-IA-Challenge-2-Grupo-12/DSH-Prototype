@@ -22,17 +22,27 @@ const relativePath = z.string().min(1).max(180).refine(value => {
 
 const endpoint = z.union([
   z.strictObject({ date }),
-  z.strictObject({ dateTime: z.iso.datetime({ offset: true }), timeZone: text.optional() }),
+  z.strictObject({
+    dateTime: z.iso.datetime({ offset: true }).refine(
+      value => new Date(value).getUTCMilliseconds() === 0,
+      'Calendar timestamps must use whole-second precision',
+    ),
+    timeZone: text.optional(),
+  }),
 ]);
 
 function formatDateTimeInZone(isoDateTime, timeZone) {
+  const instant = new Date(isoDateTime);
+  if (instant.getUTCMilliseconds() !== 0) {
+    throw new Error('Calendar timestamps must use whole-second precision');
+  }
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone,
     year: 'numeric', month: '2-digit', day: '2-digit',
     hour: '2-digit', minute: '2-digit', second: '2-digit',
     hourCycle: 'h23',
     timeZoneName: 'longOffset',
-  }).formatToParts(new Date(isoDateTime));
+  }).formatToParts(instant);
   const get = type => parts.find(part => part.type === type)?.value;
   const tzLabel = get('timeZoneName');
   const offset = tzLabel === 'GMT' || tzLabel === 'UTC'

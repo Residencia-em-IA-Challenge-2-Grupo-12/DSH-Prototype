@@ -91,7 +91,8 @@ function safeProposal(plan) {
 async function staleProbe({ bundle, calendar, service, final, initial, events, writeAttempts, perturbCalendar }) {
   const preStale = evaluatePreStale(bundle, final, events, initial);
   const delta = bundle.oracle.stalePerturbation.event;
-  const existing = events.some(event => event.id === delta.id);
+  const existing = events.some(event => event.id === delta.id) ||
+    bundle.calendarFixture.events.some(event => event.id === delta.id);
   if (perturbCalendar) await perturbCalendar(bundle.student, delta, existing);
   else if (existing) await calendar.patch(bundle.student, delta.id, delta);
   else await calendar.create(bundle.student, delta);
