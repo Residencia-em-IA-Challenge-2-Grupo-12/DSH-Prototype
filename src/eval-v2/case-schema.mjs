@@ -20,10 +20,71 @@ const relativePath = z.string().min(1).max(180).refine(value => {
   }
 }, 'Expected a canonical, visible bundle-relative path');
 
+const wholeSecondDateTime = z.iso.datetime({ offset: true }).refine(
+  value => !/\.\d*[1-9]/.test(value),
+  'Calendar timestamps must use whole-second precision',
+);
 const endpoint = z.union([
   z.strictObject({ date }),
-  z.strictObject({ dateTime: z.iso.datetime({ offset: true }), timeZone: text.optional() }),
+  z.strictObject({ dateTime: wholeSecondDateTime, timeZone: text.optional() }),
 ]);
+
+function parseWholeSecondDateTime(isoDateTime) {
+  const parsed = wholeSecondDateTime.safeParse(isoDateTime);
+  if (!parsed.success) {
+    throw new Error('Calendar timestamps must be ISO-8601 date-times with whole-second precision');
+  }
+  return parsed.data;
+}
+
+function formatDateTimeInZone(isoDateTime, timeZone) {
+  const instant = new Date(parseWholeSecondDateTime(isoDateTime));
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hourCycle: 'h23',
+    timeZoneName: 'longOffset',
+  }).formatToParts(instant);
+  const get = type => parts.find(part => part.type === type)?.value;
+  const tzLabel = get('timeZoneName');
+  const offset = tzLabel === 'GMT' || tzLabel === 'UTC'
+    ? '+00:00'
+    : /^(?:GMT|UTC)([+-]\d{2}:\d{2})$/.exec(tzLabel || '')?.[1];
+  if (!offset) throw new Error(`Unsupported calendar timezone offset for ${timeZone}`);
+  const hour = get('hour') === '24' ? '00' : get('hour');
+  return `${get('year')}-${get('month')}-${get('day')}T${hour}:${get('minute')}:${get('second')}${offset}`;
+}
+
+export function canonicalizeCalendarEndpoint(value, calendarTimeZone) {
+  if (!value || typeof value !== 'object') return value;
+  if ('date' in value) return { date: value.date };
+  if ('dateTime' in value) {
+    const timeZone = calendarTimeZone || value.timeZone;
+    return timeZone
+      ? { dateTime: formatDateTimeInZone(value.dateTime, timeZone), timeZone }
+      : { dateTime: parseWholeSecondDateTime(value.dateTime) };
+  }
+  return structuredClone(value);
+}
+
+export function canonicalizeCalendarEvent(event, calendarTimeZone) {
+  return {
+    ...structuredClone(event),
+    start: canonicalizeCalendarEndpoint(event.start, calendarTimeZone),
+    end: canonicalizeCalendarEndpoint(event.end, calendarTimeZone),
+  };
+}
+
+export function canonicalizeCalendarFixture(fixture) {
+  const calendarTimeZone = fixture?.calendars?.[0]?.timeZone;
+  return {
+    ...structuredClone(fixture),
+    events: Array.isArray(fixture?.events)
+      ? fixture.events.map(event => canonicalizeCalendarEvent(event, calendarTimeZone))
+      : [],
+  };
+}
 const calendarEvent = z.strictObject({
   id: slug, calendarId: slug, summary: text, start: endpoint, end: endpoint,
   description: z.string().max(6000).optional(), location: text.optional(),
@@ -196,7 +257,18 @@ export async function loadCaseBundle(directory, { split, repoRoot } = {}) {
   const manifest = caseSchema.parse(JSON.parse(await regularFile(root, 'case.json')));
   if (split !== undefined && manifest.split !== split) throw new Error('Unexpected case split');
   if (manifest.split === 'sealed' && insideRepository) throw new Error('Sealed bundles must live outside the repository');
-  return loadWorkspace(root, manifest);
+  const calendarFixture = canonicalizeCalendarFixture(manifest.calendarFixture);
+  const calendarTimeZone = calendarFixture.calendars[0]?.timeZone;
+  const oracle = manifest.oracle.stalePerturbation
+    ? {
+      ...manifest.oracle,
+      stalePerturbation: {
+        ...manifest.oracle.stalePerturbation,
+        event: canonicalizeCalendarEvent(manifest.oracle.stalePerturbation.event, calendarTimeZone),
+      },
+    }
+    : manifest.oracle;
+  return loadWorkspace(root, { ...manifest, calendarFixture, oracle });
 }
 
 /** Adapts existing audited fixture bytes in place, with no writes to the v1 fixtures. */
@@ -239,7 +311,7 @@ export async function buildDevCaseBundle(caseId, { repoRoot = ROOT } = {}) {
     availability: ['Wednesday', 'Thursday', 'Friday', '14:00', '16:15'],
     workload: ['Four study hours', 'two sessions', '15-minute break'],
   };
-  return loadWorkspace(directory, caseSchema.parse({
+  const manifest = caseSchema.parse({
     caseId, split: 'dev', archetype: 'compound_mixed_intent', student: legacy.student, locale: legacy.locale,
     clock: legacy.clock, canaryGuid: randomUUID(), initialRequest: legacy.request, frictionMove: legacy.operator.correction,
     calendarFixture: { users, calendars, events }, workspaceDir,
@@ -247,5 +319,6 @@ export async function buildDevCaseBundle(caseId, { repoRoot = ROOT } = {}) {
     oracle: { expectedOutcome: 'planned', requiredDeadlines, expectedPreferences, forbiddenInjectionPatterns: [],
       revision: { avoidDates: legacy.expect.avoidDates, preserve: ['courses', 'studyWindows', 'targetHours',
         'maxDailyStudyHours', 'studyBreakMinutes', 'through'] } },
-  }));
+  });
+  return loadWorkspace(directory, { ...manifest, calendarFixture: canonicalizeCalendarFixture(manifest.calendarFixture) });
 }

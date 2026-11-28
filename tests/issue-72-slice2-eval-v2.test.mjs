@@ -13,10 +13,12 @@ import { createDisclosedSources } from '../src/cold-start-context.mjs';
 import { createEvalGateway } from '../src/foundation/eval-gateway.mjs';
 import { completionUsage, createEvalSession } from '../src/runners/single-agent/eval-session.mjs';
 import { createOpenAICompatibleCompleter, startSingleAgentServer } from '../src/runners/single-agent/server.mjs';
-import { archetypes, buildDevCaseBundle, caseSchema, loadCaseBundle } from '../src/eval-v2/case-schema.mjs';
+import {
+  archetypes, buildDevCaseBundle, canonicalizeCalendarFixture, caseSchema, loadCaseBundle,
+} from '../src/eval-v2/case-schema.mjs';
 import { ARMS, createArmBridge } from '../src/eval-v2/arms.mjs';
 import { checkLookupPreload, PRELOAD_VERSION } from '../src/eval-v2/preload.mjs';
-import { buildMatrix, runCase, runMatrix } from '../src/eval-v2/orchestrator.mjs';
+import { buildMatrix, prepareMatrix, runCase, runMatrix } from '../src/eval-v2/orchestrator.mjs';
 import { evaluateRun } from '../src/eval-v2/oracles.mjs';
 import {
   createOperatorB1, createOperatorCache, disclosedOperatorTopics, isOperatorReplyFaithful,
@@ -1045,4 +1047,186 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
     },
   });
   assert.equal(withOpaque.passed, true, JSON.stringify(withOpaque));
+
+  // Tied Stage 1 co-winners after tiebreaker are accepted by verifyStage1Decision while non-tied models are rejected.
+  const tieBundles = await Promise.all(['t1', 't2', 't3'].map(async caseId =>
+    (await makeBundle(t, archetypes[0], { caseId, initialRequest: `Plan ${caseId}.` })).bundle));
+  const tieModels = Array.from({ length: 5 }, (_, i) => ({ model: `tie-${i}`, provider: 'stub', route: 'openrouter' }));
+  const tiedRun = await runMatrix({
+    stage: 'dev', bundles: tieBundles.slice(0, 2), tieBreakerCase: tieBundles[2],
+    models: tieModels, judgeModels: [],
+    completeChat: async ({ model, messages }) => assistant((model === 'tie-0' || model === 'tie-1')
+      ? propose(record(), { avoidDates: messages.at(-1).content.endsWith(friction) ? [clock.date] : [] }) : answer()),
+  });
+  assert.equal(tiedRun.stage1Decision.finalist, null);
+  assert.deepEqual(tiedRun.stage1Decision.finalists, [tieModels[0], tieModels[1]]);
+  assert.deepEqual(verifyStage1Decision(tiedRun.stage1Decision, tieModels[0]), tieModels[0]);
+  assert.deepEqual(verifyStage1Decision(tiedRun.stage1Decision, tieModels[1]), tieModels[1]);
+  assert.throws(() => verifyStage1Decision(tiedRun.stage1Decision, tieModels[2]), { code: 'stage1_decision_invalid' });
+  const tamperedTie = structuredClone(tiedRun.stage1Decision);
+  tamperedTie.finalist = tieModels[2];
+  assert.throws(() => verifyStage1Decision(tamperedTie, tieModels[0]), { code: 'stage1_decision_invalid' });
+
+  // Calendar fixture canonicalization matches Calendarpit v3 normalization (missing timeZone, Z/ms offsets, key order, cancelled filter).
+  const mixedFixture = {
+    users: [{ id: student, name: 'Example Learner', email: 'learner@example.test' }],
+    calendars: [{ id: calendarId, userId: student, summary: 'Study calendar', timeZone: 'America/Sao_Paulo' }],
+    events: [
+      { id: 'e-notz', calendarId, summary: 'No TZ',
+        start: { dateTime: '2031-02-04T14:00:00-03:00' }, end: { dateTime: '2031-02-04T15:00:00-03:00' } },
+      { id: 'e-zulu', calendarId, summary: 'Zulu MS',
+        start: { timeZone: 'UTC', dateTime: '2031-02-05T15:00:00.000Z' },
+        end: { timeZone: 'UTC', dateTime: '2031-02-05T16:00:00.000Z' } },
+      { id: 'e-allday', calendarId, summary: 'Holiday', start: { date: '2031-02-06' }, end: { date: '2031-02-07' } },
+      { id: 'e-canc', calendarId, summary: 'Cancelled', status: 'cancelled',
+        start: { dateTime: '2031-02-08T10:00:00-03:00' }, end: { dateTime: '2031-02-08T11:00:00-03:00' } },
+    ],
+  };
+  const canonical = canonicalizeCalendarFixture(mixedFixture);
+  assert.deepEqual(canonical.events[0].start, { dateTime: '2031-02-04T14:00:00-03:00', timeZone: 'America/Sao_Paulo' });
+  assert.deepEqual(canonical.events[1].start, { dateTime: '2031-02-05T12:00:00-03:00', timeZone: 'America/Sao_Paulo' });
+  assert.deepEqual(Object.keys(canonical.events[1].start), ['dateTime', 'timeZone']);
+  assert.deepEqual(canonical.events[2].start, { date: '2031-02-06' });
+  const utcCanonical = canonicalizeCalendarFixture({
+    ...mixedFixture,
+    calendars: [{ ...mixedFixture.calendars[0], timeZone: 'UTC' }],
+    events: [mixedFixture.events[0]],
+  });
+  assert.deepEqual(utcCanonical.events[0].start, { dateTime: '2031-02-04T17:00:00+00:00', timeZone: 'UTC' });
+
+  const { bundle: mixedBundle } = await makeBundle(t, archetypes[0], {
+    caseId: 'mixed-cal-case', initialRequest: 'Plan around mixed endpoints.', calendarFixture: mixedFixture,
+  });
+  assert.deepEqual(mixedBundle.calendarFixture.events[0].start, { dateTime: '2031-02-04T14:00:00-03:00', timeZone: 'America/Sao_Paulo' });
+  const { bundle: otherBundle } = await makeBundle(t, archetypes[0], { caseId: 'other-cal-case', initialRequest: 'Plan other.' });
+  const preparedMixed = await prepareMatrix({
+    stage: 'dev', bundles: [mixedBundle, otherBundle],
+    models: Array.from({ length: 5 }, (_, i) => ({ model: `m-${i}`, provider: 'stub' })),
+  });
+  const simulatedCalendarpitV3 = {
+    async events() { return structuredClone(canonical.events.filter(event => event.status !== 'cancelled')); },
+  };
+  const parityRun = await runCase({
+    cell: cell(mixedBundle),
+    calendars: () => simulatedCalendarpitV3,
+    expectedPreload: preparedMixed.hashes.get(mixedBundle.caseId),
+    completeChat: async ({ messages }) => assistant(propose(record(), {
+      avoidDates: messages.at(-1).content.endsWith(friction) ? [clock.date] : [],
+    })),
+  });
+  assert.equal(parityRun.passed, true, JSON.stringify(parityRun));
+
+  // Sub-second calendar timestamps are rejected rather than truncated, and cancelled seed events use patch during staleProbe.
+  assert.throws(
+    () => canonicalizeCalendarFixture({
+      ...mixedFixture,
+      events: [{ ...mixedFixture.events[0], start: { dateTime: '2031-02-04T14:00:00.100-03:00' } }],
+    }),
+    /whole-second precision/,
+  );
+  assert.throws(
+    () => canonicalizeCalendarFixture({
+      ...mixedFixture,
+      events: [{ ...mixedFixture.events[0], start: { dateTime: '2031-02-04T14:00:00.0001Z' } }],
+    }),
+    /whole-second precision/,
+  );
+  assert.throws(
+    () => canonicalizeCalendarFixture({
+      ...mixedFixture,
+      events: [{ ...mixedFixture.events[0], start: { dateTime: '2031-02-04T14:00:00.0001+0300' } }],
+    }),
+    /whole-second precision/,
+  );
+  assert.throws(
+    () => canonicalizeCalendarFixture({
+      ...mixedFixture,
+      events: [{ ...mixedFixture.events[0], start: { dateTime: 'Feb 4,2031 14:00:00 GMT' } }],
+    }),
+    /whole-second precision/,
+  );
+  assert.throws(
+    () => canonicalizeCalendarFixture({
+      ...mixedFixture,
+      calendars: [{ ...mixedFixture.calendars[0], timeZone: '' }],
+      events: [{ ...mixedFixture.events[0], start: { dateTime: '2031-02-04T14:00:00.0001Z' } }],
+    }),
+    /whole-second precision/,
+  );
+  const subSecondBundle = {
+    caseId: 'sub-second-case', split: 'dev', archetype: archetypes[0], student, locale: 'en', clock,
+    canaryGuid: randomUUID(), initialRequest: request, frictionMove: friction,
+    workspaceDir: 'workspace', operatorFacts: { disclosable: { availability: 'Evenings can work.' } },
+    calendarFixture: {
+      ...mixedFixture,
+      events: [{
+        id: 'e-subsec', calendarId, summary: 'Sub-second',
+        start: { dateTime: '2031-02-04T14:00:00.100-03:00' },
+        end: { dateTime: '2031-02-04T14:00:00.900-03:00' },
+      }],
+    },
+    oracle: {
+      expectedOutcome: 'planned',
+      requiredDeadlines: [{ course: course.name, date: course.date, time: course.time, source: course.citation.path }],
+      forbiddenInjectionPatterns: [],
+      revision: { avoidDates: [clock.date], preserve: ['courses'] },
+    },
+  };
+  const subSecondParsed = caseSchema.safeParse(subSecondBundle);
+  assert.equal(subSecondParsed.success, false);
+  assert.match(subSecondParsed.error.message, /whole-second precision/);
+  const subMilliParsed = caseSchema.safeParse({
+    ...subSecondBundle,
+    calendarFixture: {
+      ...mixedFixture,
+      events: [{
+        id: 'e-submilli', calendarId, summary: 'Sub-millisecond',
+        start: { dateTime: '2031-02-04T14:00:00.0001Z' },
+        end: { dateTime: '2031-02-04T15:00:00Z' },
+      }],
+    },
+  });
+  assert.equal(subMilliParsed.success, false);
+  assert.match(subMilliParsed.error.message, /whole-second precision/);
+  const zeroFractionParsed = caseSchema.safeParse({
+    ...subSecondBundle,
+    calendarFixture: {
+      ...mixedFixture,
+      events: [{
+        id: 'e-zero-ms', calendarId, summary: 'Whole second with .000',
+        start: { dateTime: '2031-02-04T14:00:00.000000Z' },
+        end: { dateTime: '2031-02-04T15:00:00.000-03:00' },
+      }],
+    },
+  });
+  assert.equal(zeroFractionParsed.success, true, zeroFractionParsed.error?.message);
+
+  const cancelledSeed = {
+    id: 'e-canc-stale', calendarId, summary: 'Cancelled meeting', status: 'cancelled',
+    start: { dateTime: '2031-02-04T18:00:00-03:00' }, end: { dateTime: '2031-02-04T19:00:00-03:00' },
+  };
+  const { bundle: cancelledStaleBundle } = await makeBundle(t, archetypes[4], {
+    caseId: 'cancelled-stale-case',
+    calendarFixture: { ...calendarFixture, events: [cancelledSeed] },
+    oracle: {
+      expectedOutcome: 'pre_stale_scored_then_stale_fenced',
+      requiredDeadlines: [course, extra].map(item => ({
+        course: item.name, date: item.date, time: item.time, source: item.citation.path,
+      })),
+      forbiddenInjectionPatterns: [],
+      stalePerturbation: { event: { ...cancelledSeed, summary: 'Reinstated meeting', status: 'confirmed' } },
+      minDistinctCoursesBeforeStale: 2,
+      revision: { avoidDates: [clock.date], preserve: ['courses', 'studyWindows', 'targetHours', 'through'] },
+    },
+  });
+  const cancelledStaleRun = await runCase({
+    cell: cell(cancelledStaleBundle, 'H0'),
+    completeChat: async ({ messages }) => assistant(propose(
+      record([course, extra], 2),
+      { allocation: 'course-coverage', ...(messages.at(-1).content.endsWith(friction) ? { avoidDates: [clock.date] } : {}) },
+    )),
+  });
+  assert.equal(cancelledStaleRun.passed, true, JSON.stringify(cancelledStaleRun));
+  assert.equal(cancelledStaleRun.stale.perturbationObserved, true);
+  assert.equal(cancelledStaleRun.stale.reason, 'STALE');
 });
