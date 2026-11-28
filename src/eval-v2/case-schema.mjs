@@ -20,11 +20,14 @@ const relativePath = z.string().min(1).max(180).refine(value => {
   }
 }, 'Expected a canonical, visible bundle-relative path');
 
+const isWholeSecondTimestamp = value =>
+  typeof value === 'string' && !/\.\d*[1-9]\d*(?:Z|[+-]\d{2}:\d{2})$/i.test(value);
+
 const endpoint = z.union([
   z.strictObject({ date }),
   z.strictObject({
     dateTime: z.iso.datetime({ offset: true }).refine(
-      value => new Date(value).getUTCMilliseconds() === 0,
+      isWholeSecondTimestamp,
       'Calendar timestamps must use whole-second precision',
     ),
     timeZone: text.optional(),
@@ -33,7 +36,7 @@ const endpoint = z.union([
 
 function formatDateTimeInZone(isoDateTime, timeZone) {
   const instant = new Date(isoDateTime);
-  if (instant.getUTCMilliseconds() !== 0) {
+  if (!isWholeSecondTimestamp(isoDateTime) || Number.isNaN(instant.getTime()) || instant.getUTCMilliseconds() !== 0) {
     throw new Error('Calendar timestamps must use whole-second precision');
   }
   const parts = new Intl.DateTimeFormat('en-CA', {

@@ -1124,6 +1124,13 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
     }),
     /whole-second precision/,
   );
+  assert.throws(
+    () => canonicalizeCalendarFixture({
+      ...mixedFixture,
+      events: [{ ...mixedFixture.events[0], start: { dateTime: '2031-02-04T14:00:00.0001Z' } }],
+    }),
+    /whole-second precision/,
+  );
   const subSecondBundle = {
     caseId: 'sub-second-case', split: 'dev', archetype: archetypes[0], student, locale: 'en', clock,
     canaryGuid: randomUUID(), initialRequest: request, frictionMove: friction,
@@ -1146,14 +1153,27 @@ test('Role B2 prompt pins score/choice domains, skips short name connectors, and
   const subSecondParsed = caseSchema.safeParse(subSecondBundle);
   assert.equal(subSecondParsed.success, false);
   assert.match(subSecondParsed.error.message, /whole-second precision/);
+  const subMilliParsed = caseSchema.safeParse({
+    ...subSecondBundle,
+    calendarFixture: {
+      ...mixedFixture,
+      events: [{
+        id: 'e-submilli', calendarId, summary: 'Sub-millisecond',
+        start: { dateTime: '2031-02-04T14:00:00.0001Z' },
+        end: { dateTime: '2031-02-04T15:00:00Z' },
+      }],
+    },
+  });
+  assert.equal(subMilliParsed.success, false);
+  assert.match(subMilliParsed.error.message, /whole-second precision/);
   const zeroFractionParsed = caseSchema.safeParse({
     ...subSecondBundle,
     calendarFixture: {
       ...mixedFixture,
       events: [{
         id: 'e-zero-ms', calendarId, summary: 'Whole second with .000',
-        start: { dateTime: '2031-02-04T14:00:00.000-03:00' },
-        end: { dateTime: '2031-02-04T18:00:00.000Z' },
+        start: { dateTime: '2031-02-04T14:00:00.000000Z' },
+        end: { dateTime: '2031-02-04T15:00:00.000-03:00' },
       }],
     },
   });
